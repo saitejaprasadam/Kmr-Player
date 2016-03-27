@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">Smart Cast</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string name="songs_text">Songs</string>
+    <string name="albums_text">Albums</string>
+    <string name="artist_text">Artists</string>
+    <string name="playlist_text">Playlist</string>
+    <string name="delete_text">Delete</string>
+    <string name="cancel_text">Cancel</string>
+    <string name="song_details_text">Song Details</string>
+    <string name="ok_text">Ok</string>
+    <string name="song_location_text">Song location</string>
+    <string name="duration_text">Duration</string>
+    <string name="file_size_text">File size</string>
+    <string name="bit_rate_text">Bitrate</string>
+    <string name="sampling_rate_text">Sampling rate</string>
+    <string name="set_text">Set</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="sort_text">Sort</string>
+</resources>

@@ -1,0 +1,85 @@
+<android.support.v7.widget.CardView android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/tools"
+    android:layout_weight="1"
+    android:layout_margin="2dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:orientation="vertical">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/album_art_albumrecyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="25"
+            fresco:placeholderImage="@mipmap/ic_launcher"/>
+
+        <RelativeLayout
+            android:id="@+id/color_box_layout_albumrecyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="75">
+
+            <LinearLayout
+                android:id="@+id/album_info"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/Album_name_albumrecyclerview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:textStyle="bold"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/white"
+                    android:text="Album"/>
+
+                <TextView
+                    android:id="@+id/Artist_name_albumrecyclerview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/white"
+                    android:text="Artist"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignEnd="@id/album_info"
+                android:padding="5dp">
+
+                <com.github.ivbaranov.mfb.MaterialFavoriteButton
+                    android:visibility="invisible"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    app:mfb_type="heart"
+                    app:mfb_animate_favorite="true"
+                    app:mfb_color="white"/>
+
+                <ImageView
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:src="@mipmap/ic_dots_vertical_white_24dp"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

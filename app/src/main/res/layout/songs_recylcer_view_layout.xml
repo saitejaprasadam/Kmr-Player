@@ -1,0 +1,80 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:fresco="http://schemas.android.com/tools"
+    android:id="@+id/rootLayout_recycler_view"
+    android:clickable="true"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:background="@color/View_Background"
+    android:layout_height="@dimen/media_item_height">
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/songAlbumArt_RecyclerView"
+        android:layout_height="match_parent"
+        android:layout_width="@dimen/media_item_height"
+        android:adjustViewBounds="true"
+        android:padding="10dp"
+        fresco:placeholderImage="@android:drawable/star_on" />
+
+    <LinearLayout
+        android:id="@+id/songs_list_options_recycler_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:orientation="horizontal">
+
+        <com.github.ivbaranov.mfb.MaterialFavoriteButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:mfb_type="heart"
+            app:mfb_animate_favorite="false"
+            app:mfb_color="black"/>
+
+        <ImageView
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:id="@+id/song_context_menu"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/dots_vertical"/>
+
+        <View
+            android:layout_width="20dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@id/songAlbumArt_RecyclerView"
+        android:layout_toStartOf="@id/songs_list_options_recycler_view"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/songTitle_RecyclerView"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="14sp"
+            android:textColor="?android:attr/textColorPrimary"/>
+
+        <TextView
+            android:id="@+id/songArtist_recycler_view"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textSize="12sp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="?android:attr/textColorSecondary"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

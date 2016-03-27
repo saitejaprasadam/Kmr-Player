@@ -1,0 +1,11 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView android:id="@+id/album_recylcer_view_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+    </com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView>
+
+</RelativeLayout>
