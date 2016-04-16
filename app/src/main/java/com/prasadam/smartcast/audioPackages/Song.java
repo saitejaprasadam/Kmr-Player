@@ -1,7 +1,5 @@
 package com.prasadam.smartcast.audioPackages;
 
-import java.util.List;
-
 /**
  * Created by use on 2/14/2016.
  */

@@ -1,9 +1,12 @@
 package com.prasadam.smartcast.adapterClasses;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.prasadam.smartcast.R;
@@ -30,11 +34,14 @@ import butterknife.ButterKnife;
 public class AlbumRecyclerViewAdapter extends ObservableRecyclerView.Adapter<AlbumRecyclerViewAdapter.AlbumViewHolder> implements INameableAdapter {
 
     private ArrayList<Album> albumArrayList;
-    //private Context context;
+    private Context context;
     private LayoutInflater inflater;
+    private Activity mActivity;
 
-    public AlbumRecyclerViewAdapter(Context context, ArrayList<Album> albumArrayList){
-        //this.context = context;
+    public AlbumRecyclerViewAdapter(Activity mActivity, Context context, ArrayList<Album> albumArrayList){
+
+        this.mActivity = mActivity;
+        this.context = context;
         inflater = LayoutInflater.from(context);
         this.albumArrayList = albumArrayList;
     }
@@ -52,6 +59,14 @@ public class AlbumRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Alb
 
         holder.albumNameTextView.setText(currentAlbum.getTitle());
         holder.artistNameTextView.setText(currentAlbum.getArtist());
+        holder.rootLayout.setOnClickListener(new View.OnClickListener() {
+            @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, "Pending", Toast.LENGTH_SHORT).show();
+            }
+        });
+
 
         {   //Album art
             String albumArtPath = currentAlbum.getAlbumArtLocation();
@@ -136,6 +151,7 @@ public class AlbumRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Alb
         @Bind (R.id.Album_name_albumrecyclerview) TextView albumNameTextView;
         @Bind (R.id.Artist_name_albumrecyclerview) TextView artistNameTextView;
         @Bind (R.id.color_box_layout_albumrecyclerview) RelativeLayout colorBoxLayout;
+        @Bind (R.id.root_layout_album_recyler_view) android.support.v7.widget.CardView rootLayout;
 
         public AlbumViewHolder(View itemView) {
             super(itemView);

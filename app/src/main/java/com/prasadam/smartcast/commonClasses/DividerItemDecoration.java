@@ -1,18 +1,17 @@
 package com.prasadam.smartcast.commonClasses;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 
 /**
  * Created by prasadam saiteja on 2/16/2016.
  */
-import android.content.res.TypedArray;
-import android.graphics.Rect;
-import android.support.v7.widget.LinearLayoutManager;
 
 /**
  * @author Aidan Follestad (afollestad)

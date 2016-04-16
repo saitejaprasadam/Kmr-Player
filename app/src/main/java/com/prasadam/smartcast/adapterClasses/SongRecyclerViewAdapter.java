@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,14 +13,12 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.prasadam.smartcast.R;
-import com.prasadam.smartcast.audioPackages.AdditionalAudioPackageMethods;
+import com.prasadam.smartcast.audioPackages.AudioExtensionMethods;
 import com.prasadam.smartcast.audioPackages.Song;
 import com.prasadam.smartcast.commonClasses.mediaController;
-import com.prasadam.smartcast.commonClasses.ExtensionMethods;
 import com.turingtechnologies.materialscrollbar.INameableAdapter;
-import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
-
 
 import java.io.File;
 import java.util.Collections;
@@ -49,7 +48,6 @@ public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Song
         return new myViewHolder(view);
     }
 
-
     @Override
     public void onBindViewHolder(final myViewHolder holder, final int position) {
         try
@@ -64,12 +62,12 @@ public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Song
                 @Override
                 public void onClick(View view) {
                     mediaController.music.musicService.setList(songsList);
-                    mediaController.music.musicService.setSong(AdditionalAudioPackageMethods.getSongIndex(songsList, view.getTag().toString()));
+                    mediaController.music.musicService.setSong(AudioExtensionMethods.getSongIndex(songsList, view.getTag().toString()));
                     try
                     {
                         mediaController.music.musicService.playSong();
                     }
-                    catch (Exception es){}
+                    catch (Exception ignored){}
                 }
             });
 
@@ -86,21 +84,33 @@ public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Song
                                 try
                                 {
                                     int id = item.getItemId();
-                                    if (id == R.id.song_context_menu_delete)
-                                        ExtensionMethods.deleteSong(context, currentSongDetails.getTitle(), currentSongDetails.getData());
 
-                                    else if(id == R.id.song_context_menu_share)
-                                        ExtensionMethods.sendSong(context, currentSongDetails.getTitle() ,Uri.parse(currentSongDetails.getData()));
-
-                                    else if(id == R.id.song_context_menu_details)
-                                        ExtensionMethods.songDetails(context, currentSongDetails, holder.albumPath);
-
-                                    else if(id == R.id.song_context_menu_ringtone)
+                                    switch(id)
                                     {
-                                        //ExtensionMethods.setSongAsRingtone(context, currentSongDetails);
+                                        case R.id.song_context_menu_delete:
+                                            AudioExtensionMethods.deleteSong(context, currentSongDetails.getTitle(), currentSongDetails.getData());
+                                            break;
+
+                                        case R.id.song_context_menu_share:
+                                            AudioExtensionMethods.sendSong(context, currentSongDetails.getTitle(), Uri.parse(currentSongDetails.getData()));
+                                            break;
+
+                                        case R.id.song_context_menu_details:
+                                            AudioExtensionMethods.songDetails(context, currentSongDetails, holder.albumPath);
+                                            break;
+
+                                        case R.id.song_context_menu_shout:
+                                            AudioExtensionMethods.ShoutOut(context, currentSongDetails, holder.albumPath);
+                                            break;
+
+                                        case R.id.song_context_menu_ringtone:
+                                            AudioExtensionMethods.setSongAsRingtone(context, currentSongDetails);
+                                            break;
                                     }
                                 }
-                                catch (Exception e){}
+                                catch (Exception e){
+                                    Log.e("exception", e.toString());
+                                }
 
                                 return true;
                             }
@@ -126,11 +136,12 @@ public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Song
             }
         }
 
-        catch (Exception a){}
+        catch (Exception ignored){}
     }
 
-    @Override //gets count of songsList
+    @Override
     public int getItemCount() {
+
         return songsList.size();
     }
 

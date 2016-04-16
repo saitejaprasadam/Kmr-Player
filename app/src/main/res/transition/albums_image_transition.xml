@@ -1,0 +1,15 @@
+<transitionSet>
+
+    <changeBounds>
+        <targets>
+            <!--<target android:targetId="@id/album_art_albumrecyclerview" />-->
+        </targets>
+    </changeBounds>
+
+    <changeImageTransform>
+        <targets>
+            <!--<target android:targetId="@id/album_art_test" />-->
+        </targets>
+    </changeImageTransform>
+
+</transitionSet>

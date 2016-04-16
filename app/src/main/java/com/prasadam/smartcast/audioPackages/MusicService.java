@@ -1,16 +1,10 @@
 package com.prasadam.smartcast.audioPackages;
-import java.io.File;
-import java.util.List;
-import java.util.Random;
 
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ContentUris;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Icon;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -21,6 +15,9 @@ import android.util.Log;
 
 import com.prasadam.smartcast.MainActivity;
 import com.prasadam.smartcast.R;
+
+import java.util.List;
+import java.util.Random;
 
 public class MusicService extends Service implements
         MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener,
