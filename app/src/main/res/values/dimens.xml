@@ -10,4 +10,7 @@
     <dimen name="media_item_icon_margin_start">12dp</dimen>
     <dimen name="media_item_text_margin_start">60dp</dimen>
     <dimen name="media_item_height">72dp</dimen>
+
+    <dimen name="flexible_space_image_height">240dp</dimen>
+    <dimen name="margin_standard">16dp</dimen>
 </resources>

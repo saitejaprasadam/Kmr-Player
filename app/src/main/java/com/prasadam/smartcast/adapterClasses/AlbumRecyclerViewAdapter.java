@@ -48,7 +48,7 @@ public class AlbumRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Alb
 
     @Override
     public AlbumRecyclerViewAdapter.AlbumViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.albums_recycler_view_layout, parent, false);
+        View view = inflater.inflate(R.layout.recycler_view_albums_layout, parent, false);
         return new AlbumViewHolder(view);
     }
 

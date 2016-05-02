@@ -1,6 +1,7 @@
 package com.prasadam.smartcast;
 
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -64,8 +65,6 @@ public class MainActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
-            //Intent i = new Intent(this, testActivity.class);
-            //startActivity(i);
         }
     }
 

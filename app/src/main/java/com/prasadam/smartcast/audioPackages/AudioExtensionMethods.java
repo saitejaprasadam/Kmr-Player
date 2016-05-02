@@ -221,7 +221,7 @@ public class AudioExtensionMethods {
                     .icon(Drawable.createFromPath(albumPath))
                     .maxIconSize(120)
                     .title(currentSongDetails.getTitle())
-                    .customView(R.layout.shout_out_layout, true)
+                    .customView(R.layout.activity_shout_out_layout, true)
                     .positiveText(R.string.post_text)
                     .negativeText(R.string.cancel_text)
                     .show();

@@ -27,4 +27,7 @@
     <string name="share_with_text">Share with</string>
     <string name="jump_to_artist_text">Jump to artist</string>
     <string name="jump_to_album_text">Jump to album</string>
+    <string name="song_title_text">Song Title</string>
+    <string name="song_album_text">Album</string>
+    <string name="song_artist_text">Artist</string>
 </resources>

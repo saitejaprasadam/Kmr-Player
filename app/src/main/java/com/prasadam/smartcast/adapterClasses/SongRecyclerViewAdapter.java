@@ -1,7 +1,10 @@
 package com.prasadam.smartcast.adapterClasses;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,12 +18,14 @@ import android.widget.TextView;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.prasadam.smartcast.R;
+import com.prasadam.smartcast.TagEditorActivity;
 import com.prasadam.smartcast.audioPackages.AudioExtensionMethods;
 import com.prasadam.smartcast.audioPackages.Song;
 import com.prasadam.smartcast.commonClasses.mediaController;
 import com.turingtechnologies.materialscrollbar.INameableAdapter;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
@@ -44,7 +49,7 @@ public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Song
 
     @Override
     public myViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.songs_recylcer_view_layout, parent, false);
+        View view = inflater.inflate(R.layout.recylcer_view_songs_layout, parent, false);
         return new myViewHolder(view);
     }
 
@@ -105,6 +110,12 @@ public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Song
 
                                         case R.id.song_context_menu_ringtone:
                                             AudioExtensionMethods.setSongAsRingtone(context, currentSongDetails);
+                                            break;
+
+                                        case R.id.song_context_menu_tagEditor:
+                                            Intent tagEditorIntent = new Intent(context, TagEditorActivity.class);
+                                            tagEditorIntent.putExtra("songID", String.valueOf(currentSongDetails.getID()));
+                                            context.startActivity(tagEditorIntent);
                                             break;
                                     }
                                 }

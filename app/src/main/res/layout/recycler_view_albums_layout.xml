@@ -41,7 +41,7 @@
                     android:textStyle="bold"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="@color/white"
-                    android:text="Album"/>
+                    android:text="@string/albums_text"/>
 
                 <TextView
                     android:id="@+id/Artist_name_albumrecyclerview"
@@ -50,7 +50,7 @@
                     android:singleLine="true"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="@color/white"
-                    android:text="Artist"/>
+                    android:text="@string/artist_text"/>
 
             </LinearLayout>
 
