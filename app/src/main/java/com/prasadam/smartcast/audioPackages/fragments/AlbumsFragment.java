@@ -4,10 +4,10 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.prasadam.smartcast.R;
@@ -31,6 +31,7 @@ public class AlbumsFragment extends Fragment {
     private ObservableRecyclerView recyclerView;
     private AlbumRecyclerViewAdapter recyclerViewAdapter;
     private Activity mActivity;
+    private LinearLayout noAlbumView;
 
     @SuppressWarnings("deprecation")
     @Override
@@ -43,6 +44,7 @@ public class AlbumsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_album_list, container, false);
         recyclerView = (ObservableRecyclerView) rootView.findViewById(R.id.album_recylcer_view_layout);
+        noAlbumView = (LinearLayout) rootView.findViewById(R.id.no_albums_view);
         return rootView;
     }
 
@@ -52,7 +54,6 @@ public class AlbumsFragment extends Fragment {
 
         new Thread(){
             public void run() {
-                Log.d("context", String.valueOf(getContext()));
                 ArrayList<Album> albumArrayList = AudioExtensionMethods.getAlbumList(mActivity.getBaseContext());
                 Collections.sort(albumArrayList, new Comparator<Album>() {
                     public int compare(Album s1, Album s2) {
@@ -64,35 +65,47 @@ public class AlbumsFragment extends Fragment {
                     }
                 });
 
-                recyclerViewAdapter = new AlbumRecyclerViewAdapter(mActivity, mActivity.getBaseContext(), albumArrayList);
+                if(!albumArrayList.isEmpty())
+                {
+                    noAlbumView.setVisibility(View.INVISIBLE);
+                    recyclerView.setVisibility(View.VISIBLE);
+                    recyclerViewAdapter = new AlbumRecyclerViewAdapter(mActivity, mActivity.getBaseContext(), albumArrayList);
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            recyclerView.setAdapter(recyclerViewAdapter);
 
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        recyclerView.setAdapter(recyclerViewAdapter);
+                            if (!ExtensionMethods.isTablet(mActivity.getBaseContext())){
+                                if(!ExtensionMethods.isLandScape(mActivity.getBaseContext()))    //Mobile Portrait
+                                    recyclerView.setLayoutManager(new GridLayoutManager(mActivity.getBaseContext(), 2, GridLayoutManager.VERTICAL, false));
 
-                        if (!ExtensionMethods.isTablet(mActivity.getBaseContext())){
-                            if(!ExtensionMethods.isLandScape(mActivity.getBaseContext()))    //Mobile Portrait
-                                recyclerView.setLayoutManager(new GridLayoutManager(mActivity.getBaseContext(), 2, GridLayoutManager.VERTICAL, false));
+                                if(ExtensionMethods.isLandScape(mActivity.getBaseContext()))    //Mobile Landscape
+                                    recyclerView.setLayoutManager(new GridLayoutManager(mActivity.getBaseContext(), 4, GridLayoutManager.VERTICAL, false));
+                            }
 
-                            if(ExtensionMethods.isLandScape(mActivity.getBaseContext()))    //Mobile Landscape
-                                recyclerView.setLayoutManager(new GridLayoutManager(mActivity.getBaseContext(), 4, GridLayoutManager.VERTICAL, false));
+                            else{
+                                if(!ExtensionMethods.isLandScape(mActivity.getBaseContext()))    //Tablet Portrait
+                                    recyclerView.setLayoutManager(new GridLayoutManager(mActivity.getBaseContext(), 4, GridLayoutManager.VERTICAL, false));
+
+                                if(ExtensionMethods.isLandScape(mActivity.getBaseContext()))    //Tablet Landscape
+                                    recyclerView.setLayoutManager(new GridLayoutManager(mActivity.getBaseContext(), 6, GridLayoutManager.VERTICAL, false));
+                            }
+
+                            recyclerView.setScrollViewCallbacks(new ObservableScrollViewAdapter(getActivity()));
+
+                            DragScrollBar materialScrollBar = new DragScrollBar(getActivity(), recyclerView, false);
+                            materialScrollBar.addIndicator(new AlphabetIndicator(getActivity()), true);
                         }
+                    });
+                }
 
-                        else{
-                            if(!ExtensionMethods.isLandScape(mActivity.getBaseContext()))    //Tablet Portrait
-                                recyclerView.setLayoutManager(new GridLayoutManager(mActivity.getBaseContext(), 4, GridLayoutManager.VERTICAL, false));
+                else
+                {
+                    recyclerView.setVisibility(View.INVISIBLE);
+                    noAlbumView.setVisibility(View.VISIBLE);
+                }
 
-                            if(ExtensionMethods.isLandScape(mActivity.getBaseContext()))    //Tablet Landscape
-                                recyclerView.setLayoutManager(new GridLayoutManager(mActivity.getBaseContext(), 6, GridLayoutManager.VERTICAL, false));
-                        }
 
-                        recyclerView.setScrollViewCallbacks(new ObservableScrollViewAdapter(getActivity()));
-
-                        DragScrollBar materialScrollBar = new DragScrollBar(getActivity(), recyclerView, false);
-                        materialScrollBar.addIndicator(new AlphabetIndicator(getActivity()), true);
-                    }
-                });
             }
         }.start();
     }

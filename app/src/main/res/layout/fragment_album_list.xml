@@ -8,4 +8,29 @@
         xmlns:android="http://schemas.android.com/apk/res/android">
     </com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView>
 
+    <LinearLayout
+        android:visibility="invisible"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:id="@+id/no_albums_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:src="@mipmap/ic_all_inclusive_black_48dp"/>
+
+        <TextView
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text="@string/no_albums_text"/>
+
+    </LinearLayout>
+
 </RelativeLayout>

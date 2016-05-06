@@ -30,4 +30,7 @@
     <string name="song_title_text">Song Title</string>
     <string name="song_album_text">Album</string>
     <string name="song_artist_text">Artist</string>
+    <string name="no_songs_text">There are no song in your device</string>
+    <string name="no_albums_text">There are no albums in your device</string>
+    <string name="no_songs_logo">No Songs Logo</string>
 </resources>

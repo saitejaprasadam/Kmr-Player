@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,7 +17,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.prasadam.smartcast.R;
 import com.prasadam.smartcast.TagEditorActivity;
@@ -25,7 +30,7 @@ import com.prasadam.smartcast.commonClasses.mediaController;
 import com.turingtechnologies.materialscrollbar.INameableAdapter;
 
 import java.io.File;
-import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -93,7 +98,24 @@ public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Song
                                     switch(id)
                                     {
                                         case R.id.song_context_menu_delete:
-                                            AudioExtensionMethods.deleteSong(context, currentSongDetails.getTitle(), currentSongDetails.getData());
+                                            new MaterialDialog.Builder(context)
+                                                    .content("Delete this song " +  currentSongDetails.getTitle())
+                                                    .positiveText(R.string.delete_text)
+                                                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                                        @Override
+                                                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                                            File file = new File(currentSongDetails.getData());
+                                                            if(file.delete())
+                                                            {
+                                                                Toast.makeText(context, "Song Deleted : " + currentSongDetails.getTitle(), Toast.LENGTH_SHORT).show();
+                                                                context.getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.MediaColumns._ID + "='" + currentSongDetails.getID() + "'", null);
+                                                                songsList = AudioExtensionMethods.getSongList(context, new ArrayList<Song>());
+                                                                notifyDataSetChanged();
+                                                            }
+                                                        }
+                                                    })
+                                                    .negativeText(R.string.cancel_text)
+                                                    .show();
                                             break;
 
                                         case R.id.song_context_menu_share:
@@ -152,7 +174,6 @@ public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Song
 
     @Override
     public int getItemCount() {
-
         return songsList.size();
     }
 

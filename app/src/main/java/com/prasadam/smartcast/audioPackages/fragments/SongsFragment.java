@@ -2,12 +2,14 @@ package com.prasadam.smartcast.audioPackages.fragments;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.prasadam.smartcast.R;
@@ -22,8 +24,6 @@ import com.turingtechnologies.materialscrollbar.AlphabetIndicator;
 import com.turingtechnologies.materialscrollbar.DragScrollBar;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 /*
  * Created by Prasadam Saiteja on 3/7/2016.
  */
@@ -33,6 +33,8 @@ public class SongsFragment extends Fragment{
     private SongRecyclerViewAdapter recyclerViewAdapter;
     private ObservableRecyclerView recyclerView;
     private Activity mActivity;
+    private LinearLayout noSongsLayout;
+    private FloatingActionButton shuffleButton;
 
     @SuppressWarnings("deprecation")
     @Override
@@ -45,6 +47,9 @@ public class SongsFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_song_list, container, false);
         recyclerView = (ObservableRecyclerView) rootView.findViewById(R.id.songs_recylcer_view_layout);
+        noSongsLayout = (LinearLayout) rootView.findViewById(R.id.no_songs_view);
+        shuffleButton =(FloatingActionButton) rootView.findViewById(R.id.shuffle_fab_button);
+
         return rootView;
     }
 
@@ -56,46 +61,61 @@ public class SongsFragment extends Fragment{
             public void run(){
                 songList = new ArrayList<>();
                 AudioExtensionMethods.getSongList(getActivity(), songList);
-                Collections.sort(songList, new Comparator<Song>() {
 
-                    public int compare(Song s1, Song s2) {
-                        return s1.getTitle().toLowerCase().compareTo(s2.getTitle().toLowerCase());
-                    }
-                });
+                if(!songList.isEmpty()) {
 
-                mediaController.music.Initializer(getActivity());
-                recyclerViewAdapter = new SongRecyclerViewAdapter(getContext(), songList);
+                    recyclerView.setVisibility(View.VISIBLE);
+                    noSongsLayout.setVisibility(View.INVISIBLE);
+                    shuffleButton.show();
 
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        recyclerView.setAdapter(recyclerViewAdapter);
-                        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
-
-                        if (!ExtensionMethods.isTablet(mActivity.getBaseContext()))
-                        {
-                            if(!ExtensionMethods.isLandScape(mActivity.getBaseContext()))    //Mobile Portrait
-                                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-                            if(ExtensionMethods.isLandScape(mActivity.getBaseContext()))    //Mobile Landscape
-                                recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2, GridLayoutManager.VERTICAL, false));
+                    shuffleButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            shuffleButton.hide();
                         }
+                    });
 
-                        else{
-                            if(!ExtensionMethods.isLandScape(mActivity.getBaseContext()))    //Tablet Portrait
-                                recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2, GridLayoutManager.VERTICAL, false));
+                    mediaController.music.Initializer(getActivity());
+                    recyclerViewAdapter = new SongRecyclerViewAdapter(getContext(), songList);
 
-                            if(ExtensionMethods.isLandScape(mActivity.getBaseContext()))    //Tablet Landscape
-                                recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3, GridLayoutManager.VERTICAL, false));
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            recyclerView.setAdapter(recyclerViewAdapter);
+                            recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
+
+                            if (!ExtensionMethods.isTablet(mActivity.getBaseContext()))
+                            {
+                                if(!ExtensionMethods.isLandScape(mActivity.getBaseContext()))    //Mobile Portrait
+                                    recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+                                if(ExtensionMethods.isLandScape(mActivity.getBaseContext()))    //Mobile Landscape
+                                    recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2, GridLayoutManager.VERTICAL, false));
+                            }
+
+                            else{
+                                if(!ExtensionMethods.isLandScape(mActivity.getBaseContext()))    //Tablet Portrait
+                                    recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2, GridLayoutManager.VERTICAL, false));
+
+                                if(ExtensionMethods.isLandScape(mActivity.getBaseContext()))    //Tablet Landscape
+                                    recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3, GridLayoutManager.VERTICAL, false));
+                            }
+
+                            recyclerView.setScrollViewCallbacks(new ObservableScrollViewAdapter(getActivity()));
+
+                            DragScrollBar materialScrollBar = new DragScrollBar(getActivity(), recyclerView, false);
+                            materialScrollBar.addIndicator(new AlphabetIndicator(getActivity()), true);
                         }
+                    });
+                }
 
-                        recyclerView.setScrollViewCallbacks(new ObservableScrollViewAdapter(getActivity()));
+                else{
+                    recyclerView.setVisibility(View.INVISIBLE);
+                    noSongsLayout.setVisibility(View.VISIBLE);
+                    shuffleButton.setVisibility(View.INVISIBLE);
+                }
 
-                        DragScrollBar materialScrollBar = new DragScrollBar(getActivity(), recyclerView, false);
-                        materialScrollBar.addIndicator(new AlphabetIndicator(getActivity()), true);
-                    }
-                });
             }
         }.start();
 

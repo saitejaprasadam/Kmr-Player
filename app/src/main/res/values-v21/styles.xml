@@ -13,4 +13,12 @@
         <item name="android:windowSharedElementExitTransition">@transition/albums_image_transition</item>
     </style>
 
+    <style name="TransperantToolbar" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="windowActionBarOverlay">true</item>
+    </style>
+
+    <style name="ContextTranscition" parent="AppTheme">
+        <item name="android:windowContentTransitions">true</item>
+    </style>
 </resources>

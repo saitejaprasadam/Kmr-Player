@@ -2,10 +2,49 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView android:id="@+id/songs_recylcer_view_layout"
+    <com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView
+        android:id="@+id/songs_recylcer_view_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         xmlns:android="http://schemas.android.com/apk/res/android">
     </com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView>
+
+    <LinearLayout
+        android:visibility="invisible"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:id="@+id/no_songs_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:src="@mipmap/ic_all_inclusive_black_48dp"
+                android:contentDescription="@string/no_songs_logo" />
+
+            <TextView
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="@string/no_songs_text"/>
+
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:visibility="invisible"
+        android:id="@+id/shuffle_fab_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:clickable="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:src="@mipmap/ic_shuffle_white_24dp"
+        android:soundEffectsEnabled="true"/>
 
 </RelativeLayout>

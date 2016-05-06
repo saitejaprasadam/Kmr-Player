@@ -26,6 +26,7 @@
 
         <activity android:name=".testActivity"/>
         <activity android:name=".TagEditorActivity"/>
+        <activity android:name=".AlbumActivity" android:theme="@style/ContextTranscition"/>
         <service  android:name=".audioPackages.MusicService" android:enabled="true"></service>
     </application>
 </manifest>

@@ -20,7 +20,7 @@ import com.prasadam.smartcast.R;
 public class TabFragment extends Fragment{
     public static TabLayout tabLayout;
     public static ViewPager viewPager;
-    public static int int_items = 3 ;
+    public static int int_items = 2;
 
     @Nullable
     @Override
@@ -43,13 +43,11 @@ public class TabFragment extends Fragment{
 
         private SongsFragment songsFragment;
         private AlbumsFragment albumsFragment;
-        private AlbumsFragment tempFragment;
 
         public MyAdapter(FragmentManager fm) {
             super(fm);
             songsFragment = new SongsFragment();
             albumsFragment = new AlbumsFragment();
-            tempFragment = new AlbumsFragment();
         }
 
         @Override
@@ -58,7 +56,6 @@ public class TabFragment extends Fragment{
             switch (position){
                 case 0 : return songsFragment;
                 case 1 : return albumsFragment;
-                case 2 : return tempFragment;
             }
             return null;
         }
@@ -75,8 +72,6 @@ public class TabFragment extends Fragment{
                     return getResources().getString(R.string.songs_text);
                 case 1 :
                     return getResources().getString(R.string.albums_text);
-                case 2 :
-                    return getResources().getString(R.string.artist_text);
             }
             return null;
         }

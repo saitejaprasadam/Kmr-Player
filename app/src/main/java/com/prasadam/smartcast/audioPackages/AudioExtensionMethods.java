@@ -23,6 +23,8 @@ import com.prasadam.smartcast.commonClasses.ExtensionMethods;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /*
@@ -76,6 +78,13 @@ public class AudioExtensionMethods {
         if (musicCursor != null) {
             musicCursor.close();
         }
+
+        Collections.sort(songList, new Comparator<Song>() {
+            public int compare(Song s1, Song s2) {
+                return s1.getTitle().toLowerCase().compareTo(s2.getTitle().toLowerCase());
+            }
+        });
+
         return songList;
     }
 
@@ -94,7 +103,6 @@ public class AudioExtensionMethods {
                 String thisArtist = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST));
                 String thisSongCount = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Albums.NUMBER_OF_SONGS));
                 String thisAlbumArt = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
-
                 albumArrayList.add(new Album(key, thisTitle, thisArtist, "temp", thisSongCount, thisAlbumArt));
             }
             while (musicCursor.moveToNext());
@@ -144,7 +152,8 @@ public class AudioExtensionMethods {
                     .show();
     }
 
-    public static void deleteSong(final Context context, final String songName, final String songLocation) {
+    public static void deleteSong(final Context context, final String songName, final String songLocation,final long songID) {
+
         new MaterialDialog.Builder(context)
                 .content("Delete this song " + songName)
                 .positiveText(R.string.delete_text)
@@ -152,9 +161,8 @@ public class AudioExtensionMethods {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         File file = new File(songLocation);
-                        Log.d("FileExists ", String.valueOf(file.exists()));
-                        boolean deleted = file.delete();
-                        Log.d("Deleted ", String.valueOf(deleted) + songLocation);
+                        if(file.delete())
+                            context.getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.MediaColumns._ID + "='" + songID + "'", null);
                     }
                 })
                 .negativeText(R.string.cancel_text)

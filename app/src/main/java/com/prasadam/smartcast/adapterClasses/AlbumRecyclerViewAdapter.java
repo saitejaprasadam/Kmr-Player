@@ -3,12 +3,14 @@ package com.prasadam.smartcast.adapterClasses;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
+import com.prasadam.smartcast.AlbumActivity;
 import com.prasadam.smartcast.R;
 import com.prasadam.smartcast.audioPackages.Album;
 import com.turingtechnologies.materialscrollbar.INameableAdapter;
@@ -60,10 +63,15 @@ public class AlbumRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Alb
         holder.albumNameTextView.setText(currentAlbum.getTitle());
         holder.artistNameTextView.setText(currentAlbum.getArtist());
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
-            @TargetApi(Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, "Pending", Toast.LENGTH_SHORT).show();
+
+                Intent albumActivityIntent = new Intent(context, AlbumActivity.class);
+                albumActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(mActivity, holder.albumArtImageView, "AlbumArtImageTranscition");
+                albumActivityIntent.putExtra("albumTitle", currentAlbum.getTitle());
+                mActivity.startActivity(albumActivityIntent, options.toBundle());
+
             }
         });
 

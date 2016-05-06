@@ -11,7 +11,7 @@ import android.graphics.Canvas;
 
 public class BlurBuilder {
     private static final float BITMAP_SCALE = 0.4f;
-    private static final float BLUR_RADIUS = 12.5f;
+    private static final float BLUR_RADIUS = 8.5f;
 
     public static Bitmap blur(View v) {
         return blur(v.getContext(), getScreenshot(v));
