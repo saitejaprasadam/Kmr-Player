@@ -14,6 +14,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.prasadam.smartcast.audioPackages.BlurBuilder;
@@ -34,9 +35,9 @@ public class TagEditorActivity extends Activity{
     @Bind (R.id.input_song_artist) EditText songArtist;
     @Bind (R.id.blurred_album_art) ImageView blurredAlbumArt;
     @Bind (R.id.actual_album_art) ImageView actualAlbumArt;
-    @Bind (R.id.apply_fab_button) android.support.design.widget.FloatingActionButton applyFabButton;
+    @Bind (R.id.apply_fab_button) ImageView applyFabButton;
 
-    @OnClick ({R.id.actual_album_art, R.id.edit_fab_icon})
+    @OnClick ({R.id.actual_album_art, R.id.edit_fab_button})
     public void changeAlbumArt(View view) {
 
         new MaterialDialog.Builder(this)
@@ -48,6 +49,11 @@ public class TagEditorActivity extends Activity{
                     }
                 })
                 .show();
+    }
+
+    @OnClick (R.id.apply_fab_button)
+    public void applyChanges(View view){
+        Toast.makeText(this, "Pending", Toast.LENGTH_SHORT).show();
     }
 
     public void onCreate(Bundle b){
@@ -114,7 +120,7 @@ public class TagEditorActivity extends Activity{
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            applyFabButton.show();
+            applyFabButton.setVisibility(View.VISIBLE);
         }
     };
 

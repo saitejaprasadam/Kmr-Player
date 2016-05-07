@@ -10,6 +10,7 @@ import android.media.MediaExtractor;
 import android.media.MediaFormat;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -21,7 +22,11 @@ import com.prasadam.smartcast.R;
 import com.prasadam.smartcast.commonClasses.ExtensionMethods;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -192,30 +197,65 @@ public class AudioExtensionMethods {
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        ContentValues values = new ContentValues();
 
-                        File song = new File(currentSongDetails.getData());
-                        values.put(MediaStore.MediaColumns.DATA, song.getAbsolutePath());
-                        values.put(MediaStore.MediaColumns.TITLE, currentSongDetails.getTitle());
-                        values.put(MediaStore.MediaColumns.MIME_TYPE, "audio/oog");
-                        values.put(MediaStore.MediaColumns.SIZE, currentSongDetails.getDuration());
-                        values.put(MediaStore.Audio.Media.ARTIST, context.getString(R.string.app_name));
-                        values.put(MediaStore.Audio.Media.IS_RINGTONE, true);
-                        values.put(MediaStore.Audio.Media.IS_NOTIFICATION, false);
-                        values.put(MediaStore.Audio.Media.IS_ALARM, false);
-                        values.put(MediaStore.Audio.Media.IS_MUSIC, true);
-
-                        Uri uri = MediaStore.Audio.Media.getContentUriForPath(song.getAbsolutePath());
-                        Log.d("uri", uri.toString());
-                        Uri newUri = context.getContentResolver().insert(uri, values);
+                        byte[] buffer = null;
+                        File songFile = new File(currentSongDetails.getData());
+                        InputStream fIn = null;
+                        try {
+                            fIn = new FileInputStream(songFile);
+                        } catch (FileNotFoundException e) {
+                            Toast.makeText(context, "Error setting ringtone", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        int size = 0;
 
                         try {
-                            Log.d("test", newUri.toString());
-                            RingtoneManager.setActualDefaultRingtoneUri(context, RingtoneManager.TYPE_RINGTONE, newUri);
-                            Toast.makeText(context, "Ringtone set to " + currentSongDetails.getTitle(), Toast.LENGTH_SHORT).show();
-                        } catch (Throwable t) {
+                            size = fIn.available();
+                            buffer = new byte[size];
+                            fIn.read(buffer);
+                            fIn.close();
+                        } catch (IOException e) {
                             Toast.makeText(context, "Error setting ringtone", Toast.LENGTH_SHORT).show();
+                            return;
                         }
+
+                        String path = Environment.getExternalStorageDirectory().getPath() + "/Android/data/media/";
+                        String filename = "ringtone.mp3";
+
+                        boolean exists = (new File(path)).exists();
+                        if (!exists) {
+                            new File(path).mkdirs();
+                        }
+
+                        FileOutputStream save;
+                        try {
+                            save = new FileOutputStream(path + filename);
+                            save.write(buffer);
+                            save.flush();
+                            save.close();
+                        } catch (FileNotFoundException e) {
+                            Toast.makeText(context, "Error setting ringtone", Toast.LENGTH_SHORT).show();
+                            return;
+                        } catch (IOException e) {
+                            Toast.makeText(context, "Error setting ringtone", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + path + filename)));
+
+                        File k = new File(path, filename);
+
+                        ContentValues values = new ContentValues();
+                        values.put(MediaStore.MediaColumns.DATA, k.getAbsolutePath());
+                        values.put(MediaStore.MediaColumns.TITLE, filename);
+                        values.put(MediaStore.MediaColumns.MIME_TYPE, "audio/ogg");
+                        values.put(MediaStore.Audio.Media.IS_RINGTONE, true);
+
+                        Uri uri = MediaStore.Audio.Media.getContentUriForPath(k.getAbsolutePath());
+                        Uri newUri = context.getContentResolver().insert(uri, values);
+                        RingtoneManager.setActualDefaultRingtoneUri(context, RingtoneManager.TYPE_RINGTONE, newUri);
+                        context.getContentResolver().insert(MediaStore.Audio.Media.getContentUriForPath(k.getAbsolutePath()), values);
+                        Toast.makeText(context, "Ringtone set to " + currentSongDetails.getTitle(), Toast.LENGTH_SHORT).show();
                     }
                 }).show();
 

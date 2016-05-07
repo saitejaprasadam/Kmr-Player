@@ -33,4 +33,5 @@
     <string name="no_songs_text">There are no song in your device</string>
     <string name="no_albums_text">There are no albums in your device</string>
     <string name="no_songs_logo">No Songs Logo</string>
+    <string name="applyText">Apply</string>
 </resources>
