@@ -20,24 +20,103 @@
                 android:layout_width="match_parent"
                 android:id="@+id/album_image_view_anchor"
                 android:layout_height="0dp"
-                android:layout_weight="0.45"
-                layout="@layout/include_vertical_sliding_drawer_imageview"/>
-
-            <include
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
                 android:layout_weight="0.55"
-                layout="@layout/include_tag_editor_text_fields_layout"/>
+                layout="@layout/include_album_inner_layout_image_view"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.45"
+                android:orientation="vertical"
+                android:id="@+id/albumDetailsLayout">
+
+                <RelativeLayout
+                    android:id="@+id/album_info_colored_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp">
+
+                    <LinearLayout
+                        android:id="@+id/album_info"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:padding="10dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/Album_name_albumrecyclerview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:singleLine="true"
+                            android:textStyle="bold"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:textColor="@color/white"
+                            android:text="@string/albums_text"/>
+
+                        <TextView
+                            android:id="@+id/Artist_name_albumrecyclerview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:singleLine="true"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:textColor="@color/white"
+                            android:text="@string/artist_text"/>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <fragment
+                    android:layout_below="@+id/album_info_colored_box"
+                    android:name="com.prasadam.smartcast.audioPackages.fragments.AlbumInnerFragment"
+                    android:id="@+id/recycler_view_fragment_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_gravity="end">
+
+                </fragment>
+
+
+            </LinearLayout>
 
         </LinearLayout>
 
+        <!-- floating action button -->
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:clickable="true"
+            android:id="@+id/shuffle_fab_button"
+            android:src="@mipmap/ic_shuffle_white_24dp"
+            app:layout_anchor="@id/album_image_view_anchor"
+            app:layout_anchorGravity="bottom|right|end" />
+
     </android.support.design.widget.CoordinatorLayout>
+
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:theme="@style/TransperantToolbar">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="end"
+            android:layout_marginEnd="10dp">
+
+            <ImageView
+                android:id="@+id/vertical_more_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:src="@mipmap/ic_dots_vertical_white_24dp"
+                android:background="?attr/selectableItemBackgroundBorderless"/>
+
+        </LinearLayout>
 
     </android.support.v7.widget.Toolbar>
 

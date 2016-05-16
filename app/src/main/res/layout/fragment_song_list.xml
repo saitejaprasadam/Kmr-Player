@@ -1,4 +1,5 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -9,6 +10,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android">
     </com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView>
 
+    <!-- No Songs Layout -->
     <LinearLayout
         android:visibility="invisible"
         android:layout_centerHorizontal="true"
@@ -35,6 +37,8 @@
 
     </LinearLayout>
 
+
+    <!-- Shuffle Button -->
     <android.support.design.widget.FloatingActionButton
         android:visibility="invisible"
         android:id="@+id/shuffle_fab_button"

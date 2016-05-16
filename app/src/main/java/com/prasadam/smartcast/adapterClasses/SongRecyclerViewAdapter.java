@@ -3,8 +3,6 @@ package com.prasadam.smartcast.adapterClasses;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
-import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.PopupMenu;
@@ -40,7 +38,7 @@ import butterknife.ButterKnife;
 /*
  * Created by prasadam saiteja on 2/15/2016.
  */
-public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<SongRecyclerViewAdapter.myViewHolder> implements INameableAdapter {
+public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<SongRecyclerViewAdapter.songsViewHolder> implements INameableAdapter {
 
     private LayoutInflater inflater;
     private List<Song> songsList = Collections.emptyList();
@@ -53,13 +51,13 @@ public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Song
     }
 
     @Override
-    public myViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public songsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.recylcer_view_songs_layout, parent, false);
-        return new myViewHolder(view);
+        return new songsViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final myViewHolder holder, final int position) {
+    public void onBindViewHolder(final songsViewHolder holder, final int position) {
         try
         {
             final Song currentSongDetails = songsList.get(position);
@@ -189,7 +187,7 @@ public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Song
     /// <summary>RecyclerView view holder (Inner class)
     /// <para>creates a view holder for individual song</para>
     /// </summary>
-    class myViewHolder extends RecyclerView.ViewHolder{
+    class songsViewHolder extends RecyclerView.ViewHolder{
 
         @Bind (R.id.songTitle_RecyclerView) TextView titleTextView;
         @Bind (R.id.songArtist_recycler_view) TextView artistTextView;
@@ -198,7 +196,7 @@ public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Song
         @Bind (R.id.song_context_menu) ImageView contextMenuView;
         public String albumPath;
 
-        public myViewHolder(View itemView) {
+        public songsViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
