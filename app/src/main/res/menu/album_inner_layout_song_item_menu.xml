@@ -14,10 +14,6 @@
         android:title="@string/details_text" />
 
     <item
-        android:id="@+id/song_context_menu_jump_to_album"
-        android:title="@string/jump_to_album_text" />
-
-    <item
         android:id="@+id/song_context_menu_jump_to_artist"
         android:title="@string/jump_to_artist_text" />
 

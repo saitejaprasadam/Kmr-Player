@@ -43,6 +43,7 @@ import butterknife.OnClick;
 public class AlbumActivity extends Activity{
 
     private AlbumInnerLayoutSongRecyclerViewAdapter recyclerViewAdapter;
+    private String albumTitle;
     @Bind(R.id.actual_album_art) ImageView actualAlbumArt;
     @Bind(R.id.blurred_album_art) ImageView blurredAlbumArt;
     @Bind(R.id.album_info_colored_box) RelativeLayout colorBoxLayout;
@@ -60,7 +61,7 @@ public class AlbumActivity extends Activity{
         super.onCreate(b);
         setContentView(R.layout.activity_album_layout);
         ButterKnife.bind(this);
-        String albumTitle = getIntent().getExtras().getString("albumTitle");
+        albumTitle = getIntent().getExtras().getString("albumTitle");
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.mipmap.ic_chevron_left_white_24dp);
 
@@ -113,6 +114,8 @@ public class AlbumActivity extends Activity{
                 });
             }
         }
+
+
         FragmentManager fm = getFragmentManager();
         FragmentTransaction fragmentTransaction = fm.beginTransaction();
         fragmentTransaction.replace(R.id.recycler_view_fragment_layout, new AlbumInnerFragment());
@@ -121,7 +124,7 @@ public class AlbumActivity extends Activity{
     }
 
     private void getSongsList() {
-        ArrayList<Song> songList = AudioExtensionMethods.getSongList(this, new ArrayList<Song>());
+        ArrayList<Song> songList = AudioExtensionMethods.getSongList(this, new ArrayList<Song>(), albumTitle);
         recyclerViewAdapter = new AlbumInnerLayoutSongRecyclerViewAdapter(this, songList);
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.songs_recylcer_view_layout);
 
@@ -131,8 +134,7 @@ public class AlbumActivity extends Activity{
 
                 recyclerView.setAdapter(recyclerViewAdapter);
                 recyclerView.addItemDecoration(new DividerItemDecoration(AlbumActivity.this, LinearLayoutManager.VERTICAL));
-                //recyclerView.setLayoutManager(new LinearLayoutManager(AlbumActivity.this));
-                //recyclerView.setLayoutManager(new CustomLinearLayoutManager(AlbumActivity.this, 1, false));
+                recyclerView.setLayoutManager(new LinearLayoutManager(AlbumActivity.this));
             }
         });
     }

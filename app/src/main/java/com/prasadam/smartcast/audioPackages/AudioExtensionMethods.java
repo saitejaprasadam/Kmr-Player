@@ -172,7 +172,7 @@ public class AudioExtensionMethods {
                 })
                 .negativeText(R.string.cancel_text)
                 .show();
-    }
+    } //Prototype won't wait for material dialog result
 
     public static void sendSong(Context context ,String songName,Uri songLocation) {
 
@@ -274,5 +274,53 @@ public class AudioExtensionMethods {
                     .negativeText(R.string.cancel_text)
                     .show();
 
+    }
+
+    public static ArrayList<Song> getSongList(Context context, ArrayList<Song> songList, String albumName) {
+
+        ContentResolver musicResolver = context.getContentResolver();
+        Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        Cursor musicCursor = musicResolver.query(musicUri, null, MediaStore.Audio.Media.IS_MUSIC + " and " + MediaStore.Audio.Albums.ALBUM + "='" + albumName + "'", null, null);
+
+        if(musicCursor!=null && musicCursor.moveToFirst()){
+            //add songs to list
+            do {
+                long thisId = musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Media._ID));
+                String thisTitle = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
+                String thisArtistID = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID));
+                String thisArtist = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+                String thisAlbum = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
+                String thisAlbumID = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
+                String thisDuration = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
+                String thisdata = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+                String albumID = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
+                String albumArtPath = null;
+
+                musicUri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
+                Cursor cursor = musicResolver
+                        .query(musicUri, new String[]{MediaStore.Audio.Albums.ALBUM_ART}, MediaStore.Audio.Albums._ID + "=?", new String[]{ albumID}, null);
+
+                if (cursor != null) {
+                    if (cursor.moveToFirst()) {
+                        albumArtPath = cursor.getString(0);
+                    }
+                    cursor.close();
+                }
+
+                songList.add(new Song(thisId, thisTitle, thisArtist, thisArtistID, thisAlbum, thisAlbumID, thisDuration, thisdata, albumArtPath));
+            }
+            while (musicCursor.moveToNext());
+        }
+        if (musicCursor != null) {
+            musicCursor.close();
+        }
+
+        Collections.sort(songList, new Comparator<Song>() {
+            public int compare(Song s1, Song s2) {
+                return s1.getTitle().toLowerCase().compareTo(s2.getTitle().toLowerCase());
+            }
+        });
+
+        return songList;
     }
 }

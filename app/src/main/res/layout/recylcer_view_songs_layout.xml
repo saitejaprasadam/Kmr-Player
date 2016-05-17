@@ -1,12 +1,13 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    xmlns:fresco="http://schemas.android.com/tools"
-    android:id="@+id/rootLayout_recycler_view"
-    android:clickable="true"
+<RelativeLayout
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:foreground="?android:attr/selectableItemBackground"
-    android:background="@color/View_Background"
-    android:layout_height="@dimen/media_item_height">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/tools"
+    android:clickable="true"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/media_item_height"
+    android:id="@+id/rootLayout_recycler_view"
+    android:background="?attr/selectableItemBackground"
+    android:foreground="@color/View_Background">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/songAlbumArt_RecyclerView"

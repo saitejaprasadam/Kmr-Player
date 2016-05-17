@@ -20,20 +20,20 @@
                 android:layout_width="match_parent"
                 android:id="@+id/album_image_view_anchor"
                 android:layout_height="0dp"
-                android:layout_weight="0.55"
+                android:layout_weight="0.50"
                 layout="@layout/include_album_inner_layout_image_view"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.45"
+                android:layout_height="0dp"
+                android:layout_weight="0.10"
                 android:orientation="vertical"
                 android:id="@+id/albumDetailsLayout">
 
                 <RelativeLayout
                     android:id="@+id/album_info_colored_box"
                     android:layout_width="match_parent"
-                    android:layout_height="60dp">
+                    android:layout_height="match_parent">
 
                     <LinearLayout
                         android:id="@+id/album_info"
@@ -66,16 +66,20 @@
 
                 </RelativeLayout>
 
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.40"
+                android:background="@color/View_Background"
+                android:orientation="vertical">
+
                 <fragment
-                    android:layout_below="@+id/album_info_colored_box"
                     android:name="com.prasadam.smartcast.audioPackages.fragments.AlbumInnerFragment"
                     android:id="@+id/recycler_view_fragment_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_gravity="end">
-
-                </fragment>
-
+                    android:layout_height="match_parent"/>
 
             </LinearLayout>
 

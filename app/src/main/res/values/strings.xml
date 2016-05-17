@@ -35,4 +35,8 @@
     <string name="no_songs_logo">No Songs Logo</string>
     <string name="applyText">Apply</string>
     <string name="more_options_text">More Options</string>
+    <string name="details_text">Details</string>
+    <string name="share_text">Share</string>
+    <string name="tag_editor_text">Tag Editor</string>
+    <string name="set_as_rigntone_text">Set as Rigntone</string>
 </resources>
