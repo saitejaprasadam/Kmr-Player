@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ContentUris;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -16,6 +17,7 @@ import android.util.Log;
 import com.prasadam.smartcast.MainActivity;
 import com.prasadam.smartcast.R;
 
+import java.io.File;
 import java.util.List;
 import java.util.Random;
 
@@ -52,7 +54,7 @@ public class MusicService extends Service implements
 
     //pass song list
     public void setList(List<Song> theSongs){
-        songs=theSongs;
+        songs = theSongs;
     }
 
     //binder
@@ -84,9 +86,7 @@ public class MusicService extends Service implements
         long currSong = playSong.getID();//get id
         Log.d("test", playSong.getTitle());
         //set uri
-        Uri trackUri = ContentUris.withAppendedId(
-                android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                currSong);
+        Uri trackUri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, currSong);
         //set the data source
         try{
             player.setDataSource(getApplicationContext(), trackUri);
@@ -105,8 +105,10 @@ public class MusicService extends Service implements
     @Override
     public void onCompletion(MediaPlayer mp) {
         //check if playback has reached the end of a track
-        if(player.getCurrentPosition()>0){
+        Log.d("completed", String.valueOf(player.getCurrentPosition()));
+        if(player.getCurrentPosition() > 0){
             mp.reset();
+            Log.d("Playing Next", "Wait");
             playNext();
         }
     }
@@ -129,6 +131,7 @@ public class MusicService extends Service implements
                 notIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Notification.Builder builder = new Notification.Builder(this);
+        Song currentSong = songs.get(songPosn);
 
         builder.setContentIntent(pendInt)
                 .setSmallIcon(R.drawable.ic_favorite_black_24dp)
@@ -176,14 +179,14 @@ public class MusicService extends Service implements
     public void playNext(){
         if(shuffle){
             int newSong = songPosn;
-            while(newSong==songPosn){
-                newSong=rand.nextInt(songs.size());
+            while(newSong == songPosn){
+                newSong = rand.nextInt(songs.size());
             }
-            songPosn=newSong;
+            songPosn = newSong;
         }
         else{
             songPosn++;
-            if(songPosn>=songs.size()) songPosn=0;
+            if(songPosn>=songs.size()) songPosn = 0;
         }
         playSong();
     }
@@ -194,9 +197,12 @@ public class MusicService extends Service implements
     }
 
     //toggle shuffle
-    public void setShuffle(){
+    public void Shuffle(){
         if(shuffle) shuffle=false;
         else shuffle=true;
     }
 
+    public void setShuffle(boolean value){
+        shuffle = value;
+    }
 }

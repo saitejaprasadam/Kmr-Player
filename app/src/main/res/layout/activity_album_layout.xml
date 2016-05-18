@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:fitsSystemWindows="true"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="false">
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -75,11 +75,11 @@
                 android:background="@color/View_Background"
                 android:orientation="vertical">
 
-                <fragment
-                    android:name="com.prasadam.smartcast.audioPackages.fragments.AlbumInnerFragment"
-                    android:id="@+id/recycler_view_fragment_layout"
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/songs_recylcer_view_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent">
+                </android.support.v7.widget.RecyclerView>
 
             </LinearLayout>
 
@@ -118,10 +118,11 @@
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:src="@mipmap/ic_dots_vertical_white_24dp"
-                android:background="?attr/selectableItemBackgroundBorderless"/>
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/more_options_text" />
 
         </LinearLayout>
 
     </android.support.v7.widget.Toolbar>
 
-</FrameLayout>
+</RelativeLayout>

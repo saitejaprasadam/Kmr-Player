@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -73,11 +74,28 @@ public class AlbumInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapte
             }
 
             setContextMenu(holder, currentSongDetails);
+            setOnClickListenerForRecyclerItem(holder, currentSongDetails);
         }
         catch (Exception ignored){}
     }
 
+    private void setOnClickListenerForRecyclerItem(songsViewHolder holder, Song currentSongDetails) {
+        holder.rootLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mediaController.music.musicService.setList(songsList);
+                mediaController.music.musicService.setSong(AudioExtensionMethods.getSongIndex(songsList, view.getTag().toString()));
+                try
+                {
+                    mediaController.music.musicService.playSong();
+                }
+                catch (Exception ignored){}
+            }
+        });
+    }
+
     private void setContextMenu(final songsViewHolder holder, final Song currentSongDetails) {
+
         holder.contextMenuView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -152,7 +170,7 @@ public class AlbumInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapte
         return songsList.size();
     }
 
-    /// <summary>RecyclerView view holder (Inner class)
+    /// <summary>RecyclerView view holder (Inner class)t
     /// <para>creates a view holder for individual song</para>
     /// </summary>
     class songsViewHolder extends RecyclerView.ViewHolder{

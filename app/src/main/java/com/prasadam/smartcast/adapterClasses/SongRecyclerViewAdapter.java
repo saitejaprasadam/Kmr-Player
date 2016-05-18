@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
+import com.prasadam.smartcast.AlbumActivity;
 import com.prasadam.smartcast.R;
 import com.prasadam.smartcast.TagEditorActivity;
 import com.prasadam.smartcast.audioPackages.AudioExtensionMethods;
@@ -136,6 +138,13 @@ public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Song
                                             Intent tagEditorIntent = new Intent(context, TagEditorActivity.class);
                                             tagEditorIntent.putExtra("songID", String.valueOf(currentSongDetails.getID()));
                                             context.startActivity(tagEditorIntent);
+                                            break;
+
+                                        case R.id.song_context_menu_jump_to_album:
+                                            Intent albumActivityIntent = new Intent(context, AlbumActivity.class);
+                                            albumActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                            albumActivityIntent.putExtra("albumTitle", currentSongDetails.getAlbum());
+                                            context.startActivity(albumActivityIntent);
                                             break;
                                     }
                                 }

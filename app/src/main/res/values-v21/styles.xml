@@ -18,6 +18,11 @@
         <item name="windowActionBarOverlay">true</item>
     </style>
 
+    <style name="AppTheme.ActionBar.TransparentContextTranscition" parent="AppTheme">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowContentTransitions">true</item>
+    </style>
+
     <style name="ContextTranscition" parent="AppTheme">
         <item name="android:windowContentTransitions">true</item>
     </style>

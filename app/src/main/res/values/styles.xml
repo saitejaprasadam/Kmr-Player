@@ -19,6 +19,10 @@
         <item name="android:windowActionBarOverlay">true</item>
     </style>
 
+    <style name="AppTheme.ActionBar.TransparentContextTranscition" parent="AppTheme">
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />

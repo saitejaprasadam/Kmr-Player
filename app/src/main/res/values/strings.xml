@@ -39,4 +39,7 @@
     <string name="share_text">Share</string>
     <string name="tag_editor_text">Tag Editor</string>
     <string name="set_as_rigntone_text">Set as Rigntone</string>
+    <string name="share_album_text">Share album</string>
+    <string name="album_details_text">Album details</string>
+    <string name="delete_album_text">Delete album</string>
 </resources>

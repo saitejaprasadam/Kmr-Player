@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.widget.Toolbar;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.prasadam.smartcast.audioPackages.BlurBuilder;
+import com.prasadam.smartcast.commonClasses.ExtensionMethods;
 
 import java.io.File;
 
@@ -65,6 +67,10 @@ public class TagEditorActivity extends Activity{
         String currentSongID = getIntent().getExtras().getString("songID");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.mipmap.ic_clear_white_24dp);
+        if (Build.VERSION.SDK_INT >= 21) {
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+            toolbar.setPadding(0, ExtensionMethods.getStatusBarHeight(this), 0, 0);
+        }
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

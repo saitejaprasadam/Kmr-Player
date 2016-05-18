@@ -142,7 +142,10 @@ public class AlbumRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Alb
 
     @Override
     public Character getCharacterForElement(int element) {
-        Character c = albumArrayList.get(element).getTitle().charAt(0);
+
+        int position = element * 2;
+        Character c = albumArrayList.get(position).getTitle().charAt(0);
+
         if(Character.isDigit(c) || c.equals('<')){
             c = '#';
         }

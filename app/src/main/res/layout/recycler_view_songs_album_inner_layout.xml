@@ -6,8 +6,7 @@
     android:padding="10dp"
     android:id="@+id/rootLayout_recycler_view"
     android:clickable="true"
-    android:background="?attr/selectableItemBackground"
-    android:foreground="@color/View_Background">
+    android:background="?attr/selectableItemBackground">
 
     <LinearLayout
         android:id="@+id/songs_list_options_recycler_view"

@@ -136,7 +136,8 @@ public class AudioExtensionMethods {
             mex.setDataSource(currentSongDetails.getData());// the adresss location of the sound on sdcard.
             MediaFormat mf = mex.getTrackFormat(0);
             int bitRate = mf.getInteger(MediaFormat.KEY_BIT_RATE);
-            content.append(context.getString(R.string.bit_rate_text) + " : " + bitRate/1000 + " kb/s" + "\n\n");
+            if(bitRate/1000 > 0)
+                content.append(context.getString(R.string.bit_rate_text) + " : " + bitRate/1000 + " kb/s" + "\n\n");
             int sampleRate = mf.getInteger(MediaFormat.KEY_SAMPLE_RATE);
             content.append(context.getString(R.string.sampling_rate_text) + " : " + sampleRate + " Hz");
         } catch (IOException ignored) {}
