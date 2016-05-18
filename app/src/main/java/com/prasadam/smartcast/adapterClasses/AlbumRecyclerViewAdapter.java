@@ -15,15 +15,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.prasadam.smartcast.AlbumActivity;
 import com.prasadam.smartcast.R;
 import com.prasadam.smartcast.audioPackages.Album;
+import com.prasadam.smartcast.commonClasses.CommonVariables;
 import com.turingtechnologies.materialscrollbar.INameableAdapter;
 
 import java.io.File;
-import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -33,17 +34,15 @@ import butterknife.ButterKnife;
  */
 public class AlbumRecyclerViewAdapter extends ObservableRecyclerView.Adapter<AlbumRecyclerViewAdapter.AlbumViewHolder> implements INameableAdapter {
 
-    private ArrayList<Album> albumArrayList;
     private Context context;
     private LayoutInflater inflater;
     private Activity mActivity;
 
-    public AlbumRecyclerViewAdapter(Activity mActivity, Context context, ArrayList<Album> albumArrayList){
+    public AlbumRecyclerViewAdapter(Activity mActivity, Context context){
 
         this.mActivity = mActivity;
         this.context = context;
         inflater = LayoutInflater.from(context);
-        this.albumArrayList = albumArrayList;
     }
 
     @Override
@@ -55,7 +54,7 @@ public class AlbumRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Alb
     @Override
     public void onBindViewHolder(final AlbumRecyclerViewAdapter.AlbumViewHolder holder, int position) {
 
-        final Album currentAlbum = albumArrayList.get(position);
+        final Album currentAlbum = CommonVariables.fullAlbumList.get(position);
 
         holder.albumNameTextView.setText(currentAlbum.getTitle());
         holder.artistNameTextView.setText(currentAlbum.getArtist());
@@ -68,7 +67,6 @@ public class AlbumRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Alb
                 ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(mActivity, holder.albumArtImageView, "AlbumArtImageTranscition");
                 albumActivityIntent.putExtra("albumTitle", currentAlbum.getTitle());
                 mActivity.startActivity(albumActivityIntent, options.toBundle());
-
             }
         });
 
@@ -133,10 +131,9 @@ public class AlbumRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Alb
         }
     }
 
-
     @Override
     public int getItemCount() {
-        return albumArrayList.size();
+        return CommonVariables.fullAlbumList.size();
     }
 
 
@@ -144,7 +141,7 @@ public class AlbumRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Alb
     public Character getCharacterForElement(int element) {
 
         int position = element * 2;
-        Character c = albumArrayList.get(position).getTitle().charAt(0);
+        Character c = CommonVariables.fullAlbumList.get(position).getTitle().charAt(0);
 
         if(Character.isDigit(c) || c.equals('<')){
             c = '#';
@@ -165,7 +162,5 @@ public class AlbumRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Alb
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
-
-
     }
 }

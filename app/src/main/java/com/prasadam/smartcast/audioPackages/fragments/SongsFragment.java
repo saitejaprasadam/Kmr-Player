@@ -16,21 +16,20 @@ import com.prasadam.smartcast.R;
 import com.prasadam.smartcast.adapterClasses.ObservableScrollViewAdapter;
 import com.prasadam.smartcast.adapterClasses.SongRecyclerViewAdapter;
 import com.prasadam.smartcast.audioPackages.AudioExtensionMethods;
-import com.prasadam.smartcast.audioPackages.Song;
+import com.prasadam.smartcast.commonClasses.CommonVariables;
 import com.prasadam.smartcast.commonClasses.DividerItemDecoration;
 import com.prasadam.smartcast.commonClasses.ExtensionMethods;
 import com.prasadam.smartcast.commonClasses.mediaController;
 import com.turingtechnologies.materialscrollbar.AlphabetIndicator;
 import com.turingtechnologies.materialscrollbar.DragScrollBar;
 
-import java.util.ArrayList;
 /*
  * Created by Prasadam Saiteja on 3/7/2016.
  */
+
 public class SongsFragment extends Fragment{
 
-    private ArrayList<Song> songList;
-    private SongRecyclerViewAdapter recyclerViewAdapter;
+    public static SongRecyclerViewAdapter recyclerViewAdapter;
     private ObservableRecyclerView recyclerView;
     private Activity mActivity;
     private LinearLayout noSongsLayout;
@@ -54,15 +53,27 @@ public class SongsFragment extends Fragment{
     }
 
     @Override
+    public void onResume(){
+        super.onResume();
+        new Thread() {
+            public void run() {
+                if (recyclerViewAdapter != null) {
+                    recyclerViewAdapter.notifyDataSetChanged();
+                }
+            }
+        }.run();
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
         new Thread(){
             public void run(){
-                songList = new ArrayList<>();
-                AudioExtensionMethods.getSongList(getActivity(), songList);
 
-                if(!songList.isEmpty()) {
+                AudioExtensionMethods.updateSongList(getActivity());
+
+                if(!CommonVariables.fullSongsList.isEmpty()) {
 
                     recyclerView.setVisibility(View.VISIBLE);
                     noSongsLayout.setVisibility(View.INVISIBLE);
@@ -76,7 +87,7 @@ public class SongsFragment extends Fragment{
                     });
 
                     mediaController.music.Initializer(getActivity());
-                    recyclerViewAdapter = new SongRecyclerViewAdapter(getContext(), songList);
+                    recyclerViewAdapter = new SongRecyclerViewAdapter(getContext());
 
                     getActivity().runOnUiThread(new Runnable() {
                         @Override

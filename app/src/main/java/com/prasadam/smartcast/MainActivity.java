@@ -1,6 +1,7 @@
 package com.prasadam.smartcast;
 
 import android.annotation.TargetApi;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,9 +13,14 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.prasadam.smartcast.audioPackages.AudioExtensionMethods;
+import com.prasadam.smartcast.audioPackages.fragments.AlbumsFragment;
+import com.prasadam.smartcast.audioPackages.fragments.SongsFragment;
 import com.prasadam.smartcast.audioPackages.fragments.TabFragment;
 import com.prasadam.smartcast.commonClasses.CommonVariables;
 
@@ -39,14 +45,6 @@ public class MainActivity extends AppCompatActivity
         mFragmentManager = getSupportFragmentManager();
         mFragmentTransaction = mFragmentManager.beginTransaction();
         mFragmentTransaction.replace(R.id.containerView, new TabFragment()).commit();
-
-        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-            }
-        });*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -86,11 +84,33 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
+
+        if(id == R.id.action_refresh)
+        {
+            refreshList();
             return true;
         }
 
+        else
+            if(id == R.id.action_settings)
+                Toast.makeText(MainActivity.this, "Pending", Toast.LENGTH_SHORT).show();
+
         return super.onOptionsItemSelected(item);
+    }
+
+    private void refreshList() {
+        new Thread(){
+            public void run(){
+                int prevCount = CommonVariables.fullSongsList.size();
+                AudioExtensionMethods.updateLists(MainActivity.this);
+                SongsFragment.recyclerViewAdapter.notifyDataSetChanged();
+                AlbumsFragment.recyclerViewAdapter.notifyDataSetChanged();
+                if(prevCount < CommonVariables.fullSongsList.size())
+                    Toast.makeText(MainActivity.this, "Songs lists updated, " + String.valueOf(CommonVariables.fullSongsList.size() - prevCount) + " songs added", Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(MainActivity.this, "Songs lists updated, no new songs found", Toast.LENGTH_SHORT).show();
+            }
+        }.run();
     }
 
 

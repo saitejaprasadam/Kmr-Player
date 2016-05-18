@@ -1,11 +1,11 @@
 package com.prasadam.smartcast.adapterClasses;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -27,7 +27,6 @@ import com.prasadam.smartcast.audioPackages.Song;
 import com.prasadam.smartcast.commonClasses.mediaController;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -43,11 +42,13 @@ public class AlbumInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapte
     private LayoutInflater inflater;
     private List<Song> songsList = Collections.emptyList();
     private Context context;
+    private String albumTitle;
 
-    public AlbumInnerLayoutSongRecyclerViewAdapter(Context context, List<Song> songsList){
+    public AlbumInnerLayoutSongRecyclerViewAdapter(Context context, List<Song> songsList, String albumTitle){
         this.context = context;
         inflater = LayoutInflater.from(context);
         this.songsList = songsList;
+        this.albumTitle = albumTitle;
     }
 
     @Override
@@ -74,12 +75,12 @@ public class AlbumInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapte
             }
 
             setContextMenu(holder, currentSongDetails);
-            setOnClickListenerForRecyclerItem(holder, currentSongDetails);
+            setOnClickListenerForRecyclerItem(holder);
         }
         catch (Exception ignored){}
     }
 
-    private void setOnClickListenerForRecyclerItem(songsViewHolder holder, Song currentSongDetails) {
+    private void setOnClickListenerForRecyclerItem(songsViewHolder holder) {
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -121,8 +122,11 @@ public class AlbumInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapte
                                                     {
                                                         Toast.makeText(context, "Song Deleted : " + currentSongDetails.getTitle(), Toast.LENGTH_SHORT).show();
                                                         context.getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.MediaColumns._ID + "='" + currentSongDetails.getID() + "'", null);
-                                                        songsList = AudioExtensionMethods.getSongList(context, new ArrayList<Song>());
+                                                        songsList = AudioExtensionMethods.getSongList(context, albumTitle);
+                                                        AudioExtensionMethods.updateLists(context);
                                                         notifyDataSetChanged();
+                                                        if(songsList.size() == 0)
+                                                            ((Activity)context).finish();
                                                     }
                                                 }
                                             })

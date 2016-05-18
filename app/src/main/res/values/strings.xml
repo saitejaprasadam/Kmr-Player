@@ -42,4 +42,6 @@
     <string name="share_album_text">Share album</string>
     <string name="album_details_text">Album details</string>
     <string name="delete_album_text">Delete album</string>
+    <string name="favorites_text">Favorites</string>
+    <string name="favorite_image_text">Favorite image</string>
 </resources>

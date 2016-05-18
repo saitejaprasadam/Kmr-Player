@@ -1,6 +1,7 @@
 package com.prasadam.smartcast;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -15,7 +16,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -54,6 +54,7 @@ public class AlbumActivity extends Activity{
     @Bind (R.id.Artist_name_albumrecyclerview) TextView artistNameTextView;
     @Bind (R.id.vertical_more_button) ImageView verticalMoreImageView;
     @Bind (R.id.shuffle_fab_button) FloatingActionButton shuffleFabButton;
+    private ArrayList<Song> songList;
 
     @OnClick (R.id.vertical_more_button)
     public void moreOnClickButton(View view){
@@ -68,6 +69,10 @@ public class AlbumActivity extends Activity{
                                                      int id = item.getItemId();
                                                      switch (id) {
 
+                                                         case R.id.album_context_menu_share_album:
+                                                             AudioExtensionMethods.shareAlbum(AlbumActivity.this, songList, albumTitle);
+                                                             break;
+
                                                          default:
                                                              Toast.makeText(AlbumActivity.this, "pending", Toast.LENGTH_SHORT).show();
                                                              break;
@@ -81,12 +86,11 @@ public class AlbumActivity extends Activity{
         popup.show();
     }
 
-
     public void onCreate(Bundle b){
         super.onCreate(b);
         setContentView(R.layout.activity_album_layout);
         ButterKnife.bind(this);
-        //ExtensionMethods.setStatusBarTranslucent(true, AlbumActivity.this);
+
         albumTitle = getIntent().getExtras().getString("albumTitle");
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.mipmap.ic_chevron_left_white_24dp);
@@ -149,8 +153,9 @@ public class AlbumActivity extends Activity{
     }
 
     private void getSongsList() {
-        ArrayList<Song> songList = AudioExtensionMethods.getSongList(this, new ArrayList<Song>(), albumTitle);
-        recyclerViewAdapter = new AlbumInnerLayoutSongRecyclerViewAdapter(this, songList);
+
+        songList = AudioExtensionMethods.getSongList(this, albumTitle);
+        recyclerViewAdapter = new AlbumInnerLayoutSongRecyclerViewAdapter(this, songList, albumTitle);
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.songs_recylcer_view_layout);
 
         runOnUiThread(new Runnable() {

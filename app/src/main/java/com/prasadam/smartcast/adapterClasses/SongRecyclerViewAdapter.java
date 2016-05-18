@@ -26,6 +26,7 @@ import com.prasadam.smartcast.R;
 import com.prasadam.smartcast.TagEditorActivity;
 import com.prasadam.smartcast.audioPackages.AudioExtensionMethods;
 import com.prasadam.smartcast.audioPackages.Song;
+import com.prasadam.smartcast.commonClasses.CommonVariables;
 import com.prasadam.smartcast.commonClasses.mediaController;
 import com.turingtechnologies.materialscrollbar.INameableAdapter;
 
@@ -43,13 +44,11 @@ import butterknife.ButterKnife;
 public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<SongRecyclerViewAdapter.songsViewHolder> implements INameableAdapter {
 
     private LayoutInflater inflater;
-    private List<Song> songsList = Collections.emptyList();
     private Context context;
 
-    public SongRecyclerViewAdapter(Context context, List<Song> songsList){
+    public SongRecyclerViewAdapter(Context context){
         this.context = context;
         inflater = LayoutInflater.from(context);
-        this.songsList = songsList;
     }
 
     @Override
@@ -62,7 +61,7 @@ public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Song
     public void onBindViewHolder(final songsViewHolder holder, final int position) {
         try
         {
-            final Song currentSongDetails = songsList.get(position);
+            final Song currentSongDetails = CommonVariables.fullSongsList.get(position);
 
             holder.titleTextView.setText(currentSongDetails.getTitle());
             holder.artistTextView.setText(currentSongDetails.getArtist());
@@ -71,8 +70,8 @@ public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Song
             holder.rootLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mediaController.music.musicService.setList(songsList);
-                    mediaController.music.musicService.setSong(AudioExtensionMethods.getSongIndex(songsList, view.getTag().toString()));
+                    mediaController.music.musicService.setList(CommonVariables.fullSongsList);
+                    mediaController.music.musicService.setSong(AudioExtensionMethods.getSongIndex(CommonVariables.fullSongsList, view.getTag().toString()));
                     try
                     {
                         mediaController.music.musicService.playSong();
@@ -109,7 +108,7 @@ public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Song
                                                             {
                                                                 Toast.makeText(context, "Song Deleted : " + currentSongDetails.getTitle(), Toast.LENGTH_SHORT).show();
                                                                 context.getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.MediaColumns._ID + "='" + currentSongDetails.getID() + "'", null);
-                                                                songsList = AudioExtensionMethods.getSongList(context, new ArrayList<Song>());
+                                                                AudioExtensionMethods.updateLists(context);
                                                                 notifyDataSetChanged();
                                                             }
                                                         }
@@ -181,12 +180,12 @@ public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Song
 
     @Override
     public int getItemCount() {
-        return songsList.size();
+        return CommonVariables.fullSongsList.size();
     }
 
     @Override
     public Character getCharacterForElement(int element) {
-        Character c = songsList.get(element).getTitle().charAt(0);
+        Character c = CommonVariables.fullSongsList.get(element).getTitle().charAt(0);
         if(Character.isDigit(c)){
             c = '#';
         }

@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/song_context_menu_share"
+        android:id="@+id/album_context_menu_share_album"
         android:title="@string/share_album_text" />
 
     <item

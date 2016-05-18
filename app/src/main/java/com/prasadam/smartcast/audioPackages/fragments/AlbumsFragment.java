@@ -13,15 +13,11 @@ import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.prasadam.smartcast.R;
 import com.prasadam.smartcast.adapterClasses.AlbumRecyclerViewAdapter;
 import com.prasadam.smartcast.adapterClasses.ObservableScrollViewAdapter;
-import com.prasadam.smartcast.audioPackages.Album;
 import com.prasadam.smartcast.audioPackages.AudioExtensionMethods;
+import com.prasadam.smartcast.commonClasses.CommonVariables;
 import com.prasadam.smartcast.commonClasses.ExtensionMethods;
 import com.turingtechnologies.materialscrollbar.AlphabetIndicator;
 import com.turingtechnologies.materialscrollbar.DragScrollBar;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 /*
  * Created by Prasadam Saiteja on 3/25/2016.
@@ -29,7 +25,7 @@ import java.util.Comparator;
 public class AlbumsFragment extends Fragment {
 
     private ObservableRecyclerView recyclerView;
-    private AlbumRecyclerViewAdapter recyclerViewAdapter;
+    public static AlbumRecyclerViewAdapter recyclerViewAdapter;
     private Activity mActivity;
     private LinearLayout noAlbumView;
 
@@ -49,27 +45,31 @@ public class AlbumsFragment extends Fragment {
     }
 
     @Override
+    public void onResume(){
+        super.onResume();
+        new Thread() {
+            public void run() {
+                if (recyclerViewAdapter != null) {
+                    recyclerViewAdapter.notifyDataSetChanged();
+                }
+            }
+        }.run();
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
         new Thread(){
             public void run() {
-                ArrayList<Album> albumArrayList = AudioExtensionMethods.getAlbumList(mActivity.getBaseContext());
-                Collections.sort(albumArrayList, new Comparator<Album>() {
-                    public int compare(Album s1, Album s2) {
 
-                        if(ExtensionMethods.stringIsEmptyorNull(s1.getTitle()) || ExtensionMethods.stringIsEmptyorNull(s2.getTitle()))
-                            return 1;
+                AudioExtensionMethods.updateAlbumList(mActivity.getBaseContext());
 
-                        return s1.getTitle().toLowerCase().compareTo(s2.getTitle().toLowerCase());
-                    }
-                });
-
-                if(!albumArrayList.isEmpty())
+                if(!CommonVariables.fullAlbumList.isEmpty())
                 {
                     noAlbumView.setVisibility(View.INVISIBLE);
                     recyclerView.setVisibility(View.VISIBLE);
-                    recyclerViewAdapter = new AlbumRecyclerViewAdapter(mActivity, mActivity.getBaseContext(), albumArrayList);
+                    recyclerViewAdapter = new AlbumRecyclerViewAdapter(mActivity, mActivity.getBaseContext());
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

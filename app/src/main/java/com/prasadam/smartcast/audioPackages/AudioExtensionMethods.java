@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.prasadam.smartcast.R;
+import com.prasadam.smartcast.commonClasses.CommonVariables;
 import com.prasadam.smartcast.commonClasses.ExtensionMethods;
 
 import java.io.File;
@@ -45,11 +46,12 @@ public class AudioExtensionMethods {
         return -1;
     }
 
-    public static ArrayList<Song> getSongList(Context context, ArrayList<Song> songList) {
+    public static void updateSongList(Context context) {
 
         ContentResolver musicResolver = context.getContentResolver();
         Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         Cursor musicCursor = musicResolver.query(musicUri, null, MediaStore.Audio.Media.IS_MUSIC, null, null);
+        ArrayList<Song> songList = new ArrayList<>();
 
         if(musicCursor!=null && musicCursor.moveToFirst()){
             //add songs to list
@@ -90,10 +92,10 @@ public class AudioExtensionMethods {
             }
         });
 
-        return songList;
+        CommonVariables.fullSongsList =  songList;
     }
 
-    public static ArrayList<Album> getAlbumList(Context context) {
+    public static void updateAlbumList(Context context) {
 
         ContentResolver musicResolver = context.getContentResolver();
         Uri musicUri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
@@ -115,7 +117,17 @@ public class AudioExtensionMethods {
         if (musicCursor != null) {
             musicCursor.close();
         }
-        return albumArrayList;
+
+        Collections.sort(albumArrayList, new Comparator<Album>() {
+            public int compare(Album s1, Album s2) {
+                if(ExtensionMethods.stringIsEmptyorNull(s1.getTitle()) || ExtensionMethods.stringIsEmptyorNull(s2.getTitle()))
+                    return 1;
+
+                return s1.getTitle().toLowerCase().compareTo(s2.getTitle().toLowerCase());
+            }
+        });
+
+        CommonVariables.fullAlbumList = albumArrayList;
     }
 
     public static void songDetails(Context context, Song currentSongDetails, String albumPath) {
@@ -182,7 +194,7 @@ public class AudioExtensionMethods {
         share.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         share.putExtra(Intent.EXTRA_STREAM, songLocation);
 
-        songName.trim();
+        songName = songName.trim();
         if(songName.length() > 20)
             songName = songName.substring(0, 18) + "...";
         songName = "\"" + songName + "\"";
@@ -277,11 +289,12 @@ public class AudioExtensionMethods {
 
     }
 
-    public static ArrayList<Song> getSongList(Context context, ArrayList<Song> songList, String albumName) {
+    public static ArrayList<Song> getSongList(Context context, String albumName) {
 
         ContentResolver musicResolver = context.getContentResolver();
         Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         Cursor musicCursor = musicResolver.query(musicUri, null, MediaStore.Audio.Media.IS_MUSIC + " and " + MediaStore.Audio.Albums.ALBUM + "='" + albumName + "'", null, null);
+        ArrayList<Song> songList = new ArrayList<>();
 
         if(musicCursor!=null && musicCursor.moveToFirst()){
             //add songs to list
@@ -323,5 +336,32 @@ public class AudioExtensionMethods {
         });
 
         return songList;
+    }
+
+    public static void shareAlbum(Context context, ArrayList<Song> songsList, String albumTitle){
+
+        Intent share = new Intent();
+        share.setAction(Intent.ACTION_SEND_MULTIPLE);
+        share.putExtra(Intent.EXTRA_SUBJECT, "Share Album");
+        share.setType("audio/*");
+
+        ArrayList<Uri> files = new ArrayList<>();
+
+        for(Song song : songsList) {
+            files.add(Uri.parse(song.getData()));
+        }
+
+        albumTitle = albumTitle.trim();
+        if(albumTitle.length() > 20)
+            albumTitle = "\"" + albumTitle.substring(0, 18) + "...\"";
+
+        share.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files);
+        context.startActivity(Intent.createChooser(share, "Share " + albumTitle  + "album using"));
+
+    }
+
+    public static void updateLists(Context context){
+        updateSongList(context);
+        updateAlbumList(context);
     }
 }
