@@ -6,9 +6,7 @@
     <com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView
         android:id="@+id/songs_recylcer_view_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        xmlns:android="http://schemas.android.com/apk/res/android">
-    </com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView>
+        android:layout_height="wrap_content"/>
 
     <!-- No Songs Layout -->
     <LinearLayout

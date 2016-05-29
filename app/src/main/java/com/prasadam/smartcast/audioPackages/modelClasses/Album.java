@@ -1,4 +1,4 @@
-package com.prasadam.smartcast.audioPackages;
+package com.prasadam.smartcast.audioPackages.modelClasses;
 
 /**
  * Created by Prasadam Saiteja on 3/25/2016.

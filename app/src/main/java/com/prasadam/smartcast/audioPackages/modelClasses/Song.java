@@ -1,12 +1,20 @@
-package com.prasadam.smartcast.audioPackages;
+package com.prasadam.smartcast.audioPackages.modelClasses;
 
-/**
+/*
  * Created by use on 2/14/2016.
  */
+
+import android.content.Context;
+
+import static com.prasadam.smartcast.audioPackages.AudioExtensionMethods.isSongFavorite;
+import static com.prasadam.smartcast.audioPackages.AudioExtensionMethods.setSongFavorite;
+
 public class Song
 {
     private long id;
     private String title, artist, album, duration, data, albumArtLocation, artistID, albumID;
+    private boolean liked;
+    public int repeatCount;
 
     public Song(long songID, String songTitle, String songArtist, String artistID, String songAlbum, String albumID, String songDuration, String songData, String albumArtLocation) {
         this.id=songID;
@@ -29,4 +37,6 @@ public class Song
     public String getAlbumArtLocation(){return albumArtLocation;}
     public String getArtistID(){return artistID;}
     public String getAlbumID(){return albumID;}
+    public boolean getIsLiked(Context context) { return isSongFavorite(context, id); }
+    public void setIsLiked(Context context, boolean value) { setSongFavorite(context, id, value); }
 }

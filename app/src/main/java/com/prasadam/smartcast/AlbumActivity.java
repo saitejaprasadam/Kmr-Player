@@ -1,7 +1,6 @@
 package com.prasadam.smartcast;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,12 +9,14 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -23,13 +24,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.prasadam.smartcast.adapterClasses.AlbumInnerLayoutSongRecyclerViewAdapter;
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.github.ivbaranov.mfb.MaterialFavoriteButton;
+import com.prasadam.smartcast.adapterClasses.recyclerViewAdapters.AlbumInnerLayoutSongRecyclerViewAdapter;
 import com.prasadam.smartcast.audioPackages.AudioExtensionMethods;
 import com.prasadam.smartcast.audioPackages.BlurBuilder;
-import com.prasadam.smartcast.audioPackages.Song;
-import com.prasadam.smartcast.commonClasses.DividerItemDecoration;
-import com.prasadam.smartcast.commonClasses.ExtensionMethods;
-import com.prasadam.smartcast.commonClasses.mediaController;
+import com.prasadam.smartcast.audioPackages.modelClasses.Song;
+import com.prasadam.smartcast.sharedClasses.DividerItemDecoration;
+import com.prasadam.smartcast.sharedClasses.ExtensionMethods;
+import com.prasadam.smartcast.sharedClasses.mediaController;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -73,6 +77,28 @@ public class AlbumActivity extends Activity{
                                                              AudioExtensionMethods.shareAlbum(AlbumActivity.this, songList, albumTitle);
                                                              break;
 
+                                                         case R.id.album_context_menu_delete_album:
+                                                             new MaterialDialog.Builder(AlbumActivity.this)
+                                                                     .content("Delete this album \'" +  albumTitle + "\' ?")
+                                                                     .positiveText(R.string.delete_text)
+                                                                     .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                                                         @Override
+                                                                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                                                                             for (Song song : songList) {
+                                                                                 File file = new File(song.getData());
+                                                                                 if(file.delete())
+                                                                                     getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.MediaColumns._ID + "='" + song.getID() + "'", null);
+                                                                             }
+                                                                             AudioExtensionMethods.updateLists(AlbumActivity.this);
+                                                                             Toast.makeText(AlbumActivity.this, "Album Deleted : \'" + albumTitle + "\'", Toast.LENGTH_SHORT).show();
+                                                                             finish();
+                                                                         }
+                                                                     })
+                                                                     .negativeText(R.string.cancel_text)
+                                                                     .show();
+                                                             break;
+
                                                          default:
                                                              Toast.makeText(AlbumActivity.this, "pending", Toast.LENGTH_SHORT).show();
                                                              break;
@@ -91,6 +117,7 @@ public class AlbumActivity extends Activity{
         setContentView(R.layout.activity_album_layout);
         ButterKnife.bind(this);
 
+        MaterialFavoriteButton favorite = new MaterialFavoriteButton.Builder(this).create();
         albumTitle = getIntent().getExtras().getString("albumTitle");
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.mipmap.ic_chevron_left_white_24dp);
@@ -118,6 +145,7 @@ public class AlbumActivity extends Activity{
             albumNameTextView.setText(musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM)));
             artistNameTextView.setText(musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST)));
             final File imgFile = new File(albumArtPath);
+            Log.d("path", albumArtPath);
             if(imgFile.exists())// /storage/emulated/0/Android/data/com.android.providers.media/albumthumbs/1454267773223
             {
                 actualAlbumArt.setImageURI(Uri.parse("file://" + imgFile.getAbsolutePath()));

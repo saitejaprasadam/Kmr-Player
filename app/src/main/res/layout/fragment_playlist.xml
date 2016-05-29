@@ -1,48 +1,189 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<ScrollView
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <android.support.v7.widget.CardView
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp">
+        android:layout_height="match_parent">
 
         <LinearLayout
+            android:id="@+id/test"
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
-            <LinearLayout
+            <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/media_item_height"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:clickable="true"
-                android:background="?attr/selectableItemBackground">
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp">
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="20dp"
-                    android:src="@mipmap/ic_favorite_black_24dp"
-                    android:contentDescription="@string/favorite_image_text" />
-
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/md_title_textsize"
-                    android:text="@string/favorites_text"/>
+                    android:orientation="vertical">
 
-            </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/recently_added_playlist"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:clickable="true"
+                        android:background="?attr/selectableItemBackground">
 
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="20dp"
+                            android:src="@mipmap/ic_playlist_add_black_24dp"
+                            android:contentDescription="@string/recently_added_text" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="10dp"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/md_title_textsize"
+                            android:text="@string/recently_added_text"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/songs_playback_history"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:clickable="true"
+                        android:background="?attr/selectableItemBackground">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="20dp"
+                            android:src="@mipmap/ic_history_black_24dp"
+                            android:contentDescription="@string/history_text" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="10dp"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/md_title_textsize"
+                            android:text="@string/history_text"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/most_played_linear_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:clickable="true"
+                        android:background="?attr/selectableItemBackground">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="20dp"
+                            android:src="@mipmap/ic_timeline_black_24dp"
+                            android:contentDescription="@string/most_played_text" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="10dp"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/md_title_textsize"
+                            android:text="@string/most_played_text"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/favorites_playlist"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:clickable="true"
+                        android:background="?attr/selectableItemBackground">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="20dp"
+                            android:src="@mipmap/ic_favorite_black_24dp"
+                            android:contentDescription="@string/favorite_image_text" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="10dp"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/md_title_textsize"
+                            android:text="@string/favorites_text"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:clickable="true"
+                        android:background="?attr/selectableItemBackground">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="20dp"
+                            android:src="@mipmap/ic_playlist_add_check_black_24dp"
+                            android:contentDescription="@string/custom_playlist_text" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="10dp"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/md_title_textsize"
+                            android:text="@string/custom_playlist_text"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
 
         </LinearLayout>
 
-    </android.support.v7.widget.CardView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_below="@+id/test"
+            android:padding="10dp"
+            android:textStyle="bold"
+            android:textSize="@dimen/md_button_textsize"
+            android:text="@string/made_with_love_text" />
 
-</LinearLayout>
+    </RelativeLayout>
+
+</ScrollView>

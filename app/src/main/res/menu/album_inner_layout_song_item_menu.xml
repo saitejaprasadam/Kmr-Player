@@ -6,10 +6,6 @@
         android:title="@string/share_text" />
 
     <item
-        android:id="@+id/song_context_menu_shout"
-        android:title="@string/Shout_text"/>
-
-    <item
         android:id="@+id/song_context_menu_details"
         android:title="@string/details_text" />
 

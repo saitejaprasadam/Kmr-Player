@@ -1,4 +1,4 @@
-package com.prasadam.smartcast.adapterClasses;
+package com.prasadam.smartcast.adapterClasses.recyclerViewAdapters;
 
 import android.app.Activity;
 import android.content.Context;
@@ -15,13 +15,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.prasadam.smartcast.AlbumActivity;
 import com.prasadam.smartcast.R;
-import com.prasadam.smartcast.audioPackages.Album;
-import com.prasadam.smartcast.commonClasses.CommonVariables;
+import com.prasadam.smartcast.audioPackages.modelClasses.Album;
+import com.prasadam.smartcast.sharedClasses.SharedVariables;
 import com.turingtechnologies.materialscrollbar.INameableAdapter;
 
 import java.io.File;
@@ -54,7 +53,7 @@ public class AlbumRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Alb
     @Override
     public void onBindViewHolder(final AlbumRecyclerViewAdapter.AlbumViewHolder holder, int position) {
 
-        final Album currentAlbum = CommonVariables.fullAlbumList.get(position);
+        final Album currentAlbum = SharedVariables.fullAlbumList.get(position);
 
         holder.albumNameTextView.setText(currentAlbum.getTitle());
         holder.artistNameTextView.setText(currentAlbum.getArtist());
@@ -133,7 +132,7 @@ public class AlbumRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Alb
 
     @Override
     public int getItemCount() {
-        return CommonVariables.fullAlbumList.size();
+        return SharedVariables.fullAlbumList.size();
     }
 
 
@@ -141,7 +140,7 @@ public class AlbumRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Alb
     public Character getCharacterForElement(int element) {
 
         int position = element * 2;
-        Character c = CommonVariables.fullAlbumList.get(position).getTitle().charAt(0);
+        Character c = SharedVariables.fullAlbumList.get(position).getTitle().charAt(0);
 
         if(Character.isDigit(c) || c.equals('<')){
             c = '#';

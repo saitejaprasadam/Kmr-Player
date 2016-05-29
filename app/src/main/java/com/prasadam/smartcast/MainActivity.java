@@ -1,8 +1,6 @@
 package com.prasadam.smartcast;
 
 import android.annotation.TargetApi;
-import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -13,7 +11,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -22,7 +19,7 @@ import com.prasadam.smartcast.audioPackages.AudioExtensionMethods;
 import com.prasadam.smartcast.audioPackages.fragments.AlbumsFragment;
 import com.prasadam.smartcast.audioPackages.fragments.SongsFragment;
 import com.prasadam.smartcast.audioPackages.fragments.TabFragment;
-import com.prasadam.smartcast.commonClasses.CommonVariables;
+import com.prasadam.smartcast.sharedClasses.SharedVariables;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -39,7 +36,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        CommonVariables.Initializers(this);
+        SharedVariables.Initializers(this);
         //ButterKnife.bind(this);
 
         mFragmentManager = getSupportFragmentManager();
@@ -101,12 +98,12 @@ public class MainActivity extends AppCompatActivity
     private void refreshList() {
         new Thread(){
             public void run(){
-                int prevCount = CommonVariables.fullSongsList.size();
+                int prevCount = SharedVariables.fullSongsList.size();
                 AudioExtensionMethods.updateLists(MainActivity.this);
                 SongsFragment.recyclerViewAdapter.notifyDataSetChanged();
                 AlbumsFragment.recyclerViewAdapter.notifyDataSetChanged();
-                if(prevCount < CommonVariables.fullSongsList.size())
-                    Toast.makeText(MainActivity.this, "Songs lists updated, " + String.valueOf(CommonVariables.fullSongsList.size() - prevCount) + " songs added", Toast.LENGTH_SHORT).show();
+                if(prevCount < SharedVariables.fullSongsList.size())
+                    Toast.makeText(MainActivity.this, "Songs lists updated, " + String.valueOf(SharedVariables.fullSongsList.size() - prevCount) + " songs added", Toast.LENGTH_SHORT).show();
                 else
                     Toast.makeText(MainActivity.this, "Songs lists updated, no new songs found", Toast.LENGTH_SHORT).show();
             }

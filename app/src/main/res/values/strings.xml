@@ -44,4 +44,11 @@
     <string name="delete_album_text">Delete album</string>
     <string name="favorites_text">Favorites</string>
     <string name="favorite_image_text">Favorite image</string>
+    <string name="custom_playlist_text">Custom playlist</string>
+    <string name="most_played_text">Most played</string>
+    <string name="history_text">History</string>
+    <string name="recently_added_text">Recently added</string>
+    <string name="made_with_love_text">made with love</string>
+    <string name="no_play_history">You don\'t have any history</string>
+    <string name="no_records_most_played">Keep listening to increase analysis...</string>
 </resources>

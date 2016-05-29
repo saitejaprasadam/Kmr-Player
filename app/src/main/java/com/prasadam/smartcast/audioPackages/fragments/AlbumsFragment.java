@@ -11,11 +11,11 @@ import android.widget.LinearLayout;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.prasadam.smartcast.R;
-import com.prasadam.smartcast.adapterClasses.AlbumRecyclerViewAdapter;
-import com.prasadam.smartcast.adapterClasses.ObservableScrollViewAdapter;
+import com.prasadam.smartcast.adapterClasses.recyclerViewAdapters.AlbumRecyclerViewAdapter;
+import com.prasadam.smartcast.adapterClasses.uiAdapters.ObservableScrollViewAdapter;
 import com.prasadam.smartcast.audioPackages.AudioExtensionMethods;
-import com.prasadam.smartcast.commonClasses.CommonVariables;
-import com.prasadam.smartcast.commonClasses.ExtensionMethods;
+import com.prasadam.smartcast.sharedClasses.SharedVariables;
+import com.prasadam.smartcast.sharedClasses.ExtensionMethods;
 import com.turingtechnologies.materialscrollbar.AlphabetIndicator;
 import com.turingtechnologies.materialscrollbar.DragScrollBar;
 
@@ -65,7 +65,7 @@ public class AlbumsFragment extends Fragment {
 
                 AudioExtensionMethods.updateAlbumList(mActivity.getBaseContext());
 
-                if(!CommonVariables.fullAlbumList.isEmpty())
+                if(!SharedVariables.fullAlbumList.isEmpty())
                 {
                     noAlbumView.setVisibility(View.INVISIBLE);
                     recyclerView.setVisibility(View.VISIBLE);

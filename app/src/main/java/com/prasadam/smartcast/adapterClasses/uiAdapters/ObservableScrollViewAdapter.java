@@ -1,4 +1,4 @@
-package com.prasadam.smartcast.adapterClasses;
+package com.prasadam.smartcast.adapterClasses.uiAdapters;
 
 import android.content.Context;
 import android.support.v7.app.ActionBar;
@@ -7,9 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 
-import static com.prasadam.smartcast.commonClasses.ExtensionMethods.logwritter;
+import static com.prasadam.smartcast.sharedClasses.ExtensionMethods.logwritter;
 
-/**
+/*
  * Created by Prasadam Saiteja on 3/22/2016.
  */
 public class ObservableScrollViewAdapter implements ObservableScrollViewCallbacks {
@@ -19,7 +19,11 @@ public class ObservableScrollViewAdapter implements ObservableScrollViewCallback
 
     public ObservableScrollViewAdapter(Context context){
         this.context = context;
-        actionBar = ((AppCompatActivity) context).getSupportActionBar();
+        if(context != null) {
+            actionBar = ((AppCompatActivity) context).getSupportActionBar();
+            if (actionBar != null)
+                actionBar.setShowHideAnimationEnabled(true);
+        }
     }
 
     @Override

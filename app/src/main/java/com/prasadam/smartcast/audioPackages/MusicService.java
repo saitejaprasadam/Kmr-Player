@@ -5,7 +5,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ContentUris;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -16,8 +15,8 @@ import android.util.Log;
 
 import com.prasadam.smartcast.MainActivity;
 import com.prasadam.smartcast.R;
+import com.prasadam.smartcast.audioPackages.modelClasses.Song;
 
-import java.io.File;
 import java.util.List;
 import java.util.Random;
 
@@ -33,6 +32,7 @@ public class MusicService extends Service implements
     private static final int NOTIFY_ID=1;//notification id
     private boolean shuffle=false;//shuffle flag and random
     private Random rand;
+    private Song currentSong;
 
     public void onCreate(){
         super.onCreate();//create the service
@@ -81,10 +81,10 @@ public class MusicService extends Service implements
     //play a song
     public void playSong(){
         player.reset();//play
-        Song playSong = songs.get(songPosn);//get song
-        songTitle = playSong.getTitle();//get title
-        long currSong = playSong.getID();//get id
-        Log.d("test", playSong.getTitle());
+        currentSong = songs.get(songPosn);//get song
+        songTitle = currentSong.getTitle();//get title
+        long currSong = currentSong.getID();//get id
+        Log.d("test", currentSong.getTitle());
         //set uri
         Uri trackUri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, currSong);
         //set the data source
@@ -131,7 +131,7 @@ public class MusicService extends Service implements
                 notIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Notification.Builder builder = new Notification.Builder(this);
-        Song currentSong = songs.get(songPosn);
+        AudioExtensionMethods.addSongToHistory(getBaseContext(), currentSong.getID());
 
         builder.setContentIntent(pendInt)
                 .setSmallIcon(R.drawable.ic_favorite_black_24dp)

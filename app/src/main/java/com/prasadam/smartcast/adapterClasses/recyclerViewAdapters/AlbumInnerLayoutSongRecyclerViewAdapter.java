@@ -1,4 +1,4 @@
-package com.prasadam.smartcast.adapterClasses;
+package com.prasadam.smartcast.adapterClasses.recyclerViewAdapters;
 
 import android.app.Activity;
 import android.content.Context;
@@ -20,11 +20,12 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.github.ivbaranov.mfb.MaterialFavoriteButton;
 import com.prasadam.smartcast.R;
 import com.prasadam.smartcast.TagEditorActivity;
 import com.prasadam.smartcast.audioPackages.AudioExtensionMethods;
-import com.prasadam.smartcast.audioPackages.Song;
-import com.prasadam.smartcast.commonClasses.mediaController;
+import com.prasadam.smartcast.audioPackages.modelClasses.Song;
+import com.prasadam.smartcast.sharedClasses.mediaController;
 
 import java.io.File;
 import java.util.Collections;
@@ -58,13 +59,23 @@ public class AlbumInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapte
     }
 
     @Override
-    public void onBindViewHolder(songsViewHolder holder, int position) {
+    public void onBindViewHolder(final songsViewHolder holder, int position) {
         try {
             final Song currentSongDetails = songsList.get(position);
 
             holder.titleTextView.setText(currentSongDetails.getTitle());
             holder.artistTextView.setText(currentSongDetails.getArtist());
             holder.rootLayout.setTag(currentSongDetails.getData());
+            holder.favoriteButton.setTag(currentSongDetails.getID());
+            holder.favoriteButton.setFavorite(currentSongDetails.getIsLiked(context));
+
+            holder.favoriteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    holder.favoriteButton.toggleFavorite();
+                    currentSongDetails.setIsLiked(context, holder.favoriteButton.isFavorite());
+                }
+            });
 
             String albumArtPath = currentSongDetails.getAlbumArtLocation();
             if(albumArtPath != null)
@@ -112,7 +123,7 @@ public class AlbumInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapte
                             {
                                 case R.id.song_context_menu_delete:
                                     new MaterialDialog.Builder(context)
-                                            .content("Delete this song " +  currentSongDetails.getTitle())
+                                            .content("Delete this song \'" +  currentSongDetails.getTitle() + "\' ?")
                                             .positiveText(R.string.delete_text)
                                             .onPositive(new MaterialDialog.SingleButtonCallback() {
                                                 @Override
@@ -120,7 +131,7 @@ public class AlbumInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapte
                                                     File file = new File(currentSongDetails.getData());
                                                     if(file.delete())
                                                     {
-                                                        Toast.makeText(context, "Song Deleted : " + currentSongDetails.getTitle(), Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(context, "Song Deleted : \'" + currentSongDetails.getTitle() + "\'", Toast.LENGTH_SHORT).show();
                                                         context.getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.MediaColumns._ID + "='" + currentSongDetails.getID() + "'", null);
                                                         songsList = AudioExtensionMethods.getSongList(context, albumTitle);
                                                         AudioExtensionMethods.updateLists(context);
@@ -140,10 +151,6 @@ public class AlbumInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapte
 
                                 case R.id.song_context_menu_details:
                                     AudioExtensionMethods.songDetails(context, currentSongDetails, holder.albumPath);
-                                    break;
-
-                                case R.id.song_context_menu_shout:
-                                    AudioExtensionMethods.ShoutOut(context, currentSongDetails, holder.albumPath);
                                     break;
 
                                 case R.id.song_context_menu_ringtone:
@@ -183,6 +190,7 @@ public class AlbumInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapte
         @Bind (R.id.songArtist_recycler_view) TextView artistTextView;
         @Bind (R.id.rootLayout_recycler_view) RelativeLayout rootLayout;
         @Bind (R.id.song_context_menu) ImageView contextMenuView;
+        @Bind (R.id.fav_button) MaterialFavoriteButton favoriteButton;
         public String albumPath;
 
         public songsViewHolder(View itemView) {

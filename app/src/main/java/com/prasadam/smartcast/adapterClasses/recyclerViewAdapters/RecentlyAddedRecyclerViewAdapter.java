@@ -1,11 +1,9 @@
-package com.prasadam.smartcast.adapterClasses;
+package com.prasadam.smartcast.adapterClasses.recyclerViewAdapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -20,34 +18,31 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
-import com.prasadam.smartcast.AlbumActivity;
+import com.github.ivbaranov.mfb.MaterialFavoriteButton;
 import com.prasadam.smartcast.R;
-import com.prasadam.smartcast.TagEditorActivity;
 import com.prasadam.smartcast.audioPackages.AudioExtensionMethods;
-import com.prasadam.smartcast.audioPackages.Song;
-import com.prasadam.smartcast.commonClasses.CommonVariables;
-import com.prasadam.smartcast.commonClasses.mediaController;
-import com.turingtechnologies.materialscrollbar.INameableAdapter;
+import com.prasadam.smartcast.audioPackages.modelClasses.Song;
+import com.prasadam.smartcast.sharedClasses.mediaController;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
 /*
- * Created by prasadam saiteja on 2/15/2016.
+ * Created by Prasadam Saiteja on 5/28/2016.
  */
-public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<SongRecyclerViewAdapter.songsViewHolder> implements INameableAdapter {
+
+public class RecentlyAddedRecyclerViewAdapter extends RecyclerView.Adapter<RecentlyAddedRecyclerViewAdapter.songsViewHolder>{
 
     private LayoutInflater inflater;
     private Context context;
+    private ArrayList<Song> recentlyAddedSongsList;
 
-    public SongRecyclerViewAdapter(Context context){
+    public RecentlyAddedRecyclerViewAdapter(Context context, ArrayList<Song> recentlyAddedSongsList){
         this.context = context;
+        this.recentlyAddedSongsList = recentlyAddedSongsList;
         inflater = LayoutInflater.from(context);
     }
 
@@ -61,17 +56,27 @@ public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Song
     public void onBindViewHolder(final songsViewHolder holder, final int position) {
         try
         {
-            final Song currentSongDetails = CommonVariables.fullSongsList.get(position);
+            final Song currentSongDetails = recentlyAddedSongsList.get(position);
 
             holder.titleTextView.setText(currentSongDetails.getTitle());
             holder.artistTextView.setText(currentSongDetails.getArtist());
             holder.rootLayout.setTag(currentSongDetails.getData());
+            holder.favoriteButton.setTag(currentSongDetails.getID());
+            holder.favoriteButton.setFavorite(currentSongDetails.getIsLiked(context));
+
+            holder.favoriteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    holder.favoriteButton.toggleFavorite();
+                    currentSongDetails.setIsLiked(context, holder.favoriteButton.isFavorite());
+                }
+            });
 
             holder.rootLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mediaController.music.musicService.setList(CommonVariables.fullSongsList);
-                    mediaController.music.musicService.setSong(AudioExtensionMethods.getSongIndex(CommonVariables.fullSongsList, view.getTag().toString()));
+                    mediaController.music.musicService.setList(recentlyAddedSongsList);
+                    mediaController.music.musicService.setSong(AudioExtensionMethods.getSongIndex(recentlyAddedSongsList, view.getTag().toString()));
                     try
                     {
                         mediaController.music.musicService.playSong();
@@ -98,7 +103,7 @@ public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Song
                                     {
                                         case R.id.song_context_menu_delete:
                                             new MaterialDialog.Builder(context)
-                                                    .content("Delete this song " +  currentSongDetails.getTitle())
+                                                    .content("Delete this song \'" +  currentSongDetails.getTitle() + "\' ?")
                                                     .positiveText(R.string.delete_text)
                                                     .onPositive(new MaterialDialog.SingleButtonCallback() {
                                                         @Override
@@ -106,10 +111,11 @@ public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Song
                                                             File file = new File(currentSongDetails.getData());
                                                             if(file.delete())
                                                             {
-                                                                Toast.makeText(context, "Song Deleted : " + currentSongDetails.getTitle(), Toast.LENGTH_SHORT).show();
+                                                                Toast.makeText(context, "Song Deleted : \'" + currentSongDetails.getTitle() + "\'", Toast.LENGTH_SHORT).show();
                                                                 context.getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.MediaColumns._ID + "='" + currentSongDetails.getID() + "'", null);
-                                                                AudioExtensionMethods.updateLists(context);
+                                                                recentlyAddedSongsList =  AudioExtensionMethods.getSongList(context);
                                                                 notifyDataSetChanged();
+                                                                AudioExtensionMethods.updateLists(context);
                                                             }
                                                         }
                                                     })
@@ -125,25 +131,16 @@ public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Song
                                             AudioExtensionMethods.songDetails(context, currentSongDetails, holder.albumPath);
                                             break;
 
-                                        case R.id.song_context_menu_shout:
-                                            AudioExtensionMethods.ShoutOut(context, currentSongDetails, holder.albumPath);
-                                            break;
-
                                         case R.id.song_context_menu_ringtone:
                                             AudioExtensionMethods.setSongAsRingtone(context, currentSongDetails);
                                             break;
 
                                         case R.id.song_context_menu_tagEditor:
-                                            Intent tagEditorIntent = new Intent(context, TagEditorActivity.class);
-                                            tagEditorIntent.putExtra("songID", String.valueOf(currentSongDetails.getID()));
-                                            context.startActivity(tagEditorIntent);
+                                            AudioExtensionMethods.launchTagEditor(context, currentSongDetails.getID());
                                             break;
 
                                         case R.id.song_context_menu_jump_to_album:
-                                            Intent albumActivityIntent = new Intent(context, AlbumActivity.class);
-                                            albumActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                            albumActivityIntent.putExtra("albumTitle", currentSongDetails.getAlbum());
-                                            context.startActivity(albumActivityIntent);
+                                            AudioExtensionMethods.jumpToAlbum(context, currentSongDetails.getAlbum());
                                             break;
                                     }
                                 }
@@ -180,16 +177,7 @@ public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Song
 
     @Override
     public int getItemCount() {
-        return CommonVariables.fullSongsList.size();
-    }
-
-    @Override
-    public Character getCharacterForElement(int element) {
-        Character c = CommonVariables.fullSongsList.get(element).getTitle().charAt(0);
-        if(Character.isDigit(c)){
-            c = '#';
-        }
-        return c;
+        return recentlyAddedSongsList.size();
     }
 
     /// <summary>RecyclerView view holder (Inner class)
@@ -197,11 +185,12 @@ public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Song
     /// </summary>
     class songsViewHolder extends RecyclerView.ViewHolder{
 
-        @Bind (R.id.songTitle_RecyclerView) TextView titleTextView;
+        @Bind(R.id.songTitle_RecyclerView) TextView titleTextView;
         @Bind (R.id.songArtist_recycler_view) TextView artistTextView;
         @Bind (R.id.songAlbumArt_RecyclerView) com.facebook.drawee.view.SimpleDraweeView AlbumArtImageView;
         @Bind (R.id.rootLayout_recycler_view) RelativeLayout rootLayout;
         @Bind (R.id.song_context_menu) ImageView contextMenuView;
+        @Bind (R.id.fav_button) MaterialFavoriteButton favoriteButton;
         public String albumPath;
 
         public songsViewHolder(View itemView) {

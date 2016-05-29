@@ -11,15 +11,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.github.ivbaranov.mfb.MaterialFavoriteButton;
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
+import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.prasadam.smartcast.R;
-import com.prasadam.smartcast.adapterClasses.ObservableScrollViewAdapter;
-import com.prasadam.smartcast.adapterClasses.SongRecyclerViewAdapter;
+import com.prasadam.smartcast.adapterClasses.uiAdapters.ObservableScrollViewAdapter;
+import com.prasadam.smartcast.adapterClasses.recyclerViewAdapters.SongRecyclerViewAdapter;
 import com.prasadam.smartcast.audioPackages.AudioExtensionMethods;
-import com.prasadam.smartcast.commonClasses.CommonVariables;
-import com.prasadam.smartcast.commonClasses.DividerItemDecoration;
-import com.prasadam.smartcast.commonClasses.ExtensionMethods;
-import com.prasadam.smartcast.commonClasses.mediaController;
+import com.prasadam.smartcast.sharedClasses.SharedVariables;
+import com.prasadam.smartcast.sharedClasses.DividerItemDecoration;
+import com.prasadam.smartcast.sharedClasses.ExtensionMethods;
+import com.prasadam.smartcast.sharedClasses.mediaController;
 import com.turingtechnologies.materialscrollbar.AlphabetIndicator;
 import com.turingtechnologies.materialscrollbar.DragScrollBar;
 
@@ -48,7 +50,7 @@ public class SongsFragment extends Fragment{
         recyclerView = (ObservableRecyclerView) rootView.findViewById(R.id.songs_recylcer_view_layout);
         noSongsLayout = (LinearLayout) rootView.findViewById(R.id.no_songs_view);
         shuffleButton =(FloatingActionButton) rootView.findViewById(R.id.shuffle_fab_button);
-
+        new MaterialFavoriteButton.Builder(getContext()).create();
         return rootView;
     }
 
@@ -73,7 +75,7 @@ public class SongsFragment extends Fragment{
 
                 AudioExtensionMethods.updateSongList(getActivity());
 
-                if(!CommonVariables.fullSongsList.isEmpty()) {
+                if(!SharedVariables.fullSongsList.isEmpty()) {
 
                     recyclerView.setVisibility(View.VISIBLE);
                     noSongsLayout.setVisibility(View.INVISIBLE);

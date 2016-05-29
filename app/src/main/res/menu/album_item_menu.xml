@@ -22,6 +22,6 @@
         android:title="@string/tag_editor_text" />
 
     <item
-        android:id="@+id/song_context_menu_delete"
+        android:id="@+id/album_context_menu_delete_album"
         android:title="@string/delete_album_text" />
 </menu>

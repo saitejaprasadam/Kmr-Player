@@ -19,7 +19,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.prasadam.smartcast.audioPackages.BlurBuilder;
-import com.prasadam.smartcast.commonClasses.ExtensionMethods;
+import com.prasadam.smartcast.sharedClasses.ExtensionMethods;
 
 import java.io.File;
 

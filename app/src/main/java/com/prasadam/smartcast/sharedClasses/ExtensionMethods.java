@@ -1,4 +1,4 @@
-package com.prasadam.smartcast.commonClasses;
+package com.prasadam.smartcast.sharedClasses;
 
 import android.app.Activity;
 import android.content.Context;

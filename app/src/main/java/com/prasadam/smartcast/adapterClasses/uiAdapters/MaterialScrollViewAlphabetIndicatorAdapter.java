@@ -1,4 +1,4 @@
-package com.prasadam.smartcast.adapterClasses;
+package com.prasadam.smartcast.adapterClasses.uiAdapters;
 
 import android.content.Context;
 
