@@ -10,7 +10,6 @@ import android.view.MenuItem;
 
 import com.github.ivbaranov.mfb.MaterialFavoriteButton;
 import com.prasadam.smartcast.adapterClasses.recyclerViewAdapters.FavoritesRecyclerViewAdapter;
-import com.prasadam.smartcast.adapterClasses.recyclerViewAdapters.RecentlyAddedRecyclerViewAdapter;
 import com.prasadam.smartcast.audioPackages.AudioExtensionMethods;
 import com.prasadam.smartcast.audioPackages.fragments.NoItemsFragment;
 import com.prasadam.smartcast.audioPackages.modelClasses.Song;

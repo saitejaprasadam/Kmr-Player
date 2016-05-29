@@ -21,13 +21,11 @@ import com.prasadam.smartcast.SongPlaybackHistoryActivity;
 
 public class PlaylistFragment extends Fragment{
 
-    private Activity mActivity;
     private LinearLayout recentlyAddedPlaylistLinearLayout, favoritesPlaylistLinearLayout, songsPlaybackHistoryLinearLayout, mostPlayedLinearLayout;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        mActivity = activity;
     }
 
     @Override

@@ -5,16 +5,13 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.util.Log;
 
 import com.prasadam.smartcast.audioPackages.modelClasses.Song;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /*
  * Created by Prasadam Saiteja on 5/20/2016.
@@ -96,7 +93,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
         ArrayList<Integer> songsID = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cur =  db.rawQuery( "select " + ID_COLUMN_NAME + " from " + FAVORITES_TABLE_NAME +" where isFav = 1", null);
+        //Cursor cur =  db.rawQuery( "(select " + ID_COLUMN_NAME + " from " + FAVORITES_TABLE_NAME +" where isFav = 1)", null);
+        Cursor cur = db.rawQuery("select " + FAVORITES_TABLE_NAME + ".id , (select count(" + HISTORY_TABLE_NAME + ".id) from " + HISTORY_TABLE_NAME + " where " + HISTORY_TABLE_NAME + ".id = " + FAVORITES_TABLE_NAME + ".id) as RepeatCount from " + FAVORITES_TABLE_NAME + " where isFav = 1 order by RepeatCount desc", null);
 
         if(cur != null && cur.moveToFirst()){
             do {
@@ -181,7 +179,9 @@ public class DBHelper extends SQLiteOpenHelper {
             }while(cursor.moveToNext());
         }
 
-        cursor.close();
+        if (cursor != null)
+            cursor.close();
+
         return mostPlayedSongs;
     }
 }
