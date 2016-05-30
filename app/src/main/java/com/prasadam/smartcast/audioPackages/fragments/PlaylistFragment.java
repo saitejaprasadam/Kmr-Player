@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.prasadam.smartcast.CustomPlaylistActivity;
 import com.prasadam.smartcast.FavoritesActivity;
 import com.prasadam.smartcast.MostPlayedSongsActivity;
 import com.prasadam.smartcast.R;
@@ -21,7 +22,8 @@ import com.prasadam.smartcast.SongPlaybackHistoryActivity;
 
 public class PlaylistFragment extends Fragment{
 
-    private LinearLayout recentlyAddedPlaylistLinearLayout, favoritesPlaylistLinearLayout, songsPlaybackHistoryLinearLayout, mostPlayedLinearLayout;
+    private LinearLayout recentlyAddedPlaylistLinearLayout, favoritesPlaylistLinearLayout,
+            songsPlaybackHistoryLinearLayout, mostPlayedLinearLayout, customPlaylistLinearLayout;
 
     @Override
     public void onAttach(Activity activity) {
@@ -35,6 +37,7 @@ public class PlaylistFragment extends Fragment{
         favoritesPlaylistLinearLayout = (LinearLayout) rootView.findViewById(R.id.favorites_playlist);
         songsPlaybackHistoryLinearLayout = (LinearLayout) rootView.findViewById(R.id.songs_playback_history);
         mostPlayedLinearLayout = (LinearLayout) rootView.findViewById(R.id.most_played_linear_layout);
+        customPlaylistLinearLayout = (LinearLayout) rootView.findViewById(R.id.custom_playlist_linear_layout);
         return rootView;
     }
 
@@ -71,6 +74,14 @@ public class PlaylistFragment extends Fragment{
             public void onClick(View v) {
                 Intent mostPlayedIntent = new Intent(getContext(), MostPlayedSongsActivity.class);
                 startActivity(mostPlayedIntent);
+            }
+        });
+
+        customPlaylistLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent customPlaylistIntent = new Intent(getContext(), CustomPlaylistActivity.class);
+                startActivity(customPlaylistIntent);
             }
         });
     }

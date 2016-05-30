@@ -6,7 +6,7 @@
 
     <string name="action_settings">Settings</string>
 
-    <string name="songs_text">Songs</string>
+    <string name="songs_text">songs</string>
     <string name="albums_text">Albums</string>
     <string name="artist_text">Artists</string>
     <string name="playlist_text">Playlist</string>
@@ -51,4 +51,13 @@
     <string name="made_with_love_text">made with love</string>
     <string name="no_play_history">You don\'t have any history</string>
     <string name="no_records_most_played">Keep listening to increase analysis...</string>
+    <string name="create_new_custom_playlist">create new custom playlist</string>
+    <string name="enter_playlist_name_text">Enter playlist name</string>
+    <string name="background_image_view_text">background image view text</string>
+    <string name="album_art_image_view_text">album art image view</string>
+    <string name="add_to_playlist">Add to playlist</string>
+    <string name="error_adding_song_to_playlist_text">error adding song to playlist</string>
+    <string name="song_added_to_playlist_text">song added to playlist</string>
+    <string name="rename_text">Rename</string>
+    <string name="enter_a_new_name_text">Enter a new name</string>
 </resources>

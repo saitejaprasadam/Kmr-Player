@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.facebook.imagepipeline.animated.util.AnimatedDrawableUtil;
 import com.github.ivbaranov.mfb.MaterialFavoriteButton;
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.prasadam.smartcast.R;
@@ -55,7 +56,7 @@ public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Song
     public void onBindViewHolder(final songsViewHolder holder, final int position) {
         try
         {
-            final Song currentSongDetails= SharedVariables.fullSongsList.get(position);
+            final Song currentSongDetails = SharedVariables.fullSongsList.get(position);
 
             holder.titleTextView.setText(currentSongDetails.getTitle());
             holder.artistTextView.setText(currentSongDetails.getArtist());
@@ -119,6 +120,10 @@ public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Song
                                                     })
                                                     .negativeText(R.string.cancel_text)
                                                     .show();
+                                            break;
+
+                                        case R.id.song_context_menu_add_to_playlist:
+                                            AudioExtensionMethods.addToPlaylist(context, currentSongDetails.getID());
                                             break;
 
                                         case R.id.song_context_menu_share:

@@ -13,6 +13,8 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -258,7 +260,7 @@ public class AudioExtensionMethods {
 
     }
 
-    public static ArrayList<Song> getSongList(Context context, String albumName) {
+    public static ArrayList<Song> getSongList(Context context, String albumName){
 
         ContentResolver musicResolver = context.getContentResolver();
         Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
@@ -327,6 +329,25 @@ public class AudioExtensionMethods {
         share.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files);
         context.startActivity(Intent.createChooser(share, "Share " + "\'" + albumTitle  + "\'" +  " album using"));
 
+    }
+
+    public static void addToPlaylist(final Context context, final long songID){
+
+        ArrayList<String> playlistNames = getCustomPlaylistNames(context);
+        new MaterialDialog.Builder(context)
+                .title("Choose playlist")
+                .items(playlistNames)
+                .itemsCallback(new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                        DBHelper dbHelper = new DBHelper(context);
+                        if(dbHelper.addSongToPlaylist(String.valueOf(text), songID))
+                            Toast.makeText(context, R.string.song_added_to_playlist_text, Toast.LENGTH_SHORT).show();
+                        else
+                            Toast.makeText(context, R.string.error_adding_song_to_playlist_text, Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .show();
     }
 
     public static void updateLists(Context context){
@@ -502,5 +523,54 @@ public class AudioExtensionMethods {
 
         DBHelper dbHelper = new DBHelper(context);
         return dbHelper.getMostPlayedSongsList(context);
+    }
+
+    public static boolean createNewCustomPlaylist(Context context,String playlistName) {
+        DBHelper dbhelper = new DBHelper(context);
+        return dbhelper.createCustomPlaylist(playlistName);
+    }
+
+    public static ArrayList<String> getCustomPlaylistNames(Context context) {
+        DBHelper dbHelper = new DBHelper(context);
+        return dbHelper.getCustomPlaylistNames();
+    }
+
+    public static int getPlaylistSongCount(Context context, String playlistName) {
+        DBHelper dbHelper = new DBHelper(context);
+        return dbHelper.getSongCountInPlaylist(playlistName);
+    }
+
+    public static ArrayList<String> getAlbumArtsForPlaylistCover(Context context, String playlistName) {
+
+        DBHelper dbHelper = new DBHelper(context);
+        return dbHelper.getAlbumArtsForPlaylistCover(context, playlistName);
+    }
+
+    public static void renamePlaylist(final Context context, final String oldName) {
+
+        new MaterialDialog.Builder(context)
+                .title(R.string.enter_a_new_name_text)
+                .inputRangeRes(3, 20, R.color.colorAccentGeneric)
+                .input(null, null, new MaterialDialog.InputCallback() {
+                    @Override
+                    public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
+
+                        String newName = String.valueOf(input);
+                        if(newName.equals(oldName))
+                            Toast.makeText(context , "Provide a different name!!!", Toast.LENGTH_SHORT).show();
+
+                        else{
+                            DBHelper dbHelper = new DBHelper(context);
+                            if(dbHelper.renamePlaylist(oldName, newName)){
+                                Toast.makeText(context, "Name changed successfully", Toast.LENGTH_SHORT).show();
+
+                            }
+
+                            else
+                                Toast.makeText(context, "Playlist with same name already exists", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                }).show();
     }
 }

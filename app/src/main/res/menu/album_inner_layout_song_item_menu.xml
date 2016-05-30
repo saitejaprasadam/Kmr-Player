@@ -6,8 +6,8 @@
         android:title="@string/share_text" />
 
     <item
-        android:id="@+id/song_context_menu_details"
-        android:title="@string/details_text" />
+        android:id="@+id/song_context_menu_add_to_playlist"
+        android:title="@string/add_to_playlist"/>
 
     <item
         android:id="@+id/song_context_menu_jump_to_artist"
@@ -20,6 +20,10 @@
     <item
         android:id="@+id/song_context_menu_ringtone"
         android:title="@string/set_as_rigntone_text" />
+
+    <item
+        android:id="@+id/song_context_menu_details"
+        android:title="@string/details_text" />
 
     <item
         android:id="@+id/song_context_menu_delete"

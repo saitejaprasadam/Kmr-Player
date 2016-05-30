@@ -21,6 +21,8 @@ import com.prasadam.smartcast.audioPackages.fragments.SongsFragment;
 import com.prasadam.smartcast.audioPackages.fragments.TabFragment;
 import com.prasadam.smartcast.sharedClasses.SharedVariables;
 
+import static com.prasadam.smartcast.audioPackages.AudioExtensionMethods.getCustomPlaylistNames;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 

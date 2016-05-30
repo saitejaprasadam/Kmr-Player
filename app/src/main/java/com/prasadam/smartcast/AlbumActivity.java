@@ -117,7 +117,7 @@ public class AlbumActivity extends Activity{
         setContentView(R.layout.activity_album_layout);
         ButterKnife.bind(this);
 
-        MaterialFavoriteButton favorite = new MaterialFavoriteButton.Builder(this).create();
+        new MaterialFavoriteButton.Builder(this).create();
         albumTitle = getIntent().getExtras().getString("albumTitle");
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.mipmap.ic_chevron_left_white_24dp);

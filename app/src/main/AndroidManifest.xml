@@ -31,6 +31,8 @@
         <activity android:name=".FavoritesActivity" android:theme="@style/AppTheme" android:label="@string/favorites_text"/>
         <activity android:name=".SongPlaybackHistoryActivity" android:theme="@style/AppTheme" android:label="@string/history_text"/>
         <activity android:name=".MostPlayedSongsActivity" android:theme="@style/AppTheme" android:label="@string/most_played_text"/>
+        <activity android:name=".CustomPlaylistActivity" android:theme="@style/AppTheme" android:label="@string/custom_playlist_text"/>
+        <activity android:name=".CustomPlaylistInnerActivity" android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition"/>
 
         <service  android:name=".audioPackages.MusicService" android:enabled="true"></service>
 
