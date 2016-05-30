@@ -29,7 +29,7 @@ public class TabFragment extends Fragment{
         tabLayout = (TabLayout) x.findViewById(R.id.tabs);
         viewPager = (ViewPager) x.findViewById(R.id.viewpager);
         viewPager.setAdapter(new MyAdapter(getChildFragmentManager()));
-
+        viewPager.setOffscreenPageLimit(2);
         tabLayout.post(new Runnable() {
             @Override
             public void run() {

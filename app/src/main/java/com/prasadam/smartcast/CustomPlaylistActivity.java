@@ -14,10 +14,8 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.prasadam.smartcast.adapterClasses.recyclerViewAdapters.CustomPlaylistRecyclerViewAdapter;
-import com.prasadam.smartcast.adapterClasses.recyclerViewAdapters.FavoritesRecyclerViewAdapter;
 import com.prasadam.smartcast.audioPackages.AudioExtensionMethods;
 import com.prasadam.smartcast.audioPackages.fragments.NoItemsFragment;
-import com.prasadam.smartcast.sharedClasses.DividerItemDecoration;
 import com.prasadam.smartcast.sharedClasses.ExtensionMethods;
 
 import java.util.ArrayList;
@@ -27,6 +25,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.prasadam.smartcast.audioPackages.AudioExtensionMethods.createNewCustomPlaylist;
+import static com.prasadam.smartcast.sharedClasses.ExtensionMethods.setStatusBarTranslucent;
 
 /*
  * Created by Prasadam Saiteja on 5/29/2016.
@@ -58,6 +57,7 @@ public class CustomPlaylistActivity extends AppCompatActivity {
         setContentView(R.layout.activity_custom_playlist_layout);
         ButterKnife.bind(this);
 
+        setStatusBarTranslucent(CustomPlaylistActivity.this);
         if(getSupportActionBar() != null )
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

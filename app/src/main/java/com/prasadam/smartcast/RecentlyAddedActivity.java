@@ -2,13 +2,17 @@ package com.prasadam.smartcast;
 
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import com.github.ivbaranov.mfb.MaterialFavoriteButton;
+import com.prasadam.smartcast.ListenerClasses.SongsSearchListener;
 import com.prasadam.smartcast.adapterClasses.recyclerViewAdapters.RecentlyAddedRecyclerViewAdapter;
 import com.prasadam.smartcast.audioPackages.AudioExtensionMethods;
 import com.prasadam.smartcast.audioPackages.modelClasses.Song;
@@ -20,6 +24,8 @@ import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+
+import static com.prasadam.smartcast.sharedClasses.ExtensionMethods.setStatusBarTranslucent;
 
 /*
  * Created by Prasadam Saiteja on 5/27/2016.
@@ -37,10 +43,12 @@ public class RecentlyAddedActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         new MaterialFavoriteButton.Builder(this).create();
+        setStatusBarTranslucent(RecentlyAddedActivity.this);
+
         if(getSupportActionBar() != null )
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        songsList = AudioExtensionMethods.getSongList(this);
+        songsList = AudioExtensionMethods.getRecentlyAddedSongs(RecentlyAddedActivity.this);
 
         if(songsList.size() == 0)
         {
@@ -53,28 +61,34 @@ public class RecentlyAddedActivity extends AppCompatActivity {
         else
         {
             recyclerViewAdapter = new RecentlyAddedRecyclerViewAdapter(this, songsList);
-
             recentlyAddedRecyclerView.setAdapter(recyclerViewAdapter);
             recentlyAddedRecyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
 
-            if (!ExtensionMethods.isTablet(this))
-            {
-                if(!ExtensionMethods.isLandScape(this))    //Mobile Portrait
+            if (!ExtensionMethods.isTablet(this)) {
+                if (!ExtensionMethods.isLandScape(this))    //Mobile Portrait
                     recentlyAddedRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-                if(ExtensionMethods.isLandScape(this))    //Mobile Landscape
+                if (ExtensionMethods.isLandScape(this))    //Mobile Landscape
                     recentlyAddedRecyclerView.setLayoutManager(new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false));
-            }
-
-            else{
-                if(!ExtensionMethods.isLandScape(this))    //Tablet Portrait
+            } else {
+                if (!ExtensionMethods.isLandScape(this))    //Tablet Portrait
                     recentlyAddedRecyclerView.setLayoutManager(new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false));
 
-                if(ExtensionMethods.isLandScape(this))    //Tablet Landscape
+                if (ExtensionMethods.isLandScape(this))    //Tablet Landscape
                     recentlyAddedRecyclerView.setLayoutManager(new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false));
             }
         }
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_recently_added_songs_menu, menu);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        MenuItemCompat.setActionView(searchItem, searchView);
+        SongsSearchListener searchListener = new SongsSearchListener(RecentlyAddedActivity.this, songsList, recentlyAddedRecyclerView, recyclerViewAdapter);
+        searchView.setOnQueryTextListener(searchListener);
+        return true;
     }
 
     @Override

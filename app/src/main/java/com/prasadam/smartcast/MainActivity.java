@@ -20,8 +20,10 @@ import com.prasadam.smartcast.audioPackages.fragments.AlbumsFragment;
 import com.prasadam.smartcast.audioPackages.fragments.SongsFragment;
 import com.prasadam.smartcast.audioPackages.fragments.TabFragment;
 import com.prasadam.smartcast.sharedClasses.SharedVariables;
+import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import static com.prasadam.smartcast.audioPackages.AudioExtensionMethods.getCustomPlaylistNames;
+import static com.prasadam.smartcast.sharedClasses.ExtensionMethods.setStatusBarTranslucent;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -53,6 +55,8 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        setStatusBarTranslucent(MainActivity.this);
     }
 
     @Override

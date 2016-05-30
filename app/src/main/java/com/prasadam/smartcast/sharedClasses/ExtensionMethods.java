@@ -3,9 +3,14 @@ package com.prasadam.smartcast.sharedClasses;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
+
+import com.prasadam.smartcast.R;
+import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.text.DecimalFormat;
 
@@ -60,12 +65,13 @@ public class ExtensionMethods {
         return (str == null || str.isEmpty());
     }
 
-    public static void setStatusBarTranslucent(boolean makeTranslucent, Activity activity) {
-        if (makeTranslucent) {
-            activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-        } else {
-            activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+    public static void setStatusBarTranslucent(Activity activity) {
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
+
+            SystemBarTintManager tintManager = new SystemBarTintManager(activity);
+            tintManager.setStatusBarTintColor(activity.getResources().getColor(R.color.colorPrimaryDark));
+            tintManager.setStatusBarTintEnabled(true);
         }
     }
 
@@ -77,4 +83,6 @@ public class ExtensionMethods {
         }
         return result;
     }
+
+
 }

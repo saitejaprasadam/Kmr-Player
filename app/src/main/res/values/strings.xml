@@ -60,4 +60,5 @@
     <string name="song_added_to_playlist_text">song added to playlist</string>
     <string name="rename_text">Rename</string>
     <string name="enter_a_new_name_text">Enter a new name</string>
+    <string name="search_text">Search</string>
 </resources>

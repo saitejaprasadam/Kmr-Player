@@ -8,6 +8,8 @@
     <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
+    <action android:name="android.intent.action.MEDIA_BUTTON" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -27,11 +29,11 @@
         <activity android:name=".testActivity"/>
         <activity android:name=".TagEditorActivity" android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition"/>
         <activity android:name=".AlbumActivity" android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition"/>
-        <activity android:name=".RecentlyAddedActivity" android:theme="@style/AppTheme" android:label="@string/recently_added_text"/>
-        <activity android:name=".FavoritesActivity" android:theme="@style/AppTheme" android:label="@string/favorites_text"/>
-        <activity android:name=".SongPlaybackHistoryActivity" android:theme="@style/AppTheme" android:label="@string/history_text"/>
-        <activity android:name=".MostPlayedSongsActivity" android:theme="@style/AppTheme" android:label="@string/most_played_text"/>
-        <activity android:name=".CustomPlaylistActivity" android:theme="@style/AppTheme" android:label="@string/custom_playlist_text"/>
+        <activity android:name=".RecentlyAddedActivity" android:theme="@style/ColoredStatusBar" android:label="@string/recently_added_text"/>
+        <activity android:name=".FavoritesActivity" android:theme="@style/ColoredStatusBar" android:label="@string/favorites_text"/>
+        <activity android:name=".SongPlaybackHistoryActivity" android:theme="@style/ColoredStatusBar" android:label="@string/history_text"/>
+        <activity android:name=".MostPlayedSongsActivity" android:theme="@style/ColoredStatusBar" android:label="@string/most_played_text"/>
+        <activity android:name=".CustomPlaylistActivity" android:theme="@style/ColoredStatusBar" android:label="@string/custom_playlist_text"/>
         <activity android:name=".CustomPlaylistInnerActivity" android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition"/>
 
         <service  android:name=".audioPackages.MusicService" android:enabled="true"></service>

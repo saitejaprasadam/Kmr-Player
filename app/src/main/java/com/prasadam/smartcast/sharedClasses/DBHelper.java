@@ -8,9 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.util.Log;
 
-import com.prasadam.smartcast.audioPackages.modelClasses.Album;
 import com.prasadam.smartcast.audioPackages.modelClasses.Song;
 
 import java.util.ArrayList;
@@ -249,9 +247,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         try{
             SQLiteDatabase wdb = this.getWritableDatabase();
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(ID_COLUMN_NAME, songID);
-            wdb.insert(playlistName, null, contentValues);
+            wdb.execSQL("insert into '" + playlistName + "' values('" + songID + "')");
             return true;
         }
 
@@ -264,7 +260,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase rdb = this.getReadableDatabase();
         ArrayList<String> albumartPath = new ArrayList<>();
-        ArrayList<Integer> albumIDs = new ArrayList<>();
+        ArrayList<String> albumIDs = new ArrayList<>();
         Cursor cursor = rdb.rawQuery("select '" + playlistName + "'.id , (select count(" + HISTORY_TABLE_NAME + ".id) from " + HISTORY_TABLE_NAME + " where " + HISTORY_TABLE_NAME + ".id = '" + playlistName + "'.id) as RepeatCount from '" + playlistName + "' order by RepeatCount desc", null);
 
         if(cursor != null && cursor.moveToFirst()){
@@ -287,6 +283,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     if (albumCursor != null) {
                         if (albumCursor.moveToFirst()) {
                             albumartPath.add(albumCursor.getString(0));
+                            albumIDs.add(albumID);
                             if(albumartPath.size() == 4)
                                 return albumartPath;
                         }
@@ -321,5 +318,22 @@ public class DBHelper extends SQLiteOpenHelper {
         catch (Exception e){
             return false;
         }
+    }
+
+    public ArrayList<Integer> getSongsListFromCustomPlaylist(String playlistName) {
+
+        ArrayList<Integer> songsID = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select '" + playlistName + "'.id , (select count(" + HISTORY_TABLE_NAME + ".id) from " + HISTORY_TABLE_NAME + " where " + HISTORY_TABLE_NAME + ".id = '" + playlistName + "'.id) as RepeatCount from '" + playlistName + "' order by RepeatCount desc", null);
+
+        if(cursor != null && cursor.moveToFirst()){
+            do {
+                songsID.add(cursor.getInt(cursor.getColumnIndex(ID_COLUMN_NAME)));
+            }while (cursor.moveToNext());
+            cursor.close();
+        }
+
+        db.close();
+        return songsID;
     }
 }

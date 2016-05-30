@@ -2,13 +2,17 @@ package com.prasadam.smartcast;
 
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import com.github.ivbaranov.mfb.MaterialFavoriteButton;
+import com.prasadam.smartcast.ListenerClasses.SongsSearchListener;
 import com.prasadam.smartcast.adapterClasses.recyclerViewAdapters.FavoritesRecyclerViewAdapter;
 import com.prasadam.smartcast.audioPackages.AudioExtensionMethods;
 import com.prasadam.smartcast.audioPackages.fragments.NoItemsFragment;
@@ -20,6 +24,8 @@ import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+
+import static com.prasadam.smartcast.sharedClasses.ExtensionMethods.setStatusBarTranslucent;
 
 /*
  * Created by Prasadam Saiteja on 5/29/2016.
@@ -36,6 +42,7 @@ public class MostPlayedSongsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_most_played_layout);
         ButterKnife.bind(this);
 
+        setStatusBarTranslucent(MostPlayedSongsActivity.this);
         new MaterialFavoriteButton.Builder(this).create();
         if(getSupportActionBar() != null )
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -75,6 +82,18 @@ public class MostPlayedSongsActivity extends AppCompatActivity {
             }
         }
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.activity_recently_added_songs_menu, menu);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        MenuItemCompat.setActionView(searchItem, searchView);
+        SongsSearchListener searchListener = new SongsSearchListener(MostPlayedSongsActivity.this, songsList, mostPlayedRecylcerView, recyclerViewAdapter);
+        searchView.setOnQueryTextListener(searchListener);
+        return true;
     }
 
     @Override

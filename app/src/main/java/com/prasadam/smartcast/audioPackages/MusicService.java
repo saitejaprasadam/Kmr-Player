@@ -36,8 +36,8 @@ public class MusicService extends Service implements
 
     public void onCreate(){
         super.onCreate();//create the service
-        songPosn=0;//initialize position
-        rand=new Random();//random
+        songPosn = 0;//initialize position
+        rand = new Random();//random
         player = new MediaPlayer();//create player
         initMusicPlayer();//initialize
     }

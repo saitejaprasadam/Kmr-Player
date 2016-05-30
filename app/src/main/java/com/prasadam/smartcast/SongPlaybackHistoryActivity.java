@@ -2,13 +2,17 @@ package com.prasadam.smartcast;
 
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import com.github.ivbaranov.mfb.MaterialFavoriteButton;
+import com.prasadam.smartcast.ListenerClasses.SongsSearchListener;
 import com.prasadam.smartcast.adapterClasses.recyclerViewAdapters.RecentlyAddedRecyclerViewAdapter;
 import com.prasadam.smartcast.audioPackages.AudioExtensionMethods;
 import com.prasadam.smartcast.audioPackages.fragments.NoItemsFragment;
@@ -21,13 +25,15 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
+import static com.prasadam.smartcast.sharedClasses.ExtensionMethods.setStatusBarTranslucent;
+
 /*
  * Created by Prasadam Saiteja on 5/29/2016.
  */
 
 public class SongPlaybackHistoryActivity extends AppCompatActivity {
 
-    @Bind(R.id.history_recycler_view) RecyclerView recentlyAddedRecyclerView;
+    @Bind(R.id.history_recycler_view) RecyclerView recyclerView;
 
     private ArrayList<Song> songsList;
     private RecentlyAddedRecyclerViewAdapter recyclerViewAdapter;
@@ -37,6 +43,7 @@ public class SongPlaybackHistoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_song_playback_history_layout);
         ButterKnife.bind(this);
 
+        setStatusBarTranslucent(SongPlaybackHistoryActivity.this);
         new MaterialFavoriteButton.Builder(this).create();
         if(getSupportActionBar() != null )
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -55,27 +62,42 @@ public class SongPlaybackHistoryActivity extends AppCompatActivity {
         {
             recyclerViewAdapter = new RecentlyAddedRecyclerViewAdapter(this, songsList);
 
-            recentlyAddedRecyclerView.setAdapter(recyclerViewAdapter);
-            recentlyAddedRecyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+            recyclerView.setAdapter(recyclerViewAdapter);
+            recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
 
             if (!ExtensionMethods.isTablet(this))
             {
                 if(!ExtensionMethods.isLandScape(this))    //Mobile Portrait
-                    recentlyAddedRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+                    recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
                 if(ExtensionMethods.isLandScape(this))    //Mobile Landscape
-                    recentlyAddedRecyclerView.setLayoutManager(new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false));
+                    recyclerView.setLayoutManager(new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false));
             }
 
             else{
                 if(!ExtensionMethods.isLandScape(this))    //Tablet Portrait
-                    recentlyAddedRecyclerView.setLayoutManager(new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false));
+                    recyclerView.setLayoutManager(new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false));
 
                 if(ExtensionMethods.isLandScape(this))    //Tablet Landscape
-                    recentlyAddedRecyclerView.setLayoutManager(new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false));
+                    recyclerView.setLayoutManager(new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false));
             }
         }
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_recently_added_songs_menu, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        // See above
+        //MenuItemCompat.setOnActionExpandListener(searchItem, new SearchViewExpandListener(this));
+        MenuItemCompat.setActionView(searchItem, searchView);
+        SongsSearchListener searchListener = new SongsSearchListener(SongPlaybackHistoryActivity.this, songsList, recyclerView, recyclerViewAdapter);
+        searchView.setOnQueryTextListener(searchListener);
+
+        return true;
     }
 
     @Override
