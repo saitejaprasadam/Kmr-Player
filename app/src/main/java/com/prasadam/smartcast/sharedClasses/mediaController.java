@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 
-import com.prasadam.smartcast.audioPackages.MusicService;
+import com.prasadam.smartcast.audioPackages.musicServiceClasses.MusicService;
 
 /*
  * Created by Prasadam Saiteja on 2/28/2016.

@@ -1,6 +1,7 @@
 package com.prasadam.smartcast.adapterClasses.recyclerViewAdapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -21,6 +22,9 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.prasadam.smartcast.R;
 import com.prasadam.smartcast.audioPackages.AudioExtensionMethods;
 import com.prasadam.smartcast.audioPackages.modelClasses.Song;
+import com.prasadam.smartcast.audioPackages.musicServiceClasses.MusicService;
+import com.prasadam.smartcast.audioPackages.musicServiceClasses.PlayerConstants;
+import com.prasadam.smartcast.audioPackages.musicServiceClasses.UtilFunctions;
 import com.prasadam.smartcast.sharedClasses.mediaController;
 
 import java.io.File;
@@ -66,13 +70,16 @@ public class FavoritesRecyclerViewAdapter extends RecyclerView.Adapter<Favorites
             holder.rootLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mediaController.music.musicService.setList(favoriteSongsList);
-                    mediaController.music.musicService.setSong(AudioExtensionMethods.getSongIndex(favoriteSongsList, view.getTag().toString()));
-                    try
-                    {
-                        mediaController.music.musicService.playSong();
+                    PlayerConstants.SONG_PAUSED = false;
+                    PlayerConstants.SONGS_LIST = favoriteSongsList;
+                    PlayerConstants.SONG_NUMBER = position;
+                    boolean isServiceRunning = UtilFunctions.isServiceRunning(MusicService.class.getName(), context);
+                    if (!isServiceRunning) {
+                        Intent i = new Intent(context, MusicService.class);
+                        context.startService(i);
+                    } else {
+                        PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
                     }
-                    catch (Exception ignored){}
                 }
             });
 

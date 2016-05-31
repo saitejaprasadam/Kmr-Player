@@ -1,6 +1,7 @@
 package com.prasadam.smartcast;
 
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -19,6 +20,9 @@ import com.prasadam.smartcast.audioPackages.AudioExtensionMethods;
 import com.prasadam.smartcast.audioPackages.fragments.AlbumsFragment;
 import com.prasadam.smartcast.audioPackages.fragments.SongsFragment;
 import com.prasadam.smartcast.audioPackages.fragments.TabFragment;
+import com.prasadam.smartcast.audioPackages.musicServiceClasses.MusicService;
+import com.prasadam.smartcast.audioPackages.musicServiceClasses.PlayerConstants;
+import com.prasadam.smartcast.audioPackages.musicServiceClasses.UtilFunctions;
 import com.prasadam.smartcast.sharedClasses.SharedVariables;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
@@ -41,7 +45,7 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         SharedVariables.Initializers(this);
-        //ButterKnife.bind(this);
+        startMusicService();
 
         mFragmentManager = getSupportFragmentManager();
         mFragmentTransaction = mFragmentManager.beginTransaction();
@@ -57,6 +61,17 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         setStatusBarTranslucent(MainActivity.this);
+    }
+
+    private void startMusicService() {
+        boolean isServiceRunning = UtilFunctions.isServiceRunning(MusicService.class.getName(), getApplicationContext());
+        if (!isServiceRunning) {
+            Intent i = new Intent(getApplicationContext(), MusicService.class);
+            startService(i);
+        }
+        else {
+            PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
+        }
     }
 
     @Override

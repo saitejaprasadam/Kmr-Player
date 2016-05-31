@@ -61,4 +61,6 @@
     <string name="rename_text">Rename</string>
     <string name="enter_a_new_name_text">Enter a new name</string>
     <string name="search_text">Search</string>
+    <string name="pause">pause_text</string>
+    <string name="play">play_text</string>
 </resources>

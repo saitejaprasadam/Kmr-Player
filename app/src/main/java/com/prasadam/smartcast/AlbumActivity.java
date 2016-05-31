@@ -1,6 +1,7 @@
 package com.prasadam.smartcast;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -31,6 +32,9 @@ import com.prasadam.smartcast.adapterClasses.recyclerViewAdapters.AlbumInnerLayo
 import com.prasadam.smartcast.audioPackages.AudioExtensionMethods;
 import com.prasadam.smartcast.audioPackages.BlurBuilder;
 import com.prasadam.smartcast.audioPackages.modelClasses.Song;
+import com.prasadam.smartcast.audioPackages.musicServiceClasses.MusicService;
+import com.prasadam.smartcast.audioPackages.musicServiceClasses.PlayerConstants;
+import com.prasadam.smartcast.audioPackages.musicServiceClasses.UtilFunctions;
 import com.prasadam.smartcast.sharedClasses.DividerItemDecoration;
 import com.prasadam.smartcast.sharedClasses.ExtensionMethods;
 import com.prasadam.smartcast.sharedClasses.mediaController;
@@ -38,6 +42,7 @@ import com.prasadam.smartcast.sharedClasses.mediaController;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -144,7 +149,6 @@ public class AlbumActivity extends Activity{
             albumNameTextView.setText(musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM)));
             artistNameTextView.setText(musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST)));
             final File imgFile = new File(albumArtPath);
-            Log.d("path", albumArtPath);
             if(imgFile.exists())// /storage/emulated/0/Android/data/com.android.providers.media/albumthumbs/1454267773223
             {
                 actualAlbumArt.setImageURI(Uri.parse("file://" + imgFile.getAbsolutePath()));
@@ -203,14 +207,19 @@ public class AlbumActivity extends Activity{
             @Override
             public void onClick(View view) {
 
-                Collections.shuffle(songsList);
-                mediaController.music.musicService.setList(songsList);
-                mediaController.music.musicService.setShuffle(true);
-                try
-                {
-                    mediaController.music.musicService.playSong();
+                PlayerConstants.SONG_PAUSED = false;
+                long seed = System.nanoTime();
+                ArrayList<Song> shuffledPlaylist = songsList;
+                Collections.shuffle(shuffledPlaylist, new Random(seed));
+                PlayerConstants.SONGS_LIST = shuffledPlaylist;
+                PlayerConstants.SONG_NUMBER = 0;
+                boolean isServiceRunning = UtilFunctions.isServiceRunning(MusicService.class.getName(), AlbumActivity.this);
+                if (!isServiceRunning) {
+                    Intent i = new Intent(AlbumActivity.this, MusicService.class);
+                    AlbumActivity.this.startService(i);
+                } else {
+                    PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
                 }
-                catch (Exception ignored){}
             }
         });
     }

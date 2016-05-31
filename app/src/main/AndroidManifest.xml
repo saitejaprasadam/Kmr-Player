@@ -36,8 +36,18 @@
         <activity android:name=".CustomPlaylistActivity" android:theme="@style/ColoredStatusBar" android:label="@string/custom_playlist_text"/>
         <activity android:name=".CustomPlaylistInnerActivity" android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition"/>
 
-        <service  android:name=".audioPackages.MusicService" android:enabled="true"></service>
+        <service  android:name=".audioPackages.musicServiceClasses.MusicService" android:enabled="true"></service>
 
+        <receiver android:name="com.prasadam.smartcast.audioPackages.musicServiceClasses.NotificationBroadcast" >
+            <intent-filter>
+                <action android:name="com.prasadam.smartcast.delete" />
+                <action android:name="com.prasadam.smartcast.pause" />
+                <action android:name="com.prasadam.smartcast.next" />
+                <action android:name="com.prasadam.smartcast.play" />
+                <action android:name="com.prasadam.smartcast.previous" />
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
 
     </application>
 </manifest>
