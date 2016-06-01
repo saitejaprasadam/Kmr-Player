@@ -63,4 +63,9 @@
     <string name="search_text">Search</string>
     <string name="pause">pause_text</string>
     <string name="play">play_text</string>
+    <string name="songs_library_text">Songs Library</string>
+    <string name="settings_text">Settings</string>
+    <string name="Login_with_google">Login with google</string>
+    <string name="share_a_word_text">Share a word</string>
+    <string name="others_text">Others</string>
 </resources>

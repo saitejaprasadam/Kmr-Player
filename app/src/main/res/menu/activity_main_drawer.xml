@@ -2,34 +2,33 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
+
         <item
-            android:id="@+id/nav_camera"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Import" />
+            android:id="@+id/song_library"
+            android:icon="@mipmap/ic_library_music_white_24dp"
+            android:title="@string/songs_library_text" />
+
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
-        <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:checkable="false"
+            android:id="@+id/nav_google_signup"
+            android:icon="@mipmap/ic_sync_problem_black_24dp"
+            android:title="@string/Login_with_google" />
+
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="@string/others_text">
         <menu>
-            <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
+
             <item
                 android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
+                android:icon="@mipmap/ic_settings_white_24dp"
+                android:title="@string/settings_text" />
+
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@mipmap/ic_share_white_24dp"
+                android:title="@string/share_a_word_text" />
+
         </menu>
     </item>
 

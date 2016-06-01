@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.prasadam.smartcast">
+    package="com.prasadam.kmrplayer">
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
@@ -8,7 +8,15 @@
     <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+
     <action android:name="android.intent.action.MEDIA_BUTTON" />
+
+    <meta-data
+        android:name="com.google.android.gms.version"
+        android:value="@integer/google_play_services_version" />
 
     <application
         android:allowBackup="true"
@@ -16,8 +24,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
-            android:name=".MainActivity"
+            android:name="com.prasadam.kmrplayer.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -26,25 +35,25 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".testActivity"/>
-        <activity android:name=".TagEditorActivity" android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition"/>
-        <activity android:name=".AlbumActivity" android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition"/>
-        <activity android:name=".RecentlyAddedActivity" android:theme="@style/ColoredStatusBar" android:label="@string/recently_added_text"/>
-        <activity android:name=".FavoritesActivity" android:theme="@style/ColoredStatusBar" android:label="@string/favorites_text"/>
-        <activity android:name=".SongPlaybackHistoryActivity" android:theme="@style/ColoredStatusBar" android:label="@string/history_text"/>
-        <activity android:name=".MostPlayedSongsActivity" android:theme="@style/ColoredStatusBar" android:label="@string/most_played_text"/>
-        <activity android:name=".CustomPlaylistActivity" android:theme="@style/ColoredStatusBar" android:label="@string/custom_playlist_text"/>
-        <activity android:name=".CustomPlaylistInnerActivity" android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition"/>
+        <activity android:name="com.prasadam.kmrplayer.testActivity"/>
+        <activity android:name="com.prasadam.kmrplayer.TagEditorActivity" android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition"/>
+        <activity android:name="com.prasadam.kmrplayer.AlbumActivity" android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition"/>
+        <activity android:name="com.prasadam.kmrplayer.RecentlyAddedActivity" android:theme="@style/ColoredStatusBar" android:label="@string/recently_added_text"/>
+        <activity android:name="com.prasadam.kmrplayer.FavoritesActivity" android:theme="@style/ColoredStatusBar" android:label="@string/favorites_text"/>
+        <activity android:name="com.prasadam.kmrplayer.SongPlaybackHistoryActivity" android:theme="@style/ColoredStatusBar" android:label="@string/history_text"/>
+        <activity android:name="com.prasadam.kmrplayer.MostPlayedSongsActivity" android:theme="@style/ColoredStatusBar" android:label="@string/most_played_text"/>
+        <activity android:name="com.prasadam.kmrplayer.CustomPlaylistActivity" android:theme="@style/ColoredStatusBar" android:label="@string/custom_playlist_text"/>
+        <activity android:name="com.prasadam.kmrplayer.CustomPlaylistInnerActivity" android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition"/>
 
-        <service  android:name=".audioPackages.musicServiceClasses.MusicService" android:enabled="true"></service>
+        <service  android:name="com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicService" android:enabled="true"></service>
 
-        <receiver android:name="com.prasadam.smartcast.audioPackages.musicServiceClasses.NotificationBroadcast" >
+        <receiver android:name="com.prasadam.kmrplayer.audioPackages.musicServiceClasses.NotificationBroadcast" >
             <intent-filter>
-                <action android:name="com.prasadam.smartcast.delete" />
-                <action android:name="com.prasadam.smartcast.pause" />
-                <action android:name="com.prasadam.smartcast.next" />
-                <action android:name="com.prasadam.smartcast.play" />
-                <action android:name="com.prasadam.smartcast.previous" />
+                <action android:name="com.prasadam.kmrplayer.delete" />
+                <action android:name="com.prasadam.kmrplayer.pause" />
+                <action android:name="com.prasadam.kmrplayer.next" />
+                <action android:name="com.prasadam.kmrplayer.play" />
+                <action android:name="com.prasadam.kmrplayer.previous" />
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </receiver>
