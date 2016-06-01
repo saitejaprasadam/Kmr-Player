@@ -33,6 +33,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.RandomAccessFile;
+import java.math.BigInteger;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -49,6 +52,33 @@ public class AudioExtensionMethods {
                 return songsList.indexOf(song);
 
         return -1;
+    }
+
+    public static String generateHashID(String songPath){
+
+        try{
+            File file = new File(songPath);
+            byte[] bFile;
+
+            if(file.length() < 1000)
+                bFile = new byte[(int) file.length()];
+
+            else
+                bFile = new byte[1000];
+
+            RandomAccessFile fileInputStream = new RandomAccessFile(file, "r");
+            fileInputStream.seek(fileInputStream.length() - bFile.length);
+            fileInputStream.read(bFile, 0, bFile.length);
+            fileInputStream.close();
+
+            MessageDigest messageDigest  = MessageDigest.getInstance("SHA-1");
+            byte[] digest = messageDigest.digest(bFile);
+            return new BigInteger(1, digest).toString(16);
+        }
+
+        catch (Exception ignored){}
+
+        return null;
     }
 
     public static void updateSongList(Context context) {

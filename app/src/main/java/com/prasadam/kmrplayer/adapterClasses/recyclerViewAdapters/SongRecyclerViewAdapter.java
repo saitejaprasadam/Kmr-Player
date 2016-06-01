@@ -179,6 +179,39 @@ public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Song
                     }
                 }
             }
+
+            //final File[] file = new File[1];
+            //final byte[][] bFile = new byte[1][1];
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+
+                    try{
+
+                        /*file[0] = new File(currentSongDetails.getData());
+                        if(file[0].length() < 1000)
+                            bFile[0] = new byte[(int) file[0].length()];
+
+                        else
+                            bFile[0] = new byte[1000];
+
+                        RandomAccessFile fileInputStream = new RandomAccessFile(file[0], "r");
+                        fileInputStream.seek(fileInputStream.length() - bFile[0].length);
+                        fileInputStream.read(bFile[0], 0, bFile[0].length);
+                        fileInputStream.close();
+
+                        MessageDigest messageDigest  = MessageDigest.getInstance("SHA-1");
+                        byte[] digest = messageDigest.digest(bFile[0]);
+                        String result = new BigInteger(1, digest).toString(16);
+
+                        Log.d("Hashed : " + currentSongDetails.getTitle(), result);*/
+                    }
+
+                    catch (Exception ex){ Log.d(String.valueOf(ex), "exception generating hash");}
+                }
+            }).start();
+
         }
 
         catch (Exception ignored){}
