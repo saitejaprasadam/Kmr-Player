@@ -4,7 +4,7 @@
     android:id="@+id/rootLayout_recycler_view"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="120dp"
+    android:layout_height="140dp"
     android:layout_margin="5dp"
     android:foreground="?android:attr/selectableItemBackground"
     android:clickable="true">
@@ -23,7 +23,7 @@
                     android:id="@+id/background_image_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="fitXY"
+                    android:scaleType="centerCrop"
                     android:contentDescription="@string/background_image_view_text" />
 
                 <ImageView

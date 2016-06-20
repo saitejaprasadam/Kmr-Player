@@ -1,5 +1,6 @@
 package com.prasadam.kmrplayer.audioPackages.fragments;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -7,10 +8,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
+import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
+import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.prasadam.kmrplayer.R;
 
 /*
@@ -25,6 +30,7 @@ public class TabFragment extends Fragment{
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         View x =  inflater.inflate(R.layout.fragment_songs_tab_layout, null);
         tabLayout = (TabLayout) x.findViewById(R.id.tabs);
         viewPager = (ViewPager) x.findViewById(R.id.viewpager);

@@ -25,9 +25,14 @@
                     android:id="@+id/blurred_album_art"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:src="@mipmap/ic_launcher"
+                    android:src="@mipmap/unkown_album_art"
                     android:adjustViewBounds="true"
                     android:scaleType="centerCrop"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/actionbar_gradient_dark" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -53,7 +58,7 @@
                             android:id="@+id/actual_album_art"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:src="@mipmap/ic_launcher"
+                            android:src="@mipmap/unkown_album_art"
                             android:adjustViewBounds="true"
                             android:clickable="true"
                             android:foreground="?android:attr/selectableItemBackground"/>

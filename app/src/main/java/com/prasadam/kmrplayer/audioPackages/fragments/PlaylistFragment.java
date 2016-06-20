@@ -33,17 +33,25 @@ public class PlaylistFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_playlist, container, false);
+        initFragment(rootView);
+        return rootView;
+    }
+
+    private void initFragment(View rootView) {
         recentlyAddedPlaylistLinearLayout = (LinearLayout) rootView.findViewById(R.id.recently_added_playlist);
         favoritesPlaylistLinearLayout = (LinearLayout) rootView.findViewById(R.id.favorites_playlist);
         songsPlaybackHistoryLinearLayout = (LinearLayout) rootView.findViewById(R.id.songs_playback_history);
         mostPlayedLinearLayout = (LinearLayout) rootView.findViewById(R.id.most_played_linear_layout);
         customPlaylistLinearLayout = (LinearLayout) rootView.findViewById(R.id.custom_playlist_linear_layout);
-        return rootView;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        addListeners();
+    }
+
+    private void addListeners() {
 
         recentlyAddedPlaylistLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override

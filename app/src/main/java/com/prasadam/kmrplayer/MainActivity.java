@@ -1,5 +1,6 @@
 package com.prasadam.kmrplayer;
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -17,6 +18,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
+import com.github.ksoichiro.android.observablescrollview.ScrollState;
+import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.nineoldandroids.view.ViewHelper;
+import com.nineoldandroids.view.ViewPropertyAnimator;
 import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.audioPackages.fragments.AlbumsFragment;
 import com.prasadam.kmrplayer.audioPackages.fragments.SongsFragment;
@@ -31,7 +38,7 @@ import java.util.Calendar;
 import static com.prasadam.kmrplayer.sharedClasses.ExtensionMethods.setStatusBarTranslucent;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener{
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +58,7 @@ public class MainActivity extends AppCompatActivity
         FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
         mFragmentTransaction.replace(R.id.containerView, new TabFragment()).commit();
 
+        //new DrawerBuilder().withActivity(this).build();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -84,17 +92,23 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void startMusicService() {
-        boolean isServiceRunning = UtilFunctions.isServiceRunning(MusicService.class.getName(), getApplicationContext());
-        if (!isServiceRunning) {
-            Intent i = new Intent(getApplicationContext(), MusicService.class);
-            startService(i);
+
+        try{
+            boolean isServiceRunning = UtilFunctions.isServiceRunning(MusicService.class.getName(), getApplicationContext());
+            if (!isServiceRunning) {
+                Intent i = new Intent(getApplicationContext(), MusicService.class);
+                startService(i);
+            }
+            else
+                PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
+
         }
-        else {
-            PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
-        }
+
+        catch (Exception ignored){}
     }
 
     public void onBackPressed() {
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer != null) {
             if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -106,14 +120,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-
-        //MenuItem item = menu.findItem(R.id.action_search);
-        //searchView.showVoice(true);
-        //searchView.setVoiceSearch(true); //or false
-        //searchView.setMenuItem(item);
-
         return true;
     }
 

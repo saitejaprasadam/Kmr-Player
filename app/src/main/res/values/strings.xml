@@ -23,7 +23,6 @@
     <string name="action_refresh">Refresh</string>
     <string name="sort_text">Sort</string>
     <string name="Shout_text">Shout Out</string>
-    <string name="post_text">Post</string>
     <string name="share_with_text">Share with</string>
     <string name="jump_to_artist_text">Jump to artist</string>
     <string name="jump_to_album_text">Jump to album</string>
@@ -68,4 +67,7 @@
     <string name="Login_with_google">Login with google</string>
     <string name="share_a_word_text">Share a word</string>
     <string name="others_text">Others</string>
+    <string name="refresh_text">refresh</string>
+    <string name="list_updated_text">List updated</string>
+    <string name="post_text">Post</string>
 </resources>

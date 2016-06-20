@@ -146,37 +146,55 @@ public class AlbumActivity extends Activity{
             String albumArtPath = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
             albumNameTextView.setText(musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM)));
             artistNameTextView.setText(musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST)));
-            final File imgFile = new File(albumArtPath);
-            if(imgFile.exists())// /storage/emulated/0/Android/data/com.android.providers.media/albumthumbs/1454267773223
-            {
-                actualAlbumArt.setImageURI(Uri.parse("file://" + imgFile.getAbsolutePath()));
-                blurredAlbumArt.setImageBitmap(BlurBuilder.blur(this, ((BitmapDrawable) actualAlbumArt.getDrawable()).getBitmap()));
-                final Bitmap bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
-                    @Override
-                    public void onGenerated(Palette palette) {
-                        Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
+            final Bitmap bitmap;
 
+            if(albumArtPath != null)
+            {
+                final File imgFile = new File(albumArtPath);
+                if(imgFile.exists())// /storage/emulated/0/Android/data/com.android.providers.media/albumthumbs/1454267773223
+                {
+                    actualAlbumArt.setImageURI(Uri.parse("file://" + imgFile.getAbsolutePath()));
+                    blurredAlbumArt.setImageBitmap(BlurBuilder.blur(this, ((BitmapDrawable) actualAlbumArt.getDrawable()).getBitmap()));
+                    bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                }
+
+                else{
+                    bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.unkown_album_art);
+                    actualAlbumArt.setImageResource(R.mipmap.unkown_album_art);
+                    blurredAlbumArt.setImageBitmap(BlurBuilder.blur(this, ((BitmapDrawable) actualAlbumArt.getDrawable()).getBitmap()));
+                }
+            }
+
+            else{
+                bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.unkown_album_art);
+                actualAlbumArt.setImageResource(R.mipmap.unkown_album_art);
+                blurredAlbumArt.setImageBitmap(BlurBuilder.blur(this, ((BitmapDrawable) actualAlbumArt.getDrawable()).getBitmap()));
+            }
+
+            Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
+                @Override
+                public void onGenerated(Palette palette) {
+                    Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
+
+                    if (vibrantSwatch != null) {
+                        colorBoxLayout.setBackgroundColor(vibrantSwatch.getRgb());
+                        albumNameTextView.setTextColor(vibrantSwatch.getBodyTextColor());
+                        artistNameTextView.setTextColor(vibrantSwatch.getTitleTextColor());
+                    }
+
+                    else
+                    {
+                        vibrantSwatch = palette.getMutedSwatch();
                         if (vibrantSwatch != null) {
                             colorBoxLayout.setBackgroundColor(vibrantSwatch.getRgb());
                             albumNameTextView.setTextColor(vibrantSwatch.getBodyTextColor());
+                            //toolbar.setNavigationIcon(R.mipmap.ic_chevron_left_black_24dp);
+                            //verticalMoreImageView.setImageResource(R.mipmap.ic_more_vert_black_24dp);
                             artistNameTextView.setTextColor(vibrantSwatch.getTitleTextColor());
                         }
-
-                        else
-                        {
-                            vibrantSwatch = palette.getMutedSwatch();
-                            if (vibrantSwatch != null) {
-                                colorBoxLayout.setBackgroundColor(vibrantSwatch.getRgb());
-                                albumNameTextView.setTextColor(vibrantSwatch.getBodyTextColor());
-                                toolbar.setNavigationIcon(R.mipmap.ic_chevron_left_black_24dp);
-                                verticalMoreImageView.setImageResource(R.mipmap.ic_more_vert_black_24dp);
-                                artistNameTextView.setTextColor(vibrantSwatch.getTitleTextColor());
-                            }
-                        }
                     }
-                });
-            }
+                }
+            });
         }
         getSongsList();
     }

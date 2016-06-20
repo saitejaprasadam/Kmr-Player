@@ -5,6 +5,7 @@ import android.content.Context;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Album;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.audioPackages.modelClasses.SongIdentification;
 
 import java.util.ArrayList;
 
@@ -22,4 +23,6 @@ public class SharedVariables {
     public static ArrayList<Song> fullSongsList = new ArrayList<>();
 
     public static ArrayList<Album> fullAlbumList = new ArrayList<>();
+
+    public static ArrayList<SongIdentification> songIdentifications = new ArrayList<>();
 }

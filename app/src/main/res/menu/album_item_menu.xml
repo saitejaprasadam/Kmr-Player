@@ -10,10 +10,6 @@
         android:title="@string/Shout_text"/>
 
     <item
-        android:id="@+id/song_context_menu_details"
-        android:title="@string/album_details_text" />
-
-    <item
         android:id="@+id/song_context_menu_jump_to_artist"
         android:title="@string/jump_to_artist_text" />
 

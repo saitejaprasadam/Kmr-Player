@@ -61,9 +61,6 @@ public class RecentlyAddedActivity extends AppCompatActivity {
         else
         {
             recyclerViewAdapter = new RecentlyAddedRecyclerViewAdapter(this, songsList);
-            recentlyAddedRecyclerView.setAdapter(recyclerViewAdapter);
-            recentlyAddedRecyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
-
             if (!ExtensionMethods.isTablet(this)) {
                 if (!ExtensionMethods.isLandScape(this))    //Mobile Portrait
                     recentlyAddedRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -77,11 +74,15 @@ public class RecentlyAddedActivity extends AppCompatActivity {
                 if (ExtensionMethods.isLandScape(this))    //Tablet Landscape
                     recentlyAddedRecyclerView.setLayoutManager(new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false));
             }
+
+            recentlyAddedRecyclerView.setAdapter(recyclerViewAdapter);
+            recentlyAddedRecyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         getMenuInflater().inflate(R.menu.activity_recently_added_songs_menu, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);

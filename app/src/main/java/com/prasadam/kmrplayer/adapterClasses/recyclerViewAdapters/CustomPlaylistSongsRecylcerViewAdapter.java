@@ -160,23 +160,31 @@ public class CustomPlaylistSongsRecylcerViewAdapter extends RecyclerView.Adapter
                 });
             }
 
+            setAlbumArt(holder, currentSongDetails);
 
-            {   //Album art
-                String albumArtPath = currentSongDetails.getAlbumArtLocation();
-                if(albumArtPath != null)
-                {
-                    File imgFile = new File(albumArtPath);
-                    if(imgFile.exists())// /storage/emulated/0/Android/data/com.android.providers.media/albumthumbs/1454267773223
-                    {
-                        holder.AlbumArtImageView.setImageURI(Uri.parse("file://" + imgFile.getAbsolutePath()));
-                        holder.albumPath = imgFile.getAbsolutePath();
-                        //Picasso.with(context).load("file://" + imgFile.getAbsolutePath()).into(holder.AlbumArtImageView);
-                    }
-                }
-            }
         }
 
         catch (Exception ignored){}
+    }
+
+    private void setAlbumArt(songsViewHolder holder, Song currentSongDetails) {
+
+        String albumArtPath = currentSongDetails.getAlbumArtLocation();
+        if(albumArtPath != null)
+        {
+            File imgFile = new File(albumArtPath);
+            if(imgFile.exists())// /storage/emulated/0/Android/data/com.android.providers.media/albumthumbs/1454267773223
+            {
+                holder.AlbumArtImageView.setImageURI(Uri.parse("file://" + imgFile.getAbsolutePath()));
+                holder.albumPath = imgFile.getAbsolutePath();
+                //Picasso.with(context).load("file://" + imgFile.getAbsolutePath()).into(holder.AlbumArtImageView);
+            }
+            else
+                holder.AlbumArtImageView.setImageResource(R.mipmap.unkown_album_art);
+        }
+        else
+            holder.AlbumArtImageView.setImageResource(R.mipmap.unkown_album_art);
+
     }
 
     @Override

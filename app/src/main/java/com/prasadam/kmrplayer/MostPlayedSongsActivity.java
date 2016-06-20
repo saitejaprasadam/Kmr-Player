@@ -61,9 +61,6 @@ public class MostPlayedSongsActivity extends AppCompatActivity {
         {
             recyclerViewAdapter = new FavoritesRecyclerViewAdapter(this, songsList);
 
-            mostPlayedRecylcerView.setAdapter(recyclerViewAdapter);
-            mostPlayedRecylcerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
-
             if (!ExtensionMethods.isTablet(this))
             {
                 if(!ExtensionMethods.isLandScape(this))    //Mobile Portrait
@@ -80,6 +77,9 @@ public class MostPlayedSongsActivity extends AppCompatActivity {
                 if(ExtensionMethods.isLandScape(this))    //Tablet Landscape
                     mostPlayedRecylcerView.setLayoutManager(new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false));
             }
+
+            mostPlayedRecylcerView.setAdapter(recyclerViewAdapter);
+            mostPlayedRecylcerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         }
 
     }
@@ -100,9 +100,9 @@ public class MostPlayedSongsActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         final int id = item.getItemId();
-        if (id == android.R.id.home) {
+        if (id == android.R.id.home)
             finish();
-        }
+
         return false;
     }
 }

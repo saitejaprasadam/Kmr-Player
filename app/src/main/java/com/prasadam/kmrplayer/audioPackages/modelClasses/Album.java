@@ -1,6 +1,6 @@
 package com.prasadam.kmrplayer.audioPackages.modelClasses;
 
-/**
+/*
  * Created by Prasadam Saiteja on 3/25/2016.
  */
 public class Album {
@@ -26,6 +26,7 @@ public class Album {
     public String getAlbumArtLocation(){return albumArtLocation;}
 
     public Boolean isColorSet(){
+
         if(colorBoxLayoutColor != 0 && albumNameTextViewColor != 0 && artistNameTextViewColor != 0)
             return true;
 

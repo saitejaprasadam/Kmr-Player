@@ -112,7 +112,29 @@ public class MusicService extends Service implements
     }
 
     @Override
-    public void onAudioFocusChange(int focusChange) { player.pause();}
+    public void onAudioFocusChange(int focusChange) {
+
+        switch (focusChange) {
+
+            case AudioManager.AUDIOFOCUS_LOSS:
+                player.pause();
+                break;
+
+            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+                player.pause();
+                break;
+
+            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                player.setVolume(0.5f, 0.5f);
+                break;
+
+            case AudioManager.AUDIOFOCUS_GAIN:
+                player.start();
+                player.setVolume(1.0f, 1.0f);
+                break;
+        }
+
+    }
 
     @SuppressLint("NewApi")
     @Override
@@ -218,7 +240,7 @@ public class MusicService extends Service implements
         metadataEditor.putString(MediaMetadataRetriever.METADATA_KEY_TITLE, song.getTitle());
         mDummyAlbumArt = UtilFunctions.getAlbumart(getApplicationContext(), Long.valueOf(song.getAlbumID()));
         if(mDummyAlbumArt == null){
-            mDummyAlbumArt = BitmapFactory.decodeResource(getResources(), R.drawable.dots_vertical);
+            mDummyAlbumArt = BitmapFactory.decodeResource(getResources(), R.mipmap.unkown_album_art);
         }
         metadataEditor.putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, mDummyAlbumArt);
         metadataEditor.apply();
@@ -280,8 +302,10 @@ public class MusicService extends Service implements
     @SuppressLint("NewApi")
     private void newNotification() {
 
-        String songName = PlayerConstants.SONGS_LIST.get(PlayerConstants.SONG_NUMBER).getTitle();
-        String albumName = PlayerConstants.SONGS_LIST.get(PlayerConstants.SONG_NUMBER).getAlbum();
+        currentSong = PlayerConstants.SONGS_LIST.get(PlayerConstants.SONG_NUMBER);
+
+        String songName = currentSong.getTitle();
+        String albumName = currentSong.getAlbum();
         RemoteViews simpleContentView = new RemoteViews(getApplicationContext().getPackageName(),R.layout.custom_notification);
         RemoteViews expandedView = new RemoteViews(getApplicationContext().getPackageName(), R.layout.big_notification);
 
@@ -306,9 +330,9 @@ public class MusicService extends Service implements
                     notification.bigContentView.setImageViewBitmap(R.id.imageViewAlbumArt, albumArt);
                 }
             }else{
-                notification.contentView.setImageViewResource(R.id.imageViewAlbumArt, R.mipmap.default_album_art);
+                notification.contentView.setImageViewResource(R.id.imageViewAlbumArt, R.mipmap.unkown_album_art);
                 if(currentVersionSupportBigNotification){
-                    notification.bigContentView.setImageViewResource(R.id.imageViewAlbumArt, R.mipmap.default_album_art);
+                    notification.bigContentView.setImageViewResource(R.id.imageViewAlbumArt, R.mipmap.unkown_album_art);
                 }
             }
         }catch(Exception e){
@@ -354,16 +378,7 @@ public class MusicService extends Service implements
                 notIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Notification.Builder builder = new Notification.Builder(this);
-        AudioExtensionMethods.addSongToHistory(getBaseContext(), currentSong.getID());
-
-        /*builder.setContentIntent(pendInt)
-                .setSmallIcon(R.drawable.ic_favorite_black_24dp)
-                .setTicker(songTitle)
-                .setOngoing(true)
-                .setContentTitle(songTitle)
-                .setContentText(currentSong.getArtist());
-        Notification not = builder.build();
-        startForeground(NOTIFY_ID, not);*/
+        AudioExtensionMethods.addSongToHistory(getBaseContext(), currentSong.getHashID());
     }
 
     public void playSong(){}

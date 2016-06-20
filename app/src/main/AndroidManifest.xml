@@ -20,7 +20,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/launcher_icon"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -35,7 +35,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.prasadam.kmrplayer.testActivity"/>
         <activity android:name="com.prasadam.kmrplayer.TagEditorActivity" android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition"/>
         <activity android:name="com.prasadam.kmrplayer.AlbumActivity" android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition"/>
         <activity android:name="com.prasadam.kmrplayer.RecentlyAddedActivity" android:theme="@style/ColoredStatusBar" android:label="@string/recently_added_text"/>
@@ -45,7 +44,7 @@
         <activity android:name="com.prasadam.kmrplayer.CustomPlaylistActivity" android:theme="@style/ColoredStatusBar" android:label="@string/custom_playlist_text"/>
         <activity android:name="com.prasadam.kmrplayer.CustomPlaylistInnerActivity" android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition"/>
 
-        <service  android:name="com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicService" android:enabled="true"></service>
+        <service  android:name="com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicService" android:enabled="true"/>
 
         <receiver android:name="com.prasadam.kmrplayer.audioPackages.musicServiceClasses.NotificationBroadcast" >
             <intent-filter>

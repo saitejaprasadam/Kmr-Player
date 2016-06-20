@@ -54,8 +54,6 @@ public class FavoritesActivity extends AppCompatActivity{
 
         else{
             recyclerViewAdapter = new FavoritesRecyclerViewAdapter(this, favoriteSongList);
-            recyclerView.setAdapter(recyclerViewAdapter);
-            recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
 
             if (!ExtensionMethods.isTablet(this))
             {
@@ -73,6 +71,9 @@ public class FavoritesActivity extends AppCompatActivity{
                 if(ExtensionMethods.isLandScape(this))    //Tablet Landscape
                     recyclerView.setLayoutManager(new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false));
             }
+
+            recyclerView.setAdapter(recyclerViewAdapter);
+            recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         }
     }
 

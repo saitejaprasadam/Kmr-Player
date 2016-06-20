@@ -88,6 +88,12 @@ public class CustomPlaylistRecyclerViewAdapter extends RecyclerView.Adapter<Cust
     }
 
     private void setAlbumArt(songsViewHolder holder, ArrayList<String> albumArtPathList) {
+
+        if(albumArtPathList.size() == 0){
+                holder.albumartImageView1.setImageResource(R.mipmap.unkown_album_art);
+                holder.blurredBckgorundImageView.setImageBitmap(BlurBuilder.blur(context, ((BitmapDrawable) holder.albumartImageView1.getDrawable()).getBitmap()));
+        }
+
         if(albumArtPathList.size() > 0){
             String albumArtPath = albumArtPathList.get(0);
             if(albumArtPath != null)

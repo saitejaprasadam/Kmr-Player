@@ -25,14 +25,6 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary" />
 
-            <!--
-            <com.miguelcatalan.materialsearchview.MaterialSearchView
-                android:id="@+id/search_view"
-                app:searchVoiceIcon="@drawable/ic_action_action_search"
-                style="@style/MaterialSearchViewStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" /> -->
-
         </FrameLayout>
 
     </android.support.design.widget.AppBarLayout>

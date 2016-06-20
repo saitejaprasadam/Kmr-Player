@@ -39,7 +39,7 @@ import butterknife.ButterKnife;
  * Created by Prasadam Saiteja on 5/16/2016.
  */
 
-public class AlbumInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapter<AlbumInnerLayoutSongRecyclerViewAdapter.songsViewHolder> {
+public class AlbumInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapter<AlbumInnerLayoutSongRecyclerViewAdapter.songsViewHolder>{
 
     private LayoutInflater inflater;
     private ArrayList<Song> songsList = new ArrayList<>();
@@ -186,9 +186,6 @@ public class AlbumInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapte
         return songsList.size();
     }
 
-    /// <summary>RecyclerView view holder (Inner class)t
-    /// <para>creates a view holder for individual song</para>
-    /// </summary>
     class songsViewHolder extends RecyclerView.ViewHolder{
 
         @Bind (R.id.songTitle_RecyclerView) TextView titleTextView;

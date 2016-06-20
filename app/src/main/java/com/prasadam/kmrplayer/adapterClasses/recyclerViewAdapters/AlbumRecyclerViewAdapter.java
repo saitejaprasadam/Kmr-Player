@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
@@ -21,7 +22,7 @@ import com.prasadam.kmrplayer.AlbumActivity;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Album;
 import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
-import com.turingtechnologies.materialscrollbar.INameableAdapter;
+import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 import java.io.File;
 
@@ -31,7 +32,8 @@ import butterknife.ButterKnife;
 /*
  * Created by Prasadam Saiteja on 3/25/2016.
  */
-public class AlbumRecyclerViewAdapter extends ObservableRecyclerView.Adapter<AlbumRecyclerViewAdapter.AlbumViewHolder> implements INameableAdapter {
+
+public class AlbumRecyclerViewAdapter extends ObservableRecyclerView.Adapter<AlbumRecyclerViewAdapter.AlbumViewHolder> implements FastScrollRecyclerView.SectionedAdapter{
 
     private Context context;
     private LayoutInflater inflater;
@@ -54,7 +56,6 @@ public class AlbumRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Alb
     public void onBindViewHolder(final AlbumRecyclerViewAdapter.AlbumViewHolder holder, int position) {
 
         final Album currentAlbum = SharedVariables.fullAlbumList.get(position);
-
         holder.albumNameTextView.setText(currentAlbum.getTitle());
         holder.artistNameTextView.setText(currentAlbum.getArtist());
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
@@ -69,65 +70,90 @@ public class AlbumRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Alb
             }
         });
 
+        setAlbumArt(holder, currentAlbum);
+    }
 
-        {   //Album art
-            String albumArtPath = currentAlbum.getAlbumArtLocation();
-            if(albumArtPath != null)
+    private void setAlbumArt(final AlbumViewHolder holder, final Album currentAlbum) {
+
+
+        String albumArtPath = currentAlbum.getAlbumArtLocation();
+
+        if(albumArtPath != null)
+        {
+            final File imgFile = new File(albumArtPath);
+            if(imgFile.exists())
             {
-                final File imgFile = new File(albumArtPath);
-                if(imgFile.exists())// /storage/emulated/0/Android/data/com.android.providers.media/albumthumbs/1454267773223
-                {
-                    holder.albumArtImageView.setImageURI(Uri.parse("file://" + imgFile.getAbsolutePath()));
-
-                    if(currentAlbum.isColorSet()){
-                        holder.colorBoxLayout.setBackgroundColor(currentAlbum.colorBoxLayoutColor);
-                        holder.albumNameTextView.setTextColor(currentAlbum.albumNameTextViewColor);
-                        holder.artistNameTextView.setTextColor(currentAlbum.artistNameTextViewColor);
-                    }
-
-                    if(!currentAlbum.isColorSet())
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            final Bitmap bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-
-                            Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
-                                @Override
-                                public void onGenerated(Palette palette) {
-                                    Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
-                                    if (vibrantSwatch != null) {
-                                        holder.colorBoxLayout.setBackgroundColor(vibrantSwatch.getRgb());
-                                        currentAlbum.colorBoxLayoutColor = vibrantSwatch.getRgb();
-
-                                        holder.albumNameTextView.setTextColor(vibrantSwatch.getBodyTextColor());
-                                        currentAlbum.albumNameTextViewColor = vibrantSwatch.getBodyTextColor();
-
-                                        holder.artistNameTextView.setTextColor(vibrantSwatch.getTitleTextColor());
-                                        currentAlbum.artistNameTextViewColor = vibrantSwatch.getTitleTextColor();
-                                    }
-
-                                    else
-                                    {
-                                        vibrantSwatch = palette.getMutedSwatch();
-                                        if (vibrantSwatch != null) {
-                                            holder.colorBoxLayout.setBackgroundColor(vibrantSwatch.getRgb());
-                                            currentAlbum.colorBoxLayoutColor = vibrantSwatch.getRgb();
-
-                                            holder.albumNameTextView.setTextColor(vibrantSwatch.getBodyTextColor());
-                                            currentAlbum.albumNameTextViewColor = vibrantSwatch.getBodyTextColor();
-
-                                            holder.artistNameTextView.setTextColor(vibrantSwatch.getTitleTextColor());
-                                            currentAlbum.artistNameTextViewColor = vibrantSwatch.getTitleTextColor();
-                                        }
-                                    }
-                                }
-                            });
-                        }
-                    }).start();
-                    //Picasso.with(context).load("file://" + imgFile.getAbsolutePath()).into(holder.AlbumArtImageView);
-                }
+                setImage(holder, "file://" + imgFile.getAbsolutePath());
+                holder.albumLocation = imgFile.getAbsolutePath();
             }
+
+            else
+                setImage(holder, null);
         }
+
+        else
+            setImage(holder, null);
+
+
+        if(currentAlbum.isColorSet()){
+            holder.colorBoxLayout.setBackgroundColor(currentAlbum.colorBoxLayoutColor);
+            holder.albumNameTextView.setTextColor(currentAlbum.albumNameTextViewColor);
+            holder.artistNameTextView.setTextColor(currentAlbum.artistNameTextViewColor);
+        }
+
+        if(!currentAlbum.isColorSet())
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+
+                    Bitmap bitmap = getBitMap(holder.albumLocation);
+                    Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
+                        @Override
+                        public void onGenerated(Palette palette) {
+                            Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
+                            if (vibrantSwatch != null) {
+                                holder.colorBoxLayout.setBackgroundColor(vibrantSwatch.getRgb());
+                                currentAlbum.colorBoxLayoutColor = vibrantSwatch.getRgb();
+
+                                holder.albumNameTextView.setTextColor(vibrantSwatch.getBodyTextColor());
+                                currentAlbum.albumNameTextViewColor = vibrantSwatch.getBodyTextColor();
+
+                                holder.artistNameTextView.setTextColor(vibrantSwatch.getTitleTextColor());
+                                currentAlbum.artistNameTextViewColor = vibrantSwatch.getTitleTextColor();
+                            }
+
+                            else
+                            {
+                                vibrantSwatch = palette.getMutedSwatch();
+                                if (vibrantSwatch != null) {
+                                    holder.colorBoxLayout.setBackgroundColor(vibrantSwatch.getRgb());
+                                    currentAlbum.colorBoxLayoutColor = vibrantSwatch.getRgb();
+
+                                    holder.albumNameTextView.setTextColor(vibrantSwatch.getBodyTextColor());
+                                    currentAlbum.albumNameTextViewColor = vibrantSwatch.getBodyTextColor();
+
+                                    holder.artistNameTextView.setTextColor(vibrantSwatch.getTitleTextColor());
+                                    currentAlbum.artistNameTextViewColor = vibrantSwatch.getTitleTextColor();
+                                }
+                            }
+                        }
+                    });
+                }
+            }).start();
+    }
+
+    private Bitmap getBitMap(String absolutePath) {
+        if(absolutePath == null)
+            return BitmapFactory.decodeResource(context.getResources(), R.mipmap.unkown_album_art);
+
+        return BitmapFactory.decodeFile(absolutePath);
+    }
+
+    private void setImage(final AlbumViewHolder holder, final String albumpath){
+        if(albumpath == null)
+            holder.albumArtImageView.setImageResource(R.mipmap.unkown_album_art);
+        else
+            holder.albumArtImageView.setImageURI(Uri.parse(albumpath));
     }
 
     @Override
@@ -135,19 +161,17 @@ public class AlbumRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Alb
         return SharedVariables.fullAlbumList.size();
     }
 
-
+    @NonNull
     @Override
-    public Character getCharacterForElement(int element) {
+    public String getSectionName(int position) {
 
-        int position = element * 2;
         Character c = SharedVariables.fullAlbumList.get(position).getTitle().charAt(0);
-
-        if(Character.isDigit(c) || c.equals('<')){
+        if(Character.isDigit(c)){
             c = '#';
         }
-        return c;
-    }
 
+        return String.valueOf(c);
+    }
 
     class AlbumViewHolder extends RecyclerView.ViewHolder{
 
@@ -156,6 +180,7 @@ public class AlbumRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Alb
         @Bind (R.id.Artist_name_albumrecyclerview) TextView artistNameTextView;
         @Bind (R.id.color_box_layout_albumrecyclerview) RelativeLayout colorBoxLayout;
         @Bind (R.id.root_layout_album_recyler_view) android.support.v7.widget.CardView rootLayout;
+        private String albumLocation = null;
 
         public AlbumViewHolder(View itemView) {
             super(itemView);

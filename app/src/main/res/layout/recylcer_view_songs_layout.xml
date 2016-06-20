@@ -22,7 +22,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_margin="10dp">
 
         <com.github.ivbaranov.mfb.MaterialFavoriteButton
             android:id="@+id/fav_button"
@@ -41,11 +42,6 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:src="@drawable/dots_vertical"/>
-
-        <View
-            android:layout_width="20dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"/>
 
     </LinearLayout>
 

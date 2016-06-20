@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.github.ivbaranov.mfb.MaterialFavoriteButton;
 import com.prasadam.kmrplayer.ListenerClasses.SongsSearchListener;
@@ -61,10 +62,6 @@ public class SongPlaybackHistoryActivity extends AppCompatActivity {
         else
         {
             recyclerViewAdapter = new RecentlyAddedRecyclerViewAdapter(this, songsList);
-
-            recyclerView.setAdapter(recyclerViewAdapter);
-            recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
-
             if (!ExtensionMethods.isTablet(this))
             {
                 if(!ExtensionMethods.isLandScape(this))    //Mobile Portrait
@@ -81,18 +78,19 @@ public class SongPlaybackHistoryActivity extends AppCompatActivity {
                 if(ExtensionMethods.isLandScape(this))    //Tablet Landscape
                     recyclerView.setLayoutManager(new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false));
             }
+
+            recyclerView.setAdapter(recyclerViewAdapter);
+            recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         }
 
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_recently_added_songs_menu, menu);
 
+        getMenuInflater().inflate(R.menu.activity_recently_added_songs_menu, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        // See above
-        //MenuItemCompat.setOnActionExpandListener(searchItem, new SearchViewExpandListener(this));
         MenuItemCompat.setActionView(searchItem, searchView);
         SongsSearchListener searchListener = new SongsSearchListener(SongPlaybackHistoryActivity.this, songsList, recyclerView, recyclerViewAdapter);
         searchView.setOnQueryTextListener(searchListener);
@@ -108,6 +106,7 @@ public class SongPlaybackHistoryActivity extends AppCompatActivity {
             finish();
             return true;
         }
+
         return false;
     }
 }

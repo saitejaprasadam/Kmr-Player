@@ -12,11 +12,12 @@ import static com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods.setSong
 public class Song
 {
     private long id;
-    private String title, artist, album, duration, data, albumArtLocation, artistID, albumID;
+    private String title, artist, album, duration, data, albumArtLocation, artistID, albumID, hashID;
     private boolean liked;
     public int repeatCount;
 
-    public Song(long songID, String songTitle, String songArtist, String artistID, String songAlbum, String albumID, String songDuration, String songData, String albumArtLocation) {
+    public Song(long songID, String songTitle, String songArtist, String artistID, String songAlbum, String albumID, String songDuration, String songData, String albumArtLocation, String hashID) {
+
         this.id=songID;
         this.title=songTitle;
         this.artist=songArtist;
@@ -26,6 +27,7 @@ public class Song
         this.albumArtLocation = albumArtLocation;
         this.artistID = artistID;
         this.albumID = albumID;
+        this.hashID = hashID;
     }
 
     public long getID(){return id;}
@@ -37,6 +39,7 @@ public class Song
     public String getAlbumArtLocation(){return albumArtLocation;}
     public String getArtistID(){return artistID;}
     public String getAlbumID(){return albumID;}
-    public boolean getIsLiked(Context context) { return isSongFavorite(context, id); }
-    public void setIsLiked(Context context, boolean value) { setSongFavorite(context, id, value); }
+    public boolean getIsLiked(Context context) { return isSongFavorite(context, hashID); }
+    public void setIsLiked(Context context, boolean value) { setSongFavorite(context, hashID, value); }
+    public String getHashID(){return hashID;};
 }
