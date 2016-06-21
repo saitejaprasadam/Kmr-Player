@@ -70,4 +70,5 @@
     <string name="refresh_text">refresh</string>
     <string name="list_updated_text">List updated</string>
     <string name="post_text">Post</string>
+    <string name="x_selected">selected</string>
 </resources>

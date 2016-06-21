@@ -2,17 +2,13 @@ package com.prasadam.kmrplayer.audioPackages.fragments;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -31,7 +27,6 @@ import com.prasadam.kmrplayer.sharedClasses.DividerItemDecoration;
 import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
@@ -107,12 +102,16 @@ public class SongsFragment extends Fragment {
                             recyclerView.setAdapter(recyclerViewAdapter);
                             recyclerView.addItemDecoration(new DividerItemDecoration(mActivity, LinearLayoutManager.VERTICAL));
 
-                            for(int index = 0; index < SharedVariables.fullSongsList.size(); index++){
-                                for (int jndex = index + 1; jndex < SharedVariables.fullSongsList.size(); jndex++)
-                                    if(SharedVariables.fullSongsList.get(index).getHashID().equals(SharedVariables.fullSongsList.get(jndex).getHashID())){
-                                        Toast.makeText(mActivity, "Duplicates found at " + SharedVariables.fullSongsList.get(index).getTitle(), Toast.LENGTH_SHORT).show();
-                                    }
+                            try{
+                                for(int index = 0; index < SharedVariables.fullSongsList.size(); index++){
+                                    for (int jndex = index + 1; jndex < SharedVariables.fullSongsList.size(); jndex++)
+                                        if(SharedVariables.fullSongsList.get(index).getHashID().equals(SharedVariables.fullSongsList.get(jndex).getHashID())){
+                                            Toast.makeText(mActivity, "Duplicates found at " + SharedVariables.fullSongsList.get(index).getTitle(), Toast.LENGTH_SHORT).show();
+                                        }
+                                }
                             }
+
+                            catch (Exception ignored){}
                         }
                     });
 

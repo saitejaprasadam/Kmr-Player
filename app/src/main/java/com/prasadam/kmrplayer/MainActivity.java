@@ -1,6 +1,5 @@
 package com.prasadam.kmrplayer;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -18,12 +17,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
-import com.github.ksoichiro.android.observablescrollview.ScrollState;
-import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
-import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.nineoldandroids.view.ViewHelper;
-import com.nineoldandroids.view.ViewPropertyAnimator;
+import com.afollestad.materialcab.MaterialCab;
+import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.SongRecyclerViewAdapter;
 import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.audioPackages.fragments.AlbumsFragment;
 import com.prasadam.kmrplayer.audioPackages.fragments.SongsFragment;
@@ -33,6 +28,7 @@ import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.PlayerConstants;
 import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.UtilFunctions;
 import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
 
+import java.lang.reflect.Field;
 import java.util.Calendar;
 
 import static com.prasadam.kmrplayer.sharedClasses.ExtensionMethods.setStatusBarTranslucent;
@@ -40,12 +36,12 @@ import static com.prasadam.kmrplayer.sharedClasses.ExtensionMethods.setStatusBar
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    public static MaterialCab cab;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         initalizer();
-
         SharedVariables.Initializers(this);
         startMusicService();
     }
@@ -155,6 +151,7 @@ public class MainActivity extends AppCompatActivity
         }.run();
     }
 
+    //Implemented Methods
     public boolean onNavigationItemSelected(MenuItem item) {
 
         item.getItemId();

@@ -1,0 +1,188 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="false">
+
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <FrameLayout
+                android:layout_height="match_parent"
+                android:id="@+id/album_image_view_anchor"
+                android:layout_width="0dp"
+                android:layout_weight="0.60">
+
+                <ImageView
+                    android:id="@+id/blurred_album_art"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@mipmap/unkown_album_art"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerCrop"/>
+
+                <include
+                    layout="@layout/include_action_bar_gradient"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:weightSum="1">
+
+                    <View
+                        android:layout_height="match_parent"
+                        android:layout_weight=".20"
+                        android:layout_width="0dp" />
+
+
+                    <android.support.v7.widget.CardView
+                        android:layout_width="0dp"
+                        android:layout_gravity="center"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.60"
+                        card_view:cardBackgroundColor="@android:color/white">
+
+                            <com.prasadam.kmrplayer.subClasses.SquareImageview
+                                android:transitionName="AlbumArtImageTranscition"
+                                android:id="@+id/actual_album_art"
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:layout_centerInParent="true"
+                                android:scaleType="centerCrop"
+                                android:adjustViewBounds="true"
+                                android:src="@mipmap/unkown_album_art"
+                                android:clickable="true"
+                                android:foreground="?android:attr/selectableItemBackground"/>
+
+                    </android.support.v7.widget.CardView>
+
+                    <View
+                        android:layout_height="match_parent"
+                        android:layout_weight=".20"
+                        android:layout_width="0dp" />
+
+                </LinearLayout>
+
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_height="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="0.40"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.10"
+                    android:orientation="vertical"
+                    android:id="@+id/albumDetailsLayout">
+
+                    <RelativeLayout
+                        android:id="@+id/album_info_colored_box"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <LinearLayout
+                            android:id="@+id/album_info"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="bottom"
+                            android:padding="10dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/Album_name_albumrecyclerview"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:singleLine="true"
+                                android:textStyle="bold"
+                                android:textAppearance="?android:attr/textAppearanceSmall"
+                                android:textColor="@color/white"
+                                android:text="@string/albums_text"/>
+
+                            <TextView
+                                android:id="@+id/Artist_name_albumrecyclerview"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:singleLine="true"
+                                android:textAppearance="?android:attr/textAppearanceSmall"
+                                android:textColor="@color/white"
+                                android:text="@string/artist_text"/>
+
+                        </LinearLayout>
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.40"
+                    android:background="@color/View_Background"
+                    android:orientation="vertical">
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/songs_recylcer_view_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                    </android.support.v7.widget.RecyclerView>
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- floating action button -->
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:clickable="true"
+            android:id="@+id/shuffle_fab_button"
+            android:src="@mipmap/ic_shuffle_white_24dp"
+            app:layout_anchor="@id/album_image_view_anchor"
+            app:layout_anchorGravity="bottom|right|end" />
+
+    </android.support.design.widget.CoordinatorLayout>
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:theme="@style/TransperantToolbar">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="end"
+            android:layout_marginEnd="10dp">
+
+            <ImageView
+                android:id="@+id/vertical_more_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:src="@mipmap/ic_dots_vertical_white_24dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/more_options_text" />
+
+        </LinearLayout>
+
+    </android.support.v7.widget.Toolbar>
+
+</RelativeLayout>

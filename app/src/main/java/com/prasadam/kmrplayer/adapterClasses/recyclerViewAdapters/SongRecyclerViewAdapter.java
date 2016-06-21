@@ -24,6 +24,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.ivbaranov.mfb.MaterialFavoriteButton;
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
+import com.prasadam.kmrplayer.MainActivity;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
@@ -44,7 +45,7 @@ import butterknife.ButterKnife;
  */
 
 public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<SongRecyclerViewAdapter.songsViewHolder>
-        implements FastScrollRecyclerView.SectionedAdapter {
+        implements FastScrollRecyclerView.SectionedAdapter{
 
     private LayoutInflater inflater;
     private Activity activity;

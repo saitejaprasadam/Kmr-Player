@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
@@ -53,15 +54,23 @@ import butterknife.OnClick;
 public class AlbumActivity extends Activity{
 
     private AlbumInnerLayoutSongRecyclerViewAdapter recyclerViewAdapter;
-    private String albumTitle;
+    private String albumTitle, albumartPath = null;
+    private ArrayList<Song> songList;
     @Bind (R.id.actual_album_art) ImageView actualAlbumArt;
     @Bind (R.id.blurred_album_art) ImageView blurredAlbumArt;
     @Bind (R.id.album_info_colored_box) RelativeLayout colorBoxLayout;
     @Bind (R.id.Album_name_albumrecyclerview) TextView albumNameTextView;
     @Bind (R.id.Artist_name_albumrecyclerview) TextView artistNameTextView;
-    @Bind (R.id.vertical_more_button) ImageView verticalMoreImageView;
     @Bind (R.id.shuffle_fab_button) FloatingActionButton shuffleFabButton;
-    private ArrayList<Song> songList;
+
+    @OnClick (R.id.actual_album_art)
+    public void albumartExpand(View view){
+
+        Intent albumActivityIntent = new Intent(this, ExpandedAlbumartActivity.class);
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, actualAlbumArt, "AlbumArtImageTranscition");
+        albumActivityIntent.putExtra("albumArtPath", albumartPath);
+        startActivity(albumActivityIntent, options.toBundle());
+    }
 
     @OnClick (R.id.vertical_more_button)
     public void moreOnClickButton(View view){
@@ -140,7 +149,7 @@ public class AlbumActivity extends Activity{
             }
         });
 
-        Cursor musicCursor = getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, null, MediaStore.Audio.AlbumColumns.ALBUM + "='" + albumTitle + "'", null, null);
+        Cursor musicCursor = getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, null, MediaStore.Audio.AlbumColumns.ALBUM + "=\"" + albumTitle + "\"", null, null);
         if(musicCursor!=null && musicCursor.moveToFirst()){
 
             String albumArtPath = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
@@ -153,6 +162,7 @@ public class AlbumActivity extends Activity{
                 final File imgFile = new File(albumArtPath);
                 if(imgFile.exists())// /storage/emulated/0/Android/data/com.android.providers.media/albumthumbs/1454267773223
                 {
+                    albumartPath = "file://" + imgFile.getAbsolutePath();
                     actualAlbumArt.setImageURI(Uri.parse("file://" + imgFile.getAbsolutePath()));
                     blurredAlbumArt.setImageBitmap(BlurBuilder.blur(this, ((BitmapDrawable) actualAlbumArt.getDrawable()).getBitmap()));
                     bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());

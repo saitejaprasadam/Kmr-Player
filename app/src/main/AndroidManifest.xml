@@ -25,14 +25,26 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.prasadam.kmrplayer.fileprovider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
+
         <activity
             android:name="com.prasadam.kmrplayer.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
 
         <activity android:name="com.prasadam.kmrplayer.TagEditorActivity" android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition"/>
@@ -43,6 +55,7 @@
         <activity android:name="com.prasadam.kmrplayer.MostPlayedSongsActivity" android:theme="@style/ColoredStatusBar" android:label="@string/most_played_text"/>
         <activity android:name="com.prasadam.kmrplayer.CustomPlaylistActivity" android:theme="@style/ColoredStatusBar" android:label="@string/custom_playlist_text"/>
         <activity android:name="com.prasadam.kmrplayer.CustomPlaylistInnerActivity" android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition"/>
+        <activity android:name="com.prasadam.kmrplayer.ExpandedAlbumartActivity" android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition"/>
 
         <service  android:name="com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicService" android:enabled="true"/>
 

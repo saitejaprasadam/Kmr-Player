@@ -1,6 +1,5 @@
 package com.prasadam.kmrplayer.audioPackages;
 
-import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -37,10 +36,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 /*
  * Created by Prasadam Saiteja on 2/28/2016.
  */
@@ -81,7 +76,9 @@ public class AudioExtensionMethods {
                 String thisArtist = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST));
                 String thisSongCount = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Albums.NUMBER_OF_SONGS));
                 String thisAlbumArt = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
-                albumArrayList.add(new Album(key, thisTitle, thisArtist, "temp", thisSongCount, thisAlbumArt));
+                String thisAlbumID = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Albums._ID));
+
+                albumArrayList.add(new Album(key, thisTitle, thisArtist, thisAlbumID, thisSongCount, thisAlbumArt));
             }
             while (musicCursor.moveToNext());
         }
@@ -266,7 +263,7 @@ public class AudioExtensionMethods {
 
         ContentResolver musicResolver = context.getContentResolver();
         Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        Cursor musicCursor = musicResolver.query(musicUri, null, MediaStore.Audio.Media.IS_MUSIC + " and " + MediaStore.Audio.Albums.ALBUM + "='" + albumName + "'", null, null);
+        Cursor musicCursor = musicResolver.query(musicUri, null, MediaStore.Audio.Media.IS_MUSIC + " and " + MediaStore.Audio.Albums.ALBUM + "=\"" + albumName + "\"", null, null);
         ArrayList<Song> songList = new ArrayList<>();
 
         if(musicCursor!=null && musicCursor.moveToFirst()){

@@ -24,10 +24,10 @@
             android:src="@mipmap/ic_launcher"
             android:contentDescription="@string/background_image_view_text" />
 
-            <View
+            <include
+                layout="@layout/include_action_bar_gradient"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/actionbar_gradient_dark" />
+                android:layout_height="match_parent" />
 
             <android.support.design.widget.FloatingActionButton
                 android:layout_width="wrap_content"
@@ -59,27 +59,28 @@
             <TableLayout
                 android:id="@+id/imagelayout"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:weightSum="2">
 
                 <TableRow
                     android:layout_height="0dp"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_weight="1">
 
-                    <ImageView
-                        android:id="@+id/album_art_image_view1"
+                    <com.prasadam.kmrplayer.subClasses.SquareImageviewInverted
+                        android:id="@+id/album_art_image_view3"
+                        android:layout_height="match_parent"
                         android:layout_width="fill_parent"
                         android:scaleType="centerCrop"
                         android:adjustViewBounds="true"
-                        android:layout_height="match_parent"
                         android:contentDescription="@string/album_art_image_view_text"/>
 
-                    <ImageView
-                        android:id="@+id/album_art_image_view2"
+                    <com.prasadam.kmrplayer.subClasses.SquareImageviewInverted
+                        android:id="@+id/album_art_image_view4"
+                        android:layout_height="match_parent"
                         android:layout_width="fill_parent"
                         android:scaleType="centerCrop"
                         android:adjustViewBounds="true"
-                        android:layout_height="match_parent"
                         android:contentDescription="@string/album_art_image_view_text"/>
 
                 </TableRow>
@@ -89,21 +90,22 @@
                     android:layout_width="0dp"
                     android:layout_weight="1">
 
-                    <ImageView
-                        android:id="@+id/album_art_image_view3"
+                    <com.prasadam.kmrplayer.subClasses.SquareImageviewInverted
+                        android:id="@+id/album_art_image_view1"
+                        android:layout_height="match_parent"
                         android:layout_width="fill_parent"
                         android:scaleType="centerCrop"
                         android:adjustViewBounds="true"
-                        android:layout_height="match_parent"
                         android:contentDescription="@string/album_art_image_view_text"/>
 
-                    <ImageView
-                        android:id="@+id/album_art_image_view4"
+                    <com.prasadam.kmrplayer.subClasses.SquareImageviewInverted
+                        android:id="@+id/album_art_image_view2"
+                        android:layout_height="match_parent"
                         android:layout_width="fill_parent"
                         android:scaleType="centerCrop"
                         android:adjustViewBounds="true"
-                        android:layout_height="match_parent"
                         android:contentDescription="@string/album_art_image_view_text"/>
+
 
                 </TableRow>
 
