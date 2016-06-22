@@ -1,6 +1,5 @@
 package com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters;
 
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -19,12 +18,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.afollestad.materialcab.MaterialCab;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.ivbaranov.mfb.MaterialFavoriteButton;
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
-import com.prasadam.kmrplayer.MainActivity;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
@@ -208,7 +205,7 @@ public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Song
     @NonNull
     public String getSectionName(int position) {
         Character c = SharedVariables.fullSongsList.get(position).getTitle().charAt(0);
-        if(Character.isDigit(c)){
+        if(Character.isDigit(c) || !Character.isLetter(c)){
             c = '#';
         }
 

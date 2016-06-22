@@ -236,6 +236,7 @@ public class MusicService extends Service implements
 
         RemoteControlClient.MetadataEditor metadataEditor = remoteControlClient.editMetadata(true);
         metadataEditor.putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, song.getAlbum());
+        metadataEditor.putLong(MediaMetadataRetriever.METADATA_KEY_DURATION, song.getDuration());
         metadataEditor.putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, song.getArtist());
         metadataEditor.putString(MediaMetadataRetriever.METADATA_KEY_TITLE, song.getTitle());
         mDummyAlbumArt = UtilFunctions.getAlbumart(getApplicationContext(), Long.valueOf(song.getAlbumID()));

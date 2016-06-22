@@ -3,11 +3,10 @@
     package="com.prasadam.kmrplayer">
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
@@ -24,42 +23,80 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.prasadam.kmrplayer.fileprovider"
-            android:grantUriPermissions="true"
-            android:exported="false">
+            android:exported="false"
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepaths" />
         </provider>
 
         <activity
-            android:name="com.prasadam.kmrplayer.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
+        <activity
+            android:name=".TagEditorActivity"
+            android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition" />
+        <activity
+            android:name=".AlbumActivity"
+            android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition" />
 
-        <activity android:name="com.prasadam.kmrplayer.TagEditorActivity" android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition"/>
-        <activity android:name="com.prasadam.kmrplayer.AlbumActivity" android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition"/>
-        <activity android:name="com.prasadam.kmrplayer.RecentlyAddedActivity" android:theme="@style/ColoredStatusBar" android:label="@string/recently_added_text"/>
-        <activity android:name="com.prasadam.kmrplayer.FavoritesActivity" android:theme="@style/ColoredStatusBar" android:label="@string/favorites_text"/>
-        <activity android:name="com.prasadam.kmrplayer.SongPlaybackHistoryActivity" android:theme="@style/ColoredStatusBar" android:label="@string/history_text"/>
-        <activity android:name="com.prasadam.kmrplayer.MostPlayedSongsActivity" android:theme="@style/ColoredStatusBar" android:label="@string/most_played_text"/>
-        <activity android:name="com.prasadam.kmrplayer.CustomPlaylistActivity" android:theme="@style/ColoredStatusBar" android:label="@string/custom_playlist_text"/>
-        <activity android:name="com.prasadam.kmrplayer.CustomPlaylistInnerActivity" android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition"/>
-        <activity android:name="com.prasadam.kmrplayer.ExpandedAlbumartActivity" android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition"/>
+        <activity
+            android:name=".RecentlyAddedActivity"
+            android:label="@string/recently_added_text"
+            android:theme="@style/ColoredStatusBar" />
 
-        <service  android:name="com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicService" android:enabled="true"/>
+        <activity
+            android:name=".FavoritesActivity"
+            android:label="@string/favorites_text"
+            android:theme="@style/ColoredStatusBar" />
 
-        <receiver android:name="com.prasadam.kmrplayer.audioPackages.musicServiceClasses.NotificationBroadcast" >
+        <activity
+            android:name=".SongPlaybackHistoryActivity"
+            android:label="@string/history_text"
+            android:theme="@style/ColoredStatusBar" />
+
+        <activity
+            android:name=".MostPlayedSongsActivity"
+            android:label="@string/most_played_text"
+            android:theme="@style/ColoredStatusBar" />
+
+        <activity
+            android:name=".CustomPlaylistActivity"
+            android:label="@string/custom_playlist_text"
+            android:theme="@style/ColoredStatusBar" />
+
+        <activity
+            android:name=".CustomPlaylistInnerActivity"
+            android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition" />
+
+        <activity
+            android:name=".ExpandedAlbumartActivity"
+            android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition" />
+
+        <activity
+            android:name=".ArtistActivity"
+            android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition"  />
+
+        <activity
+            android:name=".testActivity"
+            android:label="@string/recently_added_text"
+            android:theme="@style/ColoredStatusBar" />
+
+        <service
+            android:name=".audioPackages.musicServiceClasses.MusicService"
+            android:enabled="true" />
+
+        <receiver android:name=".audioPackages.musicServiceClasses.NotificationBroadcast">
             <intent-filter>
                 <action android:name="com.prasadam.kmrplayer.delete" />
                 <action android:name="com.prasadam.kmrplayer.pause" />
@@ -71,4 +108,5 @@
         </receiver>
 
     </application>
+
 </manifest>

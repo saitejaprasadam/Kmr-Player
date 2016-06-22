@@ -129,6 +129,12 @@ public class AlbumActivity extends Activity{
         setContentView(R.layout.activity_album_layout);
         ButterKnife.bind(this);
 
+        initalize();
+        setAlbumArt();
+        getSongsList();
+    }
+
+    private void initalize() {
         new MaterialFavoriteButton.Builder(this).create();
         albumTitle = getIntent().getExtras().getString("albumTitle");
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -148,7 +154,9 @@ public class AlbumActivity extends Activity{
                     finish();
             }
         });
+    }
 
+    private void setAlbumArt() {
         Cursor musicCursor = getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, null, MediaStore.Audio.AlbumColumns.ALBUM + "=\"" + albumTitle + "\"", null, null);
         if(musicCursor!=null && musicCursor.moveToFirst()){
 
@@ -206,7 +214,6 @@ public class AlbumActivity extends Activity{
                 }
             });
         }
-        getSongsList();
     }
 
     private void getSongsList() {

@@ -11,12 +11,12 @@ import static com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods.setSong
 
 public class Song
 {
-    private long id;
-    private String title, artist, album, duration, data, albumArtLocation, artistID, albumID, hashID;
+    private long id, duration;
+    private String title, artist, album, data, albumArtLocation, artistID, albumID, hashID;
     private boolean liked;
     public int repeatCount;
 
-    public Song(long songID, String songTitle, String songArtist, String artistID, String songAlbum, String albumID, String songDuration, String songData, String albumArtLocation, String hashID) {
+    public Song(long songID, String songTitle, String songArtist, String artistID, String songAlbum, String albumID, long songDuration, String songData, String albumArtLocation, String hashID) {
 
         this.id=songID;
         this.title=songTitle;
@@ -34,7 +34,7 @@ public class Song
     public String getTitle(){return title;}
     public String getArtist(){return artist;}
     public String getAlbum(){return album;}
-    public String getDuration(){return duration;}
+    public long getDuration(){return duration;}
     public String getData(){return data;}
     public String getAlbumArtLocation(){return albumArtLocation;}
     public String getArtistID(){return artistID;}

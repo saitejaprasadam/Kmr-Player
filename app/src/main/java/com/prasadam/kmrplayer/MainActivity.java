@@ -130,8 +130,11 @@ public class MainActivity extends AppCompatActivity
         }
 
         else
-            if(id == R.id.action_settings)
-                Toast.makeText(MainActivity.this, "Pending", Toast.LENGTH_SHORT).show();
+            if(id == R.id.action_settings){
+                Intent intent = new Intent(this, testActivity.class);
+                startActivity(intent);
+            }
+                //Toast.makeText(MainActivity.this, "Pending", Toast.LENGTH_SHORT).show();
 
         return super.onOptionsItemSelected(item);
     }

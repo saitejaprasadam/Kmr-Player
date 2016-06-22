@@ -25,7 +25,7 @@ import com.prasadam.kmrplayer.R;
 public class TabFragment extends Fragment{
     public static TabLayout tabLayout;
     public static ViewPager viewPager;
-    public static int int_items = 3;
+    public static int int_items = 4;
 
     @Nullable
     @Override
@@ -35,7 +35,7 @@ public class TabFragment extends Fragment{
         tabLayout = (TabLayout) x.findViewById(R.id.tabs);
         viewPager = (ViewPager) x.findViewById(R.id.viewpager);
         viewPager.setAdapter(new MyAdapter(getChildFragmentManager()));
-        viewPager.setOffscreenPageLimit(2);
+        viewPager.setOffscreenPageLimit(3);
         tabLayout.post(new Runnable() {
             @Override
             public void run() {
@@ -50,12 +50,14 @@ public class TabFragment extends Fragment{
         private SongsFragment songsFragment;
         private AlbumsFragment albumsFragment;
         private PlaylistFragment playlistFragment;
+        private ArtistFragment artistFragment;
 
         public MyAdapter(FragmentManager fm) {
             super(fm);
             songsFragment = new SongsFragment();
             albumsFragment = new AlbumsFragment();
             playlistFragment = new PlaylistFragment();
+            artistFragment = new ArtistFragment();
         }
 
         @Override
@@ -64,7 +66,8 @@ public class TabFragment extends Fragment{
             switch (position){
                 case 0 : return songsFragment;
                 case 1 : return albumsFragment;
-                case 2 : return playlistFragment;
+                case 2 : return artistFragment;
+                case 3 : return playlistFragment;
             }
             return null;
         }
@@ -82,7 +85,10 @@ public class TabFragment extends Fragment{
                 case 1 :
                     return getResources().getString(R.string.albums_text);
 
-                case 2:
+                case 2 :
+                    return getResources().getString(R.string.artist_text);
+
+                case 3:
                     return getResources().getString(R.string.playlist_text);
             }
             return null;

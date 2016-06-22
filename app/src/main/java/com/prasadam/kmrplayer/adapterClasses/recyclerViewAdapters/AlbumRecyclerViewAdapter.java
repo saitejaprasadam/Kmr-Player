@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.prasadam.kmrplayer.AlbumActivity;
 import com.prasadam.kmrplayer.R;
+import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Album;
 import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
@@ -75,7 +76,6 @@ public class AlbumRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Alb
 
     private void setAlbumArt(final AlbumViewHolder holder, final Album currentAlbum) {
 
-
         String albumArtPath = currentAlbum.getAlbumArtLocation();
 
         if(albumArtPath != null)
@@ -106,7 +106,7 @@ public class AlbumRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Alb
                 @Override
                 public void run() {
 
-                    Bitmap bitmap = getBitMap(holder.albumLocation);
+                    Bitmap bitmap = AudioExtensionMethods.getBitMap(context, holder.albumLocation);
                     Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
                         @Override
                         public void onGenerated(Palette palette) {
@@ -142,13 +142,6 @@ public class AlbumRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Alb
             }).start();
     }
 
-    private Bitmap getBitMap(String absolutePath) {
-        if(absolutePath == null)
-            return BitmapFactory.decodeResource(context.getResources(), R.mipmap.unkown_album_art);
-
-        return BitmapFactory.decodeFile(absolutePath);
-    }
-
     private void setImage(final AlbumViewHolder holder, final String albumpath){
         if(albumpath == null)
             holder.albumArtImageView.setImageResource(R.mipmap.unkown_album_art);
@@ -166,7 +159,7 @@ public class AlbumRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Alb
     public String getSectionName(int position) {
 
         Character c = SharedVariables.fullAlbumList.get(position).getTitle().charAt(0);
-        if(Character.isDigit(c)){
+        if(Character.isDigit(c) || !Character.isLetter(c)){
             c = '#';
         }
 
