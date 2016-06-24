@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.prasadam.kmrplayer.AlbumActivity;
 import com.prasadam.kmrplayer.R;
+import com.prasadam.kmrplayer.activityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Album;
 import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
@@ -62,12 +63,7 @@ public class AlbumRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Alb
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                Intent albumActivityIntent = new Intent(context, AlbumActivity.class);
-                albumActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(mActivity, holder.albumArtImageView, "AlbumArtImageTranscition");
-                albumActivityIntent.putExtra("albumTitle", currentAlbum.getTitle());
-                mActivity.startActivity(albumActivityIntent, options.toBundle());
+                ActivitySwitcher.jumpToAlbumWithTranscition(mActivity, holder.albumArtImageView, currentAlbum.getTitle());
             }
         });
 
@@ -107,6 +103,8 @@ public class AlbumRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Alb
                 public void run() {
 
                     Bitmap bitmap = AudioExtensionMethods.getBitMap(context, holder.albumLocation);
+                    if(bitmap == null)
+                        bitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.unkown_album_art);
                     Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
                         @Override
                         public void onGenerated(Palette palette) {

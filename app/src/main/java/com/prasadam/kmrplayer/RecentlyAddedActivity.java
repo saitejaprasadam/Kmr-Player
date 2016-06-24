@@ -16,7 +16,7 @@ import com.prasadam.kmrplayer.ListenerClasses.SongsSearchListener;
 import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.RecentlyAddedRecyclerViewAdapter;
 import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
-import com.prasadam.kmrplayer.audioPackages.fragments.NoItemsFragment;
+import com.prasadam.kmrplayer.fragments.NoItemsFragment;
 import com.prasadam.kmrplayer.sharedClasses.DividerItemDecoration;
 import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
 

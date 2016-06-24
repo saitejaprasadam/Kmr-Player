@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.prasadam.kmrplayer.R;
+import com.prasadam.kmrplayer.activityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicService;
@@ -138,7 +139,11 @@ public class FavoritesRecyclerViewAdapter extends RecyclerView.Adapter<Favorites
                                             break;
 
                                         case R.id.song_context_menu_jump_to_album:
-                                            AudioExtensionMethods.jumpToAlbum(context, currentSongDetails.getAlbum());
+                                            ActivitySwitcher.jumpToAlbum(context, currentSongDetails.getAlbum());
+                                            break;
+
+                                        case R.id.song_context_menu_jump_to_artist:
+                                            ActivitySwitcher.jumpToArtist(context, currentSongDetails.getArtist());
                                             break;
                                     }
                                 }

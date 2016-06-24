@@ -9,6 +9,8 @@
 
         <item name="android:windowContentTransitions">true</item>
         <item name="android:windowActivityTransitions">true</item>
+        <item name="android:windowEnterTransition">@transition/albums_image_transition</item>
+        <item name="android:windowExitTransition">@transition/albums_image_transition</item>
         <item name="android:windowSharedElementEnterTransition">@transition/albums_image_transition</item>
         <item name="android:windowSharedElementExitTransition">@transition/albums_image_transition</item>
     </style>
@@ -19,6 +21,7 @@
     </style>
 
     <style name="AppTheme.ActionBar.TransparentContextTranscition" parent="AppTheme">
+        <item name="android:windowActivityTransitions">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowContentTransitions">true</item>
     </style>

@@ -38,15 +38,15 @@ import butterknife.ButterKnife;
  * Created by Prasadam Saiteja on 5/28/2016.
  */
 
-public class RecentlyAddedRecyclerViewAdapter extends RecyclerView.Adapter<RecentlyAddedRecyclerViewAdapter.songsViewHolder>{
+public class SongRecyclerViewAdapterForArtistActivity extends RecyclerView.Adapter<SongRecyclerViewAdapterForArtistActivity.songsViewHolder>{
 
     private LayoutInflater inflater;
     private Context context;
-    private ArrayList<Song> recentlyAddedSongsList;
+    private ArrayList<Song> songsList;
 
-    public RecentlyAddedRecyclerViewAdapter(Context context, ArrayList<Song> recentlyAddedSongsList){
+    public SongRecyclerViewAdapterForArtistActivity(Context context, ArrayList<Song> recentlyAddedSongsList){
         this.context = context;
-        this.recentlyAddedSongsList = recentlyAddedSongsList;
+        this.songsList = recentlyAddedSongsList;
         inflater = LayoutInflater.from(context);
     }
 
@@ -55,12 +55,10 @@ public class RecentlyAddedRecyclerViewAdapter extends RecyclerView.Adapter<Recen
         View view = inflater.inflate(R.layout.recylcer_view_songs_layout, parent, false);
         return new songsViewHolder(view);
     }
-
-    @Override
     public void onBindViewHolder(final songsViewHolder holder, final int position) {
         try
         {
-            final Song currentSongDetails = recentlyAddedSongsList.get(position);
+            final Song currentSongDetails = songsList.get(position);
 
             holder.titleTextView.setText(currentSongDetails.getTitle());
             holder.artistTextView.setText(currentSongDetails.getArtist());
@@ -80,7 +78,7 @@ public class RecentlyAddedRecyclerViewAdapter extends RecyclerView.Adapter<Recen
                 @Override
                 public void onClick(View view) {
                     PlayerConstants.SONG_PAUSED = false;
-                    PlayerConstants.SONGS_LIST = recentlyAddedSongsList;
+                    PlayerConstants.SONGS_LIST = songsList;
                     PlayerConstants.SONG_NUMBER = position;
                     boolean isServiceRunning = UtilFunctions.isServiceRunning(MusicService.class.getName(), context);
                     if (!isServiceRunning) {
@@ -120,7 +118,7 @@ public class RecentlyAddedRecyclerViewAdapter extends RecyclerView.Adapter<Recen
                                                             {
                                                                 Toast.makeText(context, "Song Deleted : \'" + currentSongDetails.getTitle() + "\'", Toast.LENGTH_SHORT).show();
                                                                 context.getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.MediaColumns._ID + "='" + currentSongDetails.getID() + "'", null);
-                                                                recentlyAddedSongsList =  AudioExtensionMethods.getSongList(context);
+                                                                songsList =  AudioExtensionMethods.getSongListFromArtist(context, currentSongDetails.getArtist());
                                                                 notifyDataSetChanged();
                                                                 AudioExtensionMethods.updateLists(context);
                                                             }
@@ -173,6 +171,9 @@ public class RecentlyAddedRecyclerViewAdapter extends RecyclerView.Adapter<Recen
 
         catch (Exception ignored){}
     }
+    public int getItemCount() {
+        return songsList.size();
+    }
 
     private void setAlbumArt(songsViewHolder holder, Song currentSongDetails) {
 
@@ -180,11 +181,10 @@ public class RecentlyAddedRecyclerViewAdapter extends RecyclerView.Adapter<Recen
         if(albumArtPath != null)
         {
             File imgFile = new File(albumArtPath);
-            if(imgFile.exists())// /storage/emulated/0/Android/data/com.android.providers.media/albumthumbs/1454267773223
+            if(imgFile.exists())
             {
                 holder.AlbumArtImageView.setImageURI(Uri.parse("file://" + imgFile.getAbsolutePath()));
                 holder.albumPath = imgFile.getAbsolutePath();
-                //Picasso.with(context).load("file://" + imgFile.getAbsolutePath()).into(holder.AlbumArtImageView);
             }
             else
                 holder.AlbumArtImageView.setImageResource(R.mipmap.unkown_album_art);
@@ -193,14 +193,6 @@ public class RecentlyAddedRecyclerViewAdapter extends RecyclerView.Adapter<Recen
             holder.AlbumArtImageView.setImageResource(R.mipmap.unkown_album_art);
     }
 
-    @Override
-    public int getItemCount() {
-        return recentlyAddedSongsList.size();
-    }
-
-    /// <summary>RecyclerView view holder (Inner class)
-    /// <para>creates a view holder for individual song</para>
-    /// </summary>
     class songsViewHolder extends RecyclerView.ViewHolder{
 
         @Bind(R.id.songTitle_RecyclerView) TextView titleTextView;

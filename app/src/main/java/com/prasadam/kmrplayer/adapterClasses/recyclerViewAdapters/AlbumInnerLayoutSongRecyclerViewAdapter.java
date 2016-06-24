@@ -23,6 +23,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.ivbaranov.mfb.MaterialFavoriteButton;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.TagEditorActivity;
+import com.prasadam.kmrplayer.activityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicService;
@@ -63,7 +64,6 @@ public class AlbumInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapte
     public void onBindViewHolder(final songsViewHolder holder, int position) {
         try {
             final Song currentSongDetails = songsList.get(position);
-
             holder.titleTextView.setText(currentSongDetails.getTitle());
             holder.artistTextView.setText(currentSongDetails.getArtist());
             holder.rootLayout.setTag(currentSongDetails.getData());
@@ -91,6 +91,7 @@ public class AlbumInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapte
         }
         catch (Exception ignored){}
     }
+
 
     private void setOnClickListenerForRecyclerItem(songsViewHolder holder, final int position) {
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
@@ -160,6 +161,10 @@ public class AlbumInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapte
 
                                 case R.id.song_context_menu_ringtone:
                                     AudioExtensionMethods.setSongAsRingtone(context, currentSongDetails);
+                                    break;
+
+                                case R.id.song_context_menu_jump_to_artist:
+                                    ActivitySwitcher.jumpToArtist(context, currentSongDetails.getArtist());
                                     break;
 
                                 case R.id.song_context_menu_tagEditor:

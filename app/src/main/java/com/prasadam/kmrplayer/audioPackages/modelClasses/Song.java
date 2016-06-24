@@ -1,19 +1,18 @@
 package com.prasadam.kmrplayer.audioPackages.modelClasses;
 
-/*
- * Created by use on 2/14/2016.
- */
-
 import android.content.Context;
 
 import static com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods.isSongFavorite;
 import static com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods.setSongFavorite;
 
+/*
+ * Created by saiteja prasadam on 2/14/2016.
+ */
+
 public class Song
 {
     private long id, duration;
     private String title, artist, album, data, albumArtLocation, artistID, albumID, hashID;
-    private boolean liked;
     public int repeatCount;
 
     public Song(long songID, String songTitle, String songArtist, String artistID, String songAlbum, String albumID, long songDuration, String songData, String albumArtLocation, String hashID) {

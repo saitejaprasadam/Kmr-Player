@@ -28,20 +28,17 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.ivbaranov.mfb.MaterialFavoriteButton;
+import com.prasadam.kmrplayer.activityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.AlbumInnerLayoutSongRecyclerViewAdapter;
 import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.audioPackages.BlurBuilder;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
-import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicService;
-import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.PlayerConstants;
-import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.UtilFunctions;
+import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicPlayerExtensionMethods;
 import com.prasadam.kmrplayer.sharedClasses.DividerItemDecoration;
 import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Random;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -54,7 +51,7 @@ import butterknife.OnClick;
 public class AlbumActivity extends Activity{
 
     private AlbumInnerLayoutSongRecyclerViewAdapter recyclerViewAdapter;
-    private String albumTitle, albumartPath = null;
+    private String albumTitle, albumArtist,albumartPath = null;
     private ArrayList<Song> songList;
     @Bind (R.id.actual_album_art) ImageView actualAlbumArt;
     @Bind (R.id.blurred_album_art) ImageView blurredAlbumArt;
@@ -111,6 +108,10 @@ public class AlbumActivity extends Activity{
                                                                      .show();
                                                              break;
 
+                                                         case R.id.album_context_menu_jump_to_artist:
+                                                             ActivitySwitcher.jumpToArtist(AlbumActivity.this, albumArtist);
+                                                             break;
+
                                                          default:
                                                              Toast.makeText(AlbumActivity.this, "pending", Toast.LENGTH_SHORT).show();
                                                              break;
@@ -155,7 +156,6 @@ public class AlbumActivity extends Activity{
             }
         });
     }
-
     private void setAlbumArt() {
         Cursor musicCursor = getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, null, MediaStore.Audio.AlbumColumns.ALBUM + "=\"" + albumTitle + "\"", null, null);
         if(musicCursor!=null && musicCursor.moveToFirst()){
@@ -163,6 +163,7 @@ public class AlbumActivity extends Activity{
             String albumArtPath = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
             albumNameTextView.setText(musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM)));
             artistNameTextView.setText(musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST)));
+            musicCursor.close();
             final Bitmap bitmap;
 
             if(albumArtPath != null)
@@ -193,7 +194,6 @@ public class AlbumActivity extends Activity{
                 @Override
                 public void onGenerated(Palette palette) {
                     Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
-
                     if (vibrantSwatch != null) {
                         colorBoxLayout.setBackgroundColor(vibrantSwatch.getRgb());
                         albumNameTextView.setTextColor(vibrantSwatch.getBodyTextColor());
@@ -206,8 +206,6 @@ public class AlbumActivity extends Activity{
                         if (vibrantSwatch != null) {
                             colorBoxLayout.setBackgroundColor(vibrantSwatch.getRgb());
                             albumNameTextView.setTextColor(vibrantSwatch.getBodyTextColor());
-                            //toolbar.setNavigationIcon(R.mipmap.ic_chevron_left_black_24dp);
-                            //verticalMoreImageView.setImageResource(R.mipmap.ic_more_vert_black_24dp);
                             artistNameTextView.setTextColor(vibrantSwatch.getTitleTextColor());
                         }
                     }
@@ -215,10 +213,10 @@ public class AlbumActivity extends Activity{
             });
         }
     }
-
     private void getSongsList() {
 
         songList = AudioExtensionMethods.getSongList(this, albumTitle);
+        albumArtist = AudioExtensionMethods.getAlbumArtistTitle(this, albumTitle);
         recyclerViewAdapter = new AlbumInnerLayoutSongRecyclerViewAdapter(this, songList, albumTitle);
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.songs_recylcer_view_layout);
 
@@ -234,25 +232,11 @@ public class AlbumActivity extends Activity{
 
         setShuffleOnClick(songList);
     }
-
     private void setShuffleOnClick(final ArrayList<Song> songsList) {
         shuffleFabButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                PlayerConstants.SONG_PAUSED = false;
-                long seed = System.nanoTime();
-                ArrayList<Song> shuffledPlaylist = songsList;
-                Collections.shuffle(shuffledPlaylist, new Random(seed));
-                PlayerConstants.SONGS_LIST = shuffledPlaylist;
-                PlayerConstants.SONG_NUMBER = 0;
-                boolean isServiceRunning = UtilFunctions.isServiceRunning(MusicService.class.getName(), AlbumActivity.this);
-                if (!isServiceRunning) {
-                    Intent i = new Intent(AlbumActivity.this, MusicService.class);
-                    AlbumActivity.this.startService(i);
-                } else {
-                    PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
-                }
+                MusicPlayerExtensionMethods.shufflePlay(AlbumActivity.this, songsList);
             }
         });
     }

@@ -1,4 +1,4 @@
-package com.prasadam.kmrplayer.audioPackages.fragments;
+package com.prasadam.kmrplayer.fragments;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.AlbumRecyclerViewAdapter;
 import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.ArtistRecyclerViewAdapter;
 import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
@@ -79,7 +78,7 @@ public class ArtistFragment extends Fragment {
 
                             else{
                                 if(!ExtensionMethods.isLandScape(mActivity.getBaseContext()))    //Tablet Portrait
-                                    recyclerView.setLayoutManager(new GridLayoutManager(mActivity.getBaseContext(), 5, GridLayoutManager.VERTICAL, false));
+                                    recyclerView.setLayoutManager(new GridLayoutManager(mActivity.getBaseContext(), 6, GridLayoutManager.VERTICAL, false));
 
                                 if(ExtensionMethods.isLandScape(mActivity.getBaseContext()))    //Tablet Landscape
                                     recyclerView.setLayoutManager(new GridLayoutManager(mActivity.getBaseContext(), 7, GridLayoutManager.VERTICAL, false));

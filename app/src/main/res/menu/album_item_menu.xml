@@ -6,15 +6,15 @@
         android:title="@string/share_album_text" />
 
     <item
-        android:id="@+id/song_context_menu_shout"
+        android:id="@+id/album_context_menu_shout"
         android:title="@string/Shout_text"/>
 
     <item
-        android:id="@+id/song_context_menu_jump_to_artist"
+        android:id="@+id/album_context_menu_jump_to_artist"
         android:title="@string/jump_to_artist_text" />
 
     <item
-        android:id="@+id/song_context_menu_tagEditor"
+        android:id="@+id/album_context_menu_tagEditor"
         android:title="@string/tag_editor_text" />
 
     <item

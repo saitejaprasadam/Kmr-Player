@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rootLayout_recycler_view"
     android:layout_width="match_parent"
-    android:layout_height="140dp"
+    android:layout_height="150dp"
     android:layout_margin="3dp">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -12,17 +12,17 @@
         android:layout_height="match_parent">
 
         <com.facebook.drawee.view.SimpleDraweeView
-            android:transitionName="ArtistArtImageTranscition"
             android:id="@+id/artist_image"
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:layout_gravity="center_horizontal"
-            android:scaleType="centerCrop"/>
+            android:scaleType="centerCrop"
+            android:transitionName="ArtistAlbumArtImageTranscition"/>
 
         <FrameLayout
             android:id="@+id/color_box_layout_albumrecyclerview"
             android:layout_width="match_parent"
-            android:layout_height="40dp">
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/artist_title"

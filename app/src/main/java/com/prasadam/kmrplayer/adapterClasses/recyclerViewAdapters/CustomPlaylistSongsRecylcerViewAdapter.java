@@ -23,6 +23,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.ivbaranov.mfb.MaterialFavoriteButton;
 import com.prasadam.kmrplayer.R;
+import com.prasadam.kmrplayer.activityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicService;
@@ -144,7 +145,7 @@ public class CustomPlaylistSongsRecylcerViewAdapter extends RecyclerView.Adapter
                                             break;
 
                                         case R.id.song_context_menu_jump_to_album:
-                                            AudioExtensionMethods.jumpToAlbum(context, currentSongDetails.getAlbum());
+                                            ActivitySwitcher.jumpToAlbum(context, currentSongDetails.getAlbum());
                                             break;
                                     }
                                 }

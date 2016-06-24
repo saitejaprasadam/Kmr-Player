@@ -5,135 +5,152 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.30">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/blurred_album_art"
+            <RelativeLayout
+                android:id="@+id/album_image_view_anchor"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:contentDescription="AlbumArt" />
+                android:layout_height="0dp"
+                android:layout_weight="0.30">
 
-            <include
-                layout="@layout/include_action_bar_gradient"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:theme="@style/TransperantToolbar">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_gravity="end"
-                    android:layout_marginEnd="10dp">
-
-                    <ImageView
-                        android:id="@+id/vertical_more_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:clickable="true"
-                        android:src="@mipmap/ic_dots_vertical_white_24dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="@string/more_options_text" />
-
-                </LinearLayout>
-
-            </android.support.v7.widget.Toolbar>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:layout_below="@+id/toolbar">
-
-                <com.prasadam.kmrplayer.subClasses.SquareImageviewInverted
-                    android:transitionName="ArtistArtImageTranscition"
-                    android:id="@+id/artist_image"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_margin="10dp"/>
-
-                <LinearLayout
+                <ImageView
+                    android:id="@+id/blurred_album_art"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:gravity="center_vertical">
+                    android:scaleType="centerCrop" />
 
-                    <TextView
-                        android:id="@+id/artist_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="26sp"
-                        android:textStyle="bold"
-                        android:maxLines="2"
-                        android:textColor="@color/white"/>
+                <include
+                    layout="@layout/include_action_bar_gradient"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:theme="@style/TransperantToolbar">
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:layout_gravity="end"
+                        android:layout_marginEnd="10dp">
 
-                        <TextView
-                            android:id="@+id/album_count_text_view"
+                        <ImageView
+                            android:id="@+id/activity_options_menu"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/white"
-                            android:layout_margin="5dp"/>
+                            android:clickable="true"
+                            android:src="@mipmap/ic_dots_vertical_white_24dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="@string/more_options_text" />
+
+                    </LinearLayout>
+
+                </android.support.v7.widget.Toolbar>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_below="@+id/toolbar">
+
+                    <com.prasadam.kmrplayer.subClasses.SquareImageviewInverted
+                        android:transitionName="ArtistAlbumArtImageTranscition"
+                        android:id="@+id/artist_image"
+                        android:layout_margin="10dp"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center_vertical">
 
                         <TextView
-                            android:id="@+id/song_count_text_view"
+                            android:id="@+id/artist_title"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/white"
-                            android:layout_margin="5dp"/>
+                            android:textSize="26sp"
+                            android:textStyle="bold"
+                            android:maxLines="2"
+                            android:textColor="@color/white"/>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/album_count_text_view"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/white"
+                                android:layout_margin="5dp"/>
+
+                            <TextView
+                                android:id="@+id/song_count_text_view"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/white"
+                                android:layout_margin="5dp"/>
+
+                        </LinearLayout>
 
                     </LinearLayout>
 
                 </LinearLayout>
 
-            </LinearLayout>
+            </RelativeLayout>
 
-        </RelativeLayout>
-
-        <android.support.v4.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.70">
-
-            <LinearLayout
+            <android.support.v4.widget.NestedScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="0dp"
+                android:layout_weight="0.70">
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/albums_recycler_view_artist_activity"
-                    android:layout_width="match_parent"
-                    android:layout_height="140dp"
-                    android:nestedScrollingEnabled="true" />
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/songs_recycler_view_artist_activity"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:nestedScrollingEnabled="true"/>
+                    android:orientation="vertical">
 
-            </LinearLayout>
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/albums_recycler_view_artist_activity"
+                        android:layout_width="match_parent"
+                        android:layout_height="155dp"
+                        android:nestedScrollingEnabled="true" />
 
-        </android.support.v4.widget.NestedScrollView >
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/songs_recycler_view_artist_activity"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:nestedScrollingEnabled="true"/>
 
-    </LinearLayout>
+                </LinearLayout>
+
+            </android.support.v4.widget.NestedScrollView >
+
+        </LinearLayout>
+
+        <!-- floating action button -->
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:clickable="true"
+            android:id="@+id/shuffle_fab_button"
+            android:src="@mipmap/ic_shuffle_white_24dp"
+            app:layout_anchor="@id/album_image_view_anchor"
+            app:layout_anchorGravity="bottom|right|end" />
+
+    </android.support.design.widget.CoordinatorLayout>
 
 </RelativeLayout>

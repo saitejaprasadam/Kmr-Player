@@ -15,7 +15,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.CustomPlaylistRecyclerViewAdapter;
 import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
-import com.prasadam.kmrplayer.audioPackages.fragments.NoItemsFragment;
+import com.prasadam.kmrplayer.fragments.NoItemsFragment;
 import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
 
 import java.util.ArrayList;

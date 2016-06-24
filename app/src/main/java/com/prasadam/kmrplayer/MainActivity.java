@@ -17,44 +17,42 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.afollestad.materialcab.MaterialCab;
-import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.SongRecyclerViewAdapter;
 import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
-import com.prasadam.kmrplayer.audioPackages.fragments.AlbumsFragment;
-import com.prasadam.kmrplayer.audioPackages.fragments.SongsFragment;
-import com.prasadam.kmrplayer.audioPackages.fragments.TabFragment;
-import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicService;
-import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.PlayerConstants;
-import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.UtilFunctions;
+import com.prasadam.kmrplayer.fragments.AlbumsFragment;
+import com.prasadam.kmrplayer.fragments.SongsFragment;
+import com.prasadam.kmrplayer.fragments.TabFragment;
 import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
 
-import java.lang.reflect.Field;
 import java.util.Calendar;
 
 import static com.prasadam.kmrplayer.sharedClasses.ExtensionMethods.setStatusBarTranslucent;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    public static MaterialCab cab;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        
         initalizer();
         SharedVariables.Initializers(this);
-        startMusicService();
     }
 
     private void initalizer() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
+        createTabFragment();
+        setNavigationDrawer();
+        setStatusBarTranslucent(MainActivity.this);
+    }
+    private void createTabFragment() {
         FragmentManager mFragmentManager = getSupportFragmentManager();
         FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
         mFragmentTransaction.replace(R.id.containerView, new TabFragment()).commit();
+    }
+    private void setNavigationDrawer() {
 
-        //new DrawerBuilder().withActivity(this).build();
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -84,23 +82,20 @@ public class MainActivity extends AppCompatActivity
             }
 
         }
-        setStatusBarTranslucent(MainActivity.this);
     }
-
-    private void startMusicService() {
-
-        try{
-            boolean isServiceRunning = UtilFunctions.isServiceRunning(MusicService.class.getName(), getApplicationContext());
-            if (!isServiceRunning) {
-                Intent i = new Intent(getApplicationContext(), MusicService.class);
-                startService(i);
+    private void refreshList() {
+        new Thread(){
+            public void run(){
+                int prevCount = SharedVariables.fullSongsList.size();
+                AudioExtensionMethods.updateLists(MainActivity.this);
+                SongsFragment.recyclerViewAdapter.notifyDataSetChanged();
+                AlbumsFragment.recyclerViewAdapter.notifyDataSetChanged();
+                if(prevCount < SharedVariables.fullSongsList.size())
+                    Toast.makeText(MainActivity.this, "Songs lists updated, " + String.valueOf(SharedVariables.fullSongsList.size() - prevCount) + " songs added", Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(MainActivity.this, "Songs lists updated, no new songs found", Toast.LENGTH_SHORT).show();
             }
-            else
-                PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
-
-        }
-
-        catch (Exception ignored){}
+        }.run();
     }
 
     public void onBackPressed() {
@@ -114,12 +109,10 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
-
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
-
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
@@ -138,23 +131,6 @@ public class MainActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
-
-    private void refreshList() {
-        new Thread(){
-            public void run(){
-                int prevCount = SharedVariables.fullSongsList.size();
-                AudioExtensionMethods.updateLists(MainActivity.this);
-                SongsFragment.recyclerViewAdapter.notifyDataSetChanged();
-                AlbumsFragment.recyclerViewAdapter.notifyDataSetChanged();
-                if(prevCount < SharedVariables.fullSongsList.size())
-                    Toast.makeText(MainActivity.this, "Songs lists updated, " + String.valueOf(SharedVariables.fullSongsList.size() - prevCount) + " songs added", Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(MainActivity.this, "Songs lists updated, no new songs found", Toast.LENGTH_SHORT).show();
-            }
-        }.run();
-    }
-
-    //Implemented Methods
     public boolean onNavigationItemSelected(MenuItem item) {
 
         item.getItemId();

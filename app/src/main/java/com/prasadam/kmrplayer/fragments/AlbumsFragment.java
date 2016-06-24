@@ -1,4 +1,4 @@
-package com.prasadam.kmrplayer.audioPackages.fragments;
+package com.prasadam.kmrplayer.fragments;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
@@ -8,7 +8,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.AlbumRecyclerViewAdapter;

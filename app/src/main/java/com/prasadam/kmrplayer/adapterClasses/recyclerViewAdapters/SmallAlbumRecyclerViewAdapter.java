@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.graphics.Palette;
@@ -17,8 +18,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
-import com.prasadam.kmrplayer.ArtistActivity;
+import com.prasadam.kmrplayer.AlbumActivity;
 import com.prasadam.kmrplayer.R;
+import com.prasadam.kmrplayer.activityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Album;
 
@@ -67,7 +69,7 @@ public class SmallAlbumRecyclerViewAdapter extends ObservableRecyclerView.Adapte
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AudioExtensionMethods.jumpToAlbum(context, album.getTitle());
+                ActivitySwitcher.jumpToAlbumWithTranscition(mActivity, holder.artistAlbumArtImageView, album.getTitle());
             }
         });
     }
@@ -89,45 +91,46 @@ public class SmallAlbumRecyclerViewAdapter extends ObservableRecyclerView.Adapte
     }
     private void setColor(final ArtistViewHolder holder, final Album artist){
 
-        if(artist.isColorSet()){
-            holder.colorBoxLayout.setBackgroundColor(artist.colorBoxLayoutColor);
-            holder.artistNameTextView.setTextColor(artist.artistNameTextViewColor);
-        }
+        try{
+            if(artist.isColorSet()){
+                holder.colorBoxLayout.setBackgroundColor(artist.colorBoxLayoutColor);
+                holder.artistNameTextView.setTextColor(artist.artistNameTextViewColor);
+            }
 
-        else{
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
+            else{
+                Bitmap bitmap = AudioExtensionMethods.getBitMap(context, artist.getAlbumArtLocation());
+                if(bitmap == null)
+                    bitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.unkown_album_art);
+                Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
+                    @Override
+                    public void onGenerated(Palette palette) {
+                        Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
+                        if (vibrantSwatch != null) {
+                            holder.colorBoxLayout.setBackgroundColor(vibrantSwatch.getRgb());
+                            artist.colorBoxLayoutColor = vibrantSwatch.getRgb();
 
-                    Bitmap bitmap = AudioExtensionMethods.getBitMap(context, artist.getAlbumArtLocation());
-                    Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
-                        @Override
-                        public void onGenerated(Palette palette) {
-                            Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
+                            holder.artistNameTextView.setTextColor(vibrantSwatch.getTitleTextColor());
+                            artist.artistNameTextViewColor = vibrantSwatch.getBodyTextColor();
+                        }
+
+                        else
+                        {
+                            vibrantSwatch = palette.getMutedSwatch();
                             if (vibrantSwatch != null) {
                                 holder.colorBoxLayout.setBackgroundColor(vibrantSwatch.getRgb());
                                 artist.colorBoxLayoutColor = vibrantSwatch.getRgb();
 
                                 holder.artistNameTextView.setTextColor(vibrantSwatch.getTitleTextColor());
-                                artist.artistNameTextViewColor = vibrantSwatch.getTitleTextColor();
-                            }
-
-                            else
-                            {
-                                vibrantSwatch = palette.getMutedSwatch();
-                                if (vibrantSwatch != null) {
-                                    holder.colorBoxLayout.setBackgroundColor(vibrantSwatch.getRgb());
-                                    artist.colorBoxLayoutColor = vibrantSwatch.getRgb();
-
-                                    holder.artistNameTextView.setTextColor(vibrantSwatch.getTitleTextColor());
-                                    artist.artistNameTextViewColor = vibrantSwatch.getTitleTextColor();
-                                }
+                                artist.artistNameTextViewColor = vibrantSwatch.getBodyTextColor();
                             }
                         }
-                    });
-                }
-            }).start();
+                    }
+                });
+            }
         }
+
+        catch (Exception e){}
+
     }
 
     @Override

@@ -23,6 +23,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.ivbaranov.mfb.MaterialFavoriteButton;
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.prasadam.kmrplayer.R;
+import com.prasadam.kmrplayer.activityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicService;
@@ -162,7 +163,11 @@ public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Song
                                     break;
 
                                 case R.id.song_context_menu_jump_to_album:
-                                    AudioExtensionMethods.jumpToAlbum(context, currentSongDetails.getAlbum());
+                                    ActivitySwitcher.jumpToAlbum(context, currentSongDetails.getAlbum());
+                                    break;
+
+                                case R.id.song_context_menu_jump_to_artist:
+                                    ActivitySwitcher.jumpToArtist(context, currentSongDetails.getArtist());
                                     break;
                             }
                         }

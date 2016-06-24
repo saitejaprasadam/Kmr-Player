@@ -1,4 +1,4 @@
-package com.prasadam.kmrplayer.audioPackages.fragments;
+package com.prasadam.kmrplayer.fragments;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.afollestad.materialcab.MaterialCab;
 import com.github.ivbaranov.mfb.MaterialFavoriteButton;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.SongRecyclerViewAdapter;
@@ -101,46 +100,11 @@ public class SongsFragment extends Fragment {
 
                             recyclerView.setAdapter(recyclerViewAdapter);
                             recyclerView.addItemDecoration(new DividerItemDecoration(mActivity, LinearLayoutManager.VERTICAL));
-
-                            try{
-                                for(int index = 0; index < SharedVariables.fullSongsList.size(); index++){
-                                    for (int jndex = index + 1; jndex < SharedVariables.fullSongsList.size(); jndex++)
-                                        if(SharedVariables.fullSongsList.get(index).getHashID().equals(SharedVariables.fullSongsList.get(jndex).getHashID())){
-                                            Toast.makeText(mActivity, "Duplicates found at " + SharedVariables.fullSongsList.get(index).getTitle(), Toast.LENGTH_SHORT).show();
-                                        }
-                                }
-                            }
-
-                            catch (Exception ignored){}
                         }
                     });
 
-                    shuffleButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-
-                            PlayerConstants.SONG_PAUSED = false;
-
-                            ArrayList<Song> shuffledPlaylist = new ArrayList<>();
-                            for (Song song : SharedVariables.fullSongsList) {
-                                shuffledPlaylist.add(song);
-                            }
-
-                            long seed = System.nanoTime();
-                            Collections.shuffle(shuffledPlaylist, new Random(seed));
-                            PlayerConstants.SONGS_LIST = shuffledPlaylist;
-                            PlayerConstants.SONG_NUMBER = 0;
-
-                            boolean isServiceRunning = UtilFunctions.isServiceRunning(MusicService.class.getName(), getContext());
-                            if (!isServiceRunning) {
-                                Intent i = new Intent(getContext(), MusicService.class);
-                                getContext().startService(i);
-                            } else {
-                                PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
-                            }
-                            shuffleButton.hide();
-                        }
-                    });
+                    checkForDuplicates();
+                    setShuffleButtonListener();
                 }
 
                 else{
@@ -153,5 +117,47 @@ public class SongsFragment extends Fragment {
 
             }
         }.start();
+    }
+
+    private void checkForDuplicates() {
+        try{
+            for(int index = 0; index < SharedVariables.fullSongsList.size(); index++){
+                for (int jndex = index + 1; jndex < SharedVariables.fullSongsList.size(); jndex++)
+                    if(SharedVariables.fullSongsList.get(index).getHashID().equals(SharedVariables.fullSongsList.get(jndex).getHashID())){
+                        Toast.makeText(mActivity, "Duplicates found at " + SharedVariables.fullSongsList.get(index).getTitle(), Toast.LENGTH_SHORT).show();
+                    }
+            }
+        }
+
+        catch (Exception ignored){}
+    }
+
+    private void setShuffleButtonListener() {
+        shuffleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                PlayerConstants.SONG_PAUSED = false;
+
+                ArrayList<Song> shuffledPlaylist = new ArrayList<>();
+                for (Song song : SharedVariables.fullSongsList) {
+                    shuffledPlaylist.add(song);
+                }
+
+                long seed = System.nanoTime();
+                Collections.shuffle(shuffledPlaylist, new Random(seed));
+                PlayerConstants.SONGS_LIST = shuffledPlaylist;
+                PlayerConstants.SONG_NUMBER = 0;
+
+                boolean isServiceRunning = UtilFunctions.isServiceRunning(MusicService.class.getName(), getContext());
+                if (!isServiceRunning) {
+                    Intent i = new Intent(getContext(), MusicService.class);
+                    getContext().startService(i);
+                } else {
+                    PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
+                }
+                shuffleButton.hide();
+            }
+        });
     }
 }

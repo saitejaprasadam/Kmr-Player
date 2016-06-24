@@ -45,17 +45,24 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("create table " + CUSTOM_PLAYLIST_TABLE_NAME + "(" + PLAYLIST_NAME_COLUMN_NAME + " text primary key)");
         sqLiteDatabase.execSQL("create table " + HASHID_TABLE_NAME + "(" + SONG_ID_COLUMN_NAME + " int, " + ID_COLUMN_NAME + " text primary key)");
     }
+    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+        //sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + FAVORITES_TABLE_NAME);
+        //sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + HISTORY_TABLE_NAME);
+        //sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + CUSTOM_PLAYLIST_TABLE_NAME);
+        onCreate(sqLiteDatabase);
+    }
 
     public String getSongHashID(Context context, long songID){
 
         SQLiteDatabase rdb = this.getReadableDatabase();
         Cursor cursor = rdb.rawQuery("select " + ID_COLUMN_NAME + " from " + HASHID_TABLE_NAME + " where " + SONG_ID_COLUMN_NAME + " = " + songID, null);
 
-        if(cursor != null && cursor.moveToFirst())
-            return cursor.getString(cursor.getColumnIndex(ID_COLUMN_NAME));
-
-        if (cursor != null)
+        if(cursor != null && cursor.moveToFirst()){
+            String hashID = cursor.getString(cursor.getColumnIndex(ID_COLUMN_NAME));
             cursor.close();
+            rdb.close();
+            return hashID;
+        }
 
         SharedVariables.songIdentifications = new ArrayList<>();
         ContentResolver musicResolver = context.getContentResolver();
@@ -63,7 +70,6 @@ public class DBHelper extends SQLiteOpenHelper {
         Cursor musicCursor = musicResolver.query(musicUri, null, MediaStore.Audio.Media.IS_MUSIC + " and " + MediaStore.Audio.Media._ID + " = " + songID, null, null);
 
         if(musicCursor!=null && musicCursor.moveToFirst()) {
-            //add songs to list
             do {
                 String thisData = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.DATA));
 
@@ -121,18 +127,15 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase rdb = this.getReadableDatabase();
         Cursor cursor = rdb.rawQuery("select " + SONG_ID_COLUMN_NAME + " from " + HASHID_TABLE_NAME + " where " + ID_COLUMN_NAME + " = '" + songHashID + "'", null);
 
-        if(cursor != null && cursor.moveToFirst())
-            return cursor.getLong(cursor.getColumnIndex(SONG_ID_COLUMN_NAME));
+        if(cursor != null && cursor.moveToFirst()){
+            long songID = cursor.getLong(cursor.getColumnIndex(SONG_ID_COLUMN_NAME));
+            cursor.close();
+            rdb.close();
+            return songID;
+        }
+
 
         return 0;
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        //sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + FAVORITES_TABLE_NAME);
-        //sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + HISTORY_TABLE_NAME);
-        //sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + CUSTOM_PLAYLIST_TABLE_NAME);
-        onCreate(sqLiteDatabase);
     }
 
     public void setFavorite(String songHashID, boolean isFav){
@@ -162,6 +165,7 @@ public class DBHelper extends SQLiteOpenHelper {
         cur.close();
         rdb.close();
         wdb.close();
+        return;
     }
 
     public boolean isFavorite(String songHashID){
@@ -193,10 +197,8 @@ public class DBHelper extends SQLiteOpenHelper {
             do {
                 songsHashID.add(cur.getString(cur.getColumnIndex(ID_COLUMN_NAME)));
             }while(cur.moveToNext());
-        }
-
-        if (cur != null)
             cur.close();
+        }
 
         db.close();
         return songsHashID;
@@ -283,6 +285,8 @@ public class DBHelper extends SQLiteOpenHelper {
                     mostPlayedSongs.add(song);
 
                     if(mostPlayedSongs.size() > 40){
+                        musicCursor.close();
+                        albumArtCursor.close();
                         cursor.close();
                         rdb.close();
                         return mostPlayedSongs;
@@ -310,10 +314,14 @@ public class DBHelper extends SQLiteOpenHelper {
             contentValues.put(PLAYLIST_NAME_COLUMN_NAME, playlistName);
 
             wdb.insert(CUSTOM_PLAYLIST_TABLE_NAME, null, contentValues);
+            curos.close();
             wdb.close();
+            rdb.close();
             return true;
         }
 
+        curos.close();
+        rdb.close();
         return false;
     }
 
@@ -327,8 +335,10 @@ public class DBHelper extends SQLiteOpenHelper {
             do{
                 customPlaylistNames.add(cursor.getString(cursor.getColumnIndex(PLAYLIST_NAME_COLUMN_NAME)));
             }while(cursor.moveToNext());
+            cursor.close();
         }
 
+        rdb.close();
         return customPlaylistNames;
     }
 
@@ -350,6 +360,7 @@ public class DBHelper extends SQLiteOpenHelper {
             return 0;
         }
 
+        rdb.close();
         return 0;
     }
 
@@ -358,6 +369,7 @@ public class DBHelper extends SQLiteOpenHelper {
         try{
             SQLiteDatabase wdb = this.getWritableDatabase();
             wdb.execSQL("insert into '" + playlistName + "' values('" + songHashID + "')");
+            wdb.close();
             return true;
         }
 
@@ -397,6 +409,8 @@ public class DBHelper extends SQLiteOpenHelper {
                             albumartPath.add(albumCursor.getString(0));
                             albumIDs.add(albumID);
                             if(albumartPath.size() == 4){
+                                musicCursor.close();
+                                albumCursor.close();
                                 cursor.close();
                                 rdb.close();
                                 return albumartPath;
@@ -407,12 +421,10 @@ public class DBHelper extends SQLiteOpenHelper {
                     }
                 }
             }while (cursor.moveToNext());
-        }
-        if (cursor != null)
             cursor.close();
+        }
 
         rdb.close();
-
         return albumartPath;
     } //need to change
 
@@ -423,11 +435,19 @@ public class DBHelper extends SQLiteOpenHelper {
             SQLiteDatabase rdb = this.getReadableDatabase();
             Cursor cursor = rdb.rawQuery("select * from sqlite_master where type='table' and name=?", new String[]{newName});
 
-            if(cursor.getCount() > 0)
+            if(cursor.getCount() > 0){
+                rdb.close();
+                wdb.close();
+                cursor.close();
                 return false;
+            }
+
 
             wdb.execSQL("alter table \'" + oldName + "\' rename to '" + newName + "'");
             wdb.execSQL("update " + CUSTOM_PLAYLIST_TABLE_NAME + " set " + PLAYLIST_NAME_COLUMN_NAME + " = \'" + newName + "\' where " + PLAYLIST_NAME_COLUMN_NAME + " = \'" + oldName + "\'");
+            rdb.close();
+            wdb.close();
+            cursor.close();
             return true;
         }
 

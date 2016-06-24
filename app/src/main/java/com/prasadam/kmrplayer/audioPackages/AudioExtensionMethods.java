@@ -15,15 +15,11 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.prasadam.kmrplayer.AlbumActivity;
-import com.prasadam.kmrplayer.ArtistActivity;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.TagEditorActivity;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Album;
@@ -42,6 +38,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+
 /*
  * Created by Prasadam Saiteja on 2/28/2016.
  */
@@ -402,7 +399,6 @@ public class AudioExtensionMethods {
 
         Intent share = new Intent();
         share.setAction(Intent.ACTION_SEND_MULTIPLE);
-        share.putExtra(Intent.EXTRA_SUBJECT, "Share Album");
         share.setType("audio/*");
 
         ArrayList<Uri> files = new ArrayList<>();
@@ -485,13 +481,6 @@ public class AudioExtensionMethods {
         Intent tagEditorIntent = new Intent(context, TagEditorActivity.class);
         tagEditorIntent.putExtra("songID", String.valueOf(songID));
         context.startActivity(tagEditorIntent);
-    }
-
-    public static void jumpToAlbum(Context context, String albumTitle) {
-        Intent albumActivityIntent = new Intent(context, AlbumActivity.class);
-        albumActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        albumActivityIntent.putExtra("albumTitle", albumTitle);
-        context.startActivity(albumActivityIntent);
     }
 
     public static void setSongFavorite(Context context, String songHashID, Boolean isFav){
@@ -687,6 +676,7 @@ public class AudioExtensionMethods {
                 long thisDuration = musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
                 String thisdata = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.DATA));
                 String albumID = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
+                musicCursor.close();
                 String albumArtPath = null;
 
                 musicUri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
@@ -694,9 +684,8 @@ public class AudioExtensionMethods {
                         .query(musicUri, new String[]{MediaStore.Audio.Albums.ALBUM_ART}, MediaStore.Audio.Albums._ID + "=?", new String[]{ albumID}, null);
 
                 if (cursor != null) {
-                    if (cursor.moveToFirst()) {
+                    if (cursor.moveToFirst())
                         albumArtPath = cursor.getString(0);
-                    }
                     cursor.close();
                 }
 
@@ -727,10 +716,16 @@ public class AudioExtensionMethods {
                         .query(musicUri, new String[]{MediaStore.Audio.Albums.ALBUM_ART}, MediaStore.Audio.Albums._ID + "=?", new String[]{ albumID}, null);
 
                 if (cursor != null) {
-                    if (cursor.moveToFirst()) {
-                        return cursor.getString(0);
+                    if (cursor.moveToFirst()){
+                        String albumart = cursor.getString(0);
+                        if(albumart != null){
+                            musicCursor.close();
+                            cursor.close();
+                            return albumart;
+                        }
                     }
-                    cursor.close();
+
+
                 }
             }while (musicCursor.moveToNext());
             musicCursor.close();
@@ -760,8 +755,7 @@ public class AudioExtensionMethods {
             } while (musicCursor.moveToNext());
         }
 
-        if(musicCursor != null)
-            musicCursor.close();
+        musicCursor.close();
         return null;
     }
 
@@ -791,22 +785,16 @@ public class AudioExtensionMethods {
                         .query(musicUri, new String[]{MediaStore.Audio.Albums.ALBUM_ART}, MediaStore.Audio.Albums._ID + "=?", new String[]{albumID}, null);
 
                 if (cursor != null) {
-                    if (cursor.moveToFirst()) {
+                    if (cursor.moveToFirst())
                         albumArtPath = cursor.getString(0);
-                    }
                     cursor.close();
                 }
 
-                Song song = new Song(thisId, thisTitle, thisArtist, thisArtistID, thisAlbum, thisAlbumID, thisDuration, thisdata, albumArtPath, generateHashID(context, thisId));
-
-                songList.add(song);
+                songList.add(new Song(thisId, thisTitle, thisArtist, thisArtistID, thisAlbum, thisAlbumID, thisDuration, thisdata, albumArtPath, generateHashID(context, thisId)));
             }
             while (musicCursor.moveToNext());
-
+            musicCursor.close();
         }
-            if (musicCursor != null)
-                musicCursor.close();
-
             Collections.sort(songList, new Comparator<Song>() {
                 public int compare(Song s1, Song s2) {
                     return s1.getTitle().toLowerCase().compareTo(s2.getTitle().toLowerCase());
@@ -838,6 +826,7 @@ public class AudioExtensionMethods {
                     String thisSongCount = albumCursor.getString(albumCursor.getColumnIndex(MediaStore.Audio.Albums.NUMBER_OF_SONGS));
                     String thisAlbumArt = albumCursor.getString(albumCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
                     String thisAlbumID = albumCursor.getString(albumCursor.getColumnIndex(MediaStore.Audio.Albums._ID));
+                    albumCursor.close();
                     albumList.add(thisTitle);
                     albumArrayList.add(new Album(key, thisTitle, thisArtist, thisAlbumID, thisSongCount, thisAlbumArt));
                 }
@@ -855,7 +844,41 @@ public class AudioExtensionMethods {
                 return s1.getTitle().toLowerCase().compareTo(s2.getTitle().toLowerCase());
             }
         });
-        Log.d("Count", artistTitle + "  " + String.valueOf(albumArrayList.size()));
         return albumArrayList;
+    }
+
+    public static void shareAllSongsFromCurrentArtist(Context context, ArrayList<Song> songsList, String artistTitle) {
+        Intent share = new Intent();
+        share.setAction(Intent.ACTION_SEND_MULTIPLE);
+        share.setType("audio/*");
+
+        ArrayList<Uri> files = new ArrayList<>();
+
+        for(Song song : songsList) {
+            files.add(Uri.parse(song.getData()));
+        }
+
+        artistTitle = artistTitle.trim();
+        if(artistTitle.length() > 20)
+            artistTitle =  artistTitle.substring(0, 18) + "...";
+
+        share.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files);
+        context.startActivity(Intent.createChooser(share, "Share all songs of " + "\'" + artistTitle  + "\'" +  " artist using"));
+    }
+
+    public static String getAlbumArtistTitle(Context context, String albumTitle) {
+
+        ContentResolver musicResolver = context.getContentResolver();
+        Uri musicUri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
+        Cursor musicCursor = musicResolver.query(musicUri, null, MediaStore.Audio.Albums.ALBUM + "=\"" + albumTitle + "\"", null, null);
+
+        if(musicCursor != null && musicCursor.moveToFirst()){
+
+            String artistName = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST));
+            musicCursor.close();
+            return artistName;
+        }
+
+        return null;
     }
 }

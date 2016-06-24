@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -46,13 +47,10 @@ public class ArtistRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Ar
         inflater = LayoutInflater.from(context);
     }
 
-    @Override
     public ArtistViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.recycler_view_artist_layout, parent, false);
         return new ArtistViewHolder(view);
     }
-
-    @Override
     public void onBindViewHolder(final ArtistViewHolder holder, int position) {
 
         final Artist artist = SharedVariables.fullArtistList.get(position);
@@ -61,16 +59,16 @@ public class ArtistRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Ar
         setColor(holder, artist);
         setOnclickListener(holder, artist);
     }
-
     private void setOnclickListener(final ArtistViewHolder holder, final Artist artist) {
 
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, ArtistActivity.class);
+
+                Intent intent = new Intent(mActivity, ArtistActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(mActivity, holder.artistAlbumArtImageView, "ArtistArtImageTranscition");
-                intent.putExtra("artist", artist.getArtistTitle());
+                //ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(mActivity, holder.artistAlbumArtImageView, "ArtistAlbumArtImageTranscition");
+                intent.putExtra(ArtistActivity.ARTIST_EXTRA, artist.getArtistTitle());
                 context.startActivity(intent);
             }
         });
@@ -103,23 +101,14 @@ public class ArtistRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Ar
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-
-                    Bitmap bitmap = AudioExtensionMethods.getBitMap(context, artist.artistAlbumArt);
-                    Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
-                        @Override
-                        public void onGenerated(Palette palette) {
-                            Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
-                            if (vibrantSwatch != null) {
-                                holder.colorBoxLayout.setBackgroundColor(vibrantSwatch.getRgb());
-                                artist.colorBoxLayoutColor = vibrantSwatch.getRgb();
-
-                                holder.artistNameTextView.setTextColor(vibrantSwatch.getTitleTextColor());
-                                artist.artistNameTextViewColor = vibrantSwatch.getTitleTextColor();
-                            }
-
-                            else
-                            {
-                                vibrantSwatch = palette.getMutedSwatch();
+                    try{
+                        Bitmap bitmap = AudioExtensionMethods.getBitMap(context, artist.artistAlbumArt);
+                        if(bitmap == null)
+                            bitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.unkown_album_art);
+                        Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
+                            @Override
+                            public void onGenerated(Palette palette) {
+                                Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
                                 if (vibrantSwatch != null) {
                                     holder.colorBoxLayout.setBackgroundColor(vibrantSwatch.getRgb());
                                     artist.colorBoxLayoutColor = vibrantSwatch.getRgb();
@@ -127,21 +116,33 @@ public class ArtistRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Ar
                                     holder.artistNameTextView.setTextColor(vibrantSwatch.getTitleTextColor());
                                     artist.artistNameTextViewColor = vibrantSwatch.getTitleTextColor();
                                 }
+
+                                else
+                                {
+                                    vibrantSwatch = palette.getMutedSwatch();
+                                    if (vibrantSwatch != null) {
+                                        holder.colorBoxLayout.setBackgroundColor(vibrantSwatch.getRgb());
+                                        artist.colorBoxLayoutColor = vibrantSwatch.getRgb();
+
+                                        holder.artistNameTextView.setTextColor(vibrantSwatch.getTitleTextColor());
+                                        artist.artistNameTextViewColor = vibrantSwatch.getTitleTextColor();
+                                    }
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
+
+                    catch (Exception ignored){}
+
                 }
             }).start();
         }
     }
-
-    @Override
     public int getItemCount() {
         return SharedVariables.fullArtistList.size();
     }
 
     @NonNull
-    @Override
     public String getSectionName(int position) {
         Character c = SharedVariables.fullArtistList.get(position).getArtistTitle().charAt(0);
         if(Character.isDigit(c) || !Character.isLetter(c)){
