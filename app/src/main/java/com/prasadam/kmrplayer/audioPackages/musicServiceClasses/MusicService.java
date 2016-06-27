@@ -27,10 +27,9 @@ import com.prasadam.kmrplayer.MainActivity;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Random;
 
 public class MusicService extends Service implements
         MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener,
@@ -49,17 +48,10 @@ public class MusicService extends Service implements
     private ComponentName remoteComponentName;
     private RemoteControlClient remoteControlClient;
     AudioManager audioManager;
-    private MediaPlayer player;
-    private List<Song> songs;
-
-    private int songPosn;
+    public static MediaPlayer player;
     private final IBinder musicBind = new MusicBinder();
-
-    private String songTitle = "";
     private static final int NOTIFY_ID = 626272;
-    private boolean shuffle = false;
-    private Random rand;
-    private Song currentSong;
+    public static Song currentSong;
 
     public void onCreate(){
 
@@ -67,12 +59,9 @@ public class MusicService extends Service implements
         currentVersionSupportLockScreenControls = UtilFunctions.currentVersionSupportLockScreenControls();
         currentVersionSupportBigNotification = UtilFunctions.currentVersionSupportBigNotification();
         audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
-        songPosn = 0;
-        rand = new Random();
         player = new MediaPlayer();
         initMusicPlayer();
     }
-
     public void initMusicPlayer(){
         player.setWakeMode(getApplicationContext(),
                 PowerManager.PARTIAL_WAKE_LOCK);  //set player properties
@@ -82,7 +71,6 @@ public class MusicService extends Service implements
         player.setOnCompletionListener(this);
         player.setOnErrorListener(this);
     }
-
     public void setListeners(RemoteViews view) {
         Intent previous = new Intent(NOTIFY_PREVIOUS);
         Intent delete = new Intent(NOTIFY_DELETE);
@@ -104,35 +92,6 @@ public class MusicService extends Service implements
 
         PendingIntent pPlay = PendingIntent.getBroadcast(getApplicationContext(), 0, play, PendingIntent.FLAG_UPDATE_CURRENT);
         view.setOnClickPendingIntent(R.id.btnPlay, pPlay);
-
-    }
-
-    public void setList(List<Song> theSongs){
-        songs = theSongs;
-    }
-
-    @Override
-    public void onAudioFocusChange(int focusChange) {
-
-        switch (focusChange) {
-
-            case AudioManager.AUDIOFOCUS_LOSS:
-                player.pause();
-                break;
-
-            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
-                player.pause();
-                break;
-
-            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
-                player.setVolume(0.5f, 0.5f);
-                break;
-
-            case AudioManager.AUDIOFOCUS_GAIN:
-                player.start();
-                player.setVolume(1.0f, 1.0f);
-                break;
-        }
 
     }
 
@@ -200,8 +159,6 @@ public class MusicService extends Service implements
         }
         return START_STICKY;
     }
-
-    @SuppressLint("NewApi")
     private void RegisterRemoteClient(){
         remoteComponentName = new ComponentName(getApplicationContext(), new NotificationBroadcast().ComponentName());
 
@@ -227,10 +184,9 @@ public class MusicService extends Service implements
         catch (Exception ex){}
 
     }
-
-    @SuppressLint("NewApi")
     private void UpdateMetadata(Song song){
 
+        MainActivity.updateNowPlayingUI(getBaseContext());
         if (remoteControlClient == null)
             return;
 
@@ -239,17 +195,14 @@ public class MusicService extends Service implements
         metadataEditor.putLong(MediaMetadataRetriever.METADATA_KEY_DURATION, song.getDuration());
         metadataEditor.putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, song.getArtist());
         metadataEditor.putString(MediaMetadataRetriever.METADATA_KEY_TITLE, song.getTitle());
-        mDummyAlbumArt = UtilFunctions.getAlbumart(getApplicationContext(), Long.valueOf(song.getAlbumID()));
+        mDummyAlbumArt = AudioExtensionMethods.getBitMap(getBaseContext(), song.getAlbumArtLocation());
         if(mDummyAlbumArt == null){
             mDummyAlbumArt = BitmapFactory.decodeResource(getResources(), R.mipmap.unkown_album_art);
         }
         metadataEditor.putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, mDummyAlbumArt);
         metadataEditor.apply();
         audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
-
     }
-
-    @SuppressLint("NewApi")
     private void playSong(String songPath, Song song) {
         try {
             if(currentVersionSupportLockScreenControls){
@@ -265,42 +218,6 @@ public class MusicService extends Service implements
             e.printStackTrace();
         }
     }
-
-    public class MusicBinder extends Binder {
-        public MusicService getService() {
-            return MusicService.this;
-        }
-    }
-
-    @Override
-    public IBinder onBind(Intent intent) {
-        return musicBind;
-    }
-
-    @Override
-    public boolean onUnbind(Intent intent){
-        player.stop();
-        player.release();
-        return false;
-    }
-
-    public void setSong(int songIndex){
-        songPosn = songIndex;
-    }
-
-    @Override
-    public void onCompletion(MediaPlayer mp) {
-        Controls.nextControl(getApplicationContext());
-    }
-
-    @Override
-    public boolean onError(MediaPlayer mp, int what, int extra) {
-        Log.v("MUSIC PLAYER", "Playback Error");
-        mp.reset();
-        return false;
-    }
-
-    @SuppressLint("NewApi")
     private void newNotification() {
 
         currentSong = PlayerConstants.SONGS_LIST.get(PlayerConstants.SONG_NUMBER);
@@ -311,7 +228,7 @@ public class MusicService extends Service implements
         RemoteViews expandedView = new RemoteViews(getApplicationContext().getPackageName(), R.layout.big_notification);
 
         Notification notification = new NotificationCompat.Builder(getApplicationContext())
-                .setSmallIcon(R.drawable.ic_favorite_border_white_24dp)
+                .setSmallIcon(R.mipmap.launcher_icon)
                 .setContentTitle(songName).build();
 
         setListeners(simpleContentView);
@@ -323,8 +240,8 @@ public class MusicService extends Service implements
         }
 
         try{
-            long albumId = Long.parseLong(currentSong.getAlbumID());
-            Bitmap albumArt = UtilFunctions.getAlbumart(getApplicationContext(), albumId);
+            Bitmap albumArt = AudioExtensionMethods.getBitMap(getBaseContext(), currentSong.getAlbumArtLocation());
+            //UtilFunctions.getAlbumart(getApplicationContext(), albumId);
             if(albumArt != null){
                 notification.contentView.setImageViewBitmap(R.id.imageViewAlbumArt, albumArt);
                 if(currentVersionSupportBigNotification){
@@ -369,6 +286,22 @@ public class MusicService extends Service implements
     }
 
     @Override
+    public IBinder onBind(Intent intent) {
+        return musicBind;
+    }
+    public boolean onUnbind(Intent intent){
+        player.stop();
+        player.release();
+        return false;
+    }
+    public void onCompletion(MediaPlayer mp) {
+        Controls.nextControl(getApplicationContext());
+    }
+    public boolean onError(MediaPlayer mp, int what, int extra) {
+        Log.v("MUSIC PLAYER", "Playback Error");
+        mp.reset();
+        return false;
+    }
     public void onPrepared(MediaPlayer mp) {
         //start playback
         mp.start();
@@ -381,10 +314,6 @@ public class MusicService extends Service implements
         Notification.Builder builder = new Notification.Builder(this);
         AudioExtensionMethods.addSongToHistory(getBaseContext(), currentSong.getHashID());
     }
-
-    public void playSong(){}
-
-    @Override
     public void onDestroy() {
         if(player != null){
             player.stop();
@@ -392,4 +321,35 @@ public class MusicService extends Service implements
         }
         super.onDestroy();
     }
+    public void onAudioFocusChange(int focusChange) {
+
+        switch (focusChange) {
+
+            case AudioManager.AUDIOFOCUS_LOSS:
+                player.pause();
+                break;
+
+            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+                player.pause();
+                break;
+
+            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                player.setVolume(0.5f, 0.5f);
+                break;
+
+            case AudioManager.AUDIOFOCUS_GAIN:
+                player.start();
+                player.setVolume(1.0f, 1.0f);
+                break;
+        }
+
+    }
+
+
+    public class MusicBinder extends Binder {
+        public MusicService getService() {
+            return MusicService.this;
+        }
+    }
+
 }

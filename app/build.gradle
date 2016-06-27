@@ -38,8 +38,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'com.android.support:design:23.4.0'
     compile 'com.android.support:support-v4:23.4.0'
-    compile 'com.android.support:recyclerview-v7:23.4.0'    //recycler view
-    compile 'com.github.ivbaranov:materialfavoritebutton:0.1.2'    //favorite button
+    compile 'com.android.support:recyclerview-v7:23.4.0' //recycler view
     compile 'com.facebook.fresco:fresco:0.11.0'    //Fresco
     compile 'com.jakewharton:butterknife:7.0.1'    //Butter Knife
     compile 'com.github.ksoichiro:android-observablescrollview:1.6.0'    //Observable scroll view
@@ -47,8 +46,7 @@ dependencies {
     compile 'com.sothree.slidinguppanel:library:3.3.0'//Sliding Up Panel
     compile 'com.android.support:cardview-v7:23.4.0'    //Card View
     compile 'com.android.support:palette-v7:23.4.0'    //Palette
-    compile 'com.melnykov:floatingactionbutton:1.3.0'//Floating Action Button
     compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'    //Colored status bar
-    compile 'com.google.android.gms:play-services-auth:9.0.0'//Google play services
-    compile 'de.u-mass:lastfm-java:0.1.2' //last.fm api
+    compile 'com.github.jd-alexander:LikeButton:0.2.0' //like button
+    compile 'com.minimize.library:seekbar-compat:0.2.5' //seek bar
 }

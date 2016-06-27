@@ -74,14 +74,11 @@ public class AudioExtensionMethods {
         if(musicCursor!=null && musicCursor.moveToFirst()){
 
             do {
-                long key = musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_KEY));
                 String thisTitle = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM));
                 String thisArtist = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST));
-                String thisSongCount = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Albums.NUMBER_OF_SONGS));
                 String thisAlbumArt = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
-                String thisAlbumID = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Albums._ID));
 
-                albumArrayList.add(new Album(key, thisTitle, thisArtist, thisAlbumID, thisSongCount, thisAlbumArt));
+                albumArrayList.add(new Album(thisTitle, thisArtist, thisAlbumArt));
             }
             while (musicCursor.moveToNext());
             musicCursor.close();
@@ -109,13 +106,11 @@ public class AudioExtensionMethods {
         if(musicCursor!=null && musicCursor.moveToFirst()) {
 
             do {
-                long key = musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST_KEY));
                 String thisArtist = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST));
                 String thisSongCount = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Artists.NUMBER_OF_TRACKS));
                 String thisAlbumCount = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Artists.NUMBER_OF_ALBUMS));
-                String thisID = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Artists._ID));
 
-                artistArrayList.add(new Artist(key, thisID, thisArtist, thisSongCount, thisAlbumCount, AudioExtensionMethods.getArtistAlbumArt(context, thisArtist)));
+                artistArrayList.add(new Artist(thisArtist, thisSongCount, thisAlbumCount, AudioExtensionMethods.getArtistAlbumArt(context, thisArtist)));
 
             } while (musicCursor.moveToNext());
             musicCursor.close();
@@ -743,14 +738,12 @@ public class AudioExtensionMethods {
         if(musicCursor!=null && musicCursor.moveToFirst()) {
 
             do {
-                long key = musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST_KEY));
                 String thisArtist = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST));
                 String thisSongCount = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Artists.NUMBER_OF_TRACKS));
                 String thisAlbumCount = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Artists.NUMBER_OF_ALBUMS));
-                String thisID = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Artists._ID));
 
                 musicCursor.close();
-                return new Artist(key, thisID, thisArtist, thisSongCount, thisAlbumCount, AudioExtensionMethods.getArtistAlbumArt(context, thisArtist));
+                return new Artist(thisArtist, thisSongCount, thisAlbumCount, AudioExtensionMethods.getArtistAlbumArt(context, thisArtist));
 
             } while (musicCursor.moveToNext());
         }
@@ -795,13 +788,13 @@ public class AudioExtensionMethods {
             while (musicCursor.moveToNext());
             musicCursor.close();
         }
-            Collections.sort(songList, new Comparator<Song>() {
-                public int compare(Song s1, Song s2) {
-                    return s1.getTitle().toLowerCase().compareTo(s2.getTitle().toLowerCase());
-                }
-            });
+        Collections.sort(songList, new Comparator<Song>() {
+            public int compare(Song s1, Song s2) {
+                return s1.getTitle().toLowerCase().compareTo(s2.getTitle().toLowerCase());
+            }
+        });
 
-            return songList;
+        return songList;
     }
 
     public static ArrayList<Album> getAlbumListFromArtist(Context context, String artistTitle) {
@@ -821,14 +814,13 @@ public class AudioExtensionMethods {
 
                 if(albumCursor != null && albumCursor.moveToFirst() && !albumList.contains(thisTitle)){
 
-                    long key = albumCursor.getLong(albumCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_KEY));
+
                     String thisArtist = albumCursor.getString(albumCursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST));
-                    String thisSongCount = albumCursor.getString(albumCursor.getColumnIndex(MediaStore.Audio.Albums.NUMBER_OF_SONGS));
                     String thisAlbumArt = albumCursor.getString(albumCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
-                    String thisAlbumID = albumCursor.getString(albumCursor.getColumnIndex(MediaStore.Audio.Albums._ID));
+
                     albumCursor.close();
                     albumList.add(thisTitle);
-                    albumArrayList.add(new Album(key, thisTitle, thisArtist, thisAlbumID, thisSongCount, thisAlbumArt));
+                    albumArrayList.add(new Album(thisTitle, thisArtist, thisAlbumArt));
                 }
 
             }

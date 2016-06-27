@@ -2,12 +2,10 @@ package com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,7 +16,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
-import com.prasadam.kmrplayer.AlbumActivity;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.activityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;

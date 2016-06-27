@@ -1,7 +1,8 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
         app:fastScrollPopupBgColor="@color/colorAccentGeneric"
@@ -11,7 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <!-- Shuffle Button -->
     <android.support.design.widget.FloatingActionButton
         android:visibility="invisible"
         android:id="@+id/shuffle_fab_button"

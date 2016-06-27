@@ -20,15 +20,14 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.github.ivbaranov.mfb.MaterialFavoriteButton;
+import com.like.LikeButton;
+import com.like.OnLikeListener;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.TagEditorActivity;
 import com.prasadam.kmrplayer.activityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
-import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicService;
-import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.PlayerConstants;
-import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.UtilFunctions;
+import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicPlayerExtensionMethods;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -61,20 +60,22 @@ public class AlbumInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapte
     }
 
     @Override
-    public void onBindViewHolder(final songsViewHolder holder, int position) {
+    public void onBindViewHolder(final songsViewHolder holder, final int position) {
         try {
             final Song currentSongDetails = songsList.get(position);
             holder.titleTextView.setText(currentSongDetails.getTitle());
             holder.artistTextView.setText(currentSongDetails.getArtist());
             holder.rootLayout.setTag(currentSongDetails.getData());
-            holder.favoriteButton.setTag(currentSongDetails.getID());
-            holder.favoriteButton.setFavorite(currentSongDetails.getIsLiked(context));
-
-            holder.favoriteButton.setOnClickListener(new View.OnClickListener() {
+            holder.favoriteButton.setLiked(currentSongDetails.getIsLiked(context));
+            holder.favoriteButton.setOnLikeListener(new OnLikeListener() {
                 @Override
-                public void onClick(View v) {
-                    holder.favoriteButton.toggleFavorite();
-                    currentSongDetails.setIsLiked(context, holder.favoriteButton.isFavorite());
+                public void liked(LikeButton likeButton) {
+                    currentSongDetails.setIsLiked(context, true);
+                }
+
+                @Override
+                public void unLiked(LikeButton likeButton) {
+                    currentSongDetails.setIsLiked(context, false);
                 }
             });
 
@@ -87,30 +88,15 @@ public class AlbumInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapte
             }
 
             setContextMenu(holder, currentSongDetails);
-            setOnClickListenerForRecyclerItem(holder, position);
+            holder.rootLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {MusicPlayerExtensionMethods.playSong((Activity) context, songsList, position);}
+            });
+
         }
         catch (Exception ignored){}
     }
 
-
-    private void setOnClickListenerForRecyclerItem(songsViewHolder holder, final int position) {
-        holder.rootLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                PlayerConstants.SONG_PAUSED = false;
-                PlayerConstants.SONGS_LIST = songsList;
-                PlayerConstants.SONG_NUMBER = position;
-                boolean isServiceRunning = UtilFunctions.isServiceRunning(MusicService.class.getName(), context);
-                if (!isServiceRunning) {
-                    Intent i = new Intent(context, MusicService.class);
-                    context.startService(i);
-                } else {
-                    PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
-                }
-            }
-        });
-    }
 
     private void setContextMenu(final songsViewHolder holder, final Song currentSongDetails) {
 
@@ -197,7 +183,7 @@ public class AlbumInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapte
         @Bind (R.id.songArtist_recycler_view) TextView artistTextView;
         @Bind (R.id.rootLayout_recycler_view) RelativeLayout rootLayout;
         @Bind (R.id.song_context_menu) ImageView contextMenuView;
-        @Bind (R.id.fav_button) MaterialFavoriteButton favoriteButton;
+        @Bind (R.id.fav_button) LikeButton favoriteButton;
         public String albumPath;
 
         public songsViewHolder(View itemView) {

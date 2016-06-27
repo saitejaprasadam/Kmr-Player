@@ -1,7 +1,7 @@
 package com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters;
 
+import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -23,9 +23,7 @@ import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.activityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
-import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicService;
-import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.PlayerConstants;
-import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.UtilFunctions;
+import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicPlayerExtensionMethods;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -59,28 +57,14 @@ public class FavoritesRecyclerViewAdapter extends RecyclerView.Adapter<Favorites
     public void onBindViewHolder(final songsViewHolder holder, final int position) {
         try
         {
-            final Song currentSongDetails;
-
-            currentSongDetails = favoriteSongsList.get(position);
+            final Song currentSongDetails = favoriteSongsList.get(position);
 
             holder.titleTextView.setText(currentSongDetails.getTitle());
             holder.artistTextView.setText(currentSongDetails.getArtist());
             holder.rootLayout.setTag(currentSongDetails.getData());
-
             holder.rootLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
-                    PlayerConstants.SONG_PAUSED = false;
-                    PlayerConstants.SONGS_LIST = favoriteSongsList;
-                    PlayerConstants.SONG_NUMBER = position;
-                    boolean isServiceRunning = UtilFunctions.isServiceRunning(MusicService.class.getName(), context);
-                    if (!isServiceRunning) {
-                        Intent i = new Intent(context, MusicService.class);
-                        context.startService(i);
-                    } else {
-                        PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
-                    }
-                }
+                public void onClick(View view) {MusicPlayerExtensionMethods.playSong((Activity) context, favoriteSongsList, position);}
             });
 
 
@@ -190,9 +174,6 @@ public class FavoritesRecyclerViewAdapter extends RecyclerView.Adapter<Favorites
         return favoriteSongsList.size();
     }
 
-    /// <summary>RecyclerView view holder (Inner class)
-    /// <para>creates a view holder for individual song</para>
-    /// </summary>
     class songsViewHolder extends RecyclerView.ViewHolder{
 
         @Bind(R.id.songTitle_RecyclerView) TextView titleTextView;

@@ -1,5 +1,6 @@
 package com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -19,11 +20,13 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.github.ivbaranov.mfb.MaterialFavoriteButton;
+import com.like.LikeButton;
+import com.like.OnLikeListener;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.activityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicPlayerExtensionMethods;
 import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicService;
 import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.PlayerConstants;
 import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.UtilFunctions;
@@ -63,31 +66,21 @@ public class SongRecyclerViewAdapterForArtistActivity extends RecyclerView.Adapt
             holder.titleTextView.setText(currentSongDetails.getTitle());
             holder.artistTextView.setText(currentSongDetails.getArtist());
             holder.rootLayout.setTag(currentSongDetails.getData());
-            holder.favoriteButton.setTag(currentSongDetails.getID());
-            holder.favoriteButton.setFavorite(currentSongDetails.getIsLiked(context));
-
-            holder.favoriteButton.setOnClickListener(new View.OnClickListener() {
+            holder.favoriteButton.setLiked(currentSongDetails.getIsLiked(context));
+            holder.favoriteButton.setOnLikeListener(new OnLikeListener() {
                 @Override
-                public void onClick(View v) {
-                    holder.favoriteButton.toggleFavorite();
-                    currentSongDetails.setIsLiked(context, holder.favoriteButton.isFavorite());
+                public void liked(LikeButton likeButton) {
+                    currentSongDetails.setIsLiked(context, true);
+                }
+
+                @Override
+                public void unLiked(LikeButton likeButton) {
+                    currentSongDetails.setIsLiked(context, false);
                 }
             });
-
             holder.rootLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
-                    PlayerConstants.SONG_PAUSED = false;
-                    PlayerConstants.SONGS_LIST = songsList;
-                    PlayerConstants.SONG_NUMBER = position;
-                    boolean isServiceRunning = UtilFunctions.isServiceRunning(MusicService.class.getName(), context);
-                    if (!isServiceRunning) {
-                        Intent i = new Intent(context, MusicService.class);
-                        context.startService(i);
-                    } else {
-                        PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
-                    }
-                }
+                public void onClick(View view) {MusicPlayerExtensionMethods.playSong((Activity) context, songsList, position);}
             });
 
 
@@ -200,7 +193,7 @@ public class SongRecyclerViewAdapterForArtistActivity extends RecyclerView.Adapt
         @Bind (R.id.songAlbumArt_RecyclerView) com.facebook.drawee.view.SimpleDraweeView AlbumArtImageView;
         @Bind (R.id.rootLayout_recycler_view) RelativeLayout rootLayout;
         @Bind (R.id.song_context_menu) ImageView contextMenuView;
-        @Bind (R.id.fav_button) MaterialFavoriteButton favoriteButton;
+        @Bind (R.id.fav_button) LikeButton favoriteButton;
         public String albumPath;
 
         public songsViewHolder(View itemView) {

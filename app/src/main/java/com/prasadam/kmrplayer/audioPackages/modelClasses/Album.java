@@ -5,24 +5,17 @@ package com.prasadam.kmrplayer.audioPackages.modelClasses;
  */
 public class Album {
 
-    private long key;
-    private String title, artist, albumID, albumArtLocation, songCount;
+    private String title, artist, albumArtLocation;
     public int colorBoxLayoutColor, albumNameTextViewColor, artistNameTextViewColor;
 
-    public Album(long key, String title, String artist, String albumID, String songCount, String albumArtLocation) {
-        this.key = key;
+    public Album(String title, String artist, String albumArtLocation) {
         this.title = title;
         this.artist = artist;
-        this.albumID = albumID;
-        this.songCount = songCount;
         this.albumArtLocation = albumArtLocation;
     }
 
-    public long getKey(){return key;}
     public String getTitle(){return title;}
     public String getArtist(){return artist;}
-    public String getAlbumID(){return albumID;}
-    public String getSongsCount(){return songCount;}
     public String getAlbumArtLocation(){return albumArtLocation;}
 
     public Boolean isColorSet(){
@@ -32,5 +25,4 @@ public class Album {
 
         return  false;
     }
-
 }

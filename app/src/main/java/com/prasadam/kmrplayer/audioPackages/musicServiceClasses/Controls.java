@@ -2,6 +2,7 @@ package com.prasadam.kmrplayer.audioPackages.musicServiceClasses;
 
 import android.content.Context;
 
+import com.prasadam.kmrplayer.MainActivity;
 import com.prasadam.kmrplayer.R;
 
 
@@ -15,10 +16,14 @@ public class Controls {
 
     public static void playControl(Context context) {
         sendMessage(context.getResources().getString(R.string.play));
+        PlayerConstants.SONG_PAUSED = false;
+        MainActivity.updateNowPlayingUI(context);
     }
 
     public static void pauseControl(Context context) {
         sendMessage(context.getResources().getString(R.string.pause));
+        PlayerConstants.SONG_PAUSED = true;
+        MainActivity.updateNowPlayingUI(context);
     }
 
     public static void nextControl(Context context) {
@@ -35,6 +40,7 @@ public class Controls {
             }
         }
         PlayerConstants.SONG_PAUSED = false;
+        MainActivity.updateNowPlayingUI(context);
     }
 
     public static void previousControl(Context context) {
@@ -51,6 +57,7 @@ public class Controls {
             }
         }
         PlayerConstants.SONG_PAUSED = false;
+        MainActivity.updateNowPlayingUI(context);
     }
 
     private static void sendMessage(String message) {

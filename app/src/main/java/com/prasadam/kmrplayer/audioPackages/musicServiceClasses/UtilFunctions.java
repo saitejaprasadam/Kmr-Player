@@ -49,7 +49,7 @@ public class UtilFunctions {
         Bitmap bm = null;
         BitmapFactory.Options options = new BitmapFactory.Options();
         try{
-            bm = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_favorite_black_24dp, options);
+            bm = BitmapFactory.decodeResource(context.getResources(), R.mipmap.unkown_album_art, options);
         } catch(Error ee){}
         catch (Exception e) {}
         return bm;

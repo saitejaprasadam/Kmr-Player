@@ -123,7 +123,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
-                    android:textSize="@dimen/fab_size_mini"
+                    android:textSize="40dp"
                     android:marqueeRepeatLimit="marquee_forever"
                     android:textColor="@color/white"/>
 

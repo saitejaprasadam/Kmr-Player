@@ -24,6 +24,5 @@ public class SharedVariables {
     public static ArrayList<Song> fullSongsList = new ArrayList<>();
     public static ArrayList<Artist> fullArtistList = new ArrayList<>();
     public static ArrayList<Album> fullAlbumList = new ArrayList<>();
-
     public static ArrayList<SongIdentification> songIdentifications = new ArrayList<>();
 }

@@ -6,20 +6,11 @@ package com.prasadam.kmrplayer.audioPackages.modelClasses;
 
 public class Artist {
 
-    private String artistTitle, songCount, albumCount, artistID;
-    private long key;
+    private String artistTitle, songCount, albumCount;
     public String artistAlbumArt = null;
     public int colorBoxLayoutColor, artistNameTextViewColor;
 
-    public Artist(String artistTitle){
-        this.artistTitle = artistTitle;
-    }
-
-    public Artist(){}
-
-    public Artist(long key, String artistID, String artistTitle, String songCount, String albumCount, String artistAlbumArt) {
-        this.key = key;
-        this.artistID = artistID;
+    public Artist(String artistTitle, String songCount, String albumCount, String artistAlbumArt) {
         this.artistTitle = artistTitle;
         this.songCount = songCount;
         this.albumCount = albumCount;

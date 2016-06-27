@@ -27,7 +27,6 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.github.ivbaranov.mfb.MaterialFavoriteButton;
 import com.prasadam.kmrplayer.activityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.AlbumInnerLayoutSongRecyclerViewAdapter;
 import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
@@ -51,7 +50,7 @@ import butterknife.OnClick;
 public class AlbumActivity extends Activity{
 
     private AlbumInnerLayoutSongRecyclerViewAdapter recyclerViewAdapter;
-    private String albumTitle, albumArtist,albumartPath = null;
+    private String albumTitle, albumArtist, albumartPath = null;
     private ArrayList<Song> songList;
     @Bind (R.id.actual_album_art) ImageView actualAlbumArt;
     @Bind (R.id.blurred_album_art) ImageView blurredAlbumArt;
@@ -59,6 +58,11 @@ public class AlbumActivity extends Activity{
     @Bind (R.id.Album_name_albumrecyclerview) TextView albumNameTextView;
     @Bind (R.id.Artist_name_albumrecyclerview) TextView artistNameTextView;
     @Bind (R.id.shuffle_fab_button) FloatingActionButton shuffleFabButton;
+
+    @OnClick (R.id.album_info)
+    public void artistOnClickListener(View view){
+        ActivitySwitcher.jumpToArtist(AlbumActivity.this, albumArtist);
+    }
 
     @OnClick (R.id.actual_album_art)
     public void albumartExpand(View view){
@@ -136,7 +140,6 @@ public class AlbumActivity extends Activity{
     }
 
     private void initalize() {
-        new MaterialFavoriteButton.Builder(this).create();
         albumTitle = getIntent().getExtras().getString("albumTitle");
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.mipmap.ic_chevron_left_white_24dp);

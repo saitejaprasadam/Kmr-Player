@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,5 +31,27 @@ public class MusicPlayerExtensionMethods {
         } else
             PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
 
+    }
+
+    public static void playSong(Activity mActivity, ArrayList<Song> songsList, int position){
+        PlayerConstants.SONG_PAUSED = false;
+        PlayerConstants.SONGS_LIST = songsList;
+        PlayerConstants.SONG_NUMBER = position;
+        boolean isServiceRunning = UtilFunctions.isServiceRunning(MusicService.class.getName(), mActivity);
+        if (!isServiceRunning) {
+            Intent i = new Intent(mActivity, MusicService.class);
+            mActivity.startService(i);
+        }
+
+        else
+            PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
+    }
+
+    public static void startMusicService(Activity mActivity){
+        boolean isServiceRunning = UtilFunctions.isServiceRunning(MusicService.class.getName(), mActivity);
+        if (!isServiceRunning) {
+            Intent i = new Intent(mActivity, MusicService.class);
+            mActivity.startService(i);
+        }
     }
 }

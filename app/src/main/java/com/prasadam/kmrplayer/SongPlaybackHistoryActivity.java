@@ -11,7 +11,6 @@ import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.github.ivbaranov.mfb.MaterialFavoriteButton;
 import com.prasadam.kmrplayer.ListenerClasses.SongsSearchListener;
 import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.RecentlyAddedRecyclerViewAdapter;
 import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
@@ -44,7 +43,6 @@ public class SongPlaybackHistoryActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         setStatusBarTranslucent(SongPlaybackHistoryActivity.this);
-        new MaterialFavoriteButton.Builder(this).create();
         if(getSupportActionBar() != null )
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

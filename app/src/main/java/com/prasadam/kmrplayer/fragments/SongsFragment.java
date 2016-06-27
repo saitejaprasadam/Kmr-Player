@@ -2,7 +2,6 @@ package com.prasadam.kmrplayer.fragments;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -13,22 +12,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.github.ivbaranov.mfb.MaterialFavoriteButton;
+import com.prasadam.kmrplayer.MainActivity;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.SongRecyclerViewAdapter;
 import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
-import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
-import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicService;
-import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.PlayerConstants;
-import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.UtilFunctions;
+import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicPlayerExtensionMethods;
 import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
 import com.prasadam.kmrplayer.sharedClasses.DividerItemDecoration;
 import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Random;
 
 /*
  * Created by Prasadam Saiteja on 3/7/2016.
@@ -50,7 +42,6 @@ public class SongsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_song_list, container, false);
         recyclerView = (FastScrollRecyclerView) rootView.findViewById(R.id.songs_recylcer_view_layout);
         shuffleButton = (FloatingActionButton) rootView.findViewById(R.id.shuffle_fab_button);
-        new MaterialFavoriteButton.Builder(getContext()).create();
         return rootView;
     }
 
@@ -137,25 +128,7 @@ public class SongsFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                PlayerConstants.SONG_PAUSED = false;
-
-                ArrayList<Song> shuffledPlaylist = new ArrayList<>();
-                for (Song song : SharedVariables.fullSongsList) {
-                    shuffledPlaylist.add(song);
-                }
-
-                long seed = System.nanoTime();
-                Collections.shuffle(shuffledPlaylist, new Random(seed));
-                PlayerConstants.SONGS_LIST = shuffledPlaylist;
-                PlayerConstants.SONG_NUMBER = 0;
-
-                boolean isServiceRunning = UtilFunctions.isServiceRunning(MusicService.class.getName(), getContext());
-                if (!isServiceRunning) {
-                    Intent i = new Intent(getContext(), MusicService.class);
-                    getContext().startService(i);
-                } else {
-                    PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
-                }
+                MusicPlayerExtensionMethods.shufflePlay(mActivity, SharedVariables.fullSongsList);
                 shuffleButton.hide();
             }
         });

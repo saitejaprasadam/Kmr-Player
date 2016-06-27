@@ -67,6 +67,7 @@
                         android:transitionName="ArtistAlbumArtImageTranscition"
                         android:id="@+id/artist_image"
                         android:layout_margin="10dp"
+                        android:scaleType="centerCrop"
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent" />
 

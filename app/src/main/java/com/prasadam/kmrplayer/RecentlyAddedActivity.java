@@ -11,7 +11,6 @@ import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.github.ivbaranov.mfb.MaterialFavoriteButton;
 import com.prasadam.kmrplayer.ListenerClasses.SongsSearchListener;
 import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.RecentlyAddedRecyclerViewAdapter;
 import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
@@ -42,7 +41,6 @@ public class RecentlyAddedActivity extends AppCompatActivity {
         setContentView(R.layout.activity_recently_added_layout);
         ButterKnife.bind(this);
 
-        new MaterialFavoriteButton.Builder(this).create();
         setStatusBarTranslucent(RecentlyAddedActivity.this);
 
         if(getSupportActionBar() != null )
