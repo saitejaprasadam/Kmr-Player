@@ -12,7 +12,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.SlidingPaneLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
@@ -21,7 +20,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,23 +37,23 @@ import com.prasadam.kmrplayer.fragments.AlbumsFragment;
 import com.prasadam.kmrplayer.fragments.SongsFragment;
 import com.prasadam.kmrplayer.fragments.TabFragment;
 import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.File;
 import java.util.Calendar;
-
-import butterknife.Bind;
 
 import static com.prasadam.kmrplayer.sharedClasses.ExtensionMethods.setStatusBarTranslucent;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static ImageView nowPlayingBlurredAlbumArt;
-    private static ImageView nowPlayingActualAlbumArt;
-    private static LinearLayout nowPlayingRootLayout;
+    private static ImageView nowPlayingMinimalAlbumArt, nowPlayingActualAlbumArt, nowPlayingBlurredAlbumArt;
     private static RelativeLayout nowPlayingColorPallatteView;
+    private static ImageView nowPlayingNextButton, nowPlayingPreviousButton, nowPlayingPlayButton;
+    private static TextView nowPlayingSongArtistTextView, nowPlayingSongMinimalArtistTextView, nowPlayingSongMinimalTitleTextView, nowPlayingSongTitleTextView;
     private static LikeButton nowPlayingFavButton;
-    private static ImageView nowPlayingPlayButton, nowPlayingNextButton, nowPlayingPreviousButton;
-    private static TextView nowPlayingSongTitleTextView, nowPlayingSongArtistTextView;
+    private static RelativeLayout nowPlayingMinimalRootLayout;
+    private static SlidingUpPanelLayout mainLayoutRootLayout;
+    private static ImageView nowPlayingMinimalNextButton, nowPlayingMinimalPlayButton;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,17 +64,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
     private void initalizer() {
 
-        nowPlayingActualAlbumArt = (ImageView) findViewById(R.id.vertical_slide_drawer_actual_image_view);
-        nowPlayingBlurredAlbumArt = (ImageView) findViewById(R.id.vertical_slide_drawer_blurred_image_view);
-        nowPlayingRootLayout = (LinearLayout) findViewById(R.id.vertical_sliding_drawer_root_layout);
-        nowPlayingColorPallatteView = (RelativeLayout) findViewById(R.id.now_playing_color_pallete_view);
-        nowPlayingPlayButton = (ImageView) findViewById(R.id.now_playing_play_pause_button);
-        nowPlayingNextButton = (ImageView) findViewById(R.id.now_playing_next_button);
-        nowPlayingPreviousButton = (ImageView) findViewById(R.id.now_playing_previous_button);
-        nowPlayingSongArtistTextView = (TextView) findViewById(R.id.now_playing_song_artist_text_view);
-        nowPlayingSongTitleTextView = (TextView) findViewById(R.id.now_playing_song_title_text_view);
-        nowPlayingFavButton = (LikeButton) findViewById(R.id.now_playing_fav_button);
-
+        initalizeNowPlayingUI();
         updateNowPlayingUI(this);
         createTabFragment();
         setNavigationDrawer();
@@ -84,6 +72,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         MusicPlayerExtensionMethods.startMusicService(MainActivity.this);
     }
 
+    private void initalizeNowPlayingUI() {
+        nowPlayingMinimalRootLayout = (RelativeLayout) findViewById(R.id.now_playing_minimal_root_layout);
+        mainLayoutRootLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
+        nowPlayingMinimalAlbumArt = (ImageView) findViewById(R.id.now_playing_minimal_album_art);
+        nowPlayingActualAlbumArt = (ImageView) findViewById(R.id.vertical_slide_drawer_actual_image_view);
+        nowPlayingBlurredAlbumArt = (ImageView) findViewById(R.id.vertical_slide_drawer_blurred_image_view);
+        nowPlayingColorPallatteView = (RelativeLayout) findViewById(R.id.now_playing_color_pallete_view);
+        nowPlayingPlayButton = (ImageView) findViewById(R.id.now_playing_play_pause_button);
+        nowPlayingNextButton = (ImageView) findViewById(R.id.now_playing_next_button);
+        nowPlayingPreviousButton = (ImageView) findViewById(R.id.now_playing_previous_button);
+        nowPlayingSongArtistTextView = (TextView) findViewById(R.id.now_playing_song_artist_text_view);
+        nowPlayingSongMinimalArtistTextView = (TextView) findViewById(R.id.now_playing_minimal_song_artist_text_view);
+        nowPlayingSongMinimalTitleTextView = (TextView) findViewById(R.id.now_playing_minimal_song_title_text_view);
+        nowPlayingSongTitleTextView = (TextView) findViewById(R.id.now_playing_song_title_text_view);
+        nowPlayingFavButton = (LikeButton) findViewById(R.id.now_playing_fav_button);
+        nowPlayingMinimalNextButton = (ImageView) findViewById(R.id.now_playing_minimal_next_button);
+        nowPlayingMinimalPlayButton = (ImageView) findViewById(R.id.now_playing_minimal_play_button);
+
+        mainLayoutRootLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
+                if(slideOffset < 0.5)
+                    nowPlayingMinimalRootLayout.setVisibility(View.VISIBLE);
+                else
+                    nowPlayingMinimalRootLayout.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+            }
+        });
+    }
     private void createTabFragment() {
         FragmentManager mFragmentManager = getSupportFragmentManager();
         FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
@@ -144,8 +164,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (drawer != null) {
             if (drawer.isDrawerOpen(GravityCompat.START)) {
                 drawer.closeDrawer(GravityCompat.START);
-            } else
-                super.onBackPressed();
+            }
+            else
+                if (mainLayoutRootLayout != null && (mainLayoutRootLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED || mainLayoutRootLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED))
+                    mainLayoutRootLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+
+                else
+                    super.onBackPressed();
         }
     }
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -182,7 +207,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(currentPlayingSong != null){
             setNowPlayingAlbumArt(context, currentPlayingSong);
             nowPlayingSongArtistTextView.setText(currentPlayingSong.getArtist());
+            nowPlayingSongMinimalArtistTextView.setText(currentPlayingSong.getArtist());
+
             nowPlayingSongTitleTextView.setText(currentPlayingSong.getTitle());
+            nowPlayingSongMinimalTitleTextView.setText(currentPlayingSong.getTitle());
+
             nowPlayingFavButton.setLiked(currentPlayingSong.getIsLiked(context));
             nowPlayingFavButton.setOnLikeListener(new OnLikeListener() {
                 @Override
@@ -209,10 +238,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         updateNowPlayingUI(context);
     }
     private static void setPlayPauseIcon() {
-        if(PlayerConstants.SONG_PAUSED)
+        if(PlayerConstants.SONG_PAUSED){
+            nowPlayingMinimalPlayButton.setImageResource(R.mipmap.ic_play_arrow_black_24dp);
             nowPlayingPlayButton.setImageResource(R.mipmap.ic_play_arrow_white_36dp);
-        else
+        }
+
+        else{
             nowPlayingPlayButton.setImageResource(R.mipmap.ic_pause_white_36dp);
+            nowPlayingMinimalPlayButton.setImageResource(R.mipmap.ic_pause_black_24dp);
+        }
+
     }
     private static void setNowPlayingAlbumArt(Context context, Song currentPlayingSong) {
         String albumArtPath = currentPlayingSong.getAlbumArtLocation();
@@ -222,6 +257,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             final File imgFile = new File(albumArtPath);
             if (imgFile.exists())
             {
+                nowPlayingMinimalAlbumArt.setImageURI(Uri.parse("file://" + imgFile.getAbsolutePath()));
                 nowPlayingActualAlbumArt.setImageURI(Uri.parse("file://" + imgFile.getAbsolutePath()));
                 nowPlayingBlurredAlbumArt.setImageBitmap(BlurBuilder.blur(context, ((BitmapDrawable) nowPlayingActualAlbumArt.getDrawable()).getBitmap()));
                 bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
@@ -263,18 +299,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         nowPlayingNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {Controls.nextControl(context);}});
+        nowPlayingMinimalNextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {Controls.nextControl(context);
+            }
+        });
         nowPlayingPreviousButton.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {Controls.previousControl(context);}
         });
+
         nowPlayingPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                if (PlayerConstants.SONG_PAUSED)
-                    Controls.playControl(context);
-
-                else
-                    Controls.pauseControl(context);
+            public void onClick(View v) {playPausePressed(context);
             }
         });
+        nowPlayingMinimalPlayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {playPausePressed(context);
+            }
+        });
+    }
+
+    private static void playPausePressed(Context context) {
+        if (PlayerConstants.SONG_PAUSED)
+            Controls.playControl(context);
+
+        else
+            Controls.pauseControl(context);
     }
 }

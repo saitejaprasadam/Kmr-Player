@@ -29,6 +29,8 @@
             app:icon_type="heart"
             android:id="@+id/fav_button"
             app:icon_size="20dp"
+            app:like_drawable="@drawable/heart_on"
+            app:unlike_drawable="@mipmap/ic_favorite_border_black_24dp"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"/>
 

@@ -9,7 +9,7 @@
     android:layout_height="match_parent"
     android:gravity="bottom"
     sothree:umanoPanelHeight="55dp"
-    sothree:umanoShadowHeight="4dp">
+    sothree:umanoShadowHeight="10dp">
 
     <!-- Main Content-->
     <android.support.v4.widget.DrawerLayout

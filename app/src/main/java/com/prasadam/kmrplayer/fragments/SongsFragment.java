@@ -66,7 +66,7 @@ public class SongsFragment extends Fragment {
 
                 if(!SharedVariables.fullSongsList.isEmpty()) {
 
-                    shuffleButton.show();
+                    //shuffleButton.show();
                     recyclerViewAdapter = new SongRecyclerViewAdapter(mActivity, getContext());
 
                     mActivity.runOnUiThread(new Runnable() {
