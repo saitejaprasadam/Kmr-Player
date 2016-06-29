@@ -17,13 +17,11 @@ public class Controls {
     public static void playControl(Context context) {
         sendMessage(context.getResources().getString(R.string.play));
         PlayerConstants.SONG_PAUSED = false;
-        MainActivity.updateNowPlayingUI(context);
     }
 
     public static void pauseControl(Context context) {
         sendMessage(context.getResources().getString(R.string.pause));
         PlayerConstants.SONG_PAUSED = true;
-        MainActivity.updateNowPlayingUI(context);
     }
 
     public static void nextControl(Context context) {
@@ -34,12 +32,15 @@ public class Controls {
             if(PlayerConstants.SONG_NUMBER < (PlayerConstants.SONGS_LIST.size()-1)){
                 PlayerConstants.SONG_NUMBER++;
                 PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
-            }else{
-                PlayerConstants.SONG_NUMBER = 0;
-                PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
+                PlayerConstants.SONG_PAUSED = false;
+            }else {
+                if(PlayerConstants.PLAY_BACK_STATE == PlayerConstants.PLAYBACK_STATE_ENUM.LOOP || PlayerConstants.PLAY_BACK_STATE == PlayerConstants.PLAYBACK_STATE_ENUM.SINGLE_LOOP){
+                    PlayerConstants.SONG_NUMBER = 0;
+                    PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
+                    PlayerConstants.SONG_PAUSED = false;
+                }
             }
         }
-        PlayerConstants.SONG_PAUSED = false;
         MainActivity.updateNowPlayingUI(context);
     }
 
@@ -64,6 +65,10 @@ public class Controls {
         try{
             PlayerConstants.PLAY_PAUSE_HANDLER.sendMessage(PlayerConstants.PLAY_PAUSE_HANDLER.obtainMessage(0, message));
         }catch(Exception e){}
+    }
+
+    public static void setLoop(boolean loop){
+        MusicService.player.setLooping(loop);
     }
 }
 

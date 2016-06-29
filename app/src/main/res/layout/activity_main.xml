@@ -41,7 +41,7 @@
     <include
         layout="@layout/fragment_vertical_sliding_drawer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
 </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 

@@ -1,18 +1,17 @@
 <RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:background="?attr/selectableItemBackground"
-    android:clickable="true"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:background="@color/black"
+    android:clickable="true">
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_centerVertical="true"
         android:layout_alignParentStart="true"
-        android:layout_toLeftOf="@+id/controlLayout">
+        android:layout_toStartOf="@+id/small_notification_control_layout">
 
         <ImageView
             android:layout_margin="5dp"
@@ -23,7 +22,8 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/textSongName"
@@ -31,9 +31,9 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:singleLine="true"
-                android:textColor="@android:color/white"
-                android:textStyle="bold"
-                android:textSize="14sp"/>
+                android:text="Demons"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/textAlbumName"
@@ -41,6 +41,8 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="marquee"
                 android:gravity="center_vertical"
+                android:text="Imagine Dragons"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:marqueeRepeatLimit="marquee_forever"
                 android:selectAllOnFocus="true"
                 android:singleLine="true"
@@ -51,20 +53,19 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/controlLayout"
+        android:id="@+id/small_notification_control_layout"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:layout_alignParentEnd="true"
         android:gravity="center_vertical"
-        android:layout_centerVertical="true">
+        android:layout_alignParentEnd="true">
 
         <ImageView
             android:id="@+id/btnPrevious"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:src="@mipmap/ic_chevron_left_white_36dp"
+            android:src="@mipmap/ic_chevron_left_white_24dp"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"/>
 
@@ -74,7 +75,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:src="@mipmap/ic_pause_white_36dp"
+            android:src="@mipmap/ic_pause_white_24dp"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"/>
 
@@ -83,7 +84,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:src="@mipmap/ic_play_arrow_white_36dp"
+            android:src="@mipmap/ic_play_arrow_white_24dp"
             android:visibility="gone"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"/>
@@ -93,7 +94,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:src="@mipmap/ic_chevron_right_white_36dp"
+            android:src="@mipmap/ic_chevron_right_white_24dp"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"/>
 

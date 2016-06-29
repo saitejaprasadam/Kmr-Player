@@ -49,4 +49,5 @@ dependencies {
     compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'    //Colored status bar
     compile 'com.github.jd-alexander:LikeButton:0.2.0' //like button
     compile 'com.minimize.library:seekbar-compat:0.2.5' //seek bar
+    compile 'me.zhanghai.android.materialprogressbar:library:1.1.6' //Progress bar
 }

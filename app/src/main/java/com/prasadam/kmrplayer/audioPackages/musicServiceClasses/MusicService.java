@@ -27,7 +27,6 @@ import com.prasadam.kmrplayer.MainActivity;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
-import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
 
 import java.io.IOException;
 
@@ -66,7 +65,6 @@ public class MusicService extends Service implements
         player.setWakeMode(getApplicationContext(),
                 PowerManager.PARTIAL_WAKE_LOCK);  //set player properties
         player.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        //set listeners
         player.setOnPreparedListener(this);
         player.setOnCompletionListener(this);
         player.setOnErrorListener(this);
@@ -153,7 +151,6 @@ public class MusicService extends Service implements
                     return false;
                 }
             });
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -241,7 +238,7 @@ public class MusicService extends Service implements
 
         try{
             Bitmap albumArt = AudioExtensionMethods.getBitMap(getBaseContext(), currentSong.getAlbumArtLocation());
-            //UtilFunctions.getAlbumart(getApplicationContext(), albumId);
+
             if(albumArt != null){
                 notification.contentView.setImageViewBitmap(R.id.imageViewAlbumArt, albumArt);
                 if(currentVersionSupportBigNotification){
@@ -280,7 +277,8 @@ public class MusicService extends Service implements
             notification.bigContentView.setTextViewText(R.id.textSongName, songName);
             notification.bigContentView.setTextViewText(R.id.textAlbumName, albumName);
         }
-        //notification.flags |= Notification.FLAG_ONGOING_EVENT;
+
+        notification.flags |= Notification.FLAG_ONGOING_EVENT;
         startForeground(NOTIFY_ID, notification);
         Log.d("showed", "notification");
     }
@@ -303,9 +301,7 @@ public class MusicService extends Service implements
         return false;
     }
     public void onPrepared(MediaPlayer mp) {
-        //start playback
         mp.start();
-        //notification
         Intent notIntent = new Intent(this, MainActivity.class);
         notIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendInt = PendingIntent.getActivity(this, 0,

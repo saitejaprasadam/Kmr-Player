@@ -31,7 +31,6 @@ import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 import java.io.File;
-import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -46,12 +45,10 @@ public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Song
     private LayoutInflater inflater;
     private Activity activity;
     private Context context;
-    private static ArrayList<Integer> mSelected;
 
     public SongRecyclerViewAdapter(Activity activity, Context context){
         this.activity = activity;
         this.context = context;
-        mSelected = new ArrayList<>();
         inflater = LayoutInflater.from(activity);
     }
 
