@@ -35,6 +35,11 @@ dependencies {
     compile('com.afollestad:material-cab:0.1.11@aar') { //material contextual action bar
         transitive = true
     }
+
+    compile ('com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.9.1@aar'){ //Advanced Recyler view
+        transitive=true
+    }
+
     compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'com.android.support:design:23.4.0'
     compile 'com.android.support:support-v4:23.4.0'

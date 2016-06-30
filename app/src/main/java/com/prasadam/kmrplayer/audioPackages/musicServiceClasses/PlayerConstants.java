@@ -12,6 +12,8 @@ import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
 public class PlayerConstants {
 
     public static ArrayList<Song> SONGS_LIST = new ArrayList<>();
+    public static ArrayList<String> HASH_ID_CURRENT_PLAYLIST = new ArrayList<>();
+    public static boolean SHOWING_PLAYLIST = false;
     public static int SONG_NUMBER = 0;
     public static boolean SONG_PAUSED = true;
     public static boolean SONG_CHANGED = false;

@@ -1,10 +1,14 @@
 package com.prasadam.kmrplayer.audioPackages.musicServiceClasses;
 
 import android.content.Context;
+import android.util.Log;
 
-import com.prasadam.kmrplayer.MainActivity;
 import com.prasadam.kmrplayer.R;
+import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Random;
 
 /*
  * Created by Prasadam Saiteja on 5/31/2016.
@@ -41,7 +45,6 @@ public class Controls {
                 }
             }
         }
-        MainActivity.updateNowPlayingUI(context);
     }
 
     public static void previousControl(Context context) {
@@ -58,7 +61,6 @@ public class Controls {
             }
         }
         PlayerConstants.SONG_PAUSED = false;
-        MainActivity.updateNowPlayingUI(context);
     }
 
     private static void sendMessage(String message) {
@@ -69,6 +71,41 @@ public class Controls {
 
     public static void setLoop(boolean loop){
         MusicService.player.setLooping(loop);
+    }
+
+    public static void shuffleMashUpMethod() {
+
+        if(PlayerConstants.SHUFFLE){
+            long seed = System.nanoTime();
+            ArrayList<Song> shuffledPlaylist = new ArrayList<>(PlayerConstants.SONGS_LIST);
+            Collections.shuffle(shuffledPlaylist, new Random(seed));
+            PlayerConstants.SONGS_LIST.clear();
+            PlayerConstants.SONGS_LIST.add(MusicService.currentSong);
+            PlayerConstants.SONG_NUMBER = 0;
+            for (Song song : shuffledPlaylist) {
+                if(!PlayerConstants.SONGS_LIST.contains(song))
+                    PlayerConstants.SONGS_LIST.add(song);
+            }
+        }
+
+        else{
+            ArrayList<Song> tempArrayList = new ArrayList<>();
+            for (String hashID : PlayerConstants.HASH_ID_CURRENT_PLAYLIST) {
+                for(Song song: PlayerConstants.SONGS_LIST){
+                    if(hashID.equals(song.getHashID()))
+                        tempArrayList.add(song);
+                }
+            }
+            PlayerConstants.SONGS_LIST = tempArrayList;
+            int index = 0;
+            for (Song song: PlayerConstants.SONGS_LIST){
+                if(MusicService.currentSong.getHashID().equals(song.getHashID())){
+                    PlayerConstants.SONG_NUMBER = index;
+                    break;
+                }
+                index++;
+            }
+        }
     }
 }
 

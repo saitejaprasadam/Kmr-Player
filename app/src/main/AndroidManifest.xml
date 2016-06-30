@@ -58,6 +58,11 @@
             android:theme="@style/ColoredStatusBar" />
 
         <activity
+            android:name=".NowPlayingPlaylistActivity"
+            android:label="@string/favorites_text"
+            android:theme="@style/ColoredStatusBar" />
+
+        <activity
             android:name=".SongPlaybackHistoryActivity"
             android:label="@string/history_text"
             android:theme="@style/ColoredStatusBar" />

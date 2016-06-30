@@ -71,7 +71,7 @@ public class MusicService extends Service implements
     }
     public void setListeners(RemoteViews view) {
         Intent previous = new Intent(NOTIFY_PREVIOUS);
-        Intent delete = new Intent(NOTIFY_DELETE);
+        //Intent delete = new Intent(NOTIFY_DELETE);
         Intent pause = new Intent(NOTIFY_PAUSE);
         Intent next = new Intent(NOTIFY_NEXT);
         Intent play = new Intent(NOTIFY_PLAY);
@@ -112,7 +112,7 @@ public class MusicService extends Service implements
                         try{
                             currentSong = song;
                             playSong(songPath, song);
-                            //MainActivity.changeUI();
+                            MainActivity.updateNowPlayingUI(getBaseContext());
                             //AudioPlayerActivity.changeUI();
                         }catch(Exception e){
                             e.printStackTrace();
@@ -145,7 +145,7 @@ public class MusicService extends Service implements
                     }
                     newNotification();
                     try{
-                        //MainActivity.changeButton();
+                        MainActivity.changeButton();
                         //AudioPlayerActivity.changeButton();
                     }catch(Exception e){}
                     return false;

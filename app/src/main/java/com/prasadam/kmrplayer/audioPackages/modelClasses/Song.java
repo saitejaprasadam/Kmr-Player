@@ -2,6 +2,8 @@ package com.prasadam.kmrplayer.audioPackages.modelClasses;
 
 import android.content.Context;
 
+import com.prasadam.kmrplayer.fragments.SongsFragment;
+
 import static com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods.isSongFavorite;
 import static com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods.setSongFavorite;
 
@@ -35,6 +37,8 @@ public class Song{
     public String getData(){return data;}
     public String getAlbumArtLocation(){return albumArtLocation;}
     public boolean getIsLiked(Context context) { return isSongFavorite(context, hashID); }
-    public void setIsLiked(Context context, boolean value) { setSongFavorite(context, hashID, value); }
+    public void setIsLiked(Context context, boolean value) {
+        setSongFavorite(context, hashID, value);
+    }
     public String getHashID(){return hashID;};
 }

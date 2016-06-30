@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    xmlns:app="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools">
 
     <LinearLayout
         android:id="@+id/vertical_sliding_drawer_root_layout"
@@ -13,7 +12,7 @@
         android:orientation="vertical"
         android:fitsSystemWindows="true">
 
-        <FrameLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="70">
@@ -45,6 +44,7 @@
 
 
                 <android.support.v7.widget.CardView
+                    android:id="@+id/now_playing_album_art_container"
                     android:layout_width="wrap_content"
                     android:layout_gravity="center"
                     android:layout_height="wrap_content"
@@ -116,7 +116,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="55dp" />
 
-        </FrameLayout>
+            <android.support.v7.widget.RecyclerView
+                android:layout_margin="10dp"
+                android:visibility="invisible"
+                android:id="@+id/now_playing_playlist_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/now_playing_toolbar"
+                android:layout_alignParentEnd="true"/>
+
+        </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/now_playing_color_pallete_view"
@@ -134,18 +143,19 @@
                 android:gravity="center_vertical">
 
                 <android.support.v7.widget.CardView
-                    android:id="@+id/now_playing_song_info_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
                     android:layout_margin="10dp"
+                    android:padding="5dp"
                     android:layout_marginBottom="20dp">
 
                     <RelativeLayout
+                        android:id="@+id/now_playing_song_info_layout"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
+                        android:clickable="true"
+                        android:background="?attr/selectableItemBackgroundBorderless"
                         android:orientation="horizontal"
-                        android:layout_margin="5dp"
                         android:layout_gravity="center_vertical">
 
                         <com.like.LikeButton
@@ -217,8 +227,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:clickable="true"
+                        app:backgroundTint="@color/white"
                         android:layout_centerHorizontal="true"
-                        android:src="@mipmap/ic_play_arrow_white_36dp"
+                        android:src="@mipmap/ic_play_arrow_black_36dp"
                         android:soundEffectsEnabled="true"/>
 
                     <ImageView

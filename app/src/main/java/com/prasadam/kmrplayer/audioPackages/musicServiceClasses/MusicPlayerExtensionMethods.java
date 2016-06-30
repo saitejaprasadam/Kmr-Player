@@ -2,7 +2,9 @@ package com.prasadam.kmrplayer.audioPackages.musicServiceClasses;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 
+import com.prasadam.kmrplayer.MainActivity;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
 
@@ -16,9 +18,19 @@ import java.util.Random;
 
 public class MusicPlayerExtensionMethods {
 
-    public static void shufflePlay(Activity mActivity, ArrayList<Song> songsList){
+    public static void shufflePlay(Activity mActivity, final ArrayList<Song> songsList){
 
         PlayerConstants.SONG_PAUSED = false;
+        PlayerConstants.HASH_ID_CURRENT_PLAYLIST.clear();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (Song song: songsList) {
+                    PlayerConstants.HASH_ID_CURRENT_PLAYLIST.add(song.getHashID());
+                }
+            }
+        }).start();
+
         long seed = System.nanoTime();
         ArrayList<Song> shuffledPlaylist = songsList;
         Collections.shuffle(shuffledPlaylist, new Random(seed));
@@ -31,9 +43,11 @@ public class MusicPlayerExtensionMethods {
         } else
             PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
 
+        PlayerConstants.SHUFFLE = true;
+        MainActivity.changeButton();
     }
 
-    public static void playSong(Activity mActivity, ArrayList<Song> songsList, int position){
+    public static void playSong(Activity mActivity, final ArrayList<Song> songsList, int position){
         PlayerConstants.SONG_PAUSED = false;
         PlayerConstants.SONGS_LIST = songsList;
         PlayerConstants.SONG_NUMBER = position;
@@ -45,6 +59,16 @@ public class MusicPlayerExtensionMethods {
 
         else
             PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
+
+        PlayerConstants.HASH_ID_CURRENT_PLAYLIST.clear();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (Song song: songsList) {
+                    PlayerConstants.HASH_ID_CURRENT_PLAYLIST.add(song.getHashID());
+                }
+            }
+        }).start();
     }
 
     public static void startMusicService(Activity mActivity){

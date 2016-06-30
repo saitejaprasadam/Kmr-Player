@@ -876,6 +876,8 @@ public class AudioExtensionMethods {
 
     public static Song getLastPlayedSong(Context context){
         long songID = new DBHelper(context).getLastPlayedSong();
+        if(songID == 0)
+            return null;
         return getSongFromID(context, songID);
     }
 
