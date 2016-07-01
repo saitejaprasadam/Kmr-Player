@@ -3,7 +3,9 @@ package com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +19,11 @@ import com.prasadam.kmrplayer.MainActivity;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.adapterClasses.uiAdapters.NowPlayingPlaylistInterfaces;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicPlayerExtensionMethods;
 import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.PlayerConstants;
 import com.prasadam.kmrplayer.fragments.SongsFragment;
 
+import java.io.File;
 import java.util.Collections;
 
 import butterknife.Bind;
@@ -48,11 +52,18 @@ public class NowPlayingPlaylistAdapter extends RecyclerView.Adapter<NowPlayingPl
         return new MyViewHolder(view);
     }
 
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(MyViewHolder holder, final int position) {
+
         final Song song = PlayerConstants.SONGS_LIST.get(position);
         holder.songTitleTextView.setText(song.getTitle());
         holder.songArtistTextView.setText(song.getArtist());
         holder.nowPlayingPlaylistLikeButton.setLiked(song.getIsLiked(context));
+        holder.songID = song.getID();
+
+        if(position != PlayerConstants.SONG_NUMBER)
+            setAlbumArt(holder, song);
+        else
+            holder.albumArtImageView.setImageResource(R.mipmap.ic_pause_circle_outline_black_24dp);
 
         if(position < PlayerConstants.SONG_NUMBER)
             holder.cardviewRootLayout.setAlpha(0.5f);
@@ -74,27 +85,87 @@ public class NowPlayingPlaylistAdapter extends RecyclerView.Adapter<NowPlayingPl
                 MainActivity.updateSongLikeStatus(context);
             }
         });
+        holder.cardviewRootLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MusicPlayerExtensionMethods.changeSong(mActivity, position);
+            }
+        });
+    }
+
+    private void setAlbumArt(MyViewHolder holder, Song song) {
+        String albumArtPath = song.getAlbumArtLocation();
+        if(albumArtPath != null)
+        {
+            File imgFile = new File(albumArtPath);
+            if(imgFile.exists())
+                holder.albumArtImageView.setImageURI(Uri.parse("file://" + imgFile.getAbsolutePath()));
+
+            else
+                holder.albumArtImageView.setImageResource(R.mipmap.unkown_album_art);
+        }
+
+        else
+            holder.albumArtImageView.setImageResource(R.mipmap.unkown_album_art);
     }
 
     public int getItemCount() {
         return PlayerConstants.SONGS_LIST.size();
     }
 
-    public boolean onItemMove(int fromPosition, int toPosition) {
+    public boolean onItemMove(int fromPosition, int toPosition, MyViewHolder sourceViewHolder, MyViewHolder targetViewHolder) {
+
+        Log.d("Source", String.valueOf(sourceViewHolder.getAdapterPosition()));
+        Log.d("nowPlaying", String.valueOf(PlayerConstants.SONG_NUMBER));
+        Log.d("target", String.valueOf(targetViewHolder.getAdapterPosition()));
+
         if (fromPosition < toPosition) {
             for (int i = fromPosition; i < toPosition; i++) {
+                if(sourceViewHolder.getAdapterPosition() < PlayerConstants.SONG_NUMBER &&  PlayerConstants.SONG_NUMBER <= targetViewHolder.getAdapterPosition())
+                    PlayerConstants.SONG_NUMBER = i;
+
+                else
+                    if(sourceViewHolder.getAdapterPosition() == PlayerConstants.SONG_NUMBER && targetViewHolder.getAdapterPosition() > sourceViewHolder.getAdapterPosition()){
+                        targetViewHolder.cardviewRootLayout.setAlpha(0.5f);
+                        PlayerConstants.SONG_NUMBER = i + 1;
+                    }
+
+                    else
+                        if(sourceViewHolder.songID == PlayerConstants.SONGS_LIST.get(PlayerConstants.SONG_NUMBER).getID()){
+                            PlayerConstants.SONG_NUMBER = i + 1;
+                            targetViewHolder.cardviewRootLayout.setAlpha(0.5f);
+                        }
+
                 Collections.swap(PlayerConstants.SONGS_LIST, i, i + 1);
             }
         } else {
             for (int i = fromPosition; i > toPosition; i--) {
+                if(sourceViewHolder.getAdapterPosition() > PlayerConstants.SONG_NUMBER &&  PlayerConstants.SONG_NUMBER >= targetViewHolder.getAdapterPosition())
+                    PlayerConstants.SONG_NUMBER = i;
+
+                else
+                    if(sourceViewHolder.getAdapterPosition() == PlayerConstants.SONG_NUMBER && targetViewHolder.getAdapterPosition() < sourceViewHolder.getAdapterPosition()){
+                        targetViewHolder.cardviewRootLayout.setAlpha(1f);
+                        PlayerConstants.SONG_NUMBER = i - 1;
+                    }
+
+                    else
+                        if(sourceViewHolder.songID == PlayerConstants.SONGS_LIST.get(PlayerConstants.SONG_NUMBER).getID()){
+                            PlayerConstants.SONG_NUMBER = i - 1;
+                            targetViewHolder.cardviewRootLayout.setAlpha(1f);
+                        }
+
                 Collections.swap(PlayerConstants.SONGS_LIST, i, i - 1);
             }
         }
         notifyItemMoved(fromPosition, toPosition);
         return true;
     }
+
     public void onItemDismiss(int position) {
         PlayerConstants.SONGS_LIST.remove(position);
+        if(position < PlayerConstants.SONG_NUMBER)
+            PlayerConstants.SONG_NUMBER--;
         notifyItemRemoved(position);
     }
 
@@ -105,6 +176,8 @@ public class NowPlayingPlaylistAdapter extends RecyclerView.Adapter<NowPlayingPl
         @Bind(R.id.now_playing_playlist_song_title_text_view) TextView songTitleTextView;
         @Bind(R.id.now_playing_playlist_song_artist_text_view) TextView songArtistTextView;
         @Bind(R.id.now_playing_playlist_root_layout) FrameLayout cardviewRootLayout;
+        @Bind(R.id.now_playing_playlist_song_album_art) ImageView albumArtImageView;
+        public long songID;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -119,6 +192,10 @@ public class NowPlayingPlaylistAdapter extends RecyclerView.Adapter<NowPlayingPl
         @Override
         public void onItemClear() {
             itemView.setBackgroundColor(Color.WHITE);
+            if(songID == PlayerConstants.SONGS_LIST.get(PlayerConstants.SONG_NUMBER).getID())
+                cardviewRootLayout.setAlpha(1f);
+            else
+                cardviewRootLayout.setAlpha(0.5f);
         }
     }
 }

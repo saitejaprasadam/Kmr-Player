@@ -1,10 +1,10 @@
-<FrameLayout
-    android:id="@+id/now_playing_playlist_root_layout"
+<FrameLayout android:id="@+id/now_playing_playlist_root_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/tools">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -13,14 +13,14 @@
         android:layout_margin="5dp"
         android:layout_gravity="center_vertical">
 
-        <com.like.LikeButton
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/now_playing_playlist_song_album_art"
             android:layout_alignParentStart="true"
-            app:icon_type="heart"
-            android:id="@+id/now_playing_playlist_fav_button"
-            app:like_drawable="@drawable/heart_on"
-            app:unlike_drawable="@mipmap/ic_favorite_border_black_24dp"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:layout_width="50dp"
+            android:adjustViewBounds="true"
+            android:padding="10dp"
+            fresco:placeholderImage="@android:drawable/star_on" />
 
         <ImageView
             android:id="@+id/now_playing_playlist_song_context_menu"
@@ -33,13 +33,22 @@
             android:layout_height="match_parent"
             android:src="@mipmap/ic_more_horiz_black_24dp"/>
 
+        <com.like.LikeButton
+            app:icon_type="heart"
+            android:id="@+id/now_playing_playlist_fav_button"
+            app:like_drawable="@drawable/heart_on"
+            app:unlike_drawable="@mipmap/ic_favorite_border_black_24dp"
+            android:layout_toStartOf="@+id/now_playing_playlist_song_context_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"/>
+
         <LinearLayout
             android:id="@+id/song_details_playlist_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
-            android:layout_toEndOf="@id/now_playing_playlist_fav_button"
-            android:layout_toStartOf="@id/now_playing_playlist_song_context_menu"
+            android:layout_toEndOf="@id/now_playing_playlist_song_album_art"
+            android:layout_toStartOf="@id/now_playing_playlist_fav_button"
             android:orientation="vertical">
 
             <TextView

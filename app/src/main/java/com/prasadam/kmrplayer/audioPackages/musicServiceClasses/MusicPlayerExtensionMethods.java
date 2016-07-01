@@ -78,4 +78,17 @@ public class MusicPlayerExtensionMethods {
             mActivity.startService(i);
         }
     }
+
+    public static void changeSong(Activity mActivity, int position){
+
+        PlayerConstants.SONG_NUMBER = position;
+        boolean isServiceRunning = UtilFunctions.isServiceRunning(MusicService.class.getName(), mActivity);
+        if (!isServiceRunning) {
+            Intent i = new Intent(mActivity, MusicService.class);
+            mActivity.startService(i);
+        }
+
+        else
+            PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
+    }
 }

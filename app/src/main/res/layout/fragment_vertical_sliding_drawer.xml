@@ -119,6 +119,7 @@
             <android.support.v7.widget.RecyclerView
                 android:layout_margin="10dp"
                 android:visibility="invisible"
+                android:nestedScrollingEnabled="false"
                 android:id="@+id/now_playing_playlist_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

@@ -112,6 +112,8 @@ public class MusicService extends Service implements
                         try{
                             currentSong = song;
                             playSong(songPath, song);
+                            PlayerConstants.SONG_PAUSED = false;
+                            MainActivity.changeButton();
                             MainActivity.updateNowPlayingUI(getBaseContext());
                             //AudioPlayerActivity.changeUI();
                         }catch(Exception e){

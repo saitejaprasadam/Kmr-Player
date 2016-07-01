@@ -1,9 +1,14 @@
 package com.prasadam.kmrplayer.adapterClasses.uiAdapters;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
+
+import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.NowPlayingPlaylistAdapter;
+import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.PlayerConstants;
 
 /*
  * Created by Prasadam Saiteja on 6/30/2016.
@@ -12,6 +17,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
     public static final float ALPHA_FULL = 1.0f;
+    private static float swipingAlphaValue = 0.5f;
 
     private final NowPlayingPlaylistInterfaces.ItemTouchHelperAdapter mAdapter;
 
@@ -39,6 +45,7 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
         } else {
             final int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
             final int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
+            swipingAlphaValue = viewHolder.itemView.getAlpha();
             return makeMovementFlags(dragFlags, swipeFlags);
         }
     }
@@ -50,7 +57,7 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
         }
 
         // Notify the adapter of the move
-        mAdapter.onItemMove(source.getAdapterPosition(), target.getAdapterPosition());
+        mAdapter.onItemMove(source.getAdapterPosition(), target.getAdapterPosition(), (NowPlayingPlaylistAdapter.MyViewHolder) source, (NowPlayingPlaylistAdapter.MyViewHolder) target);
         return true;
     }
 
@@ -64,8 +71,10 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
     public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
         if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
             // Fade out the view as it is swiped out of the parent's bounds
+            //NowPlayingPlaylistAdapter.MyViewHolder temp = (NowPlayingPlaylistAdapter.MyViewHolder) viewHolder;
             final float alpha = ALPHA_FULL - Math.abs(dX) / (float) viewHolder.itemView.getWidth();
             viewHolder.itemView.setAlpha(alpha);
+            viewHolder.itemView.setTranslationX(dX);
             viewHolder.itemView.setTranslationX(dX);
         } else {
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
@@ -82,7 +91,6 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
                 itemViewHolder.onItemSelected();
             }
         }
-
         super.onSelectedChanged(viewHolder, actionState);
     }
 
@@ -90,12 +98,23 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
     public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
         super.clearView(recyclerView, viewHolder);
 
-        viewHolder.itemView.setAlpha(ALPHA_FULL);
+        Log.d(String.valueOf(viewHolder.getAdapterPosition()), String.valueOf(PlayerConstants.SONG_NUMBER));
+        viewHolder.itemView.setBackgroundColor(Color.WHITE);
+        if(viewHolder.getAdapterPosition() < PlayerConstants.SONG_NUMBER){
+            Log.d("Half", " color");
+            viewHolder.itemView.setAlpha(0.5f);
+        }
 
+        else{
+            Log.d("Full", " color");
+            viewHolder.itemView.setAlpha(ALPHA_FULL);
+        }
+
+        /*
         if (viewHolder instanceof NowPlayingPlaylistInterfaces.ItemTouchHelperViewHolder) {
             // Tell the view holder it's time to restore the idle state
             NowPlayingPlaylistInterfaces.ItemTouchHelperViewHolder itemViewHolder = (NowPlayingPlaylistInterfaces.ItemTouchHelperViewHolder) viewHolder;
-            itemViewHolder.onItemClear();
-        }
+            //itemViewHolder.onItemClear();
+        }*/
     }
 }

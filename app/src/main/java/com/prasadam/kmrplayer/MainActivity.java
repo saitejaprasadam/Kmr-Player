@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static ProgressBar nowPlayingMinimalProgressBar;
     private static RelativeLayout nowPlayingsongInfoCardView;
     public static RecyclerView nowPlayingPlaylistRecyclerView;
-    private static NowPlayingPlaylistAdapter recyclerViewAdapter;
+    public static NowPlayingPlaylistAdapter recyclerViewAdapter;
     private ItemTouchHelper mItemTouchHelper;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -582,11 +582,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         nowPlayingAlbumArtContainer.setVisibility(View.INVISIBLE);
         nowPlayingPlaylistRecyclerView.setVisibility(View.VISIBLE);
         PlayerConstants.SHOWING_PLAYLIST = true;
+        nowPlayingPlaylistRecyclerView.scrollToPosition(PlayerConstants.SONG_NUMBER);
+        mainLayoutRootLayout.setScrollableView(nowPlayingPlaylistRecyclerView);
     }
     private void hidePlaylist(){
         nowPlayingAlbumArtContainer.setVisibility(View.VISIBLE);
         nowPlayingPlaylistRecyclerView.setVisibility(View.INVISIBLE);
         PlayerConstants.SHOWING_PLAYLIST = false;
+        mainLayoutRootLayout.setScrollableView(null);
     }
 
     @Override
