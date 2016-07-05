@@ -134,7 +134,7 @@ public class SongRecyclerViewAdapterForArtistActivity extends RecyclerView.Adapt
                                             break;
 
                                         case R.id.song_context_menu_tagEditor:
-                                            AudioExtensionMethods.launchTagEditor(context, currentSongDetails.getID());
+                                            ActivitySwitcher.launchTagEditor((Activity) context, currentSongDetails.getID(), position);
                                             break;
 
                                         case R.id.song_context_menu_jump_to_album:
@@ -167,7 +167,9 @@ public class SongRecyclerViewAdapterForArtistActivity extends RecyclerView.Adapt
     public int getItemCount() {
         return songsList.size();
     }
-
+    public void setSongsList(ArrayList<Song> songsList){
+        this.songsList = songsList;
+    }
     private void setAlbumArt(songsViewHolder holder, Song currentSongDetails) {
 
         String albumArtPath = currentSongDetails.getAlbumArtLocation();

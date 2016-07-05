@@ -82,14 +82,14 @@ public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Song
                 public void onClick(View view) {MusicPlayerExtensionMethods.playSong(activity, SharedVariables.fullSongsList, position);}
             });
 
-            setContextMenu(holder, currentSongDetails);
+            setContextMenu(holder, currentSongDetails, position);
             setAlbumArt(holder, currentSongDetails);
         }
 
         catch (Exception ignored){}
     }
 
-    private void setContextMenu(final songsViewHolder holder, final Song currentSongDetails) {
+    private void setContextMenu(final songsViewHolder holder, final Song currentSongDetails, final int position) {
 
         holder.contextMenuView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,7 +143,7 @@ public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Song
                                     break;
 
                                 case R.id.song_context_menu_tagEditor:
-                                    AudioExtensionMethods.launchTagEditor(context, currentSongDetails.getID());
+                                    ActivitySwitcher.launchTagEditor((Activity) context, currentSongDetails.getID(), position);
                                     break;
 
                                 case R.id.song_context_menu_jump_to_album:

@@ -39,6 +39,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
+import com.prasadam.kmrplayer.ListenerClasses.GoogleLoginListeners;
 import com.prasadam.kmrplayer.activityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.NowPlayingPlaylistAdapter;
 import com.prasadam.kmrplayer.adapterClasses.uiAdapters.NowPlayingPlaylistInterfaces;
@@ -64,6 +65,7 @@ import static com.prasadam.kmrplayer.sharedClasses.ExtensionMethods.setStatusBar
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener , NowPlayingPlaylistInterfaces.OnStartDragListener{
 
+    private static GoogleLoginListeners googleLoginListeners;
     private static ImageView nowPlayingMinimalAlbumArt, nowPlayingActualAlbumArt, nowPlayingBlurredAlbumArt;
     private static RelativeLayout nowPlayingColorPallatteView;
     private static ImageView nowPlayingNextButton, nowPlayingPreviousButton, nowPlayingPlayButton, nowPlayingSongContextMenu;
@@ -71,18 +73,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static LikeButton nowPlayingFavButton;
     private static RelativeLayout nowPlayingMinimalRootLayout;
     private static SlidingUpPanelLayout mainLayoutRootLayout;
-    private static ImageView nowPlayingMinimalNextButton, nowPlayingMinimalPlayButton, nowPlayingMinimizeButton ,nowPlayingShuffleButton, nowPlayingRepeatButton;
+    private static ImageView nowPlayingMinimalNextButton, nowPlayingMinimalPlayButton, nowPlayingMinimizeButton ,nowPlayingShuffleButton, nowPlayingRepeatButton, nowPlayingLayoutContextMenu;
     private static CardView nowPlayingAlbumArtContainer;
     private static ProgressBar nowPlayingMinimalProgressBar;
     private static RelativeLayout nowPlayingsongInfoCardView;
     public static RecyclerView nowPlayingPlaylistRecyclerView;
     public static NowPlayingPlaylistAdapter recyclerViewAdapter;
+    public static TextView navHeaderProfileName;
+    //public static ImageView navHeaderProfilePic;
     private ItemTouchHelper mItemTouchHelper;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
+
+        googleLoginListeners = new GoogleLoginListeners(MainActivity.this);
         initalizer();
         SharedVariables.Initializers(this);
     }
@@ -95,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         initalizeNowPlayingUI();
         updateNowPlayingUI(this);
         initalizePlaylistRecyclerView();
+        //googleLoginListeners.signInMethod();
     }
     private void initalizeNowPlayingUI() {
         nowPlayingMinimalRootLayout = (RelativeLayout) findViewById(R.id.now_playing_minimal_root_layout);
@@ -122,6 +128,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         nowPlayingsongInfoCardView = (RelativeLayout) findViewById(R.id.now_playing_song_info_layout);
         nowPlayingAlbumArtContainer = (CardView) findViewById(R.id.now_playing_album_art_container);
         nowPlayingPlaylistRecyclerView = (RecyclerView) findViewById(R.id.now_playing_playlist_recycler_view);
+        nowPlayingLayoutContextMenu = (ImageView) findViewById(R.id.now_playing_context_menu_button);
 
         if (nowPlayingToolbar != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             nowPlayingToolbar.setPadding(0, ExtensionMethods.getStatusBarHeight(this), 0, 0);
@@ -164,6 +171,39 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View v) {mainLayoutRootLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);}
         });
+        nowPlayingLayoutContextMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    final PopupMenu popup = new PopupMenu(MainActivity.this, nowPlayingLayoutContextMenu);
+                    popup.inflate(R.menu.slidingup_layout_menu);
+
+                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            try {
+                                int id = item.getItemId();
+                                switch (id) {
+
+                                    case R.id.action_equilzer:
+                                        ActivitySwitcher.initEqualizer(MainActivity.this);
+                                        break;
+
+                                    default:
+                                        Toast.makeText(MainActivity.this, "pending", Toast.LENGTH_SHORT).show();
+                                        break;
+                                }
+                            } catch (Exception ignored) {}
+
+                            return true;
+                        }
+                    });
+
+                    popup.show();
+            }
+        });
+
+
         nowPlayingsongInfoCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -204,20 +244,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
 
                 else
-                    if(PlayerConstants.PLAY_BACK_STATE == PlayerConstants.PLAYBACK_STATE_ENUM.LOOP){
-                        PlayerConstants.PLAY_BACK_STATE = PlayerConstants.PLAYBACK_STATE_ENUM.SINGLE_LOOP;
-                        nowPlayingRepeatButton.setImageResource(R.mipmap.ic_repeat_one_white_24dp);
-                        Controls.setLoop(true);
-                        nowPlayingRepeatButton.setAlpha(1f);
-                    }
+                if(PlayerConstants.PLAY_BACK_STATE == PlayerConstants.PLAYBACK_STATE_ENUM.LOOP){
+                    PlayerConstants.PLAY_BACK_STATE = PlayerConstants.PLAYBACK_STATE_ENUM.SINGLE_LOOP;
+                    nowPlayingRepeatButton.setImageResource(R.mipmap.ic_repeat_one_white_24dp);
+                    Controls.setLoop(true);
+                    nowPlayingRepeatButton.setAlpha(1f);
+                }
 
-                    else
-                        if(PlayerConstants.PLAY_BACK_STATE == PlayerConstants.PLAYBACK_STATE_ENUM.SINGLE_LOOP){
-                            PlayerConstants.PLAY_BACK_STATE = PlayerConstants.PLAYBACK_STATE_ENUM.OFF;
-                            nowPlayingRepeatButton.setImageResource(R.mipmap.ic_repeat_white_24dp);
-                            Controls.setLoop(false);
-                            nowPlayingRepeatButton.setAlpha(0.5f);
-                        }
+                else
+                if(PlayerConstants.PLAY_BACK_STATE == PlayerConstants.PLAYBACK_STATE_ENUM.SINGLE_LOOP){
+                    PlayerConstants.PLAY_BACK_STATE = PlayerConstants.PLAYBACK_STATE_ENUM.OFF;
+                    nowPlayingRepeatButton.setImageResource(R.mipmap.ic_repeat_white_24dp);
+                    Controls.setLoop(false);
+                    nowPlayingRepeatButton.setAlpha(0.5f);
+                }
             }
         });
 
@@ -225,7 +265,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             nowPlayingMinimalProgressBar.getProgressDrawable().setColorFilter(getResources().getColor(R.color.colorAccentGeneric), android.graphics.PorterDuff.Mode.SRC_IN);
         final Handler mHandler = new Handler();
         runOnUiThread(new Runnable() {
-
             @Override
             public void run() {
                 if(MusicService.player != null){
@@ -291,7 +330,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     break;
 
                                 case R.id.song_context_menu_tagEditor:
-                                    AudioExtensionMethods.launchTagEditor(MainActivity.this, MusicService.currentSong.getID());
+                                    ActivitySwitcher.launchTagEditor(MainActivity.this, MusicService.currentSong.getID(), PlayerConstants.SONG_NUMBER);
                                     break;
 
                                 case R.id.song_context_menu_jump_to_album:
@@ -342,13 +381,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             int timeOfDay = c.get(Calendar.HOUR_OF_DAY);
             View header = navigationView.getHeaderView(0);
             ImageView headerImageView = (ImageView) header.findViewById(R.id.nav_header_imageView);
-            TextView albumTextView = (TextView) header.findViewById(R.id.nav_album_name_text_view);
-            TextView artistTextView = (TextView) header.findViewById(R.id.nav_artist_name_text_view);
+            //TextView albumTextView = (TextView) header.findViewById(R.id.nav_album_name_text_view);
+            navHeaderProfileName = (TextView) header.findViewById(R.id.nav_artist_name_text_view);
+            //navHeaderProfilePic = (ImageView) header.findViewById(R.id.nav_header_profile_pic);
 
             if(timeOfDay < 6 || timeOfDay >= 19) {
                 headerImageView.setImageResource(R.mipmap.material_wallpaper_dark);
-                albumTextView.setTextColor(getResources().getColor(R.color.white));
-                artistTextView.setTextColor(getResources().getColor(R.color.white));
+                //albumTextView.setTextColor(getResources().getColor(R.color.white));
+                navHeaderProfileName.setTextColor(getResources().getColor(R.color.white));
             }
 
         }
@@ -384,11 +424,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 drawer.closeDrawer(GravityCompat.START);
             }
             else
-                if (mainLayoutRootLayout != null && (mainLayoutRootLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED || mainLayoutRootLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED))
-                    mainLayoutRootLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+            if (mainLayoutRootLayout != null && (mainLayoutRootLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED || mainLayoutRootLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED))
+                mainLayoutRootLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
 
-                else
-                    super.onBackPressed();
+            else
+                super.onBackPressed();
         }
     }
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -405,17 +445,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         else
-            if(id == R.id.action_settings){
-                Intent intent = new Intent(this, NowPlayingPlaylistActivity.class);
-                startActivity(intent);
-            }
-                //Toast.makeText(MainActivity.this, "Pending", Toast.LENGTH_SHORT).show();
+        if(id == R.id.action_equilzer){
+            ActivitySwitcher.initEqualizer(MainActivity.this);
+        }
+        //Toast.makeText(MainActivity.this, "Pending", Toast.LENGTH_SHORT).show();
 
         return super.onOptionsItemSelected(item);
     }
     public boolean onNavigationItemSelected(MenuItem item) {
 
-        item.getItemId();
+        if(item.getItemId() == R.id.google_login){
+            googleLoginListeners.signInMethod();
+        }
         return true;
     }
 
@@ -595,5 +636,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
         mItemTouchHelper.startDrag(viewHolder);
+    }
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        googleLoginListeners.onActivityResult(requestCode, resultCode, data);
     }
 }

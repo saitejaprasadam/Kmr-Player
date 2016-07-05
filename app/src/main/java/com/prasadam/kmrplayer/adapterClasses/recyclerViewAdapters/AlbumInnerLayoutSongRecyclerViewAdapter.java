@@ -87,7 +87,7 @@ public class AlbumInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapte
                     holder.albumPath = imgFile.getAbsolutePath();
             }
 
-            setContextMenu(holder, currentSongDetails);
+            setContextMenu(holder, currentSongDetails, position);
             holder.rootLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {MusicPlayerExtensionMethods.playSong((Activity) context, songsList, position);}
@@ -97,8 +97,7 @@ public class AlbumInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapte
         catch (Exception ignored){}
     }
 
-
-    private void setContextMenu(final songsViewHolder holder, final Song currentSongDetails) {
+    private void setContextMenu(final songsViewHolder holder, final Song currentSongDetails, final int position) {
 
         holder.contextMenuView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -154,9 +153,7 @@ public class AlbumInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapte
                                     break;
 
                                 case R.id.song_context_menu_tagEditor:
-                                    Intent tagEditorIntent = new Intent(context, TagEditorActivity.class);
-                                    tagEditorIntent.putExtra("songID", String.valueOf(currentSongDetails.getID()));
-                                    context.startActivity(tagEditorIntent);
+                                    ActivitySwitcher.launchTagEditor((Activity) context, currentSongDetails.getID(), position);
                                     break;
                             }
                         }
@@ -175,6 +172,10 @@ public class AlbumInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapte
     @Override
     public int getItemCount() {
         return songsList.size();
+    }
+
+    public void setSongsList(ArrayList<Song> songsList){
+        this.songsList = songsList;
     }
 
     class songsViewHolder extends RecyclerView.ViewHolder{

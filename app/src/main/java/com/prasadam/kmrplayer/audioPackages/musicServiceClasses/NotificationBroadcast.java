@@ -31,21 +31,32 @@ public class NotificationBroadcast extends BroadcastReceiver {
                     }
                     break;
                 case KeyEvent.KEYCODE_MEDIA_PLAY:
+                    Controls.playControl(context);
                     break;
                 case KeyEvent.KEYCODE_MEDIA_PAUSE:
+                    Controls.pauseControl(context);
                     break;
                 case KeyEvent.KEYCODE_MEDIA_STOP:
                     break;
                 case KeyEvent.KEYCODE_MEDIA_NEXT:
-                    Log.d("TAG", "TAG: KEYCODE_MEDIA_NEXT");
                     Controls.nextControl(context);
                     break;
                 case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-                    Log.d("TAG", "TAG: KEYCODE_MEDIA_PREVIOUS");
                     Controls.previousControl(context);
                     break;
             }
         }  else{
+
+            if (intent.getAction().equals(Intent.ACTION_HEADSET_PLUG)) {
+                int state = intent.getIntExtra("state", -1);
+                switch (state) {
+                    case 0:
+                        Controls.pauseControl(context);
+                        break;
+                    case 1:
+                        break;
+                }
+            }
             if (intent.getAction().equals(MusicService.NOTIFY_PLAY)) {
                 Controls.playControl(context);
             } else if (intent.getAction().equals(MusicService.NOTIFY_PAUSE)) {

@@ -20,6 +20,11 @@
         <menu>
 
             <item
+                android:id="@+id/google_login"
+                android:icon="@mipmap/ic_error_outline_black_24dp"
+                android:title="@string/Login_with_google" />
+
+            <item
                 android:id="@+id/nav_send"
                 android:icon="@mipmap/ic_settings_white_24dp"
                 android:title="@string/settings_text" />

@@ -20,8 +20,8 @@
     <com.prasadam.kmrplayer.subClasses.SquareImageviewInverted
         android:transitionName="AlbumArtImageTranscition"
         android:id="@+id/actual_album_art"
-        android:layout_height="match_parent"
-        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_width="fill_parent"
         android:layout_centerHorizontal="true"/>
 
 

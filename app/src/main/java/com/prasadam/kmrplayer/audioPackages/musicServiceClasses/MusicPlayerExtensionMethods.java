@@ -32,7 +32,7 @@ public class MusicPlayerExtensionMethods {
         }).start();
 
         long seed = System.nanoTime();
-        ArrayList<Song> shuffledPlaylist = songsList;
+        ArrayList<Song> shuffledPlaylist = new ArrayList<>(songsList);
         Collections.shuffle(shuffledPlaylist, new Random(seed));
         PlayerConstants.SONGS_LIST = shuffledPlaylist;
         PlayerConstants.SONG_NUMBER = 0;

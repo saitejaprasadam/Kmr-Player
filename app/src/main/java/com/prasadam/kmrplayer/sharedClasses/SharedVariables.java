@@ -1,6 +1,7 @@
 package com.prasadam.kmrplayer.sharedClasses;
 
 import android.content.Context;
+import android.media.audiofx.Equalizer;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Album;
@@ -21,6 +22,9 @@ public class SharedVariables {
         Fresco.initialize(context);
     }
 
+    public static Equalizer equalizer;
+    public static int socketSeverPortAddress = 6262;
+    public static int TAG_EDITOR_REQUEST_CODE = 3478;
     public static ArrayList<Song> fullSongsList = new ArrayList<>();
     public static ArrayList<Artist> fullArtistList = new ArrayList<>();
     public static ArrayList<Album> fullAlbumList = new ArrayList<>();

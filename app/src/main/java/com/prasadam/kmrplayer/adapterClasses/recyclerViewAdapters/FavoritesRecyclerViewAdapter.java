@@ -119,7 +119,7 @@ public class FavoritesRecyclerViewAdapter extends RecyclerView.Adapter<Favorites
                                             break;
 
                                         case R.id.song_context_menu_tagEditor:
-                                            AudioExtensionMethods.launchTagEditor(context, currentSongDetails.getID());
+                                            ActivitySwitcher.launchTagEditor((Activity) context, currentSongDetails.getID(), position);
                                             break;
 
                                         case R.id.song_context_menu_jump_to_album:

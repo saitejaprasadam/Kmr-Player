@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
@@ -46,6 +47,7 @@ public class MusicService extends Service implements
     private static boolean currentVersionSupportBigNotification = false;
     private ComponentName remoteComponentName;
     private RemoteControlClient remoteControlClient;
+    private static NotificationBroadcast notificationBroadcast;
     AudioManager audioManager;
     public static MediaPlayer player;
     private final IBinder musicBind = new MusicBinder();
@@ -55,6 +57,7 @@ public class MusicService extends Service implements
     public void onCreate(){
 
         super.onCreate();
+        notificationBroadcast = new NotificationBroadcast();
         currentVersionSupportLockScreenControls = UtilFunctions.currentVersionSupportLockScreenControls();
         currentVersionSupportBigNotification = UtilFunctions.currentVersionSupportBigNotification();
         audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
@@ -159,13 +162,14 @@ public class MusicService extends Service implements
         return START_STICKY;
     }
     private void RegisterRemoteClient(){
-        remoteComponentName = new ComponentName(getApplicationContext(), new NotificationBroadcast().ComponentName());
-
+        remoteComponentName = new ComponentName(getApplicationContext(), notificationBroadcast.ComponentName());
         try{
             if(remoteControlClient == null) {
                 audioManager.registerMediaButtonEventReceiver(remoteComponentName);
                 Intent mediaButtonIntent = new Intent(Intent.ACTION_MEDIA_BUTTON);
                 mediaButtonIntent.setComponent(remoteComponentName);
+                IntentFilter filter = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
+                registerReceiver(notificationBroadcast, filter);
                 PendingIntent mediaPendingIntent = PendingIntent.getBroadcast(this, 0, mediaButtonIntent, 0);
                 remoteControlClient = new RemoteControlClient(mediaPendingIntent);
                 audioManager.registerRemoteControlClient(remoteControlClient);
@@ -342,7 +346,6 @@ public class MusicService extends Service implements
         }
 
     }
-
 
     public class MusicBinder extends Binder {
         public MusicService getService() {

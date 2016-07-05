@@ -2,13 +2,18 @@ package com.prasadam.kmrplayer.sharedClasses;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
+import android.media.audiofx.Equalizer;
+import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 
 import com.prasadam.kmrplayer.R;
+import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicService;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
+import java.io.File;
 import java.text.DecimalFormat;
 
 /*
@@ -81,5 +86,10 @@ public class ExtensionMethods {
         return result;
     }
 
-
+    public static void scanMedia(Context context, String path) {
+        File file = new File(path);
+        Uri uri = Uri.fromFile(file);
+        Intent scanFileIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri);
+        context.sendBroadcast(scanFileIntent);
+    }
 }

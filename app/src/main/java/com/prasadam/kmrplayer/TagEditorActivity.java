@@ -21,7 +21,19 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.prasadam.kmrplayer.audioPackages.BlurBuilder;
 import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
 
+import org.jaudiotagger.audio.AudioFile;
+import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.audio.exceptions.CannotReadException;
+import org.jaudiotagger.audio.exceptions.CannotWriteException;
+import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
+import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
+import org.jaudiotagger.tag.FieldKey;
+import org.jaudiotagger.tag.Tag;
+import org.jaudiotagger.tag.TagException;
+import org.jaudiotagger.tag.TagOptionSingleton;
+
 import java.io.File;
+import java.io.IOException;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -38,6 +50,8 @@ public class TagEditorActivity extends Activity{
     @Bind (R.id.blurred_album_art) ImageView blurredAlbumArt;
     @Bind (R.id.actual_album_art) ImageView actualAlbumArt;
     @Bind (R.id.apply_fab_button) ImageView applyFabButton;
+    private static String currentSongID, songLocation;
+    private static int songPosition;
 
     @OnClick ({R.id.actual_album_art, R.id.edit_fab_button})
     public void changeAlbumArt(View view) {
@@ -55,7 +69,30 @@ public class TagEditorActivity extends Activity{
 
     @OnClick (R.id.apply_fab_button)
     public void applyChanges(View view){
-        Toast.makeText(this, "Pending", Toast.LENGTH_SHORT).show();
+        try {
+            TagOptionSingleton.getInstance().setAndroid(true);
+            final File songFile = new File(songLocation);
+            AudioFile audioFile = AudioFileIO.read(songFile);
+            Tag tag = audioFile.getTagOrCreateAndSetDefault();
+            tag.setField(FieldKey.ARTIST, String.valueOf(songArtist.getText()));
+            tag.setField(FieldKey.ALBUM, String.valueOf(songAlbum.getText()));
+            tag.setField(FieldKey.TITLE, String.valueOf(songTitle.getText()));
+            audioFile.commit();
+            ExtensionMethods.scanMedia(TagEditorActivity.this, songLocation);
+            Toast.makeText(TagEditorActivity.this, "Successfully changed", Toast.LENGTH_SHORT).show();
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra("songPosition", songPosition);
+            setResult(Activity.RESULT_OK,returnIntent);
+            finish();
+        }
+
+        catch (CannotReadException | IOException | InvalidAudioFrameException | TagException | ReadOnlyFileException | CannotWriteException e) {
+            Toast.makeText(TagEditorActivity.this, "Error changing tag", Toast.LENGTH_SHORT).show();
+            Intent returnIntent = new Intent();
+            setResult(Activity.RESULT_CANCELED, returnIntent);
+            finish();
+        }
+
     }
 
     public void onCreate(Bundle b){
@@ -64,7 +101,8 @@ public class TagEditorActivity extends Activity{
         setContentView(R.layout.activity_tag_editor_layout);
 
         ButterKnife.bind(this);
-        String currentSongID = getIntent().getExtras().getString("songID");
+        currentSongID = getIntent().getExtras().getString("songID");
+        songPosition = getIntent().getExtras().getInt("position");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.mipmap.ic_clear_white_24dp);
         if (Build.VERSION.SDK_INT >= 21)
@@ -86,6 +124,7 @@ public class TagEditorActivity extends Activity{
             songTitle.setText(musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.TITLE)));
             songAlbum.setText(musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM)));
             songArtist.setText(musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)));
+            songLocation = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.DATA));
             String albumID = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
 
             try{

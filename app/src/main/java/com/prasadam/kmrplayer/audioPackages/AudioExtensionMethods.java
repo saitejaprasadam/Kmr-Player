@@ -472,12 +472,6 @@ public class AudioExtensionMethods {
         return songList;
     }
 
-    public static void launchTagEditor(Context context, long songID){
-        Intent tagEditorIntent = new Intent(context, TagEditorActivity.class);
-        tagEditorIntent.putExtra("songID", String.valueOf(songID));
-        context.startActivity(tagEditorIntent);
-    }
-
     public static void setSongFavorite(Context context, String songHashID, Boolean isFav){
 
         DBHelper dbhelper = new DBHelper(context);

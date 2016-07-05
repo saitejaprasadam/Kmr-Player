@@ -64,7 +64,7 @@
                     android:layout_below="@+id/toolbar">
 
                     <com.prasadam.kmrplayer.subClasses.SquareImageviewInverted
-                        android:transitionName="ArtistAlbumArtImageTranscition"
+                        android:transitionName="AlbumArtImageTranscition"
                         android:id="@+id/artist_image"
                         android:layout_margin="10dp"
                         android:scaleType="centerCrop"
@@ -127,13 +127,13 @@
                         android:id="@+id/albums_recycler_view_artist_activity"
                         android:layout_width="match_parent"
                         android:layout_height="155dp"
-                        android:nestedScrollingEnabled="true" />
+                        android:nestedScrollingEnabled="false" />
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/songs_recycler_view_artist_activity"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:nestedScrollingEnabled="true"/>
+                        android:nestedScrollingEnabled="false"/>
 
                 </LinearLayout>
 

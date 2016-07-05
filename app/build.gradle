@@ -20,39 +20,28 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile files('libs/JID3.jar')
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile files('libs/jaudiotagger-2.0.2.jar')
     testCompile 'junit:junit:4.12'
-
-    compile('com.mikepenz:materialdrawer:5.2.9@aar') {   //material navigation drawer
-        transitive = true;
-    }
 
     compile('com.github.afollestad.material-dialogs:core:0.8.5.7@aar') { //material dialogs
         transitive = true
     }
 
-    compile('com.afollestad:material-cab:0.1.11@aar') { //material contextual action bar
-        transitive = true
-    }
-
-    compile ('com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.9.1@aar'){ //Advanced Recyler view
-        transitive=true
-    }
-
     compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'com.android.support:design:23.4.0'
     compile 'com.android.support:support-v4:23.4.0'
-    compile 'com.android.support:recyclerview-v7:23.4.0' //recycler view
-    compile 'com.facebook.fresco:fresco:0.11.0'    //Fresco
-    compile 'com.jakewharton:butterknife:7.0.1'    //Butter Knife
-    compile 'com.github.ksoichiro:android-observablescrollview:1.6.0'    //Observable scroll view
+    compile 'com.android.support:recyclerview-v7:23.4.0'
+    compile 'com.android.support:cardview-v7:23.4.0'
+    compile 'com.android.support:palette-v7:23.4.0'
+    compile 'com.facebook.fresco:fresco:0.11.0'
+    compile 'com.jakewharton:butterknife:7.0.1'
+    compile 'com.github.ksoichiro:android-observablescrollview:1.6.0'
     compile 'com.simplecityapps:recyclerview-fastscroll:1.0.9'
-    compile 'com.sothree.slidinguppanel:library:3.3.0'//Sliding Up Panel
-    compile 'com.android.support:cardview-v7:23.4.0'    //Card View
-    compile 'com.android.support:palette-v7:23.4.0'    //Palette
-    compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'    //Colored status bar
-    compile 'com.github.jd-alexander:LikeButton:0.2.0' //like button
-    compile 'com.minimize.library:seekbar-compat:0.2.5' //seek bar
-    compile 'me.zhanghai.android.materialprogressbar:library:1.1.6' //Progress bar
+    compile 'com.sothree.slidinguppanel:library:3.3.0'
+    compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
+    compile 'com.github.jd-alexander:LikeButton:0.2.0'
+    compile 'com.minimize.library:seekbar-compat:0.2.5'
+    compile 'me.zhanghai.android.materialprogressbar:library:1.1.6'
+    compile 'com.google.android.gms:play-services-auth:9.2.0'
 }

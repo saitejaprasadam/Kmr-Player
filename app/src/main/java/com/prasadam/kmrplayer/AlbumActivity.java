@@ -12,12 +12,12 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -35,6 +35,7 @@ import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicPlayerExtensionMethods;
 import com.prasadam.kmrplayer.sharedClasses.DividerItemDecoration;
 import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
+import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -66,11 +67,7 @@ public class AlbumActivity extends Activity{
 
     @OnClick (R.id.actual_album_art)
     public void albumartExpand(View view){
-
-        Intent albumActivityIntent = new Intent(this, ExpandedAlbumartActivity.class);
-        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, actualAlbumArt, "AlbumArtImageTranscition");
-        albumActivityIntent.putExtra("albumArtPath", albumartPath);
-        startActivity(albumActivityIntent, options.toBundle());
+        ActivitySwitcher.ExpandedAlbumArtWithTranscition(AlbumActivity.this, actualAlbumArt, albumartPath);
     }
 
     @OnClick (R.id.vertical_more_button)
@@ -97,7 +94,6 @@ public class AlbumActivity extends Activity{
                                                                      .onPositive(new MaterialDialog.SingleButtonCallback() {
                                                                          @Override
                                                                          public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-
                                                                              for (Song song : songList) {
                                                                                  File file = new File(song.getData());
                                                                                  if(file.delete())
@@ -114,6 +110,10 @@ public class AlbumActivity extends Activity{
 
                                                          case R.id.album_context_menu_jump_to_artist:
                                                              ActivitySwitcher.jumpToArtist(AlbumActivity.this, albumArtist);
+                                                             break;
+
+                                                         case R.id.action_equilzer:
+                                                             ActivitySwitcher.initEqualizer(AlbumActivity.this);
                                                              break;
 
                                                          default:
@@ -242,5 +242,16 @@ public class AlbumActivity extends Activity{
                 MusicPlayerExtensionMethods.shufflePlay(AlbumActivity.this, songsList);
             }
         });
+    }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == SharedVariables.TAG_EDITOR_REQUEST_CODE) {
+            if(resultCode == Activity.RESULT_OK){
+                int position = data.getExtras().getInt("songPosition");
+                songList = AudioExtensionMethods.getSongList(this, albumTitle);
+                recyclerViewAdapter.setSongsList(songList);
+                recyclerViewAdapter.notifyDataSetChanged();
+                Log.d("Test", "Data set changed");
+            }
+        }
     }
 }

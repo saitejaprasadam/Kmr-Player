@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -67,7 +66,7 @@ public class ArtistRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Ar
 
                 Intent intent = new Intent(mActivity, ArtistActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                //ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(mActivity, holder.artistAlbumArtImageView, "ArtistAlbumArtImageTranscition");
+                //ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(mActivity, holder.artistAlbumArtImageView, "AlbumArtImageTranscition");
                 intent.putExtra(ArtistActivity.ARTIST_EXTRA, artist.getArtistTitle());
                 context.startActivity(intent);
             }

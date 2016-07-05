@@ -1,17 +1,20 @@
 package com.prasadam.kmrplayer;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -19,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.prasadam.kmrplayer.activityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.SmallAlbumRecyclerViewAdapter;
 import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.SongRecyclerViewAdapterForArtistActivity;
 import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
@@ -29,6 +33,8 @@ import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicPlayerExtensionMethods;
 import com.prasadam.kmrplayer.sharedClasses.DividerItemDecoration;
 import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
+import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -45,7 +51,11 @@ public class ArtistActivity extends Activity {
     public static String ARTIST_EXTRA = "artist";
     private Artist artist;
     private ArrayList<Song> songsList;
+    private ArrayList<Album> albumList;
     private FrameLayout colorPaletteView;
+    private static String artistAlbumArt = null;
+    private SongRecyclerViewAdapterForArtistActivity songRecyclerViewAdapter;
+    private SmallAlbumRecyclerViewAdapter albumRecyclerViewAdapter;
 
     @Bind(R.id.artist_image) ImageView artistAlbumArtImageView;
     @Bind(R.id.blurred_album_art) ImageView blurredAlbumArt;
@@ -72,6 +82,10 @@ public class ArtistActivity extends Activity {
                             AudioExtensionMethods.shareAllSongsFromCurrentArtist(ArtistActivity.this, songsList, artist.getArtistTitle());
                             break;
 
+                        case R.id.action_equilzer:
+                            ActivitySwitcher.initEqualizer(ArtistActivity.this);
+                            break;
+
                         default:
                             Toast.makeText(ArtistActivity.this, "pending", Toast.LENGTH_SHORT).show();
                             break;
@@ -90,6 +104,10 @@ public class ArtistActivity extends Activity {
         MusicPlayerExtensionMethods.shufflePlay(ArtistActivity.this, songsList);
     }
 
+    @OnClick (R.id.artist_image)
+    public void albumartExpand(View view){
+        ActivitySwitcher.ExpandedAlbumArtWithTranscition(ArtistActivity.this, artistAlbumArtImageView, artistAlbumArt);
+    }
 
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
@@ -106,17 +124,17 @@ public class ArtistActivity extends Activity {
     private void setSongRecyclerView() {
 
         songsList = AudioExtensionMethods.getSongListFromArtist(ArtistActivity.this, artist.getArtistTitle());
-        final SongRecyclerViewAdapterForArtistActivity recyclerViewAdapter = new SongRecyclerViewAdapterForArtistActivity(ArtistActivity.this, songsList);
+        songRecyclerViewAdapter = new SongRecyclerViewAdapterForArtistActivity(ArtistActivity.this, songsList);
         songRecyclerview.setLayoutManager(new LinearLayoutManager(ArtistActivity.this));
-        songRecyclerview.setAdapter(recyclerViewAdapter);
+        songRecyclerview.setAdapter(songRecyclerViewAdapter);
         songRecyclerview.addItemDecoration(new DividerItemDecoration(ArtistActivity.this, LinearLayoutManager.VERTICAL));
     }
     private void setAlbumRecyclerView() {
 
-        ArrayList<Album> albumList = AudioExtensionMethods.getAlbumListFromArtist(ArtistActivity.this, artist.getArtistTitle());
-        final SmallAlbumRecyclerViewAdapter recyclerViewAdapter = new SmallAlbumRecyclerViewAdapter(ArtistActivity.this, this, albumList);
+        albumList = AudioExtensionMethods.getAlbumListFromArtist(ArtistActivity.this, artist.getArtistTitle());
+        albumRecyclerViewAdapter = new SmallAlbumRecyclerViewAdapter(ArtistActivity.this, this, albumList);
         albumRecyclerview.setLayoutManager(new LinearLayoutManager(ArtistActivity.this, LinearLayoutManager.HORIZONTAL, false));
-        albumRecyclerview.setAdapter(recyclerViewAdapter);
+        albumRecyclerview.setAdapter(albumRecyclerViewAdapter);
     }
     private void setData() {
 
@@ -151,6 +169,7 @@ public class ArtistActivity extends Activity {
                 File imgFile = new File(albumArtPath);
                 if(imgFile.exists()){
                     artistAlbumArtImageView.setImageURI(Uri.parse("file://" + imgFile.getAbsolutePath()));
+                    artistAlbumArt = "file://" + imgFile.getAbsolutePath();
                     blurredAlbumArt.setImageBitmap(BlurBuilder.blur(this, ((BitmapDrawable) artistAlbumArtImageView.getDrawable()).getBitmap()));
                     if(colorPaletteView != null)
                         setColorPalette(BitmapFactory.decodeFile(imgFile.getAbsolutePath()));
@@ -221,5 +240,18 @@ public class ArtistActivity extends Activity {
                     finish();
             }
         });
+    }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == SharedVariables.TAG_EDITOR_REQUEST_CODE) {
+            if(resultCode == Activity.RESULT_OK){
+                int position = data.getExtras().getInt("songPosition");
+                songsList = AudioExtensionMethods.getSongListFromArtist(ArtistActivity.this, artist.getArtistTitle());
+                songRecyclerViewAdapter.setSongsList(songsList);
+                albumList = AudioExtensionMethods.getAlbumListFromArtist(ArtistActivity.this, artist.getArtistTitle());
+                albumRecyclerViewAdapter.setAlbumList(albumList);
+                songRecyclerViewAdapter.notifyDataSetChanged();
+                albumRecyclerViewAdapter.notifyDataSetChanged();
+            }
+        }
     }
 }

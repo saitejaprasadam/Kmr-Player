@@ -1,7 +1,6 @@
 package com.prasadam.kmrplayer.audioPackages.musicServiceClasses;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;

@@ -17,7 +17,7 @@
             android:layout_height="100dp"
             android:layout_gravity="center_horizontal"
             android:scaleType="centerCrop"
-            android:transitionName="ArtistAlbumArtImageTranscition"/>
+            android:transitionName="AlbumArtImageTranscition"/>
 
         <FrameLayout
             android:id="@+id/color_box_layout_albumrecyclerview"
