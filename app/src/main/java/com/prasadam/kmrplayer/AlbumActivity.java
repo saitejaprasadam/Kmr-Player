@@ -246,11 +246,8 @@ public class AlbumActivity extends Activity{
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == SharedVariables.TAG_EDITOR_REQUEST_CODE) {
             if(resultCode == Activity.RESULT_OK){
-                int position = data.getExtras().getInt("songPosition");
-                songList = AudioExtensionMethods.getSongList(this, albumTitle);
-                recyclerViewAdapter.setSongsList(songList);
+
                 recyclerViewAdapter.notifyDataSetChanged();
-                Log.d("Test", "Data set changed");
             }
         }
     }

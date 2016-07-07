@@ -198,7 +198,7 @@ public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Song
             c = '#';
         }
 
-        return String.valueOf(c);
+        return String.valueOf(Character.toUpperCase(c));
     }
 
     class songsViewHolder extends RecyclerView.ViewHolder{

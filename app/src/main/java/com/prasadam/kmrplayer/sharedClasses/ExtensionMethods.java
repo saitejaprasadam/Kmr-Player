@@ -1,6 +1,7 @@
 package com.prasadam.kmrplayer.sharedClasses;
 
 import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -91,5 +92,9 @@ public class ExtensionMethods {
         Uri uri = Uri.fromFile(file);
         Intent scanFileIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri);
         context.sendBroadcast(scanFileIntent);
+    }
+
+    public static String deviceName(){
+        return BluetoothAdapter.getDefaultAdapter().getName();
     }
 }

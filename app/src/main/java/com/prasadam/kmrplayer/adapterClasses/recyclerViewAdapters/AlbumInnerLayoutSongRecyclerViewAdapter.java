@@ -174,10 +174,6 @@ public class AlbumInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapte
         return songsList.size();
     }
 
-    public void setSongsList(ArrayList<Song> songsList){
-        this.songsList = songsList;
-    }
-
     class songsViewHolder extends RecyclerView.ViewHolder{
 
         @Bind (R.id.songTitle_RecyclerView) TextView titleTextView;

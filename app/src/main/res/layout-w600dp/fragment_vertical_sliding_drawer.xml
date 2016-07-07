@@ -93,12 +93,21 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:clickable="true"
-                    android:paddingTop="10dp"
-                    android:paddingEnd="0dp"
+                    android:padding="8dp"
                     android:layout_alignParentEnd="true"
                     android:src="@mipmap/ic_dots_vertical_white_24dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="@string/more_options_text" />
+
+                <ImageView
+                    android:id="@+id/now_playing_devices_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toStartOf="@+id/now_playing_context_menu_button"
+                    android:padding="8dp"
+                    android:clickable="true"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@mipmap/ic_devices_white_24dp"/>
 
             </RelativeLayout>
 

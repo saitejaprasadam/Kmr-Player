@@ -43,8 +43,10 @@ public class SongPlaybackHistoryActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         setStatusBarTranslucent(SongPlaybackHistoryActivity.this);
-        if(getSupportActionBar() != null )
+        if(getSupportActionBar() != null ){
+            getSupportActionBar().setHomeAsUpIndicator(R.mipmap.ic_chevron_left_white_24dp);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         songsList = AudioExtensionMethods.getSongPlayBackHistory(this);
 

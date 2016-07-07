@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:clickable="true"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/media_item_height"
+    android:id="@+id/rootLayout_recycler_view"
+    android:background="?attr/selectableItemBackground">
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/nearby_devices_album_art"
+        android:layout_height="match_parent"
+        android:layout_width="@dimen/media_item_height"
+        android:adjustViewBounds="true"
+        android:padding="10dp"
+        fresco:roundAsCircle="true"
+        fresco:roundingBorderColor="@color/black"
+        fresco:roundingBorderWidth="0.1dp" />
+
+    <ImageView
+        android:padding="10dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:id="@+id/nearby_devices_context_menu"
+        android:layout_gravity="center_vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/dots_vertical"/>
+
+    <TextView
+        android:id="@+id/device_name_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@id/nearby_devices_album_art"
+        android:layout_toStartOf="@id/nearby_devices_context_menu"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="14sp"
+        android:textColor="?android:attr/textColorPrimary"/>
+
+</RelativeLayout>

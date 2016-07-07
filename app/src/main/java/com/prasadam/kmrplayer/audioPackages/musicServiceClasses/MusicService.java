@@ -28,6 +28,7 @@ import com.prasadam.kmrplayer.MainActivity;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.socketClasses.SocketExtensionMethods;
 
 import java.io.IOException;
 
@@ -199,9 +200,8 @@ public class MusicService extends Service implements
         metadataEditor.putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, song.getArtist());
         metadataEditor.putString(MediaMetadataRetriever.METADATA_KEY_TITLE, song.getTitle());
         mDummyAlbumArt = AudioExtensionMethods.getBitMap(getBaseContext(), song.getAlbumArtLocation());
-        if(mDummyAlbumArt == null){
+        if(mDummyAlbumArt == null)
             mDummyAlbumArt = BitmapFactory.decodeResource(getResources(), R.mipmap.unkown_album_art);
-        }
         metadataEditor.putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, mDummyAlbumArt);
         metadataEditor.apply();
         audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
@@ -352,5 +352,15 @@ public class MusicService extends Service implements
             return MusicService.this;
         }
     }
-
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                SocketExtensionMethods.stopNSDServies();
+                Log.d("testing", "closed nsd services");
+            }
+        }).start();
+        super.onTaskRemoved(rootIntent);
+    }
 }

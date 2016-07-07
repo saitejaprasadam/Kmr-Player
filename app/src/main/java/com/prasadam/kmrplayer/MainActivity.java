@@ -56,6 +56,7 @@ import com.prasadam.kmrplayer.fragments.SongsFragment;
 import com.prasadam.kmrplayer.fragments.TabFragment;
 import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
+import com.prasadam.kmrplayer.socketClasses.SocketExtensionMethods;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.File;
@@ -73,14 +74,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static LikeButton nowPlayingFavButton;
     private static RelativeLayout nowPlayingMinimalRootLayout;
     private static SlidingUpPanelLayout mainLayoutRootLayout;
-    private static ImageView nowPlayingMinimalNextButton, nowPlayingMinimalPlayButton, nowPlayingMinimizeButton ,nowPlayingShuffleButton, nowPlayingRepeatButton, nowPlayingLayoutContextMenu;
+    private static ImageView nowPlayingMinimalNextButton, nowPlayingMinimalPlayButton, nowPlayingMinimizeButton ,nowPlayingShuffleButton, nowPlayingRepeatButton, nowPlayingLayoutContextMenu, nowPlayingDevicesButton;
     private static CardView nowPlayingAlbumArtContainer;
     private static ProgressBar nowPlayingMinimalProgressBar;
     private static RelativeLayout nowPlayingsongInfoCardView;
     public static RecyclerView nowPlayingPlaylistRecyclerView;
     public static NowPlayingPlaylistAdapter recyclerViewAdapter;
     public static TextView navHeaderProfileName;
-    //public static ImageView navHeaderProfilePic;
     private ItemTouchHelper mItemTouchHelper;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         initalizeNowPlayingUI();
         updateNowPlayingUI(this);
         initalizePlaylistRecyclerView();
-        //googleLoginListeners.signInMethod();
+        SocketExtensionMethods.startNSDServices(this);
     }
     private void initalizeNowPlayingUI() {
         nowPlayingMinimalRootLayout = (RelativeLayout) findViewById(R.id.now_playing_minimal_root_layout);
@@ -129,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         nowPlayingAlbumArtContainer = (CardView) findViewById(R.id.now_playing_album_art_container);
         nowPlayingPlaylistRecyclerView = (RecyclerView) findViewById(R.id.now_playing_playlist_recycler_view);
         nowPlayingLayoutContextMenu = (ImageView) findViewById(R.id.now_playing_context_menu_button);
+        nowPlayingDevicesButton = (ImageView) findViewById(R.id.now_playing_devices_button);
 
         if (nowPlayingToolbar != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             nowPlayingToolbar.setPadding(0, ExtensionMethods.getStatusBarHeight(this), 0, 0);
@@ -170,6 +171,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         nowPlayingMinimizeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {mainLayoutRootLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);}
+        });
+        nowPlayingDevicesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ActivitySwitcher.jumpToAvaiableDevies(MainActivity.this);
+            }
         });
         nowPlayingLayoutContextMenu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -436,19 +443,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
 
-        if(id == R.id.action_refresh)
-        {
-            refreshList();
-            return true;
-        }
+        switch (item.getItemId()){
+            case R.id.action_refresh:
+                refreshList();
+                break;
 
-        else
-        if(id == R.id.action_equilzer){
-            ActivitySwitcher.initEqualizer(MainActivity.this);
+            case R.id.action_equilzer:
+                ActivitySwitcher.initEqualizer(MainActivity.this);
+                break;
+
+            case R.id.action_devices_button:
+                ActivitySwitcher.jumpToAvaiableDevies(MainActivity.this);
+                break;
+
+            default:
+                Toast.makeText(MainActivity.this, "Pending", Toast.LENGTH_SHORT).show();
         }
-        //Toast.makeText(MainActivity.this, "Pending", Toast.LENGTH_SHORT).show();
 
         return super.onOptionsItemSelected(item);
     }

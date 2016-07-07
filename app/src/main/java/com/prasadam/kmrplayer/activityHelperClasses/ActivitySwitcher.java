@@ -3,16 +3,14 @@ package com.prasadam.kmrplayer.activityHelperClasses;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.media.Image;
 import android.media.audiofx.AudioEffect;
 import android.media.audiofx.Equalizer;
-import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.widget.ImageView;
 
 import com.prasadam.kmrplayer.AlbumActivity;
 import com.prasadam.kmrplayer.ArtistActivity;
+import com.prasadam.kmrplayer.NearbyDevicesActivity;
 import com.prasadam.kmrplayer.ExpandedAlbumartActivity;
 import com.prasadam.kmrplayer.TagEditorActivity;
 import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicService;
@@ -73,4 +71,8 @@ public class ActivitySwitcher {
         context.startActivity(i);
     }
 
+    public static void jumpToAvaiableDevies(Context context) {
+        Intent avaiableDevices = new Intent(context, NearbyDevicesActivity.class);
+        context.startActivity(avaiableDevices);
+    }
 }

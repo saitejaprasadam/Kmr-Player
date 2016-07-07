@@ -79,4 +79,6 @@
     <string name="song_year_text">Year</string>
     <string name="song_generic_text">Genre</string>
     <string name="action_equilzer">Equilzer</string>
+    <string name="available_devices_text">Nearby devices</string>
+    <string name="nearby_devices_text">Nearby devices</string>
 </resources>

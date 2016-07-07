@@ -82,6 +82,7 @@ public class TagEditorActivity extends Activity{
             Toast.makeText(TagEditorActivity.this, "Successfully changed", Toast.LENGTH_SHORT).show();
             Intent returnIntent = new Intent();
             returnIntent.putExtra("songPosition", songPosition);
+            returnIntent.putExtra("songID", currentSongID);
             setResult(Activity.RESULT_OK,returnIntent);
             finish();
         }

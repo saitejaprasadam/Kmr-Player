@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -50,8 +49,6 @@ public class AlbumRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Alb
         View view = inflater.inflate(R.layout.recycler_view_albums_layout, parent, false);
         return new AlbumViewHolder(view);
     }
-
-    @Override
     public void onBindViewHolder(final AlbumRecyclerViewAdapter.AlbumViewHolder holder, int position) {
 
         final Album currentAlbum = SharedVariables.fullAlbumList.get(position);
@@ -149,8 +146,6 @@ public class AlbumRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Alb
         return SharedVariables.fullAlbumList.size();
     }
 
-    @NonNull
-    @Override
     public String getSectionName(int position) {
 
         Character c = SharedVariables.fullAlbumList.get(position).getTitle().charAt(0);
@@ -158,7 +153,7 @@ public class AlbumRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Alb
             c = '#';
         }
 
-        return String.valueOf(c);
+        return String.valueOf(Character.toUpperCase(c));
     }
 
     class AlbumViewHolder extends RecyclerView.ViewHolder{
