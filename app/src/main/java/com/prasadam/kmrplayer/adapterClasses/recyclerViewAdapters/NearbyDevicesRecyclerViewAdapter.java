@@ -9,10 +9,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.prasadam.kmrplayer.R;
+import com.prasadam.kmrplayer.sharedClasses.KeyConstants;
 import com.prasadam.kmrplayer.socketClasses.NSDClient;
+import com.prasadam.kmrplayer.socketClasses.QuickShareClient;
+import com.prasadam.kmrplayer.socketClasses.ServerThread;
+import com.prasadam.kmrplayer.socketClasses.SocketExtensionMethods;
+
+import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -23,14 +31,13 @@ import butterknife.ButterKnife;
 
 public class NearbyDevicesRecyclerViewAdapter extends RecyclerView.Adapter<NearbyDevicesRecyclerViewAdapter.ViewAdapter>{
 
-    private Context context;
+    private ArrayList<String> QuickSharePathList;
     private LayoutInflater inflater;
     private Activity mActivity;
     private int count = 0;
 
     public NearbyDevicesRecyclerViewAdapter(Activity mActivity, Context context){
         this.mActivity = mActivity;
-        this.context = context;
         inflater = LayoutInflater.from(context);
 
         if (android.os.Build.VERSION.SDK_INT > 9) {
@@ -38,18 +45,17 @@ public class NearbyDevicesRecyclerViewAdapter extends RecyclerView.Adapter<Nearb
             StrictMode.setThreadPolicy(policy);
         }
     }
-
-    @Override
     public NearbyDevicesRecyclerViewAdapter.ViewAdapter onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.recycler_view_near_by_devices, parent, false);
         return new ViewAdapter(view);
     }
-
-    @Override
     public void onBindViewHolder(NearbyDevicesRecyclerViewAdapter.ViewAdapter holder, int position) {
 
         final NsdServiceInfo serverObject = NSDClient.devicesList.get(position);
         holder.nearbyDeviceNameTextView.setText(serverObject.getServiceName());
+        if(mActivity.getClass().getSimpleName().equals(KeyConstants.ACTIVITY_QUICK_SHARE))
+            setHolderQuickShareActivity(holder, serverObject);
+
 
         /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             byte[] temp = serverObject.getAttributes().get(KeyConstants.DEVICE_TYPE);
@@ -64,8 +70,6 @@ public class NearbyDevicesRecyclerViewAdapter extends RecyclerView.Adapter<Nearb
         else*/
         holder.nearbyDevicesImageView.setImageResource(getDeviceImage());
     }
-
-    @Override
     public int getItemCount() {
         return NSDClient.devicesList.size();
     }
@@ -94,9 +98,24 @@ public class NearbyDevicesRecyclerViewAdapter extends RecyclerView.Adapter<Nearb
                 return R.mipmap.apple_mac;
         }
     }
+    public void setQuickShareSongPathList(ArrayList<String> songPathList){
+        this.QuickSharePathList = songPathList;
+    }
+    private void setHolderQuickShareActivity(ViewAdapter holder, final NsdServiceInfo serverObject) {
+        holder.nearbyDevicesContextMenu.setImageResource(R.mipmap.ic_chevron_right_black_24dp);
+        holder.rootLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                QuickShareClient quickShareClient= new QuickShareClient(serverObject.getHost(), QuickSharePathList);
+                quickShareClient.execute();
+                Toast.makeText(mActivity, "Initiating transfer", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     public class ViewAdapter extends RecyclerView.ViewHolder{
 
+        @Bind(R.id.rootLayout_recycler_view) RelativeLayout rootLayout;
         @Bind(R.id.nearby_devices_album_art) ImageView nearbyDevicesImageView;
         @Bind(R.id.nearby_devices_context_menu) ImageView nearbyDevicesContextMenu;
         @Bind(R.id.device_name_textview) TextView nearbyDeviceNameTextView;

@@ -120,6 +120,10 @@ public class ArtistActivity extends Activity {
         setAlbumRecyclerView();
         setSongRecyclerView();
     }
+    public void onResume() {
+        super.onResume();
+        SharedVariables.globalActivityContext = this;
+    }
 
     private void setSongRecyclerView() {
 

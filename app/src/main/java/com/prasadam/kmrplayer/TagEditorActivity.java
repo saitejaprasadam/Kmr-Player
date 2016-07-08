@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.prasadam.kmrplayer.audioPackages.BlurBuilder;
 import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
+import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
 
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
@@ -150,6 +151,10 @@ public class TagEditorActivity extends Activity{
         }
 
         checkTagModification();
+    }
+    public void onResume() {
+        super.onResume();
+        SharedVariables.globalActivityContext = this;
     }
 
     private void checkTagModification() {

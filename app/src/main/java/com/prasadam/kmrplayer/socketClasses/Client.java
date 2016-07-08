@@ -14,7 +14,7 @@ public class Client extends AsyncTask<Void, Void, Void> {
     private String serverIPAddress;
     private Socket clientSocket;
 
-    Client(String serverIPAddress) {
+    public Client(String serverIPAddress) {
         try{
             this.serverIPAddress = serverIPAddress;
             clientSocket = new Socket(serverIPAddress, SharedVariables.socketSeverPortAddress);

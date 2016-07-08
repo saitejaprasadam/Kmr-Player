@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.prasadam.kmrplayer.audioPackages.BlurBuilder;
 import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
+import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -51,6 +52,7 @@ public class ExpandedAlbumartActivity extends Activity {
         final MaterialDialog progress = new MaterialDialog.Builder(this)
                 .content("Please wait...")
                 .progress(true, 0)
+                .cancelable(false)
                 .show();
 
         new Thread(new Runnable() {
@@ -115,6 +117,10 @@ public class ExpandedAlbumartActivity extends Activity {
             actualAlbumArt.setImageResource(R.mipmap.unkown_album_art);
             blurredAlbumArt.setImageBitmap(BlurBuilder.blur(this, ((BitmapDrawable) actualAlbumArt.getDrawable()).getBitmap()));
         }
+    }
+    public void onResume() {
+        super.onResume();
+        SharedVariables.globalActivityContext = this;
     }
 
     private void initalizer() {

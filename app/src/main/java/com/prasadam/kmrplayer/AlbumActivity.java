@@ -17,7 +17,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -116,6 +115,10 @@ public class AlbumActivity extends Activity{
                                                              ActivitySwitcher.initEqualizer(AlbumActivity.this);
                                                              break;
 
+                                                         case R.id.action_qucik_share:
+                                                             ActivitySwitcher.jumpToQuickShareActivity(AlbumActivity.this, recyclerViewAdapter.getSongsList());
+                                                             break;
+
                                                          default:
                                                              Toast.makeText(AlbumActivity.this, "pending", Toast.LENGTH_SHORT).show();
                                                              break;
@@ -137,6 +140,10 @@ public class AlbumActivity extends Activity{
         initalize();
         setAlbumArt();
         getSongsList();
+    }
+    public void onResume() {
+        super.onResume();
+        SharedVariables.globalActivityContext = this;
     }
 
     private void initalize() {

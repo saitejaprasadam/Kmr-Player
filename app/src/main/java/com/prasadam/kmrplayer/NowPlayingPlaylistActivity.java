@@ -10,6 +10,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.NowPlayingPlaylistAdapter;
 import com.prasadam.kmrplayer.adapterClasses.uiAdapters.NowPlayingPlaylistInterfaces;
 import com.prasadam.kmrplayer.adapterClasses.uiAdapters.SimpleItemTouchHelperCallback;
+import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
 
 /*
  * Created by Prasadam Saiteja on 6/30/2016.
@@ -25,6 +26,10 @@ public class NowPlayingPlaylistActivity extends AppCompatActivity implements Now
         setContentView(R.layout.activity_now_playing_playlist);
         nowPlayingPlaylistRecyclerView = (RecyclerView) findViewById(R.id.now_playing_playlist_recycler_view);
         setRecyclerViewAdapter();
+    }
+    public void onResume() {
+        super.onResume();
+        SharedVariables.globalActivityContext = this;
     }
 
     private void setRecyclerViewAdapter() {

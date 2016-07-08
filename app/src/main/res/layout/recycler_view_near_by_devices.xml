@@ -20,8 +20,6 @@
 
     <ImageView
         android:padding="10dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:clickable="true"
         android:id="@+id/nearby_devices_context_menu"
         android:layout_gravity="center_vertical"
         android:layout_width="wrap_content"

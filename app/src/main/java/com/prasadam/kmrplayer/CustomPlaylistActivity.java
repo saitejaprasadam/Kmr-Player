@@ -17,6 +17,7 @@ import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.CustomPlaylist
 import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.fragments.NoItemsFragment;
 import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
+import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
 
 import java.util.ArrayList;
 
@@ -94,6 +95,10 @@ public class CustomPlaylistActivity extends AppCompatActivity {
                     recyclerView.setLayoutManager(new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false));
             }
         }
+    }
+    public void onResume() {
+        super.onResume();
+        SharedVariables.globalActivityContext = this;
     }
 
     @Override

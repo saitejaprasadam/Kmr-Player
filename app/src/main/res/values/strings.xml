@@ -22,7 +22,7 @@
     <string name="set_text">Set</string>
     <string name="action_refresh">Refresh</string>
     <string name="sort_text">Sort</string>
-    <string name="Shout_text">Shout Out</string>
+    <string name="Shout_text">Shout out</string>
     <string name="share_with_text">Share with</string>
     <string name="jump_to_artist_text">Jump to artist</string>
     <string name="jump_to_album_text">Jump to album</string>
@@ -36,7 +36,7 @@
     <string name="more_options_text">More Options</string>
     <string name="details_text">Details</string>
     <string name="share_text">Share</string>
-    <string name="tag_editor_text">Tag Editor</string>
+    <string name="tag_editor_text">Tag editor</string>
     <string name="set_as_rigntone_text">Set as Rigntone</string>
     <string name="share_album_text">Share album</string>
     <string name="album_details_text">Album details</string>
@@ -81,4 +81,7 @@
     <string name="action_equilzer">Equilzer</string>
     <string name="available_devices_text">Nearby devices</string>
     <string name="nearby_devices_text">Nearby devices</string>
+    <string name="quick_share_text">Quick share</string>
+    <string name="agree">Agree</string>
+    <string name="disagree">Disagree</string>
 </resources>

@@ -141,6 +141,10 @@ public class CustomPlaylistInnerActivity extends Activity{
 
 
     }
+    public void onResume() {
+        super.onResume();
+        SharedVariables.globalActivityContext = this;
+    }
 
     private void setAlbumArt(ArrayList<String> albumArtPathList) {
 

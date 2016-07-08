@@ -18,6 +18,7 @@ import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.fragments.NoItemsFragment;
 import com.prasadam.kmrplayer.sharedClasses.DividerItemDecoration;
 import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
+import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
 
 import java.util.ArrayList;
 
@@ -77,6 +78,10 @@ public class FavoritesActivity extends AppCompatActivity{
             recyclerView.setAdapter(recyclerViewAdapter);
             recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         }
+    }
+    public void onResume() {
+        super.onResume();
+        SharedVariables.globalActivityContext = this;
     }
 
     @Override

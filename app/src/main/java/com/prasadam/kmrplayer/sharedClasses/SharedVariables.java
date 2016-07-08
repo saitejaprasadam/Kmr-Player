@@ -25,6 +25,7 @@ public class SharedVariables {
     public static Equalizer equalizer;
     public static int socketSeverPortAddress = 6262;
     public static int TAG_EDITOR_REQUEST_CODE = 3478;
+    public static Context globalActivityContext = null;
     public static ArrayList<Song> fullSongsList = new ArrayList<>();
     public static ArrayList<Artist> fullArtistList = new ArrayList<>();
     public static ArrayList<Album> fullAlbumList = new ArrayList<>();

@@ -18,12 +18,10 @@ public class NSDClient {
 
     private static String SERVICE_NAME = ExtensionMethods.deviceName();
     private static String SERVICE_TYPE = "_kmr._tcp.";
-    private static Context context;
     public static NsdManager mNsdManager;
     public static ArrayList<NsdServiceInfo> devicesList = new ArrayList<>();
 
-    public static void startSearch(Context thiscontext){
-        context = thiscontext;
+    public static void startSearch(Context context){
         mNsdManager = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
         mNsdManager.discoverServices(SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, mDiscoveryListener);
     }

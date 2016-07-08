@@ -2,7 +2,6 @@ package com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -23,7 +22,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
 import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.TagEditorActivity;
 import com.prasadam.kmrplayer.activityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
@@ -52,14 +50,10 @@ public class AlbumInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapte
         this.songsList = songsList;
         this.albumTitle = albumTitle;
     }
-
-    @Override
     public AlbumInnerLayoutSongRecyclerViewAdapter.songsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.recycler_view_songs_album_inner_layout, parent, false);
         return new songsViewHolder(view);
     }
-
-    @Override
     public void onBindViewHolder(final songsViewHolder holder, final int position) {
         try {
             final Song currentSongDetails = songsList.get(position);
@@ -95,6 +89,9 @@ public class AlbumInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapte
 
         }
         catch (Exception ignored){}
+    }
+    public int getItemCount() {
+        return songsList.size();
     }
 
     private void setContextMenu(final songsViewHolder holder, final Song currentSongDetails, final int position) {
@@ -168,10 +165,8 @@ public class AlbumInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapte
             }
         });
     }
-
-    @Override
-    public int getItemCount() {
-        return songsList.size();
+    public ArrayList<Song> getSongsList(){
+        return songsList;
     }
 
     class songsViewHolder extends RecyclerView.ViewHolder{

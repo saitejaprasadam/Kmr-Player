@@ -6,13 +6,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 
-import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.AlbumInnerLayoutSongRecyclerViewAdapter;
 import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.NearbyDevicesRecyclerViewAdapter;
-import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.sharedClasses.DividerItemDecoration;
-import com.prasadam.kmrplayer.socketClasses.NSDClient;
-
-import butterknife.ButterKnife;
+import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
 
 import static com.prasadam.kmrplayer.sharedClasses.ExtensionMethods.setStatusBarTranslucent;
 
@@ -27,7 +23,6 @@ public class NearbyDevicesActivity extends AppCompatActivity{
     public void onCreate(Bundle bundle){
         super.onCreate(bundle);
         setContentView(R.layout.activity_available_devices);
-        ButterKnife.bind(this);
 
         if(getSupportActionBar() != null ){
             getSupportActionBar().setHomeAsUpIndicator(R.mipmap.ic_chevron_left_white_24dp);
@@ -37,20 +32,18 @@ public class NearbyDevicesActivity extends AppCompatActivity{
         setStatusBarTranslucent(NearbyDevicesActivity.this);
         setRecyclerView();
     }
+    public void onResume() {
+        super.onResume();
+        SharedVariables.globalActivityContext = this;
+    }
 
     private void setRecyclerView() {
 
         nearbyDevicesRecyclerviewAdapter = new NearbyDevicesRecyclerViewAdapter(NearbyDevicesActivity.this, this);
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.available_devices_recycler_view);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-
-                recyclerView.setAdapter(nearbyDevicesRecyclerviewAdapter);
-                recyclerView.addItemDecoration(new DividerItemDecoration(NearbyDevicesActivity.this, LinearLayoutManager.VERTICAL));
-                recyclerView.setLayoutManager(new LinearLayoutManager(NearbyDevicesActivity.this));
-            }
-        });
+        recyclerView.setAdapter(nearbyDevicesRecyclerviewAdapter);
+        recyclerView.addItemDecoration(new DividerItemDecoration(NearbyDevicesActivity.this, LinearLayoutManager.VERTICAL));
+        recyclerView.setLayoutManager(new LinearLayoutManager(NearbyDevicesActivity.this));
     }
 
     @Override

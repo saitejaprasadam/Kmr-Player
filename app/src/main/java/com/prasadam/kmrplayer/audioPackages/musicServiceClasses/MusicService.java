@@ -5,6 +5,7 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
@@ -346,6 +347,7 @@ public class MusicService extends Service implements
         }
 
     }
+    public Context getContext(){ return getBaseContext();}
 
     public class MusicBinder extends Binder {
         public MusicService getService() {
@@ -357,8 +359,13 @@ public class MusicService extends Service implements
         new Thread(new Runnable() {
             @Override
             public void run() {
-                SocketExtensionMethods.stopNSDServies();
-                Log.d("testing", "closed nsd services");
+                try {
+                    SocketExtensionMethods.stopNSDServies();
+                    Thread.sleep(5000);
+                    Log.d("testing", "closed nsd services");
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }).start();
         super.onTaskRemoved(rootIntent);

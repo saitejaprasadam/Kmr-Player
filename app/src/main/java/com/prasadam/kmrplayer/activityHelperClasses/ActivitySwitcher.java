@@ -12,9 +12,14 @@ import com.prasadam.kmrplayer.AlbumActivity;
 import com.prasadam.kmrplayer.ArtistActivity;
 import com.prasadam.kmrplayer.NearbyDevicesActivity;
 import com.prasadam.kmrplayer.ExpandedAlbumartActivity;
+import com.prasadam.kmrplayer.QuickShareActivity;
 import com.prasadam.kmrplayer.TagEditorActivity;
+import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicService;
+import com.prasadam.kmrplayer.sharedClasses.KeyConstants;
 import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
+
+import java.util.ArrayList;
 
 /*
  * Created by Prasadam Saiteja on 6/24/2016.
@@ -22,21 +27,21 @@ import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
 
 public class ActivitySwitcher {
 
-    public static void jumpToAlbum(Context context, String albumTitle) {
+    public static void jumpToAlbum(final Context context, final String albumTitle) {
         Intent albumActivityIntent = new Intent(context, AlbumActivity.class);
         albumActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         albumActivityIntent.putExtra("albumTitle", albumTitle);
         context.startActivity(albumActivityIntent);
     }
 
-    public static void jumpToArtist(Context context, String artistTitle){
+    public static void jumpToArtist(final Context context, final String artistTitle){
         Intent albumActivityIntent = new Intent(context, ArtistActivity.class);
         albumActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         albumActivityIntent.putExtra("artist", artistTitle);
         context.startActivity(albumActivityIntent);
     }
 
-    public static void jumpToAlbumWithTranscition(Activity mActivity, ImageView imageView, String albumTitle){
+    public static void jumpToAlbumWithTranscition(final Activity mActivity, final ImageView imageView, final String albumTitle){
 
         Intent albumActivityIntent = new Intent(mActivity, AlbumActivity.class);
         albumActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -45,21 +50,21 @@ public class ActivitySwitcher {
         mActivity.startActivity(albumActivityIntent, options.toBundle());
     }
 
-    public static void ExpandedAlbumArtWithTranscition(Activity mActivity, ImageView imageView, String albumArtLocation){
+    public static void ExpandedAlbumArtWithTranscition(final Activity mActivity, final ImageView imageView, final String albumArtLocation){
         Intent albumActivityIntent = new Intent(mActivity, ExpandedAlbumartActivity.class);
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(mActivity, imageView, "AlbumArtImageTranscition");
         albumActivityIntent.putExtra("albumArtPath", albumArtLocation);
         mActivity.startActivity(albumActivityIntent, options.toBundle());
     }
 
-    public static void launchTagEditor(Activity mActivity, long songID, int position){
+    public static void launchTagEditor(final Activity mActivity, final long songID, final int position){
         Intent tagEditorIntent = new Intent(mActivity, TagEditorActivity.class);
         tagEditorIntent.putExtra("songID", String.valueOf(songID));
         tagEditorIntent.putExtra("position", position);
         mActivity.startActivityForResult(tagEditorIntent, SharedVariables.TAG_EDITOR_REQUEST_CODE);
     }
 
-    public static void initEqualizer(Context context) {
+    public static void initEqualizer(final Context context) {
         if(SharedVariables.equalizer == null){
             SharedVariables.equalizer = new Equalizer(0, MusicService.player.getAudioSessionId());
             SharedVariables.equalizer.setEnabled(true);
@@ -71,8 +76,18 @@ public class ActivitySwitcher {
         context.startActivity(i);
     }
 
-    public static void jumpToAvaiableDevies(Context context) {
+    public static void jumpToAvaiableDevies(final Context context) {
         Intent avaiableDevices = new Intent(context, NearbyDevicesActivity.class);
         context.startActivity(avaiableDevices);
+    }
+
+    public static void jumpToQuickShareActivity(final Context context, final ArrayList<Song> songsList){
+        Intent quickShareIntent = new Intent(context, QuickShareActivity.class);
+        ArrayList<String> songsPath = new ArrayList<>();
+        for (Song song : songsList){
+            songsPath.add(song.getData());
+        }
+        quickShareIntent.putStringArrayListExtra(KeyConstants.INTENT_SONGS_PATH_LIST, songsPath);
+        context.startActivity(quickShareIntent);
     }
 }

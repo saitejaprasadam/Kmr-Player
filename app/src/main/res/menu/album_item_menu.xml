@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/action_qucik_share"
+        android:title="@string/quick_share_text" />
 
     <item
         android:id="@+id/album_context_menu_share_album"
         android:title="@string/share_album_text" />
-
-    <item
-        android:id="@+id/album_context_menu_shout"
-        android:title="@string/Shout_text"/>
 
     <item
         android:id="@+id/album_context_menu_jump_to_artist"
@@ -24,7 +23,6 @@
 
     <item
         android:id="@+id/action_equilzer"
-        android:title="@string/action_equilzer"
-        app:showAsAction="never" />
+        android:title="@string/action_equilzer" />
 
 </menu>

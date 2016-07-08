@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static LikeButton nowPlayingFavButton;
     private static RelativeLayout nowPlayingMinimalRootLayout;
     private static SlidingUpPanelLayout mainLayoutRootLayout;
-    private static ImageView nowPlayingMinimalNextButton, nowPlayingMinimalPlayButton, nowPlayingMinimizeButton ,nowPlayingShuffleButton, nowPlayingRepeatButton, nowPlayingLayoutContextMenu, nowPlayingDevicesButton;
+    private static ImageView nowPlayingMinimalNextButton, nowPlayingMinimalPlayButton, nowPlayingMinimizeButton, nowPlayingShuffleButton, nowPlayingRepeatButton, nowPlayingLayoutContextMenu, nowPlayingDevicesButton;
     private static CardView nowPlayingAlbumArtContainer;
     private static ProgressBar nowPlayingMinimalProgressBar;
     private static RelativeLayout nowPlayingsongInfoCardView;
@@ -90,6 +90,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         googleLoginListeners = new GoogleLoginListeners(MainActivity.this);
         initalizer();
         SharedVariables.Initializers(this);
+    }
+    public void onResume() {
+        super.onResume();
+        SharedVariables.globalActivityContext = this;
     }
     private void initalizer() {
 

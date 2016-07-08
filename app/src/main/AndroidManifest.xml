@@ -75,6 +75,11 @@
             android:theme="@style/ColoredStatusBar" />
 
         <activity
+            android:name=".QuickShareActivity"
+            android:label="@string/quick_share_text"
+            android:theme="@style/ColoredStatusBar" />
+
+        <activity
             android:name=".MostPlayedSongsActivity"
             android:label="@string/most_played_text"
             android:theme="@style/ColoredStatusBar" />

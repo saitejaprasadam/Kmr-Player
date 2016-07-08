@@ -5,6 +5,7 @@ package com.prasadam.kmrplayer.socketClasses;
  */
 
 import android.content.Context;
+import android.os.Handler;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -46,5 +47,7 @@ public class SocketExtensionMethods {
     public static void startNSDServices(Context context){
         NSDServer.startService(context);
         NSDClient.startSearch(context);
+        Thread socketServerThread = new Thread(new ServerThread(context));
+        socketServerThread.start();
     }
 }
