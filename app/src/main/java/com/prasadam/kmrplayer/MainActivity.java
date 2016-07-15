@@ -85,11 +85,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SharedVariables.Initializers(this);
         setContentView(R.layout.activity_main);
 
         googleLoginListeners = new GoogleLoginListeners(MainActivity.this);
         initalizer();
-        SharedVariables.Initializers(this);
     }
     public void onResume() {
         super.onResume();

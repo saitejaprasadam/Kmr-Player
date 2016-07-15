@@ -26,7 +26,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:src="@drawable/dots_vertical"/>
+        android:src="@mipmap/ic_more_vert_black_24dp"/>
 
     <TextView
         android:id="@+id/device_name_textview"

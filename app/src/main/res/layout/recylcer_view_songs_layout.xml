@@ -13,8 +13,7 @@
         android:layout_height="match_parent"
         android:layout_width="@dimen/media_item_height"
         android:adjustViewBounds="true"
-        android:padding="10dp"
-        fresco:placeholderImage="@android:drawable/star_on" />
+        android:padding="10dp" />
 
     <LinearLayout
         android:id="@+id/songs_list_options_recycler_view"
@@ -41,7 +40,7 @@
             android:layout_gravity="center_vertical"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:src="@drawable/dots_vertical"/>
+            android:src="@mipmap/ic_more_vert_black_24dp"/>
 
     </LinearLayout>
 

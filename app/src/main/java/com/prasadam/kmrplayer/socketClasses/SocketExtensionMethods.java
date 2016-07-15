@@ -1,16 +1,16 @@
 package com.prasadam.kmrplayer.socketClasses;
 
-/*
- * Created by Prasadam Saiteja on 7/3/2016.
- */
-
 import android.content.Context;
-import android.os.Handler;
+import android.os.StrictMode;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
+
+/*
+ * Created by Prasadam Saiteja on 7/3/2016.
+ */
 
 public class SocketExtensionMethods {
 
@@ -47,7 +47,12 @@ public class SocketExtensionMethods {
     public static void startNSDServices(Context context){
         NSDServer.startService(context);
         NSDClient.startSearch(context);
-        Thread socketServerThread = new Thread(new ServerThread(context));
+        Thread socketServerThread = new Thread(new ServerThread());
         socketServerThread.start();
+    }
+
+    public static void requestStrictModePermit(){
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
     }
 }

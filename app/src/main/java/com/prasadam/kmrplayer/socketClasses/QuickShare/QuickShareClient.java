@@ -1,16 +1,13 @@
-package com.prasadam.kmrplayer.socketClasses;
+package com.prasadam.kmrplayer.socketClasses.QuickShare;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
-import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.sharedClasses.KeyConstants;
 import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
 
 import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.InetAddress;
@@ -23,14 +20,14 @@ import java.util.ArrayList;
 
 public class QuickShareClient extends AsyncTask<Void, Void, Void> {
 
-    private InetAddress serverIPAddress;
     private ArrayList<String> songsPathList;
     private Socket QuickShareClientSocket;
+    private String timeStamp;
 
-    public QuickShareClient(InetAddress serverIPAddress, ArrayList<String> songsPathList) {
+    public QuickShareClient(InetAddress serverIPAddress, ArrayList<String> songsPathList, String timeStamp) {
         try{
-            this.serverIPAddress = serverIPAddress;
             this.songsPathList = songsPathList;
+            this.timeStamp = timeStamp;
             QuickShareClientSocket = new Socket(serverIPAddress, SharedVariables.socketSeverPortAddress);
         }
         catch (IOException ignored){}
@@ -43,7 +40,7 @@ public class QuickShareClient extends AsyncTask<Void, Void, Void> {
             OutputStreamWriter osw = new OutputStreamWriter(os);
             BufferedWriter bw = new BufferedWriter(osw);
 
-            String sendMessage = KeyConstants.SOCKET_INITIATE_QUICK_SHARE_TRANSFER + " " + songsPathList.size();
+            String sendMessage = KeyConstants.SOCKET_INITIATE_QUICK_SHARE_TRANSFER + " " + timeStamp +" "+ songsPathList.size();
             bw.write(sendMessage);
             bw.flush();
             bw.close();

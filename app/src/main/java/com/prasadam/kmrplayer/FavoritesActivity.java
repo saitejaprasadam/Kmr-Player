@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.prasadam.kmrplayer.ListenerClasses.SongsSearchListener;
+import com.prasadam.kmrplayer.activityHelperClasses.ActivityHelper;
 import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.FavoritesRecyclerViewAdapter;
 import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
@@ -40,10 +41,7 @@ public class FavoritesActivity extends AppCompatActivity{
         recyclerView = (RecyclerView) findViewById(R.id.favorites_recycler_view);
 
         setStatusBarTranslucent(FavoritesActivity.this);
-        if(getSupportActionBar() != null ){
-            getSupportActionBar().setHomeAsUpIndicator(R.mipmap.ic_chevron_left_white_24dp);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        ActivityHelper.setDisplayHome(this);
 
         favoriteSongList = AudioExtensionMethods.getFavoriteSongsList(this);
 

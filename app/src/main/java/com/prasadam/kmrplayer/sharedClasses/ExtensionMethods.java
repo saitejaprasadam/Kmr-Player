@@ -5,17 +5,16 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.media.audiofx.Equalizer;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 
 import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicService;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.File;
 import java.text.DecimalFormat;
+import java.util.UUID;
 
 /*
  * Created by Prasadam Saiteja on 3/20/2016.
@@ -96,5 +95,10 @@ public class ExtensionMethods {
 
     public static String deviceName(){
         return BluetoothAdapter.getDefaultAdapter().getName();
+    }
+
+    public static String getTimeStamp(){
+        UUID uuid = UUID.randomUUID();
+        return uuid.toString();
     }
 }

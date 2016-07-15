@@ -58,13 +58,15 @@ public class NSDClient {
         public void onServiceLost(NsdServiceInfo service) {
             // When the network service is no longer available.
             // Internal bookkeeping code goes here.
-            if(devicesList.contains(service)){
-                devicesList.remove(service);
-                if(NearbyDevicesActivity.nearbyDevicesRecyclerviewAdapter != null)
-                    NearbyDevicesActivity.nearbyDevicesRecyclerviewAdapter.notifyDataSetChanged();
-            }
+            for (NsdServiceInfo device : devicesList) {
+                if(device.getHost().toString().equals(service.getHost().toString())){
+                    devicesList.remove(device);
+                    Log.e("nsdserviceLost", "service lost" + service);
+                    if(NearbyDevicesActivity.nearbyDevicesRecyclerviewAdapter != null)
+                        NearbyDevicesActivity.nearbyDevicesRecyclerviewAdapter.notifyDataSetChanged();
+                }
 
-            Log.e("nsdserviceLost", "service lost" + service);
+            }
         }
 
         @Override

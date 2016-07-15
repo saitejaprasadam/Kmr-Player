@@ -4,8 +4,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
 import android.view.MenuItem;
 
+import com.prasadam.kmrplayer.activityHelperClasses.ActivityHelper;
+import com.prasadam.kmrplayer.activityHelperClasses.DialogHelper;
 import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.NearbyDevicesRecyclerViewAdapter;
 import com.prasadam.kmrplayer.sharedClasses.DividerItemDecoration;
 import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
@@ -24,11 +27,7 @@ public class NearbyDevicesActivity extends AppCompatActivity{
         super.onCreate(bundle);
         setContentView(R.layout.activity_available_devices);
 
-        if(getSupportActionBar() != null ){
-            getSupportActionBar().setHomeAsUpIndicator(R.mipmap.ic_chevron_left_white_24dp);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-
+        ActivityHelper.setDisplayHome(this);
         setStatusBarTranslucent(NearbyDevicesActivity.this);
         setRecyclerView();
     }
@@ -47,12 +46,22 @@ public class NearbyDevicesActivity extends AppCompatActivity{
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_nearby_info_menu, menu);
+        return true;
+    }
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        final int id = item.getItemId();
-        if (id == android.R.id.home)
-            finish();
+        switch (item.getItemId()){
+            case android.R.id.home:
+                finish();
+                break;
 
-        return false;
+            case R.id.action_nearby_info:
+                DialogHelper.showNearbyInfo(this);
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

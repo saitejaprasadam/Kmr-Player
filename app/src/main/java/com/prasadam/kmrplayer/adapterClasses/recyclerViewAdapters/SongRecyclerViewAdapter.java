@@ -39,8 +39,7 @@ import butterknife.ButterKnife;
  * Created by prasadam saiteja on 2/15/2016.
  */
 
-public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<SongRecyclerViewAdapter.songsViewHolder>
-        implements FastScrollRecyclerView.SectionedAdapter{
+public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<SongRecyclerViewAdapter.songsViewHolder> implements FastScrollRecyclerView.SectionedAdapter{
 
     private LayoutInflater inflater;
     private Activity activity;
@@ -205,7 +204,7 @@ public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Song
 
         @Bind (R.id.songTitle_RecyclerView) TextView titleTextView;
         @Bind (R.id.songArtist_recycler_view) TextView artistTextView;
-        @Bind (R.id.songAlbumArt_RecyclerView) com.facebook.drawee.view.SimpleDraweeView AlbumArtImageView;
+        @Bind (R.id.songAlbumArt_RecyclerView) ImageView AlbumArtImageView;
         @Bind (R.id.rootLayout_recycler_view) RelativeLayout rootLayout;
         @Bind (R.id.song_context_menu) ImageView contextMenuView;
         @Bind (R.id.fav_button) LikeButton favoriteButton;

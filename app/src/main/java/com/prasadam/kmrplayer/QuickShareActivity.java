@@ -4,8 +4,13 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.prasadam.kmrplayer.activityHelperClasses.ActivityHelper;
+import com.prasadam.kmrplayer.activityHelperClasses.ActivitySwitcher;
+import com.prasadam.kmrplayer.activityHelperClasses.DialogHelper;
 import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.NearbyDevicesRecyclerViewAdapter;
 import com.prasadam.kmrplayer.sharedClasses.DividerItemDecoration;
 import com.prasadam.kmrplayer.sharedClasses.KeyConstants;
@@ -36,11 +41,7 @@ public class QuickShareActivity extends AppCompatActivity{
 
     private void InitActionBarAndToolBar() {
         setStatusBarTranslucent(QuickShareActivity.this);
-
-        if(getSupportActionBar() != null ){
-            getSupportActionBar().setHomeAsUpIndicator(R.mipmap.ic_chevron_left_white_24dp);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        ActivityHelper.setDisplayHome(this);
     }
     private void setRecyclerView(ArrayList<String> songsPathList) {
         NearbyDevicesRecyclerViewAdapter nearbyDevicesRecyclerviewAdapter = new NearbyDevicesRecyclerViewAdapter(QuickShareActivity.this, this);
@@ -51,14 +52,22 @@ public class QuickShareActivity extends AppCompatActivity{
         quickShareRecyclerView.setLayoutManager(new LinearLayoutManager(QuickShareActivity.this));
     }
 
-    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_nearby_info_menu, menu);
+        return true;
+    }
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        final int id = item.getItemId();
-        if (id == android.R.id.home) {
-            finish();
-            return true;
+        switch (item.getItemId()){
+            case android.R.id.home:
+                finish();
+                break;
+
+            case R.id.action_nearby_info:
+                DialogHelper.showNearbyInfo(this);
+                break;
         }
-        return false;
+
+        return super.onOptionsItemSelected(item);
     }
 }

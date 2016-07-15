@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.prasadam.kmrplayer.ListenerClasses.SongsSearchListener;
+import com.prasadam.kmrplayer.activityHelperClasses.ActivityHelper;
 import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.FavoritesRecyclerViewAdapter;
 import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.fragments.NoItemsFragment;
@@ -43,11 +44,7 @@ public class MostPlayedSongsActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         setStatusBarTranslucent(MostPlayedSongsActivity.this);
-        if(getSupportActionBar() != null ){
-            getSupportActionBar().setHomeAsUpIndicator(R.mipmap.ic_chevron_left_white_24dp);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-
+        ActivityHelper.setDisplayHome(this);
 
         songsList = AudioExtensionMethods.getMostPlayedSongsList(this);
 

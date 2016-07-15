@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.nsd.NsdServiceInfo;
 import android.os.StrictMode;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,14 +12,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.prasadam.kmrplayer.R;
+import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.sharedClasses.KeyConstants;
 import com.prasadam.kmrplayer.socketClasses.NSDClient;
-import com.prasadam.kmrplayer.socketClasses.QuickShareClient;
-import com.prasadam.kmrplayer.socketClasses.ServerThread;
-import com.prasadam.kmrplayer.socketClasses.SocketExtensionMethods;
+import com.prasadam.kmrplayer.socketClasses.QuickShare.QuickShareClient;
+import com.prasadam.kmrplayer.socketClasses.QuickShare.QuickShareHelper;
 
 import java.util.ArrayList;
 
@@ -35,6 +37,7 @@ public class NearbyDevicesRecyclerViewAdapter extends RecyclerView.Adapter<Nearb
     private LayoutInflater inflater;
     private Activity mActivity;
     private int count = 0;
+    public static MaterialDialog waitingDialog;
 
     public NearbyDevicesRecyclerViewAdapter(Activity mActivity, Context context){
         this.mActivity = mActivity;
@@ -106,9 +109,27 @@ public class NearbyDevicesRecyclerViewAdapter extends RecyclerView.Adapter<Nearb
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                QuickShareClient quickShareClient= new QuickShareClient(serverObject.getHost(), QuickSharePathList);
+
+                final String timeStamp = ExtensionMethods.getTimeStamp();
+
+                waitingDialog = new MaterialDialog.Builder(mActivity)
+                        .content(R.string.waiting_for_approval)
+                        .progress(true, 0)
+                        .cancelable(false)
+                        .positiveText(R.string.wait_in_background)
+                        .negativeText(R.string.cancel_text)
+                        .onNegative(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                QuickShareHelper.removeQuickShareRequest(timeStamp);
+                                waitingDialog.dismiss();
+                            }
+                        })
+                        .show();
+
+                QuickShareHelper.addQuickShareRequest(serverObject.getHost().toString() ,timeStamp, QuickSharePathList);
+                QuickShareClient quickShareClient = new QuickShareClient(serverObject.getHost(), QuickSharePathList, timeStamp);
                 quickShareClient.execute();
-                Toast.makeText(mActivity, "Initiating transfer", Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -6,6 +6,14 @@
     xmlns:card_view="http://schemas.android.com/tools"
     android:fitsSystemWindows="false">
 
+    <ImageView
+        android:id="@+id/blurred_album_art"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@mipmap/unkown_album_art"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"/>
+
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -20,14 +28,6 @@
                 android:id="@+id/album_image_view_anchor"
                 android:layout_height="0dp"
                 android:layout_weight="0.50">
-
-                <ImageView
-                    android:id="@+id/blurred_album_art"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@mipmap/unkown_album_art"
-                    android:adjustViewBounds="true"
-                    android:scaleType="centerCrop"/>
 
                 <include
                     layout="@layout/include_action_bar_gradient"
@@ -77,17 +77,14 @@
 
             </FrameLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.10"
-                android:orientation="vertical"
-                android:id="@+id/albumDetailsLayout">
-
-                <RelativeLayout
+            <RelativeLayout
                     android:id="@+id/album_info_colored_box"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="0dp"
+                    android:layout_weight="0.10"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp">
 
                     <LinearLayout
                         android:id="@+id/album_info"
@@ -120,12 +117,12 @@
 
                 </RelativeLayout>
 
-            </LinearLayout>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="0.40"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
                 android:background="@color/View_Background"
                 android:orientation="vertical">
 
