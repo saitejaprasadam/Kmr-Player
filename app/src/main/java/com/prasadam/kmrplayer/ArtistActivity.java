@@ -8,13 +8,11 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -31,8 +29,9 @@ import com.prasadam.kmrplayer.audioPackages.modelClasses.Album;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Artist;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicPlayerExtensionMethods;
-import com.prasadam.kmrplayer.sharedClasses.DividerItemDecoration;
+import com.prasadam.kmrplayer.adapterClasses.uiAdapters.DividerItemDecoration;
 import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
+import com.prasadam.kmrplayer.sharedClasses.KeyConstants;
 import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
 
 import java.io.File;
@@ -246,15 +245,9 @@ public class ArtistActivity extends Activity {
         });
     }
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == SharedVariables.TAG_EDITOR_REQUEST_CODE) {
+        if (requestCode == KeyConstants.TAG_EDITOR_REQUEST_CODE) {
             if(resultCode == Activity.RESULT_OK){
-                int position = data.getExtras().getInt("songPosition");
-                songsList = AudioExtensionMethods.getSongListFromArtist(ArtistActivity.this, artist.getArtistTitle());
-                songRecyclerViewAdapter.setSongsList(songsList);
-                albumList = AudioExtensionMethods.getAlbumListFromArtist(ArtistActivity.this, artist.getArtistTitle());
-                albumRecyclerViewAdapter.setAlbumList(albumList);
-                songRecyclerViewAdapter.notifyDataSetChanged();
-                albumRecyclerViewAdapter.notifyDataSetChanged();
+
             }
         }
     }

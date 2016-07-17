@@ -15,12 +15,16 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.prasadam.kmrplayer.NearbyDevicesActivity;
+import com.prasadam.kmrplayer.QuickShareActivity;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.sharedClasses.KeyConstants;
+import com.prasadam.kmrplayer.socketClasses.Client;
+import com.prasadam.kmrplayer.socketClasses.GroupPlay.GroupPlayHelper;
 import com.prasadam.kmrplayer.socketClasses.NSDClient;
-import com.prasadam.kmrplayer.socketClasses.QuickShare.QuickShareClient;
 import com.prasadam.kmrplayer.socketClasses.QuickShare.QuickShareHelper;
+import com.prasadam.kmrplayer.socketClasses.SocketExtensionMethods;
 
 import java.util.ArrayList;
 
@@ -58,25 +62,34 @@ public class NearbyDevicesRecyclerViewAdapter extends RecyclerView.Adapter<Nearb
         holder.nearbyDeviceNameTextView.setText(serverObject.getServiceName());
         if(mActivity.getClass().getSimpleName().equals(KeyConstants.ACTIVITY_QUICK_SHARE))
             setHolderQuickShareActivity(holder, serverObject);
+        else
+            setHolderNearByActivity(holder, serverObject);
 
+        if(holder.imageID == 0)
+            holder.imageID = getDeviceImage();
+        holder.nearbyDevicesImageView.setImageResource(holder.imageID);
+    }
 
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            byte[] temp = serverObject.getAttributes().get(KeyConstants.DEVICE_TYPE);
-            if (temp != null && temp.toString().equals(KeyConstants.MOBILE))
-                holder.nearbyDevicesImageView.setImageResource(R.mipmap.android_device);
-            else if (temp != null && temp.toString().equals(KeyConstants.TABLET))
-                holder.nearbyDevicesImageView.setImageResource(R.mipmap.macbook_pro);
+    public int getItemCount() {
+        int count = NSDClient.devicesList.size();
+        if(count == 0){
+            if(mActivity.getClass().getSimpleName().equals(KeyConstants.ACTIVITY_QUICK_SHARE) && QuickShareActivity.NoDevicesTextView != null)
+                QuickShareActivity.NoDevicesTextView.setVisibility(View.VISIBLE);
             else
-                holder.nearbyDevicesImageView.setImageResource(getDeviceImage());
+                if(NearbyDevicesActivity.NoDevicesTextView != null)
+                    NearbyDevicesActivity.NoDevicesTextView.setVisibility(View.VISIBLE);
         }
 
-        else*/
-        holder.nearbyDevicesImageView.setImageResource(getDeviceImage());
-    }
-    public int getItemCount() {
-        return NSDClient.devicesList.size();
-    }
+        else{
+            if(mActivity.getClass().getSimpleName().equals(KeyConstants.ACTIVITY_QUICK_SHARE) && QuickShareActivity.NoDevicesTextView != null)
+                QuickShareActivity.NoDevicesTextView.setVisibility(View.INVISIBLE);
+            else
+            if(NearbyDevicesActivity.NoDevicesTextView != null)
+                NearbyDevicesActivity.NoDevicesTextView.setVisibility(View.INVISIBLE);
+        }
 
+        return count;
+    }
     public int getDeviceImage(){
         switch (count){
 
@@ -127,11 +140,60 @@ public class NearbyDevicesRecyclerViewAdapter extends RecyclerView.Adapter<Nearb
                         })
                         .show();
 
-                QuickShareHelper.addQuickShareRequest(serverObject.getHost().toString() ,timeStamp, QuickSharePathList);
-                QuickShareClient quickShareClient = new QuickShareClient(serverObject.getHost(), QuickSharePathList, timeStamp);
+                QuickShareHelper.addQuickShareRequest(timeStamp, QuickSharePathList);
+                String message = SocketExtensionMethods.GenerateSocketMessage(KeyConstants.SOCKET_INITIATE_QUICK_SHARE_TRANSFER_REQUEST, timeStamp, String.valueOf(QuickSharePathList.size()));
+                Client quickShareClient = new Client(serverObject.getHost(), message);
                 quickShareClient.execute();
             }
         });
+    }
+    private void setHolderNearByActivity(ViewAdapter holder, final NsdServiceInfo serverObject) {
+
+        if(GroupPlayHelper.IsClientConntectedToGroupPlay(serverObject.getHost().toString().replace("/", "")))
+            holder.nearbyDevicesContextMenu.setImageResource(R.mipmap.ic_surround_sound_black_24dp);
+
+        else if(GroupPlayHelper.IsClientGroupPlayMaster(serverObject.getHost().toString().replace("/", "")))
+            holder.nearbyDevicesContextMenu.setImageResource(R.mipmap.ic_hearing_black_24dp);
+
+
+        holder.rootLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                ArrayList<String> dialogOptions = PopulateDialogItems(serverObject);
+                new MaterialDialog.Builder(mActivity)
+                        .items(dialogOptions)
+                        .itemsCallback(new MaterialDialog.ListCallback() {
+                            @Override
+                            public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                               if(text.equals(mActivity.getResources().getString(R.string.request_for_group_play_text))){
+                                       String message = SocketExtensionMethods.GenerateSocketMessage(KeyConstants.SOCKET_INITIATE_GROUP_PLAY_REQUEST, ExtensionMethods.getTimeStamp());
+                                       Client GroupPlayInitiateRequestClient = new Client(serverObject.getHost(), message);
+                                       GroupPlayInitiateRequestClient.execute();
+                               }
+
+                                else if(text.equals(mActivity.getResources().getString(R.string.disconnect_from_group_play_text))){
+
+                               }
+
+
+                            }
+                        })
+                        .show();
+            }
+        });
+    }
+
+    private ArrayList<String> PopulateDialogItems(NsdServiceInfo serverObject) {
+
+        ArrayList<String> dialogOptions = new ArrayList<>();
+
+        if(GroupPlayHelper.IsClientGroupPlayMaster(serverObject.getHost().toString().replace("/", "")) || GroupPlayHelper.IsClientConntectedToGroupPlay(serverObject.getHost().toString().replace("/", "")))
+            dialogOptions.add(mActivity.getResources().getString(R.string.disconnect_from_group_play_text));
+        else
+            dialogOptions.add(mActivity.getResources().getString(R.string.request_for_group_play_text));
+
+        return dialogOptions;
     }
 
     public class ViewAdapter extends RecyclerView.ViewHolder{
@@ -140,6 +202,7 @@ public class NearbyDevicesRecyclerViewAdapter extends RecyclerView.Adapter<Nearb
         @Bind(R.id.nearby_devices_album_art) ImageView nearbyDevicesImageView;
         @Bind(R.id.nearby_devices_context_menu) ImageView nearbyDevicesContextMenu;
         @Bind(R.id.device_name_textview) TextView nearbyDeviceNameTextView;
+        private int imageID = 0;
 
         public ViewAdapter(View itemView) {
             super(itemView);

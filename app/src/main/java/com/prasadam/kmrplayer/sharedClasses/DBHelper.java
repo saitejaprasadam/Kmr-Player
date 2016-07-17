@@ -64,7 +64,6 @@ public class DBHelper extends SQLiteOpenHelper {
             return hashID;
         }
 
-        SharedVariables.songIdentifications = new ArrayList<>();
         ContentResolver musicResolver = context.getContentResolver();
         Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         Cursor musicCursor = musicResolver.query(musicUri, null, MediaStore.Audio.Media.IS_MUSIC + " and " + MediaStore.Audio.Media._ID + " = " + songID, null, null);

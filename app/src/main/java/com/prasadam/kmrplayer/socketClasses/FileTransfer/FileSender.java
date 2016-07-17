@@ -1,5 +1,7 @@
 package com.prasadam.kmrplayer.socketClasses.FileTransfer;
 
+import com.prasadam.kmrplayer.sharedClasses.KeyConstants;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -15,36 +17,33 @@ import java.nio.channels.SocketChannel;
 
 public class FileSender {
 
-    /*public static void main(String[] args) {
-        FileSender nioClient = new FileSender();
-        SocketChannel socketChannel = nioClient.createChannel();
-        nioClient.sendFile(socketChannel);
+    private SocketChannel socketChannel;
 
-    }*/
-
-    public SocketChannel createChannel() {
-
-        SocketChannel socketChannel = null;
+    public FileSender(String clientAddress){
         try {
             socketChannel = SocketChannel.open();
-            SocketAddress socketAddress = new InetSocketAddress("localhost", 9999);
+            SocketAddress socketAddress = new InetSocketAddress(clientAddress, KeyConstants.FILE_TRANSFER_SOCKET_PORT_ADDRESS);
             socketChannel.connect(socketAddress);
             System.out.println("Connected..Now sending the file");
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return socketChannel;
     }
 
+    public void sendFile(String filePath) {
 
-    public void sendFile(SocketChannel socketChannel, String filePath) {
-        RandomAccessFile aFile = null;
         try {
             File file = new File(filePath);
-            aFile = new RandomAccessFile(file, "r");
+
+            String filename = file.getName();
+            byte[] nameBytes=filename.getBytes("UTF-8");
+            ByteBuffer nameBuffer = ByteBuffer.wrap(nameBytes);
+            socketChannel.write(nameBuffer);
+
+            RandomAccessFile aFile = new RandomAccessFile(file, "r");
             FileChannel inChannel = aFile.getChannel();
-            ByteBuffer buffer = ByteBuffer.allocate(1024);
+            ByteBuffer buffer = ByteBuffer.allocate(KeyConstants.TRANSFER_BUFFER_SIZE);
 
             while (inChannel.read(buffer) > 0) {
                 buffer.flip();
@@ -54,12 +53,17 @@ public class FileSender {
 
             Thread.sleep(1000);
             System.out.println("End of file reached..");
-            socketChannel.close();
             aFile.close();
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
-
     }
 
+    public void endConnection(){
+        try {
+            socketChannel.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

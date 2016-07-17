@@ -2,6 +2,10 @@ package com.prasadam.kmrplayer.socketClasses;
 
 import android.content.Context;
 import android.os.StrictMode;
+import android.support.annotation.Nullable;
+
+import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
+import com.prasadam.kmrplayer.sharedClasses.KeyConstants;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -54,5 +58,13 @@ public class SocketExtensionMethods {
     public static void requestStrictModePermit(){
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
+    }
+
+    public static String GenerateSocketMessage(String command, String timeStamp, String result){
+        return ExtensionMethods.deviceName() + KeyConstants.DIVIDER + command + KeyConstants.DIVIDER + timeStamp + KeyConstants.DIVIDER + result;
+    }
+
+    public static String GenerateSocketMessage(String command, String timeStamp){
+        return ExtensionMethods.deviceName() + KeyConstants.DIVIDER + command + KeyConstants.DIVIDER + timeStamp;
     }
 }

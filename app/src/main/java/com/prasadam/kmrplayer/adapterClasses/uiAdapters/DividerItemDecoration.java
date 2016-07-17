@@ -1,4 +1,4 @@
-package com.prasadam.kmrplayer.sharedClasses;
+package com.prasadam.kmrplayer.adapterClasses.uiAdapters;
 
 import android.content.Context;
 import android.content.res.TypedArray;

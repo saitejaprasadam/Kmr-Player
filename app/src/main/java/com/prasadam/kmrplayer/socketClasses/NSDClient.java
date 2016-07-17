@@ -6,6 +6,7 @@ import android.net.nsd.NsdServiceInfo;
 import android.util.Log;
 
 import com.prasadam.kmrplayer.NearbyDevicesActivity;
+import com.prasadam.kmrplayer.QuickShareActivity;
 import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
 
 import java.util.ArrayList;
@@ -58,15 +59,18 @@ public class NSDClient {
         public void onServiceLost(NsdServiceInfo service) {
             // When the network service is no longer available.
             // Internal bookkeeping code goes here.
-            for (NsdServiceInfo device : devicesList) {
-                if(device.getHost().toString().equals(service.getHost().toString())){
-                    devicesList.remove(device);
-                    Log.e("nsdserviceLost", "service lost" + service);
-                    if(NearbyDevicesActivity.nearbyDevicesRecyclerviewAdapter != null)
-                        NearbyDevicesActivity.nearbyDevicesRecyclerviewAdapter.notifyDataSetChanged();
+            try{
+                for (NsdServiceInfo device : devicesList) {
+                    if(device.getHost().toString().equals(service.getHost().toString())){
+                        devicesList.remove(device);
+                        Log.e("nsdserviceLost", "service lost" + service);
+                        NearbyDevicesActivity.updateAdapater();
+                        QuickShareActivity.updateAdapater();
+                    }
                 }
-
             }
+
+            catch (Exception ignored){}
         }
 
         @Override
@@ -106,8 +110,8 @@ public class NSDClient {
 
             if(!devicesList.contains(serviceInfo)){
                 devicesList.add(serviceInfo);
-                if(NearbyDevicesActivity.nearbyDevicesRecyclerviewAdapter != null)
-                    NearbyDevicesActivity.nearbyDevicesRecyclerviewAdapter.notifyDataSetChanged();
+                NearbyDevicesActivity.updateAdapater();
+                QuickShareActivity.updateAdapater();
             }
 
         }

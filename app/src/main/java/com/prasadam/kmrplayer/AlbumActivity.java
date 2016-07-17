@@ -32,8 +32,9 @@ import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.audioPackages.BlurBuilder;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicPlayerExtensionMethods;
-import com.prasadam.kmrplayer.sharedClasses.DividerItemDecoration;
+import com.prasadam.kmrplayer.adapterClasses.uiAdapters.DividerItemDecoration;
 import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
+import com.prasadam.kmrplayer.sharedClasses.KeyConstants;
 import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
 
 import java.io.File;
@@ -251,11 +252,9 @@ public class AlbumActivity extends Activity{
         });
     }
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == SharedVariables.TAG_EDITOR_REQUEST_CODE) {
-            if(resultCode == Activity.RESULT_OK){
-
+        if (requestCode == KeyConstants.TAG_EDITOR_REQUEST_CODE) {
+            if(resultCode == Activity.RESULT_OK)
                 recyclerViewAdapter.notifyDataSetChanged();
-            }
         }
     }
 }

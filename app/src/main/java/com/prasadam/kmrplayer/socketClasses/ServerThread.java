@@ -1,5 +1,6 @@
 package com.prasadam.kmrplayer.socketClasses;
 
+import com.prasadam.kmrplayer.sharedClasses.KeyConstants;
 import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
 
 import java.net.ServerSocket;
@@ -15,7 +16,7 @@ public class ServerThread extends Thread {
 
     public ServerThread(){
         try{
-            serverSocket = new ServerSocket(SharedVariables.socketSeverPortAddress);
+            serverSocket = new ServerSocket(KeyConstants.MAIN_SERVER_SOCKET_PORT_ADDRESS);
         }
         catch (java.io.IOException ignored){}
     }

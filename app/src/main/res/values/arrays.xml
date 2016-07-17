@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string-array name="change_album_art_materail_dialog_options">
         <item>Pick from local storage</item>
         <item>Search Web</item>

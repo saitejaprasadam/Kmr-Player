@@ -6,11 +6,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.prasadam.kmrplayer.activityHelperClasses.ActivityHelper;
 import com.prasadam.kmrplayer.activityHelperClasses.DialogHelper;
 import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.NearbyDevicesRecyclerViewAdapter;
-import com.prasadam.kmrplayer.sharedClasses.DividerItemDecoration;
+import com.prasadam.kmrplayer.adapterClasses.uiAdapters.DividerItemDecoration;
+import com.prasadam.kmrplayer.sharedClasses.KeyConstants;
 import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
 
 import static com.prasadam.kmrplayer.sharedClasses.ExtensionMethods.setStatusBarTranslucent;
@@ -22,11 +24,13 @@ import static com.prasadam.kmrplayer.sharedClasses.ExtensionMethods.setStatusBar
 public class NearbyDevicesActivity extends AppCompatActivity{
 
     public static NearbyDevicesRecyclerViewAdapter nearbyDevicesRecyclerviewAdapter;
+    public static TextView NoDevicesTextView;
 
     public void onCreate(Bundle bundle){
         super.onCreate(bundle);
         setContentView(R.layout.activity_available_devices);
 
+        NoDevicesTextView = (TextView) findViewById(R.id.no_devices_available_text_view);
         ActivityHelper.setDisplayHome(this);
         setStatusBarTranslucent(NearbyDevicesActivity.this);
         setRecyclerView();
@@ -43,6 +47,10 @@ public class NearbyDevicesActivity extends AppCompatActivity{
         recyclerView.setAdapter(nearbyDevicesRecyclerviewAdapter);
         recyclerView.addItemDecoration(new DividerItemDecoration(NearbyDevicesActivity.this, LinearLayoutManager.VERTICAL));
         recyclerView.setLayoutManager(new LinearLayoutManager(NearbyDevicesActivity.this));
+    }
+    public static void updateAdapater(){
+        if(nearbyDevicesRecyclerviewAdapter != null && SharedVariables.globalActivityContext != null && SharedVariables.globalActivityContext.getClass().getSimpleName().equals(KeyConstants.ACTIVITY_NEARBY_DEVICES))
+            nearbyDevicesRecyclerviewAdapter.notifyDataSetChanged();
     }
 
     @Override

@@ -46,4 +46,5 @@ dependencies {
     compile 'me.zhanghai.android.materialprogressbar:library:1.1.6'
     compile 'com.google.android.gms:play-services-auth:9.2.0'
     compile 'com.afollestad:material-cab:0.1.12'
+    compile 'com.akexorcist:RoundCornerProgressBar:2.0.3'
 }

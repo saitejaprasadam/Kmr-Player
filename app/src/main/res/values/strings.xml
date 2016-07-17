@@ -88,4 +88,14 @@
     <string name="nearby_info_text">Devices should be running under same network and KMR player should be active</string>
     <string name="waiting_for_approval">Waiting for apporoval</string>
     <string name="wait_in_background">wait in background</string>
+    <string name="no_devices_available">No devices available</string>
+    <string name="app_name_without_space">SmartCast</string>
+    <string name="group_play_request">is requesting for group play ?</string>
+    <string name="group_play_request_text">Group play request</string>
+    <string name="group_play_rejected">rejected group play request</string>
+    <string name="quick_share_rejected">rejected quick share request</string>
+    <string name="initating_quick_share">Initiating transfer to</string>
+    <string name="group_play_accepted">accpeted group play request</string>
+    <string name="request_for_group_play_text">Request for Group play</string>
+    <string name="disconnect_from_group_play_text">Disconnect from Grop play</string>
 </resources>

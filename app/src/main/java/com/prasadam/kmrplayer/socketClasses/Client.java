@@ -2,9 +2,13 @@ package com.prasadam.kmrplayer.socketClasses;
 
 import android.os.AsyncTask;
 
-import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
+import com.prasadam.kmrplayer.sharedClasses.KeyConstants;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.InetAddress;
 import java.net.Socket;
 
 /*
@@ -13,11 +17,20 @@ import java.net.Socket;
 
 public class Client extends AsyncTask<Void, Void, Void> {
 
-    public Socket clientSocket;
+    private Socket clientSocket;
+    private String message;
 
-    public Client(String serverIPAddress) {
+    public Client(final InetAddress serverIPAddress, final String message) {
         try{
-            clientSocket = new Socket(serverIPAddress, SharedVariables.socketSeverPortAddress);
+            this.message = message;
+            clientSocket = new Socket(serverIPAddress, KeyConstants.MAIN_SERVER_SOCKET_PORT_ADDRESS);
+        }
+        catch (IOException ignored){}
+    }
+    public Client(final String serverIPAddress, final String message) {
+        try{
+            this.message = message;
+            clientSocket = new Socket(serverIPAddress, KeyConstants.MAIN_SERVER_SOCKET_PORT_ADDRESS);
         }
         catch (IOException ignored){}
     }
@@ -25,6 +38,25 @@ public class Client extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... params) {
 
+        try {
+            if(clientSocket == null)
+                return null;
+
+            OutputStream os = clientSocket.getOutputStream();
+            OutputStreamWriter osw = new OutputStreamWriter(os);
+            BufferedWriter bw = new BufferedWriter(osw);
+
+            bw.write(message);
+            bw.flush();
+            bw.close();
+            osw.close();
+            os.close();
+            clientSocket.close();
+        }
+
+        catch (IOException | RuntimeException exception) {
+            exception.printStackTrace();
+        }
         return null;
     }
 }

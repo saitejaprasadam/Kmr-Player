@@ -61,7 +61,7 @@ public class ActivitySwitcher {
         Intent tagEditorIntent = new Intent(mActivity, TagEditorActivity.class);
         tagEditorIntent.putExtra("songID", String.valueOf(songID));
         tagEditorIntent.putExtra("position", position);
-        mActivity.startActivityForResult(tagEditorIntent, SharedVariables.TAG_EDITOR_REQUEST_CODE);
+        mActivity.startActivityForResult(tagEditorIntent, KeyConstants.TAG_EDITOR_REQUEST_CODE);
     }
 
     public static void initEqualizer(final Context context) {
