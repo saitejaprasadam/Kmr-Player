@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.socketClasses.GroupPlay.GroupPlayHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,6 +19,7 @@ public class Controls {
     static String LOG_CLASS = "Controls";
 
     public static void playControl(Context context) {
+        GroupPlayHelper.notifyGroupPlayClientsIfExists();
         sendMessage(context.getResources().getString(R.string.play));
         PlayerConstants.SONG_PAUSED = false;
     }

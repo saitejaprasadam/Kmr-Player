@@ -1,5 +1,7 @@
 package com.prasadam.kmrplayer.socketClasses;
 
+import android.util.Log;
+
 import com.prasadam.kmrplayer.sharedClasses.KeyConstants;
 import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
 
@@ -29,7 +31,8 @@ public class ServerThread extends Thread {
                     socketServerReplyThread.run();
                 }
 
-                catch (Exception ignore){}
+                catch (Exception e){
+                    Log.e("Exception", String.valueOf(e));}
             }
     }
 }

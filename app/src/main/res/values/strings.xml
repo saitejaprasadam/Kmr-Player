@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Smart Cast</string>
+    <string name="app_name">Smart cast</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -7,8 +7,8 @@
     <string name="action_settings">Settings</string>
 
     <string name="songs_text">songs</string>
-    <string name="albums_text">Albums</string>
-    <string name="artist_text">Artists</string>
+    <string name="albums_text">albums</string>
+    <string name="artist_text">artists</string>
     <string name="playlist_text">Playlist</string>
     <string name="delete_text">Delete</string>
     <string name="cancel_text">Cancel</string>
@@ -98,4 +98,14 @@
     <string name="group_play_accepted">accpeted group play request</string>
     <string name="request_for_group_play_text">Request for Group play</string>
     <string name="disconnect_from_group_play_text">Disconnect from Grop play</string>
+    <string name="search_for_songs_albums_artist_text">Search for songs, albums, artist....</string>
+    <string name="by_text">by</string>
+    <string name="problem_fetching_current_playing_song">Problem fetching current playing song</string>
+    <string name="now_playing_text">Now playing :</string>
+    <string name="get_current_playing_song">Get current playing song</string>
+    <string name="request_for_current_playing_song">is requesting for current playing song</string>
+    <string name="request_for_current_playing_song_text">Request for current song</string>
+    <string name="quick_share_request_text">Quick share request</string>
+    <string name="current_song_request_rejected">has rejected your request for transferring his current playing song</string>
+    <string name="current_song_request_accepted">Receiving now playing song from</string>
 </resources>

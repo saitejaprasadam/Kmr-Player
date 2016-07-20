@@ -1,67 +1,50 @@
-package com.prasadam.kmrplayer.socketClasses.FileTransfer;
+package com.prasadam.kmrplayer.socketClasses.GroupPlay;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
-
 import com.prasadam.kmrplayer.sharedClasses.KeyConstants;
 import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.math.BigInteger;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.security.SecureRandom;
 
 /*
  * Created by Prasadam Saiteja on 7/16/2016.
  */
 
-public class FileReceiver extends AsyncTask<Void, Void, Void>{
+public class GroupPlayReceiver extends AsyncTask<Void, Void, Void>{
 
     private static ServerSocketChannel serverSocketChannel;
-    private SecureRandom random = new SecureRandom();
-    public int countToBeRecevied = 0;
-    public boolean limitedCount = false;
 
-    public FileReceiver(int countToBeRecevied){
+    public GroupPlayReceiver(){
 
         try {
             if(serverSocketChannel == null){
-                this.countToBeRecevied = countToBeRecevied;
-                this.limitedCount = true;
                 serverSocketChannel = ServerSocketChannel.open();
-                serverSocketChannel.socket().bind(new InetSocketAddress(KeyConstants.FILE_TRANSFER_SOCKET_PORT_ADDRESS));
-                System.out.println("Started server");
+                serverSocketChannel.socket().bind(new InetSocketAddress(KeyConstants.GROUP_PLAY_SOCKET_PORT_ADDRESS));
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public String nextSessionId() {
-        return new BigInteger(130, random).toString(32);
-    }
-
     @Override
     protected Void doInBackground(Void... voids) {
 
-        do{
+        /*while (true){
             try {
                 SocketChannel clientSocketChannel = serverSocketChannel.accept();
-                String fileName = nextSessionId() + ".mp3";
 
-                File PlayerDirectory  = new File(KeyConstants.PLAYER_DIRECTORY_PATH);
+                File cachePath = new File(SharedVariables.globalActivityContext.getCacheDir(), "GroupPlay");
+                cachePath.mkdirs();
+                new File(cachePath + "/GroupPlayCurrentSong.mp3").delete();
 
-                if(!PlayerDirectory.exists())
-                    PlayerDirectory.mkdir();
-
-                File songFile = new File(PlayerDirectory.getAbsolutePath() + File.separator + fileName);
+                File songFile = new File(cachePath, "/GroupPlayCurrentSong.mp3");;
                 songFile.createNewFile();
                 RandomAccessFile aFile = new RandomAccessFile(songFile, "rw");
                 ByteBuffer buffer = ByteBuffer.allocate(KeyConstants.TRANSFER_BUFFER_SIZE);
@@ -72,18 +55,15 @@ public class FileReceiver extends AsyncTask<Void, Void, Void>{
                     buffer.clear();
                 }
 
-                SharedVariables.globalActivityContext.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + PlayerDirectory + File.separator + fileName)));
+                System.out.println("Group play received " + songFile.getAbsolutePath());
                 Thread.sleep(100);
                 fileChannel.close();
                 clientSocketChannel.close();
-                System.out.println("File Received " + countToBeRecevied);
-                countToBeRecevied--;
+
             } catch (IOException | InterruptedException e) {
-                countToBeRecevied--;
                 e.printStackTrace();
             }
-
-        }while(!limitedCount || countToBeRecevied > 0);
+        }*/
 
         return null;
     }

@@ -1,4 +1,6 @@
-package com.prasadam.kmrplayer.socketClasses.FileTransfer;
+package com.prasadam.kmrplayer.socketClasses.GroupPlay;
+
+import android.util.Log;
 
 import com.prasadam.kmrplayer.sharedClasses.KeyConstants;
 
@@ -15,14 +17,14 @@ import java.nio.channels.SocketChannel;
  * Created by Prasadam Saiteja on 7/16/2016.
  */
 
-public class FileSender {
+public class GroupPlaySender{
 
     private SocketChannel socketChannel;
 
-    public FileSender(String clientAddress){
+    public GroupPlaySender(String clientAddress){
         try {
             socketChannel = SocketChannel.open();
-            SocketAddress socketAddress = new InetSocketAddress(clientAddress, KeyConstants.FILE_TRANSFER_SOCKET_PORT_ADDRESS);
+            SocketAddress socketAddress = new InetSocketAddress(clientAddress, KeyConstants.GROUP_PLAY_SOCKET_PORT_ADDRESS);
             socketChannel.connect(socketAddress);
 
         } catch (IOException e) {
@@ -47,9 +49,8 @@ public class FileSender {
 
             Thread.sleep(1000);
             aFile.close();
-            System.out.println("File Sent" + filePath);
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            Log.e("exception", String.valueOf(e));
         }
     }
 

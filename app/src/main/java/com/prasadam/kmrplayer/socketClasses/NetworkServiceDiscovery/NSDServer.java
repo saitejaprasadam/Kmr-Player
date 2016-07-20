@@ -1,4 +1,4 @@
-package com.prasadam.kmrplayer.socketClasses;
+package com.prasadam.kmrplayer.socketClasses.NetworkServiceDiscovery;
 
 import android.content.Context;
 import android.net.nsd.NsdManager;
@@ -19,15 +19,16 @@ public class NSDServer {
     private static String SERVICE_NAME = ExtensionMethods.deviceName();
     private static String SERVICE_TYPE = "_kmr._tcp.";
     public static NsdManager mNsdManager;
+    private static NsdServiceInfo serviceInfo;
 
     public static void startService(Context thiscontext) {
         context = thiscontext;
         mNsdManager = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
         registerService(1231);
     }
-
     public static void registerService(int port) {
-        NsdServiceInfo serviceInfo = new NsdServiceInfo();
+
+        serviceInfo = new NsdServiceInfo();
         serviceInfo.setServiceName(SERVICE_NAME);
         serviceInfo.setServiceType(SERVICE_TYPE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){

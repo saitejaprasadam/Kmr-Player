@@ -31,7 +31,6 @@ import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicPlayerExtensionMethods;
 import com.prasadam.kmrplayer.adapterClasses.uiAdapters.DividerItemDecoration;
 import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
-import com.prasadam.kmrplayer.sharedClasses.KeyConstants;
 import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
 
 import java.io.File;
@@ -50,11 +49,8 @@ public class ArtistActivity extends Activity {
     public static String ARTIST_EXTRA = "artist";
     private Artist artist;
     private ArrayList<Song> songsList;
-    private ArrayList<Album> albumList;
     private FrameLayout colorPaletteView;
-    private static String artistAlbumArt = null;
-    private SongRecyclerViewAdapterForArtistActivity songRecyclerViewAdapter;
-    private SmallAlbumRecyclerViewAdapter albumRecyclerViewAdapter;
+    private String artistAlbumArt = null;
 
     @Bind(R.id.artist_image) ImageView artistAlbumArtImageView;
     @Bind(R.id.blurred_album_art) ImageView blurredAlbumArt;
@@ -83,6 +79,10 @@ public class ArtistActivity extends Activity {
 
                         case R.id.action_equilzer:
                             ActivitySwitcher.initEqualizer(ArtistActivity.this);
+                            break;
+
+                        case R.id.action_qucik_share:
+                            ActivitySwitcher.jumpToQuickShareActivity(ArtistActivity.this, songsList);
                             break;
 
                         default:
@@ -114,6 +114,7 @@ public class ArtistActivity extends Activity {
         ButterKnife.bind(this);
 
         colorPaletteView = (FrameLayout) findViewById(R.id.color_pallete_view);
+
         initalizer();
         setData();
         setAlbumRecyclerView();
@@ -127,15 +128,15 @@ public class ArtistActivity extends Activity {
     private void setSongRecyclerView() {
 
         songsList = AudioExtensionMethods.getSongListFromArtist(ArtistActivity.this, artist.getArtistTitle());
-        songRecyclerViewAdapter = new SongRecyclerViewAdapterForArtistActivity(ArtistActivity.this, songsList);
+        SongRecyclerViewAdapterForArtistActivity songRecyclerViewAdapter = new SongRecyclerViewAdapterForArtistActivity(ArtistActivity.this, songsList);
         songRecyclerview.setLayoutManager(new LinearLayoutManager(ArtistActivity.this));
         songRecyclerview.setAdapter(songRecyclerViewAdapter);
         songRecyclerview.addItemDecoration(new DividerItemDecoration(ArtistActivity.this, LinearLayoutManager.VERTICAL));
     }
     private void setAlbumRecyclerView() {
 
-        albumList = AudioExtensionMethods.getAlbumListFromArtist(ArtistActivity.this, artist.getArtistTitle());
-        albumRecyclerViewAdapter = new SmallAlbumRecyclerViewAdapter(ArtistActivity.this, this, albumList);
+        ArrayList<Album> albumList = AudioExtensionMethods.getAlbumListFromArtist(ArtistActivity.this, artist.getArtistTitle());
+        SmallAlbumRecyclerViewAdapter albumRecyclerViewAdapter = new SmallAlbumRecyclerViewAdapter(ArtistActivity.this, this, albumList);
         albumRecyclerview.setLayoutManager(new LinearLayoutManager(ArtistActivity.this, LinearLayoutManager.HORIZONTAL, false));
         albumRecyclerview.setAdapter(albumRecyclerViewAdapter);
     }
@@ -245,10 +246,6 @@ public class ArtistActivity extends Activity {
         });
     }
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == KeyConstants.TAG_EDITOR_REQUEST_CODE) {
-            if(resultCode == Activity.RESULT_OK){
 
-            }
-        }
     }
 }

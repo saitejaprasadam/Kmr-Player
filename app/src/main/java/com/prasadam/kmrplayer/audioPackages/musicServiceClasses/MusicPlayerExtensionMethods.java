@@ -7,6 +7,7 @@ import android.util.Log;
 import com.prasadam.kmrplayer.MainActivity;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
+import com.prasadam.kmrplayer.socketClasses.GroupPlay.GroupPlayHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,8 +58,11 @@ public class MusicPlayerExtensionMethods {
             mActivity.startService(i);
         }
 
-        else
+        else{
+            GroupPlayHelper.notifyGroupPlayClientsIfExists();
             PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
+        }
+
 
         PlayerConstants.HASH_ID_CURRENT_PLAYLIST.clear();
         new Thread(new Runnable() {

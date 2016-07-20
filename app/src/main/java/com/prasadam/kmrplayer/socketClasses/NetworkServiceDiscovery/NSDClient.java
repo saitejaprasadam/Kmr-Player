@@ -1,4 +1,4 @@
-package com.prasadam.kmrplayer.socketClasses;
+package com.prasadam.kmrplayer.socketClasses.NetworkServiceDiscovery;
 
 import android.content.Context;
 import android.net.nsd.NsdManager;
@@ -20,7 +20,7 @@ public class NSDClient {
     private static String SERVICE_NAME = ExtensionMethods.deviceName();
     private static String SERVICE_TYPE = "_kmr._tcp.";
     public static NsdManager mNsdManager;
-    public static ArrayList<NsdServiceInfo> devicesList = new ArrayList<>();
+    public static ArrayList<NSD> devicesList = new ArrayList<>();
 
     public static void startSearch(Context context){
         mNsdManager = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
@@ -60,10 +60,12 @@ public class NSDClient {
             // When the network service is no longer available.
             // Internal bookkeeping code goes here.
             try{
-                for (NsdServiceInfo device : devicesList) {
-                    if(device.getHost().toString().equals(service.getHost().toString())){
+                Log.d("nsdserviceLost", "service lost" + service.getHost().toString());
+                for (NSD device : devicesList) {
+                    Log.d("devices", device.GetClientNSD().getHost().toString());
+                    if(device.GetClientNSD().getHost().toString().equals(service.getHost().toString())){
+                        Log.d("Removed", "from list");
                         devicesList.remove(device);
-                        Log.e("nsdserviceLost", "service lost" + service);
                         NearbyDevicesActivity.updateAdapater();
                         QuickShareActivity.updateAdapater();
                     }
@@ -108,8 +110,14 @@ public class NSDClient {
                 return;
             }
 
-            if(!devicesList.contains(serviceInfo)){
-                devicesList.add(serviceInfo);
+            boolean found = false;
+            for (NSD device : devicesList) {
+                if(device.GetClientNSD().getHost().toString().equals(serviceInfo.getHost().toString()))
+                    found = true;
+            }
+
+            if(!found){
+                devicesList.add(new NSD(serviceInfo));
                 NearbyDevicesActivity.updateAdapater();
                 QuickShareActivity.updateAdapater();
             }

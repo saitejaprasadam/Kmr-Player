@@ -13,6 +13,7 @@ import com.prasadam.kmrplayer.ArtistActivity;
 import com.prasadam.kmrplayer.NearbyDevicesActivity;
 import com.prasadam.kmrplayer.ExpandedAlbumartActivity;
 import com.prasadam.kmrplayer.QuickShareActivity;
+import com.prasadam.kmrplayer.SearchActivity;
 import com.prasadam.kmrplayer.TagEditorActivity;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicService;
@@ -89,5 +90,11 @@ public class ActivitySwitcher {
         }
         quickShareIntent.putStringArrayListExtra(KeyConstants.INTENT_SONGS_PATH_LIST, songsPath);
         context.startActivity(quickShareIntent);
+    }
+
+    public static void launchSearchActivity(final Context context){
+        Intent searchAcrivityIntent = new Intent(context, SearchActivity.class);
+        searchAcrivityIntent.setAction(Intent.ACTION_SEARCH);
+        context.startActivity(searchAcrivityIntent);
     }
 }

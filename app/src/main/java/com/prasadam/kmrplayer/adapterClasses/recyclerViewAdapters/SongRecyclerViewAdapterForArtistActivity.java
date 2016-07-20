@@ -165,6 +165,8 @@ public class SongRecyclerViewAdapterForArtistActivity extends RecyclerView.Adapt
         catch (Exception ignored){}
     }
     public int getItemCount() {
+        if(songsList == null)
+            return 0;
         return songsList.size();
     }
     public void setSongsList(ArrayList<Song> songsList){

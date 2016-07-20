@@ -1,5 +1,6 @@
 package com.prasadam.kmrplayer;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -87,6 +88,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         SharedVariables.Initializers(this);
         setContentView(R.layout.activity_main);
+
+        Intent intent = getIntent();
+        if(MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            Toast.makeText(this, query, Toast.LENGTH_SHORT).show();
+        }
 
         googleLoginListeners = new GoogleLoginListeners(MainActivity.this);
         initalizer();
@@ -451,6 +458,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (item.getItemId()){
             case R.id.action_refresh:
                 refreshList();
+                break;
+
+            case R.id.action_search:
+                ActivitySwitcher.launchSearchActivity(this);
                 break;
 
             case R.id.action_equilzer:

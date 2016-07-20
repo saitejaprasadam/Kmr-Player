@@ -55,8 +55,11 @@ public class QuickShareActivity extends AppCompatActivity{
         quickShareRecyclerView.setLayoutManager(new LinearLayoutManager(QuickShareActivity.this));
     }
     public static void updateAdapater(){
-        if(QuickShareRecyclerviewAdapter != null && SharedVariables.globalActivityContext != null && SharedVariables.globalActivityContext.getClass().getSimpleName().equals(KeyConstants.ACTIVITY_QUICK_SHARE))
-            QuickShareRecyclerviewAdapter.notifyDataSetChanged();
+        try{
+            if(QuickShareRecyclerviewAdapter != null && SharedVariables.globalActivityContext != null && SharedVariables.globalActivityContext.getClass().getSimpleName().equals(KeyConstants.ACTIVITY_QUICK_SHARE))
+                QuickShareRecyclerviewAdapter.notifyDataSetChanged();
+        }
+        catch (Exception ignore){}
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {

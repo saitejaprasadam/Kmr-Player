@@ -21,7 +21,6 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.TagEditorActivity;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Album;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Artist;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
@@ -909,6 +908,18 @@ public class AudioExtensionMethods {
             }
 
         return null;
+    }
+
+    public static ArrayList<Song> getSongListForSearch(String songName){
+
+        ArrayList<Song> result = new ArrayList<>();
+
+        for (Song song : SharedVariables.fullSongsList) {
+            if(song.getTitle().toLowerCase().contains(songName.toLowerCase()))
+                result.add(song);
+        }
+
+        return result;
     }
 
 }

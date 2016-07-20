@@ -329,11 +329,11 @@ public class MusicService extends Service implements
         switch (focusChange) {
 
             case AudioManager.AUDIOFOCUS_LOSS:
-                player.pause();
+                Controls.pauseControl(getContext());
                 break;
 
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
-                player.pause();
+                Controls.pauseControl(getContext());
                 break;
 
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:

@@ -1,5 +1,8 @@
 package com.prasadam.kmrplayer.socketClasses.GroupPlay;
 
+import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
+import com.prasadam.kmrplayer.socketClasses.SocketExtensionMethods;
+
 import java.util.ArrayList;
 
 /*
@@ -8,27 +11,56 @@ import java.util.ArrayList;
 
 public class GroupPlayHelper {
 
-    private static ArrayList<String> GroupPlayClientList = new ArrayList<>();
-    private static String GroupPlayMaster;
+    private static ArrayList<String> GroupPlayClientsList = new ArrayList<>();
+    private static String GroupPlayMasterIPAddress;
+    private static GroupPlayReceiver groupPlayReceiver;
+    private static boolean isMaster = false;
 
     public static void AddNewClientInGroupPlay(String clientAddress){
-        if(!GroupPlayClientList.contains(clientAddress)){
-            GroupPlayClientList.add(clientAddress);
+
+        if(!GroupPlayClientsList.contains(clientAddress)){
+            GroupPlayClientsList.add(clientAddress);
+            isMaster = true;
         }
 
     }
-    public static void RemoveClientFromGroupPlay(String clientAddress){
-        if(GroupPlayClientList.contains(clientAddress))
-            GroupPlayClientList.remove(clientAddress);
+    public static void DisconnectClientFromGroupPlay(String clientAddress){
+        if(GroupPlayClientsList.contains(clientAddress))
+            GroupPlayClientsList.remove(clientAddress);
+
+        if(GroupPlayClientsList.size() == 0)
+            isMaster = false;
     }
+
     public static boolean IsClientConntectedToGroupPlay(String clientAddress){
-        return GroupPlayClientList.contains(clientAddress);
-    }
-    public static void setGroupPlayMaster(String groupPlayMaster){
-        GroupPlayClientList.clear();
-        GroupPlayMaster = groupPlayMaster;
+        return GroupPlayClientsList.contains(clientAddress);
     }
     public static boolean IsClientGroupPlayMaster(String clientAddress) {
-        return GroupPlayMaster != null && GroupPlayMaster.equals(clientAddress);
+        return GroupPlayMasterIPAddress != null && GroupPlayMasterIPAddress.equals(clientAddress);
+    }
+
+    public static void setGroupPlayMaster(String groupPlayMasterIPAddress){
+        GroupPlayClientsList.clear();
+        GroupPlayMasterIPAddress = groupPlayMasterIPAddress;
+        groupPlayReceiver = new GroupPlayReceiver();
+        groupPlayReceiver.execute();
+    }
+    public static void DisconnectFromGroupPlayMaster(){
+        GroupPlayClientsList.clear();
+        GroupPlayMasterIPAddress = null;
+        groupPlayReceiver = null;
+    }
+    public static boolean IsMaster(){
+        return isMaster;
+    }
+
+    public static void notifyGroupPlayClientsIfExists() {
+
+        if(IsMaster() && GroupPlayClientsList.size() > 0){
+
+            SocketExtensionMethods.requestStrictModePermit();
+            GroupPlaySenderHelper senderHelper = new GroupPlaySenderHelper(GroupPlayClientsList);
+            senderHelper.execute();
+        }
     }
 }

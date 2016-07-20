@@ -2,7 +2,6 @@ package com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.net.nsd.NsdServiceInfo;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -20,9 +19,10 @@ import com.prasadam.kmrplayer.QuickShareActivity;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.sharedClasses.KeyConstants;
-import com.prasadam.kmrplayer.socketClasses.Client;
+import com.prasadam.kmrplayer.socketClasses.ClientHelper;
 import com.prasadam.kmrplayer.socketClasses.GroupPlay.GroupPlayHelper;
-import com.prasadam.kmrplayer.socketClasses.NSDClient;
+import com.prasadam.kmrplayer.socketClasses.NetworkServiceDiscovery.NSD;
+import com.prasadam.kmrplayer.socketClasses.NetworkServiceDiscovery.NSDClient;
 import com.prasadam.kmrplayer.socketClasses.QuickShare.QuickShareHelper;
 import com.prasadam.kmrplayer.socketClasses.SocketExtensionMethods;
 
@@ -40,7 +40,6 @@ public class NearbyDevicesRecyclerViewAdapter extends RecyclerView.Adapter<Nearb
     private ArrayList<String> QuickSharePathList;
     private LayoutInflater inflater;
     private Activity mActivity;
-    private int count = 0;
     public static MaterialDialog waitingDialog;
 
     public NearbyDevicesRecyclerViewAdapter(Activity mActivity, Context context){
@@ -53,20 +52,28 @@ public class NearbyDevicesRecyclerViewAdapter extends RecyclerView.Adapter<Nearb
         }
     }
     public NearbyDevicesRecyclerViewAdapter.ViewAdapter onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.recycler_view_near_by_devices, parent, false);
+        View view;
+        if(mActivity.getClass().getSimpleName().equals(KeyConstants.ACTIVITY_NEARBY_DEVICES))
+            view = inflater.inflate(R.layout.recycler_view_near_by_devices, parent, false);
+        else
+            view = inflater.inflate(R.layout.recycler_view_quick_share, parent, false);
         return new ViewAdapter(view);
     }
     public void onBindViewHolder(NearbyDevicesRecyclerViewAdapter.ViewAdapter holder, int position) {
 
-        final NsdServiceInfo serverObject = NSDClient.devicesList.get(position);
-        holder.nearbyDeviceNameTextView.setText(serverObject.getServiceName());
+        final NSD serverObject = NSDClient.devicesList.get(position);
+        holder.nearbyDeviceNameTextView.setText(serverObject.GetClientNSD().getServiceName());
         if(mActivity.getClass().getSimpleName().equals(KeyConstants.ACTIVITY_QUICK_SHARE))
             setHolderQuickShareActivity(holder, serverObject);
         else
             setHolderNearByActivity(holder, serverObject);
 
         if(holder.imageID == 0)
-            holder.imageID = getDeviceImage();
+            holder.imageID = SocketExtensionMethods.getDeviceImage(serverObject.GetDeviceType());
+
+        if(serverObject.GetDeviceType() == null)
+            SocketExtensionMethods.requestForDeviceType(serverObject.GetClientNSD());
+
         holder.nearbyDevicesImageView.setImageResource(holder.imageID);
     }
 
@@ -90,34 +97,12 @@ public class NearbyDevicesRecyclerViewAdapter extends RecyclerView.Adapter<Nearb
 
         return count;
     }
-    public int getDeviceImage(){
-        switch (count){
 
-            case 0:
-                count++;
-                return R.mipmap.android_device;
-
-            case 1:
-                count++;
-                return R.mipmap.apple_mac;
-
-            case 2:
-                count++;
-                return R.mipmap.iphone_6s;
-
-            case 3:
-                count++;
-                return R.mipmap.macbook_pro;
-
-            default:
-                count = 0;
-                return R.mipmap.apple_mac;
-        }
-    }
     public void setQuickShareSongPathList(ArrayList<String> songPathList){
         this.QuickSharePathList = songPathList;
     }
-    private void setHolderQuickShareActivity(ViewAdapter holder, final NsdServiceInfo serverObject) {
+
+    private void setHolderQuickShareActivity(ViewAdapter holder, final NSD serverObject) {
         holder.nearbyDevicesContextMenu.setImageResource(R.mipmap.ic_chevron_right_black_24dp);
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,20 +126,24 @@ public class NearbyDevicesRecyclerViewAdapter extends RecyclerView.Adapter<Nearb
                         .show();
 
                 QuickShareHelper.addQuickShareRequest(timeStamp, QuickSharePathList);
-                String message = SocketExtensionMethods.GenerateSocketMessage(KeyConstants.SOCKET_INITIATE_QUICK_SHARE_TRANSFER_REQUEST, timeStamp, String.valueOf(QuickSharePathList.size()));
-                Client quickShareClient = new Client(serverObject.getHost(), message);
-                quickShareClient.execute();
+                ClientHelper.requstForQuickShare(serverObject, timeStamp, QuickSharePathList);
             }
         });
     }
-    private void setHolderNearByActivity(ViewAdapter holder, final NsdServiceInfo serverObject) {
 
-        if(GroupPlayHelper.IsClientConntectedToGroupPlay(serverObject.getHost().toString().replace("/", "")))
+    private void setHolderNearByActivity(ViewAdapter holder, final NSD serverObject) {
+
+        if(GroupPlayHelper.IsClientConntectedToGroupPlay(serverObject.getHostAddress()))
             holder.nearbyDevicesContextMenu.setImageResource(R.mipmap.ic_surround_sound_black_24dp);
 
-        else if(GroupPlayHelper.IsClientGroupPlayMaster(serverObject.getHost().toString().replace("/", "")))
+        else if(GroupPlayHelper.IsClientGroupPlayMaster(serverObject.getHostAddress()))
             holder.nearbyDevicesContextMenu.setImageResource(R.mipmap.ic_hearing_black_24dp);
 
+        if(serverObject.getCurrentSongPlaying() != null)
+            holder.currentSongTextView.setText(mActivity.getResources().getString(R.string.now_playing_text) + KeyConstants.SPACE + serverObject.getCurrentSongPlaying());
+        else
+            holder.currentSongTextView.setText(mActivity.getResources().getString(R.string.problem_fetching_current_playing_song));
+        SocketExtensionMethods.requestForCurrentSongPlaying(serverObject.GetClientNSD());
 
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -166,17 +155,13 @@ public class NearbyDevicesRecyclerViewAdapter extends RecyclerView.Adapter<Nearb
                         .itemsCallback(new MaterialDialog.ListCallback() {
                             @Override
                             public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                               if(text.equals(mActivity.getResources().getString(R.string.request_for_group_play_text))){
-                                       String message = SocketExtensionMethods.GenerateSocketMessage(KeyConstants.SOCKET_INITIATE_GROUP_PLAY_REQUEST, ExtensionMethods.getTimeStamp());
-                                       Client GroupPlayInitiateRequestClient = new Client(serverObject.getHost(), message);
-                                       GroupPlayInitiateRequestClient.execute();
+
+                               if(text.equals(mActivity.getResources().getString(R.string.request_for_group_play_text)))
+                                   ClientHelper.requestForGroupPlay(serverObject);
+
+                                else if(text.equals(mActivity.getResources().getString(R.string.get_current_playing_song))){
+                                   ClientHelper.requestForCurrentSong(serverObject);
                                }
-
-                                else if(text.equals(mActivity.getResources().getString(R.string.disconnect_from_group_play_text))){
-
-                               }
-
-
                             }
                         })
                         .show();
@@ -184,14 +169,17 @@ public class NearbyDevicesRecyclerViewAdapter extends RecyclerView.Adapter<Nearb
         });
     }
 
-    private ArrayList<String> PopulateDialogItems(NsdServiceInfo serverObject) {
+    private ArrayList<String> PopulateDialogItems(NSD serverObject) {
 
         ArrayList<String> dialogOptions = new ArrayList<>();
 
-        if(GroupPlayHelper.IsClientGroupPlayMaster(serverObject.getHost().toString().replace("/", "")) || GroupPlayHelper.IsClientConntectedToGroupPlay(serverObject.getHost().toString().replace("/", "")))
+        if(GroupPlayHelper.IsClientGroupPlayMaster(serverObject.getHostAddress()) || GroupPlayHelper.IsClientConntectedToGroupPlay(serverObject.getHostAddress()))
             dialogOptions.add(mActivity.getResources().getString(R.string.disconnect_from_group_play_text));
         else
             dialogOptions.add(mActivity.getResources().getString(R.string.request_for_group_play_text));
+
+        if(serverObject.getCurrentSongPlaying() != null)
+            dialogOptions.add(mActivity.getResources().getString(R.string.get_current_playing_song));
 
         return dialogOptions;
     }
@@ -202,11 +190,13 @@ public class NearbyDevicesRecyclerViewAdapter extends RecyclerView.Adapter<Nearb
         @Bind(R.id.nearby_devices_album_art) ImageView nearbyDevicesImageView;
         @Bind(R.id.nearby_devices_context_menu) ImageView nearbyDevicesContextMenu;
         @Bind(R.id.device_name_textview) TextView nearbyDeviceNameTextView;
+        @Bind(R.id.current_song_playing) TextView currentSongTextView;
         private int imageID = 0;
 
         public ViewAdapter(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            currentSongTextView.setSelected(true);
         }
     }
 }

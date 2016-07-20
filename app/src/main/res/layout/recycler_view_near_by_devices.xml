@@ -19,7 +19,8 @@
         fresco:roundingBorderWidth="0.1dp" />
 
     <ImageView
-        android:layout_marginEnd="20dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
         android:id="@+id/nearby_devices_context_menu"
         android:layout_gravity="center_vertical"
         android:layout_width="wrap_content"
@@ -27,17 +28,40 @@
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"/>
 
-    <TextView
-        android:id="@+id/device_name_textview"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
         android:layout_toEndOf="@id/nearby_devices_album_art"
-        android:layout_toStartOf="@id/nearby_devices_context_menu"
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textSize="14sp"
-        android:textColor="?android:attr/textColorPrimary"/>
+        android:layout_toStartOf="@id/nearby_devices_context_menu">
+
+        <TextView
+            android:id="@+id/device_name_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="16sp"
+            android:textColor="?android:attr/textColorPrimary"/>
+
+        <TextView
+            android:id="@+id/current_song_playing"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            android:textSize="12sp"
+            android:maxLines="1"
+            android:focusableInTouchMode="true"
+            android:freezesText="true"
+            android:textColor="?android:attr/textColorSecondary"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+    </LinearLayout>
 
 </RelativeLayout>

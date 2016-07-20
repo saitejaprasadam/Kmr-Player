@@ -28,7 +28,7 @@ public class NearbyDevicesActivity extends AppCompatActivity{
 
     public void onCreate(Bundle bundle){
         super.onCreate(bundle);
-        setContentView(R.layout.activity_available_devices);
+        setContentView(R.layout.activity_nearby_devices);
 
         NoDevicesTextView = (TextView) findViewById(R.id.no_devices_available_text_view);
         ActivityHelper.setDisplayHome(this);
@@ -49,8 +49,11 @@ public class NearbyDevicesActivity extends AppCompatActivity{
         recyclerView.setLayoutManager(new LinearLayoutManager(NearbyDevicesActivity.this));
     }
     public static void updateAdapater(){
-        if(nearbyDevicesRecyclerviewAdapter != null && SharedVariables.globalActivityContext != null && SharedVariables.globalActivityContext.getClass().getSimpleName().equals(KeyConstants.ACTIVITY_NEARBY_DEVICES))
-            nearbyDevicesRecyclerviewAdapter.notifyDataSetChanged();
+        try{
+            if(nearbyDevicesRecyclerviewAdapter != null && SharedVariables.globalActivityContext != null && SharedVariables.globalActivityContext.getClass().getSimpleName().equals(KeyConstants.ACTIVITY_NEARBY_DEVICES))
+                nearbyDevicesRecyclerviewAdapter.notifyDataSetChanged();
+        }
+        catch (Exception ignore){}
     }
 
     @Override

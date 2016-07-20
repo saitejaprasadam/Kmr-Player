@@ -1,6 +1,7 @@
 package com.prasadam.kmrplayer.socketClasses;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.prasadam.kmrplayer.sharedClasses.KeyConstants;
 
@@ -46,6 +47,7 @@ public class Client extends AsyncTask<Void, Void, Void> {
             OutputStreamWriter osw = new OutputStreamWriter(os);
             BufferedWriter bw = new BufferedWriter(osw);
 
+            Log.d("Sent", message);
             bw.write(message);
             bw.flush();
             bw.close();
@@ -55,7 +57,7 @@ public class Client extends AsyncTask<Void, Void, Void> {
         }
 
         catch (IOException | RuntimeException exception) {
-            exception.printStackTrace();
+            Log.e("Exception", String.valueOf(exception));
         }
         return null;
     }
