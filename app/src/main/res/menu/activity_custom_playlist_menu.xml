@@ -4,22 +4,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/create_new_custom_playlist"
-        android:icon="@mipmap/ic_playlist_add_white_24dp"
+        android:id="@+id/action_devices_button"
+        android:icon="@mipmap/ic_devices_white_24dp"
         android:orderInCategory="100"
-        android:title="@string/create_new_custom_playlist"
+        android:title="@string/nearby_devices_text"
         app:showAsAction="ifRoom" />
-
-    <item
-        android:id="@+id/action_refresh"
-        android:orderInCategory="100"
-        android:title="@string/action_refresh"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
 
 </menu>

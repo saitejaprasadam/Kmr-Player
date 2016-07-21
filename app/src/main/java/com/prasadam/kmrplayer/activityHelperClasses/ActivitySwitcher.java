@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.media.audiofx.AudioEffect;
-import android.media.audiofx.Equalizer;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.widget.ImageView;
 
@@ -66,11 +65,6 @@ public class ActivitySwitcher {
     }
 
     public static void initEqualizer(final Context context) {
-        if(SharedVariables.equalizer == null){
-            SharedVariables.equalizer = new Equalizer(0, MusicService.player.getAudioSessionId());
-            SharedVariables.equalizer.setEnabled(true);
-        }
-
         Intent i = new Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL);
         i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, MusicService.player.getAudioSessionId());
         i.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.getPackageName());

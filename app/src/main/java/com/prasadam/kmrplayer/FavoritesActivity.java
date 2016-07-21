@@ -13,6 +13,7 @@ import android.view.MenuItem;
 
 import com.prasadam.kmrplayer.ListenerClasses.SongsSearchListener;
 import com.prasadam.kmrplayer.activityHelperClasses.ActivityHelper;
+import com.prasadam.kmrplayer.activityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.FavoritesRecyclerViewAdapter;
 import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
@@ -98,10 +99,16 @@ public class FavoritesActivity extends AppCompatActivity{
     public boolean onOptionsItemSelected(MenuItem item) {
 
         final int id = item.getItemId();
-        if (id == android.R.id.home) {
-            finish();
-            return true;
+        switch (id){
+
+            case android.R.id.home:
+                finish();
+                break;
+
+            case R.id.action_devices_button:
+                ActivitySwitcher.jumpToAvaiableDevies(FavoritesActivity.this);
+                break;
         }
-        return false;
+        return true;
     }
 }

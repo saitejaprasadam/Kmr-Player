@@ -108,4 +108,8 @@
     <string name="quick_share_request_text">Quick share request</string>
     <string name="current_song_request_rejected">has rejected your request for transferring his current playing song</string>
     <string name="current_song_request_accepted">Receiving now playing song from</string>
+    <string name="delete_artist_text">Delete artist</string>
+    <string name="please_wait_text">please wait</string>
+    <string name="updating_songs_list">Updating songs list</string>
+    <string name="no_results_found_text">No results found</string>
 </resources>

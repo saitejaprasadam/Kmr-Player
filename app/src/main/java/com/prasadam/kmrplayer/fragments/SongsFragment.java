@@ -16,6 +16,7 @@ import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.SongRecyclerViewAdapter;
 import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicPlayerExtensionMethods;
+import com.prasadam.kmrplayer.sharedClasses.KeyConstants;
 import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
 import com.prasadam.kmrplayer.adapterClasses.uiAdapters.DividerItemDecoration;
 import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
@@ -121,7 +122,6 @@ public class SongsFragment extends Fragment {
 
         catch (Exception ignored){}
     }
-
     private void setShuffleButtonListener() {
         shuffleButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,5 +131,12 @@ public class SongsFragment extends Fragment {
                 shuffleButton.hide();
             }
         });
+    }
+    public static void updateList(){
+        try{
+            if(recyclerViewAdapter != null && SharedVariables.globalActivityContext != null && SharedVariables.globalActivityContext.getClass().getSimpleName().equals(KeyConstants.ACTIVITY_MAIN))
+                recyclerViewAdapter.notifyDataSetChanged();
+        }
+        catch (Exception ignore){}
     }
 }

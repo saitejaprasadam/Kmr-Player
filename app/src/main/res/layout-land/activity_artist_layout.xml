@@ -4,13 +4,15 @@
     xmlns:card_view="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <LinearLayout
+            android:baselineAligned="false"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal">
@@ -117,7 +119,7 @@
                                 android:singleLine="true"
                                 android:textAppearance="?android:attr/textAppearanceSmall"
                                 android:textColor="@color/white"
-                                android:layout_marginRight="5dp"/>
+                                android:layout_marginEnd="5dp"/>
 
                             <TextView
                                 android:id="@+id/song_count_text_view"
@@ -180,24 +182,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:theme="@style/TransperantToolbar">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="end"
-            android:layout_marginEnd="10dp">
-
-            <ImageView
-                android:id="@+id/activity_options_menu"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:src="@mipmap/ic_dots_vertical_white_24dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/more_options_text" />
-
-        </LinearLayout>
 
     </android.support.v7.widget.Toolbar>
 

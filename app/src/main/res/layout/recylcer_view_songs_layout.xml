@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/media_item_height"
     android:id="@+id/rootLayout_recycler_view"
-    android:background="?attr/selectableItemBackground">
+    android:background="@drawable/ripple">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/songAlbumArt_RecyclerView"

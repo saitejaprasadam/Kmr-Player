@@ -10,7 +10,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -59,44 +58,6 @@ public class ArtistActivity extends Activity {
     @Bind(R.id.song_count_text_view) TextView songCountTextview;
     @Bind(R.id.songs_recycler_view_artist_activity) RecyclerView songRecyclerview;
     @Bind(R.id.albums_recycler_view_artist_activity) RecyclerView albumRecyclerview;
-
-    @OnClick(R.id.activity_options_menu)
-    public void ActivityOptionsMenuOnClick(View view){
-        final PopupMenu popup = new PopupMenu(this, view);
-        popup.inflate(R.menu.activity_artist_options_menu);
-
-        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                try {
-                    int id = item.getItemId();
-                    switch (id) {
-
-                        case R.id.share_all_songs_from_artist:
-                            AudioExtensionMethods.shareAllSongsFromCurrentArtist(ArtistActivity.this, songsList, artist.getArtistTitle());
-                            break;
-
-                        case R.id.action_equilzer:
-                            ActivitySwitcher.initEqualizer(ArtistActivity.this);
-                            break;
-
-                        case R.id.action_qucik_share:
-                            ActivitySwitcher.jumpToQuickShareActivity(ArtistActivity.this, songsList);
-                            break;
-
-                        default:
-                            Toast.makeText(ArtistActivity.this, "pending", Toast.LENGTH_SHORT).show();
-                            break;
-                    }
-                } catch (Exception ignored) {}
-
-                return true;
-            }
-        });
-
-        popup.show();
-    }
 
     @OnClick(R.id.shuffle_fab_button)
     public void ShuffleOnClickListener(View view){
@@ -229,6 +190,9 @@ public class ArtistActivity extends Activity {
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.mipmap.ic_chevron_left_white_24dp);
+        toolbar.inflateMenu(R.menu.activity_artist_menu);
+        toolbar.setOverflowIcon(getResources().getDrawable(R.mipmap.ic_more_vert_white_24dp));
+        setToolBarMenuListener(toolbar);
 
         if (Build.VERSION.SDK_INT >= 21)
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
@@ -245,6 +209,41 @@ public class ArtistActivity extends Activity {
             }
         });
     }
+
+    private void setToolBarMenuListener(Toolbar toolbar) {
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                try {
+                    int id = item.getItemId();
+                    switch (id) {
+
+                        case R.id.action_share_all_songs_from_artist:
+                            AudioExtensionMethods.shareAllSongsFromCurrentArtist(ArtistActivity.this, songsList, artist.getArtistTitle());
+                            break;
+
+                        case R.id.action_equilzer:
+                            ActivitySwitcher.initEqualizer(ArtistActivity.this);
+                            break;
+
+                        case R.id.action_devices_button:
+                            ActivitySwitcher.jumpToAvaiableDevies(ArtistActivity.this);
+                            break;
+
+                        case R.id.action_quick_share:
+                            ActivitySwitcher.jumpToQuickShareActivity(ArtistActivity.this, songsList);
+                            break;
+
+                        default:
+                            Toast.makeText(ArtistActivity.this, "pending", Toast.LENGTH_SHORT).show();
+                            break;
+                    }
+                } catch (Exception ignored) {}
+                return true;
+            }
+        });
+    }
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
     }

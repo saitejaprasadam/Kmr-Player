@@ -13,6 +13,7 @@ import android.view.MenuItem;
 
 import com.prasadam.kmrplayer.ListenerClasses.SongsSearchListener;
 import com.prasadam.kmrplayer.activityHelperClasses.ActivityHelper;
+import com.prasadam.kmrplayer.activityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.RecentlyAddedRecyclerViewAdapter;
 import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
@@ -49,12 +50,7 @@ public class RecentlyAddedActivity extends AppCompatActivity {
         songsList = AudioExtensionMethods.getRecentlyAddedSongs(RecentlyAddedActivity.this);
 
         if(songsList.size() == 0)
-        {
-            NoItemsFragment newFragment = new NoItemsFragment();
-            FragmentTransaction ft = getFragmentManager().beginTransaction();
-            ft.add(android.R.id.content, newFragment).commit();
-            newFragment.setDescriptionTextView(getResources().getString(R.string.no_songs_text));
-        }
+            ActivityHelper.showEmptyFragment(RecentlyAddedActivity.this, getResources().getString(R.string.no_songs_text));
 
         else
         {
@@ -81,6 +77,7 @@ public class RecentlyAddedActivity extends AppCompatActivity {
         super.onResume();
         SharedVariables.globalActivityContext = this;
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -92,15 +89,19 @@ public class RecentlyAddedActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(searchListener);
         return true;
     }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         final int id = item.getItemId();
-        if (id == android.R.id.home) {
-            finish();
-            return true;
+        switch (id){
+
+            case android.R.id.home:
+                finish();
+                break;
+
+            case R.id.action_devices_button:
+                ActivitySwitcher.jumpToAvaiableDevies(RecentlyAddedActivity.this);
+                break;
         }
-        return false;
+        return true;
     }
 }

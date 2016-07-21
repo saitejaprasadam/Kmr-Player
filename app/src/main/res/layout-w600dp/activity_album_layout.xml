@@ -19,6 +19,7 @@
         android:layout_height="match_parent">
 
         <LinearLayout
+            android:baselineAligned="false"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -51,6 +52,8 @@
                         android:layout_gravity="center"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.50"
+                        card_view:cardPreventCornerOverlap="false"
+                        card_view:cardUseCompatPadding="false"
                         card_view:cardBackgroundColor="@android:color/white">
 
                         <com.prasadam.kmrplayer.subClasses.SquareImageview
@@ -129,7 +132,7 @@
                 android:layout_weight="0.40"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:background="@color/View_Background"
+                android:background="@color/white"
                 android:orientation="vertical">
 
                 <android.support.v7.widget.RecyclerView
@@ -165,24 +168,6 @@
             android:id="@+id/cab_stub"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="end"
-            android:layout_marginEnd="10dp">
-
-            <ImageView
-                android:id="@+id/vertical_more_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:src="@mipmap/ic_dots_vertical_white_24dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/more_options_text" />
-
-        </LinearLayout>
 
     </android.support.v7.widget.Toolbar>
 

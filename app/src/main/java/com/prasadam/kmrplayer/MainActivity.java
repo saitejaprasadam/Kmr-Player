@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -73,16 +74,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static ImageView nowPlayingNextButton, nowPlayingPreviousButton, nowPlayingPlayButton, nowPlayingSongContextMenu;
     private static TextView nowPlayingSongArtistTextView, nowPlayingSongMinimalArtistTextView, nowPlayingSongMinimalTitleTextView, nowPlayingSongTitleTextView;
     private static LikeButton nowPlayingFavButton;
-    private static RelativeLayout nowPlayingMinimalRootLayout;
-    private static SlidingUpPanelLayout mainLayoutRootLayout;
-    private static ImageView nowPlayingMinimalNextButton, nowPlayingMinimalPlayButton, nowPlayingMinimizeButton, nowPlayingShuffleButton, nowPlayingRepeatButton, nowPlayingLayoutContextMenu, nowPlayingDevicesButton;
-    private static CardView nowPlayingAlbumArtContainer;
+    private static ImageView nowPlayingMinimalNextButton, nowPlayingMinimalPlayButton, nowPlayingShuffleButton, nowPlayingRepeatButton;
     private static ProgressBar nowPlayingMinimalProgressBar;
-    private static RelativeLayout nowPlayingsongInfoCardView;
     public static RecyclerView nowPlayingPlaylistRecyclerView;
     public static NowPlayingPlaylistAdapter recyclerViewAdapter;
     public static TextView navHeaderProfileName;
     private ItemTouchHelper mItemTouchHelper;
+    private RelativeLayout nowPlayingsongInfoCardView;
+    private CardView nowPlayingAlbumArtContainer;
+    private RelativeLayout nowPlayingMinimalRootLayout;
+    private SlidingUpPanelLayout mainLayoutRootLayout;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,7 +102,62 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onResume() {
         super.onResume();
         SharedVariables.globalActivityContext = this;
+        if(mainLayoutRootLayout != null && mainLayoutRootLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED)
+            nowPlayingMinimalRootLayout.setVisibility(View.INVISIBLE);
+
     }
+    public void onBackPressed() {
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer != null) {
+            if (drawer.isDrawerOpen(GravityCompat.START)) {
+                drawer.closeDrawer(GravityCompat.START);
+            }
+            else
+            if (mainLayoutRootLayout != null && (mainLayoutRootLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED || mainLayoutRootLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED))
+                mainLayoutRootLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+
+            else
+                super.onBackPressed();
+        }
+    }
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.action_refresh:
+                refreshList();
+                break;
+
+            case R.id.action_search:
+                ActivitySwitcher.launchSearchActivity(this);
+                break;
+
+            case R.id.action_equilzer:
+                ActivitySwitcher.initEqualizer(MainActivity.this);
+                break;
+
+            case R.id.action_devices_button:
+                ActivitySwitcher.jumpToAvaiableDevies(MainActivity.this);
+                break;
+
+            default:
+                Toast.makeText(MainActivity.this, "Pending", Toast.LENGTH_SHORT).show();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+    public boolean onNavigationItemSelected(MenuItem item) {
+
+        if(item.getItemId() == R.id.google_login){
+            googleLoginListeners.signInMethod();
+        }
+        return true;
+    }
+
     private void initalizer() {
 
         createTabFragment();
@@ -132,28 +188,51 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         nowPlayingMinimalPlayButton = (ImageView) findViewById(R.id.now_playing_minimal_play_button);
         nowPlayingSongContextMenu = (ImageView) findViewById(R.id.now_playing_song_context_menu);
         Toolbar nowPlayingToolbar = (Toolbar) findViewById(R.id.now_playing_toolbar);
-        nowPlayingMinimizeButton = (ImageView) findViewById(R.id.now_playing_minimize_button);
         nowPlayingShuffleButton = (ImageView) findViewById(R.id.now_playing_shuffle_button);
         nowPlayingRepeatButton = (ImageView) findViewById(R.id.now_playing_repeat_button);
         nowPlayingMinimalProgressBar = (ProgressBar) findViewById(R.id.now_playing_minimal_progress_bar);
         nowPlayingsongInfoCardView = (RelativeLayout) findViewById(R.id.now_playing_song_info_layout);
         nowPlayingAlbumArtContainer = (CardView) findViewById(R.id.now_playing_album_art_container);
         nowPlayingPlaylistRecyclerView = (RecyclerView) findViewById(R.id.now_playing_playlist_recycler_view);
-        nowPlayingLayoutContextMenu = (ImageView) findViewById(R.id.now_playing_context_menu_button);
-        nowPlayingDevicesButton = (ImageView) findViewById(R.id.now_playing_devices_button);
 
-        if (nowPlayingToolbar != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        nowPlayingToolbar.setNavigationIcon(R.mipmap.ic_keyboard_arrow_down_white_24dp);
+        nowPlayingToolbar.inflateMenu(R.menu.fragment_now_playing_menu);
+        nowPlayingToolbar.setOverflowIcon(getResources().getDrawable(R.mipmap.ic_more_vert_white_24dp));
+        setNowPlayingToolBarMenuListener(nowPlayingToolbar);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             nowPlayingToolbar.setPadding(0, ExtensionMethods.getStatusBarHeight(this), 0, 0);
-
-
-        if(mainLayoutRootLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED)
-            nowPlayingMinimalRootLayout.setVisibility(View.INVISIBLE);
 
         else
             nowPlayingMinimalRootLayout.setVisibility(View.VISIBLE);
 
         nowPlayingListeners();
         setNowPlayingSongContextMenu();
+    }
+    private void setNowPlayingToolBarMenuListener(Toolbar nowPlayingToolbar) {
+        nowPlayingToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                try {
+                    int id = item.getItemId();
+                    switch (id) {
+
+                        case R.id.action_devices_button:
+                            ActivitySwitcher.jumpToAvaiableDevies(MainActivity.this);
+                            break;
+
+                        case R.id.action_equilzer:
+                            ActivitySwitcher.initEqualizer(MainActivity.this);
+                            break;
+
+                        default:
+                            Toast.makeText(MainActivity.this, "pending", Toast.LENGTH_SHORT).show();
+                            break;
+                    }
+                } catch (Exception ignored) {}
+                return true;
+            }
+        });
     }
     private void nowPlayingListeners() {
         mainLayoutRootLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
@@ -179,48 +258,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View v) {mainLayoutRootLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);}
         });
-        nowPlayingMinimizeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {mainLayoutRootLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);}
-        });
-        nowPlayingDevicesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ActivitySwitcher.jumpToAvaiableDevies(MainActivity.this);
-            }
-        });
-        nowPlayingLayoutContextMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                    final PopupMenu popup = new PopupMenu(MainActivity.this, nowPlayingLayoutContextMenu);
-                    popup.inflate(R.menu.slidingup_layout_menu);
-
-                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-
-                        @Override
-                        public boolean onMenuItemClick(MenuItem item) {
-                            try {
-                                int id = item.getItemId();
-                                switch (id) {
-
-                                    case R.id.action_equilzer:
-                                        ActivitySwitcher.initEqualizer(MainActivity.this);
-                                        break;
-
-                                    default:
-                                        Toast.makeText(MainActivity.this, "pending", Toast.LENGTH_SHORT).show();
-                                        break;
-                                }
-                            } catch (Exception ignored) {}
-
-                            return true;
-                        }
-                    });
-
-                    popup.show();
-            }
-        });
-
 
         nowPlayingsongInfoCardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -281,6 +318,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
             nowPlayingMinimalProgressBar.getProgressDrawable().setColorFilter(getResources().getColor(R.color.colorAccentGeneric), android.graphics.PorterDuff.Mode.SRC_IN);
+
         final Handler mHandler = new Handler();
         runOnUiThread(new Runnable() {
             @Override
@@ -379,6 +417,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void setNavigationDrawer() {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setOverflowIcon(getResources().getDrawable(R.mipmap.ic_more_vert_white_24dp));
         setSupportActionBar(toolbar);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -412,18 +451,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
     private void refreshList() {
-        new Thread(){
-            public void run(){
-                int prevCount = SharedVariables.fullSongsList.size();
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                final int prevCount = SharedVariables.fullSongsList.size();
                 AudioExtensionMethods.updateLists(MainActivity.this);
-                SongsFragment.recyclerViewAdapter.notifyDataSetChanged();
-                AlbumsFragment.recyclerViewAdapter.notifyDataSetChanged();
+                SongsFragment.updateList();
+                AlbumsFragment.updateList();
                 if(prevCount < SharedVariables.fullSongsList.size())
                     Toast.makeText(MainActivity.this, "Songs lists updated, " + String.valueOf(SharedVariables.fullSongsList.size() - prevCount) + " songs added", Toast.LENGTH_SHORT).show();
                 else
                     Toast.makeText(MainActivity.this, "Songs lists updated, no new songs found", Toast.LENGTH_SHORT).show();
             }
-        }.run();
+        });
     }
     private void initalizePlaylistRecyclerView(){
         recyclerViewAdapter = new NowPlayingPlaylistAdapter(this, this);
@@ -432,58 +473,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(recyclerViewAdapter);
         mItemTouchHelper = new ItemTouchHelper(callback);
         mItemTouchHelper.attachToRecyclerView(nowPlayingPlaylistRecyclerView);
-    }
-
-    public void onBackPressed() {
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer != null) {
-            if (drawer.isDrawerOpen(GravityCompat.START)) {
-                drawer.closeDrawer(GravityCompat.START);
-            }
-            else
-            if (mainLayoutRootLayout != null && (mainLayoutRootLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED || mainLayoutRootLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED))
-                mainLayoutRootLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-
-            else
-                super.onBackPressed();
-        }
-    }
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()){
-            case R.id.action_refresh:
-                refreshList();
-                break;
-
-            case R.id.action_search:
-                ActivitySwitcher.launchSearchActivity(this);
-                break;
-
-            case R.id.action_equilzer:
-                ActivitySwitcher.initEqualizer(MainActivity.this);
-                break;
-
-            case R.id.action_devices_button:
-                ActivitySwitcher.jumpToAvaiableDevies(MainActivity.this);
-                break;
-
-            default:
-                Toast.makeText(MainActivity.this, "Pending", Toast.LENGTH_SHORT).show();
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-    public boolean onNavigationItemSelected(MenuItem item) {
-
-        if(item.getItemId() == R.id.google_login){
-            googleLoginListeners.signInMethod();
-        }
-        return true;
     }
 
     public static void updateNowPlayingUI(final Context context){

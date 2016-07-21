@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -146,6 +147,7 @@ public class AlbumRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Alb
         return SharedVariables.fullAlbumList.size();
     }
 
+    @NonNull
     public String getSectionName(int position) {
 
         Character c = SharedVariables.fullAlbumList.get(position).getTitle().charAt(0);

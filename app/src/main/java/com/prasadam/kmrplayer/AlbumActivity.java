@@ -14,7 +14,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -70,69 +69,6 @@ public class AlbumActivity extends Activity{
         ActivitySwitcher.ExpandedAlbumArtWithTranscition(AlbumActivity.this, actualAlbumArt, albumartPath);
     }
 
-    @OnClick (R.id.vertical_more_button)
-    public void moreOnClickButton(View view){
-        final PopupMenu popup = new PopupMenu(this, view);
-        popup.inflate(R.menu.album_item_menu);
-
-        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-
-                                             @Override
-                                             public boolean onMenuItemClick(MenuItem item) {
-                                                 try {
-                                                     int id = item.getItemId();
-                                                     switch (id) {
-
-                                                         case R.id.album_context_menu_share_album:
-                                                             AudioExtensionMethods.shareAlbum(AlbumActivity.this, songList, albumTitle);
-                                                             break;
-
-                                                         case R.id.album_context_menu_delete_album:
-                                                             new MaterialDialog.Builder(AlbumActivity.this)
-                                                                     .content("Delete this album \'" +  albumTitle + "\' ?")
-                                                                     .positiveText(R.string.delete_text)
-                                                                     .onPositive(new MaterialDialog.SingleButtonCallback() {
-                                                                         @Override
-                                                                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                                                             for (Song song : songList) {
-                                                                                 File file = new File(song.getData());
-                                                                                 if(file.delete())
-                                                                                     getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.MediaColumns._ID + "='" + song.getID() + "'", null);
-                                                                             }
-                                                                             AudioExtensionMethods.updateLists(AlbumActivity.this);
-                                                                             Toast.makeText(AlbumActivity.this, "Album Deleted : \'" + albumTitle + "\'", Toast.LENGTH_SHORT).show();
-                                                                             finish();
-                                                                         }
-                                                                     })
-                                                                     .negativeText(R.string.cancel_text)
-                                                                     .show();
-                                                             break;
-
-                                                         case R.id.album_context_menu_jump_to_artist:
-                                                             ActivitySwitcher.jumpToArtist(AlbumActivity.this, albumArtist);
-                                                             break;
-
-                                                         case R.id.action_equilzer:
-                                                             ActivitySwitcher.initEqualizer(AlbumActivity.this);
-                                                             break;
-
-                                                         case R.id.action_qucik_share:
-                                                             ActivitySwitcher.jumpToQuickShareActivity(AlbumActivity.this, recyclerViewAdapter.getSongsList());
-                                                             break;
-
-                                                         default:
-                                                             Toast.makeText(AlbumActivity.this, "pending", Toast.LENGTH_SHORT).show();
-                                                             break;
-                                                     }
-                                                 } catch (Exception ignored) {}
-
-                                                 return true;
-                                             }
-                                         });
-
-        popup.show();
-    }
-
     public void onCreate(Bundle b){
         super.onCreate(b);
         setContentView(R.layout.activity_album_layout);
@@ -151,6 +87,9 @@ public class AlbumActivity extends Activity{
         albumTitle = getIntent().getExtras().getString("albumTitle");
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.mipmap.ic_chevron_left_white_24dp);
+        toolbar.inflateMenu(R.menu.activity_album_menu);
+        toolbar.setOverflowIcon(getResources().getDrawable(R.mipmap.ic_more_vert_white_24dp));
+        setToolBarMenuListener(toolbar);
 
         if (Build.VERSION.SDK_INT >= 21)
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
@@ -167,6 +106,7 @@ public class AlbumActivity extends Activity{
             }
         });
     }
+
     private void setAlbumArt() {
         Cursor musicCursor = getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, null, MediaStore.Audio.AlbumColumns.ALBUM + "=\"" + albumTitle + "\"", null, null);
         if(musicCursor!=null && musicCursor.moveToFirst()){
@@ -248,6 +188,64 @@ public class AlbumActivity extends Activity{
             @Override
             public void onClick(View view) {
                 MusicPlayerExtensionMethods.shufflePlay(AlbumActivity.this, songsList);
+            }
+        });
+    }
+    private void setToolBarMenuListener(Toolbar toolbar) {
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                try {
+                    int id = item.getItemId();
+                    switch (id) {
+
+                        case R.id.album_context_menu_share_album:
+                            AudioExtensionMethods.shareAlbum(AlbumActivity.this, songList, albumTitle);
+                            break;
+
+                        case R.id.album_context_menu_delete_album:
+                            new MaterialDialog.Builder(AlbumActivity.this)
+                                    .content("Delete this album \'" +  albumTitle + "\' ?")
+                                    .positiveText(R.string.delete_text)
+                                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                        @Override
+                                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                            for (Song song : songList) {
+                                                File file = new File(song.getData());
+                                                if(file.delete())
+                                                    getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.MediaColumns._ID + "='" + song.getID() + "'", null);
+                                            }
+                                            AudioExtensionMethods.updateLists(AlbumActivity.this);
+                                            Toast.makeText(AlbumActivity.this, "Album Deleted : \'" + albumTitle + "\'", Toast.LENGTH_SHORT).show();
+                                            finish();
+                                        }
+                                    })
+                                    .negativeText(R.string.cancel_text)
+                                    .show();
+                            break;
+
+                        case R.id.action_devices_button:
+                            ActivitySwitcher.jumpToAvaiableDevies(AlbumActivity.this);
+                            break;
+
+                        case R.id.album_context_menu_jump_to_artist:
+                            ActivitySwitcher.jumpToArtist(AlbumActivity.this, albumArtist);
+                            break;
+
+                        case R.id.action_equilzer:
+                            ActivitySwitcher.initEqualizer(AlbumActivity.this);
+                            break;
+
+                        case R.id.action_quick_share:
+                            ActivitySwitcher.jumpToQuickShareActivity(AlbumActivity.this, recyclerViewAdapter.getSongsList());
+                            break;
+
+                        default:
+                            Toast.makeText(AlbumActivity.this, "pending", Toast.LENGTH_SHORT).show();
+                            break;
+                    }
+                } catch (Exception ignored) {}
+                return true;
             }
         });
     }

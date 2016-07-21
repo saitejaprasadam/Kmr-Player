@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.prasadam.kmrplayer.activityHelperClasses.ActivityHelper;
+import com.prasadam.kmrplayer.activityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.CustomPlaylistRecyclerViewAdapter;
 import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.fragments.NoItemsFragment;
@@ -51,8 +52,6 @@ public class CustomPlaylistActivity extends AppCompatActivity {
                     }
                 }).show();
     }
-    private CustomPlaylistRecyclerViewAdapter recyclerViewAdapter;
-    private ArrayList<String> playlistNames;
 
     public void onCreate(Bundle b) {
         super.onCreate(b);
@@ -62,7 +61,7 @@ public class CustomPlaylistActivity extends AppCompatActivity {
         setStatusBarTranslucent(CustomPlaylistActivity.this);
         ActivityHelper.setDisplayHome(this);
 
-        playlistNames = AudioExtensionMethods.getCustomPlaylistNames(this);
+        ArrayList<String> playlistNames = AudioExtensionMethods.getCustomPlaylistNames(this);
 
         if(playlistNames.size() == 0)
         {
@@ -73,7 +72,7 @@ public class CustomPlaylistActivity extends AppCompatActivity {
         }
 
         else{
-            recyclerViewAdapter = new CustomPlaylistRecyclerViewAdapter(this, playlistNames);
+            CustomPlaylistRecyclerViewAdapter recyclerViewAdapter = new CustomPlaylistRecyclerViewAdapter(this, playlistNames);
             recyclerView.setAdapter(recyclerViewAdapter);
 
             if (!ExtensionMethods.isTablet(this))
@@ -104,14 +103,19 @@ public class CustomPlaylistActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.activity_custom_playlist_menu, menu);
         return true;
     }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         final int id = item.getItemId();
-        if (id == android.R.id.home) {
-            finish();
+        switch (id){
+
+            case android.R.id.home:
+                finish();
+                break;
+
+            case R.id.action_devices_button:
+                ActivitySwitcher.jumpToAvaiableDevies(CustomPlaylistActivity.this);
+                break;
         }
-        return false;
+        return true;
     }
 }

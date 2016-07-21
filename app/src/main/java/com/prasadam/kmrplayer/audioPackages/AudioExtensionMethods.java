@@ -917,6 +917,8 @@ public class AudioExtensionMethods {
         for (Song song : SharedVariables.fullSongsList) {
             if(song.getTitle().toLowerCase().contains(songName.toLowerCase()))
                 result.add(song);
+            if(result.size() > 15)
+                return result;
         }
 
         return result;

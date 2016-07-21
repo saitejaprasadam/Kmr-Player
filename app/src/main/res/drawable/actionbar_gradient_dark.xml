@@ -4,7 +4,8 @@
     <gradient
         android:angle="90"
         android:useLevel="true"
-        android:endColor="#191919"
+        android:endColor="@android:color/transparent"
         android:startColor="@android:color/transparent" />
     <corners android:radius="0dp" />
 </shape>
+    <!-- #191919 -->

@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.AlbumRecyclerViewAdapter;
 import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
+import com.prasadam.kmrplayer.sharedClasses.KeyConstants;
 import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
 import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
@@ -38,8 +39,6 @@ public class AlbumsFragment extends Fragment {
         recyclerView = (FastScrollRecyclerView) rootView.findViewById(R.id.album_recylcer_view_layout);
         return rootView;
     }
-
-    @Override
     public void onResume(){
         super.onResume();
         new Thread() {
@@ -50,8 +49,6 @@ public class AlbumsFragment extends Fragment {
             }
         }.run();
     }
-
-    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
@@ -99,5 +96,13 @@ public class AlbumsFragment extends Fragment {
 
             }
         }.start();
+    }
+
+    public static void updateList(){
+        try{
+            if(recyclerViewAdapter != null && SharedVariables.globalActivityContext != null && SharedVariables.globalActivityContext.getClass().getSimpleName().equals(KeyConstants.ACTIVITY_MAIN))
+                recyclerViewAdapter.notifyDataSetChanged();
+        }
+        catch (Exception ignore){}
     }
 }

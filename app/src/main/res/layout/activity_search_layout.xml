@@ -46,7 +46,6 @@
                 android:background="@android:color/transparent"/>
 
         </RelativeLayout>
-            
 
     </android.support.v7.widget.Toolbar>
 
@@ -59,11 +58,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-            
+
             <LinearLayout android:id="@+id/songs_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="invisible">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -72,7 +72,8 @@
                     android:textSize="15sp"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
-                    android:background="@color/common_plus_signin_btn_text_dark_disabled"/>
+                    android:textColor="@color/white"
+                    android:background="@color/cardview_dark_background"/>
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/songs_recycler_view"
@@ -81,10 +82,12 @@
                     android:nestedScrollingEnabled="false"/>
 
             </LinearLayout>
+
             <LinearLayout android:id="@+id/artist_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="invisible">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -93,7 +96,8 @@
                     android:textSize="15sp"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
-                    android:background="@color/common_plus_signin_btn_text_dark_disabled"/>
+                    android:textColor="@color/white"
+                    android:background="@color/cardview_dark_background"/>
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/artist_recycler_view"
@@ -102,10 +106,12 @@
                     android:nestedScrollingEnabled="false"/>
 
             </LinearLayout>
+
             <LinearLayout android:id="@+id/albums_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="invisible">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -114,7 +120,8 @@
                     android:textSize="15sp"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
-                    android:background="@color/common_plus_signin_btn_text_dark_disabled"/>
+                    android:textColor="@color/white"
+                    android:background="@color/cardview_dark_background"/>
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/albums_recycler_view"
@@ -127,5 +134,11 @@
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_below="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </RelativeLayout>

@@ -2,8 +2,6 @@ package com.prasadam.kmrplayer.audioPackages.modelClasses;
 
 import android.content.Context;
 
-import com.prasadam.kmrplayer.fragments.SongsFragment;
-
 import static com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods.isSongFavorite;
 import static com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods.setSongFavorite;
 

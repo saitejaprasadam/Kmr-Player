@@ -43,6 +43,7 @@ public class MusicService extends Service implements
     public static final String NOTIFY_PAUSE = "com.prasadam.kmrplayer.pause";
     public static final String NOTIFY_PLAY = "com.prasadam.kmrplayer.play";
     public static final String NOTIFY_NEXT = "com.prasadam.kmrplayer.next";
+    public static boolean isFocusSnatched = false;
 
     Bitmap mDummyAlbumArt;
     private static boolean currentVersionSupportLockScreenControls = false;
@@ -329,10 +330,14 @@ public class MusicService extends Service implements
         switch (focusChange) {
 
             case AudioManager.AUDIOFOCUS_LOSS:
+                if(PlayerConstants.getIsPlayingState())
+                    isFocusSnatched = true;
                 Controls.pauseControl(getContext());
                 break;
 
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+                if(PlayerConstants.getIsPlayingState())
+                    isFocusSnatched = true;
                 Controls.pauseControl(getContext());
                 break;
 
@@ -340,9 +345,14 @@ public class MusicService extends Service implements
                 player.setVolume(0.5f, 0.5f);
                 break;
 
-            case AudioManager.AUDIOFOCUS_GAIN:
-                player.start();
+            case AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK:
                 player.setVolume(1.0f, 1.0f);
+                break;
+
+            case AudioManager.AUDIOFOCUS_REQUEST_GRANTED:
+                if(isFocusSnatched)
+                    Controls.playControl(getContext());
+                isFocusSnatched = false;
                 break;
         }
 

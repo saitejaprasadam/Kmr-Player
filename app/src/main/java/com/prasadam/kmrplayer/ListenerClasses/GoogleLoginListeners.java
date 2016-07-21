@@ -3,7 +3,6 @@ package com.prasadam.kmrplayer.ListenerClasses;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
@@ -22,14 +21,12 @@ public class GoogleLoginListeners {
 
     private static final int RC_SIGN_IN = 0;
     public static GoogleApiClient mGoogleApiClient;
-    private static GoogleSignInOptions gso;
     private Activity mActivity;
-    private static String TAG = "Google Login Listener";
 
     public GoogleLoginListeners(Activity mActivity) {
         this.mActivity = mActivity;
 
-        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
 
@@ -39,11 +36,6 @@ public class GoogleLoginListeners {
                 .build();
 
         mGoogleApiClient.connect();
-    }
-
-    public void TerminateConnection() {
-        if (mGoogleApiClient.isConnected())
-            mGoogleApiClient.disconnect();
     }
 
     public void signInMethod() {

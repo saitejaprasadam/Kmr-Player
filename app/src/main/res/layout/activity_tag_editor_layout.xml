@@ -51,6 +51,7 @@
                         android:layout_gravity="center"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.60"
+                        card_view:cardPreventCornerOverlap="false" card_view:cardUseCompatPadding="false"
                         card_view:cardBackgroundColor="@android:color/white">
 
                         <ImageView

@@ -26,7 +26,7 @@ public class FileReceiver extends AsyncTask<Void, Void, Void>{
 
     private static ServerSocketChannel serverSocketChannel;
     private SecureRandom random = new SecureRandom();
-    public int countToBeRecevied = 0;
+    public int countToBeRecevied;
     public boolean limitedCount = false;
 
     public FileReceiver(int countToBeRecevied){

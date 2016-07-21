@@ -7,6 +7,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Album;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Artist;
 import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicService;
 
 import java.util.ArrayList;
 
@@ -16,8 +17,7 @@ import java.util.ArrayList;
 
 public class SharedVariables {
 
-    public static void Initializers(Context context)
-    {
+    public static void Initializers(Context context) {
         Fresco.initialize(context);
     }
 
