@@ -19,18 +19,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.prasadam.kmrplayer.activityHelperClasses.ActivitySwitcher;
-import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.SmallAlbumRecyclerViewAdapter;
-import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.SongRecyclerViewAdapterForArtistActivity;
-import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
-import com.prasadam.kmrplayer.audioPackages.BlurBuilder;
-import com.prasadam.kmrplayer.audioPackages.modelClasses.Album;
-import com.prasadam.kmrplayer.audioPackages.modelClasses.Artist;
-import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
-import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicPlayerExtensionMethods;
-import com.prasadam.kmrplayer.adapterClasses.uiAdapters.DividerItemDecoration;
-import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
-import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
+import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
+import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.SmallAlbumRecyclerViewAdapter;
+import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.SongRecyclerViewAdapterForArtistActivity;
+import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
+import com.prasadam.kmrplayer.AudioPackages.BlurBuilder;
+import com.prasadam.kmrplayer.AudioPackages.modelClasses.Album;
+import com.prasadam.kmrplayer.AudioPackages.modelClasses.Artist;
+import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.MusicPlayerExtensionMethods;
+import com.prasadam.kmrplayer.AdapterClasses.UIAdapters.DividerItemDecoration;
+import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
+import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -74,6 +74,7 @@ public class ArtistActivity extends Activity {
         setContentView(R.layout.activity_artist_layout);
         ButterKnife.bind(this);
 
+        artistTitle.setSelected(true);
         colorPaletteView = (FrameLayout) findViewById(R.id.color_pallete_view);
 
         initalizer();

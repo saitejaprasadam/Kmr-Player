@@ -1,4 +1,4 @@
-package com.prasadam.kmrplayer.sharedClasses;
+package com.prasadam.kmrplayer.SharedClasses;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -10,7 +10,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
 
-import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 
 import java.io.File;
 import java.io.RandomAccessFile;

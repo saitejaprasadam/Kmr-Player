@@ -21,12 +21,14 @@
         <item name="android:windowActionBarOverlay">true</item>
         <item name="windowActionBarOverlay">true</item>
         <item name="android:popupMenuStyle">@style/PopupMenu</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 
     <style name="AppTheme.ActionBar.TransparentContextTranscition" parent="AppTheme">
         <item name="android:windowActivityTransitions">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 
     <style name="ContextTranscition" parent="AppTheme">
@@ -46,6 +48,8 @@
         <item name="android:titleTextColor">@color/white</item>
     </style>
 
-    <style name="ColoredStatusBar" parent="AppTheme"></style>
+    <style name="ColoredStatusBar" parent="AppTheme">
+
+    </style>
 
 </resources>

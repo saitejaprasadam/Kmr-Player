@@ -1,13 +1,12 @@
-package com.prasadam.kmrplayer.sharedClasses;
+package com.prasadam.kmrplayer.SharedClasses;
 
 import android.content.Context;
 import android.media.audiofx.Equalizer;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.prasadam.kmrplayer.audioPackages.modelClasses.Album;
-import com.prasadam.kmrplayer.audioPackages.modelClasses.Artist;
-import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
-import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicService;
+import com.prasadam.kmrplayer.AudioPackages.modelClasses.Album;
+import com.prasadam.kmrplayer.AudioPackages.modelClasses.Artist;
+import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 
 import java.util.ArrayList;
 
@@ -19,6 +18,7 @@ public class SharedVariables {
 
     public static void Initializers(Context context) {
         Fresco.initialize(context);
+        //LastFm.initializeLastFm();
     }
 
     public static Equalizer equalizer;

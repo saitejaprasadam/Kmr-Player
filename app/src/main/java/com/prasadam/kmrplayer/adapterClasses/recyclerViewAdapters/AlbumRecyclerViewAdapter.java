@@ -1,4 +1,4 @@
-package com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters;
+package com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters;
 
 import android.app.Activity;
 import android.content.Context;
@@ -17,13 +17,14 @@ import android.widget.TextView;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.activityHelperClasses.ActivitySwitcher;
-import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
-import com.prasadam.kmrplayer.audioPackages.modelClasses.Album;
-import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
+import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
+import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
+import com.prasadam.kmrplayer.AudioPackages.modelClasses.Album;
+import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -37,6 +38,7 @@ public class AlbumRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Alb
     private Context context;
     private LayoutInflater inflater;
     private Activity mActivity;
+    private ArrayList<Album> albumArrayList = null;
 
     public AlbumRecyclerViewAdapter(Activity mActivity, Context context){
 
@@ -44,15 +46,30 @@ public class AlbumRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Alb
         this.context = context;
         inflater = LayoutInflater.from(context);
     }
+    public AlbumRecyclerViewAdapter(Activity mActivity, Context context, ArrayList<Album> albumArrayList){
+
+        this.albumArrayList = albumArrayList;
+        this.mActivity = mActivity;
+        this.context = context;
+        inflater = LayoutInflater.from(context);
+    }
 
     @Override
     public AlbumRecyclerViewAdapter.AlbumViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.recycler_view_albums_layout, parent, false);
+        View view;
+        if(albumArrayList == null)
+            view = inflater.inflate(R.layout.recycler_view_albums_layout, parent, false);
+        else
+            view = inflater.inflate(R.layout.recycler_view_album_search_layout, parent, false);
         return new AlbumViewHolder(view);
     }
     public void onBindViewHolder(final AlbumRecyclerViewAdapter.AlbumViewHolder holder, int position) {
 
-        final Album currentAlbum = SharedVariables.fullAlbumList.get(position);
+        final Album currentAlbum;
+        if(albumArrayList == null)
+            currentAlbum = SharedVariables.fullAlbumList.get(position);
+        else
+            currentAlbum = albumArrayList.get(position);
         holder.albumNameTextView.setText(currentAlbum.getTitle());
         holder.artistNameTextView.setText(currentAlbum.getArtist());
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
@@ -144,13 +161,20 @@ public class AlbumRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Alb
 
     @Override
     public int getItemCount() {
-        return SharedVariables.fullAlbumList.size();
+        if(albumArrayList == null)
+            return SharedVariables.fullAlbumList.size();
+        return albumArrayList.size();
     }
 
     @NonNull
     public String getSectionName(int position) {
 
-        Character c = SharedVariables.fullAlbumList.get(position).getTitle().charAt(0);
+        Character c;
+        if(albumArrayList == null)
+            c = SharedVariables.fullAlbumList.get(position).getTitle().charAt(0);
+        else
+            c = albumArrayList.get(position).getTitle().charAt(0);
+
         if(Character.isDigit(c) || !Character.isLetter(c)){
             c = '#';
         }

@@ -1,4 +1,4 @@
-package com.prasadam.kmrplayer.adapterClasses.uiAdapters;
+package com.prasadam.kmrplayer.AdapterClasses.UIAdapters;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -7,8 +7,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 
-import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.NowPlayingPlaylistAdapter;
-import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.PlayerConstants;
+import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.NowPlayingPlaylistAdapter;
+import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.PlayerConstants;
 
 /*
  * Created by Prasadam Saiteja on 6/30/2016.

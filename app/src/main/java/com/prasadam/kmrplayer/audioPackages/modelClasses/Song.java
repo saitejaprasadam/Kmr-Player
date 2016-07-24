@@ -1,9 +1,9 @@
-package com.prasadam.kmrplayer.audioPackages.modelClasses;
+package com.prasadam.kmrplayer.AudioPackages.modelClasses;
 
 import android.content.Context;
 
-import static com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods.isSongFavorite;
-import static com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods.setSongFavorite;
+import static com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods.isSongFavorite;
+import static com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods.setSongFavorite;
 
 /*
  * Created by saiteja prasadam on 2/14/2016.

@@ -1,8 +1,8 @@
-package com.prasadam.kmrplayer.adapterClasses.uiAdapters;
+package com.prasadam.kmrplayer.AdapterClasses.UIAdapters;
 
 import android.support.v7.widget.RecyclerView;
 
-import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.NowPlayingPlaylistAdapter;
+import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.NowPlayingPlaylistAdapter;
 
 /*
  * Created by Prasadam Saiteja on 6/30/2016.

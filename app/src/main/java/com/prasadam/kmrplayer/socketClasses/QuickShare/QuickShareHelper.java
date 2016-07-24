@@ -1,4 +1,4 @@
-package com.prasadam.kmrplayer.socketClasses.QuickShare;
+package com.prasadam.kmrplayer.SocketClasses.QuickShare;
 
 import java.util.ArrayList;
 import java.util.HashMap;

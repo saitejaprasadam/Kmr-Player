@@ -1,9 +1,9 @@
-package com.prasadam.kmrplayer.socketClasses;
+package com.prasadam.kmrplayer.SocketClasses;
 
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.prasadam.kmrplayer.sharedClasses.KeyConstants;
+import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

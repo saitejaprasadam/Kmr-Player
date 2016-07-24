@@ -1,4 +1,4 @@
-package com.prasadam.kmrplayer.audioPackages.modelClasses;
+package com.prasadam.kmrplayer.AudioPackages.modelClasses;
 
 /*
  * Created by Prasadam Saiteja on 3/25/2016.

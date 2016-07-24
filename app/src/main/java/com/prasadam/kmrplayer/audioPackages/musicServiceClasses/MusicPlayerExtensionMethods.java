@@ -1,13 +1,11 @@
-package com.prasadam.kmrplayer.audioPackages.musicServiceClasses;
+package com.prasadam.kmrplayer.AudioPackages.musicServiceClasses;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.util.Log;
 
 import com.prasadam.kmrplayer.MainActivity;
-import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
-import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
-import com.prasadam.kmrplayer.socketClasses.GroupPlay.GroupPlayHelper;
+import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.SocketClasses.GroupPlay.GroupPlayHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;

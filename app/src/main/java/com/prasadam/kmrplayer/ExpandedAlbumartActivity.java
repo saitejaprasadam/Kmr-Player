@@ -1,7 +1,6 @@
 package com.prasadam.kmrplayer;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -16,9 +15,9 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.prasadam.kmrplayer.audioPackages.BlurBuilder;
-import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
-import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
+import com.prasadam.kmrplayer.AudioPackages.BlurBuilder;
+import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
+import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 
 import java.io.File;
 import java.io.FileOutputStream;

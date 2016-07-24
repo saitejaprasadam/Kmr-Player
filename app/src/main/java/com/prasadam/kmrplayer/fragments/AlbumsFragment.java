@@ -1,20 +1,23 @@
-package com.prasadam.kmrplayer.fragments;
+package com.prasadam.kmrplayer.Fragments;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.AlbumRecyclerViewAdapter;
-import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
-import com.prasadam.kmrplayer.sharedClasses.KeyConstants;
-import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
-import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
+import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.AlbumRecyclerViewAdapter;
+import com.prasadam.kmrplayer.AdapterClasses.UIAdapters.HidingScrollListener;
+import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
+import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
+import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
+import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 /*
@@ -32,11 +35,34 @@ public class AlbumsFragment extends Fragment {
         super.onAttach(activity);
         mActivity = activity;
     }
+    private void setScrollListener() {
+        recyclerView.setOnScrollListener(new HidingScrollListener() {
+            @Override
+            public void onHide() {
+                try{
+                    ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+                    actionBar.hide();
+                    actionBar.getCustomView().animate().translationY(actionBar.getHeight()).setDuration(500);
+                }
+                catch (NullPointerException ignored){}
 
+            }
+            @Override
+            public void onShow() {
+                try{
+                    ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+                    actionBar.show();
+                    actionBar.getCustomView().animate().translationY(0).setDuration(500);
+                }
+                catch (NullPointerException ignored){}
+            }
+        });
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_album_list, container, false);
         recyclerView = (FastScrollRecyclerView) rootView.findViewById(R.id.album_recylcer_view_layout);
+        setScrollListener();
         return rootView;
     }
     public void onResume(){

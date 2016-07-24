@@ -1,4 +1,4 @@
-package com.prasadam.kmrplayer.audioPackages;
+package com.prasadam.kmrplayer.AudioPackages;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -20,13 +20,15 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.PlayerConstants;
+import com.prasadam.kmrplayer.MainActivity;
 import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.audioPackages.modelClasses.Album;
-import com.prasadam.kmrplayer.audioPackages.modelClasses.Artist;
-import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
-import com.prasadam.kmrplayer.sharedClasses.DBHelper;
-import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
-import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
+import com.prasadam.kmrplayer.AudioPackages.modelClasses.Album;
+import com.prasadam.kmrplayer.AudioPackages.modelClasses.Artist;
+import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.SharedClasses.DBHelper;
+import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
+import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -924,4 +926,59 @@ public class AudioExtensionMethods {
         return result;
     }
 
+    public static ArrayList<Album> getAlbumListForSearch(String albumName){
+        ArrayList<Album> result = new ArrayList<>();
+
+        for (Album album : SharedVariables.fullAlbumList) {
+            if(album.getTitle().toLowerCase().contains(albumName.toLowerCase()))
+                result.add(album);
+            if(result.size() > 15)
+                return result;
+        }
+        return result;
+    }
+
+    public static ArrayList<Artist> getArtistListForSearch(String artistName){
+        ArrayList<Artist> result = new ArrayList<>();
+
+        for (Artist artitst : SharedVariables.fullArtistList) {
+            if(artitst.getArtistTitle().toLowerCase().contains(artistName.toLowerCase()))
+                result.add(artitst);
+            if(result.size() > 15)
+                return result;
+        }
+        return result;
+    }
+
+    public static void addToNowPlayingPlaylist(Context context, Song songToBeAdded) {
+        boolean found = false;
+        for (Song song : PlayerConstants.SONGS_LIST) {
+            if(song.getHashID().equals(songToBeAdded.getHashID())){
+                found = true;
+                break;
+            }
+        }
+        if(found)
+            Toast.makeText(context, "Song already present in now playing playlist", Toast.LENGTH_SHORT).show();
+        else{
+            PlayerConstants.SONGS_LIST.add(songToBeAdded);
+            Toast.makeText(context, "Song added to now playing playlist", Toast.LENGTH_SHORT).show();
+            MainActivity.recyclerViewAdapter.notifyDataSetChanged();
+        }
+    }
+
+    public static void playNext(Context context, Song songToBeAdded) {
+        int index = 0;
+        for (Song song : PlayerConstants.SONGS_LIST) {
+            if(song.getHashID().equals(songToBeAdded.getHashID())){
+                if(index < PlayerConstants.SONGS_LIST.size())
+                    PlayerConstants.SONGS_LIST.remove(index);
+                break;
+            }
+            index++;
+        }
+
+        PlayerConstants.SONGS_LIST.add(PlayerConstants.SONG_NUMBER + 1, songToBeAdded);
+        Toast.makeText(context, "Song will be played next", Toast.LENGTH_SHORT).show();
+    }
 }

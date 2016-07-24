@@ -18,9 +18,9 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.prasadam.kmrplayer.audioPackages.BlurBuilder;
-import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
-import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
+import com.prasadam.kmrplayer.AudioPackages.BlurBuilder;
+import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
+import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;

@@ -1,16 +1,10 @@
-package com.prasadam.kmrplayer.sharedClasses;
+package com.prasadam.kmrplayer.SharedClasses;
 
 /*
  * Created by Prasadam Saiteja on 7/5/2016.
  */
 
-import android.os.Environment;
-
-import com.prasadam.kmrplayer.R;
-
-import java.io.File;
-
-public class KeyConstants extends com.prasadam.kmrplayer.socketClasses.SocketsKeyConstants {
+public class KeyConstants extends com.prasadam.kmrplayer.SocketClasses.SocketsKeyConstants {
 
     public static final String INTENT_SONGS_PATH_LIST = "INTENT_SONGS_PATH_LIST";
     public static final String DIVIDER = " ";

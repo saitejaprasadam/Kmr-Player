@@ -44,8 +44,15 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
     <style name="ColoredStatusBar.NoActionBar" parent="AppTheme.NoActionBar">
         <item name="android:statusBarColor">@color/colorPrimaryDark</item>
-        <item name="android:textColor">@color/white</item>
         <item name="android:titleTextColor">@color/white</item>
     </style>
 
+    <style name="shadowTextView">
+        <item name="android:shadowColor">#000000</item>
+        <item name="android:shadowDx">1.5</item>
+        <item name="android:shadowDy">1.3</item>
+        <item name="android:shadowRadius">1.6</item>
+    </style>
+
+    <string name="add_to_now_playing_queue">Add to now playing queue</string>
 </resources>

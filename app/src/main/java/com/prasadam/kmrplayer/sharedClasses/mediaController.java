@@ -1,4 +1,4 @@
-package com.prasadam.kmrplayer.sharedClasses;
+package com.prasadam.kmrplayer.SharedClasses;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 
-import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicService;
+import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.MusicService;
 
 /*
  * Created by Prasadam Saiteja on 2/28/2016.

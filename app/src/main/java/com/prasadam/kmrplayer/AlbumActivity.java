@@ -25,16 +25,16 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.prasadam.kmrplayer.activityHelperClasses.ActivitySwitcher;
-import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.AlbumInnerLayoutSongRecyclerViewAdapter;
-import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
-import com.prasadam.kmrplayer.audioPackages.BlurBuilder;
-import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
-import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicPlayerExtensionMethods;
-import com.prasadam.kmrplayer.adapterClasses.uiAdapters.DividerItemDecoration;
-import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
-import com.prasadam.kmrplayer.sharedClasses.KeyConstants;
-import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
+import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
+import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.AlbumInnerLayoutSongRecyclerViewAdapter;
+import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
+import com.prasadam.kmrplayer.AudioPackages.BlurBuilder;
+import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.MusicPlayerExtensionMethods;
+import com.prasadam.kmrplayer.AdapterClasses.UIAdapters.DividerItemDecoration;
+import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
+import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
+import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 
 import java.io.File;
 import java.util.ArrayList;

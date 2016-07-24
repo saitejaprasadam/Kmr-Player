@@ -1,15 +1,17 @@
-package com.prasadam.kmrplayer.socketClasses;
+package com.prasadam.kmrplayer.SocketClasses;
 
 import android.content.Context;
 import android.net.nsd.NsdServiceInfo;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.StrictMode;
 
 import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
-import com.prasadam.kmrplayer.sharedClasses.KeyConstants;
-import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
-import com.prasadam.kmrplayer.socketClasses.NetworkServiceDiscovery.NSDClient;
-import com.prasadam.kmrplayer.socketClasses.NetworkServiceDiscovery.NSDServer;
+import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
+import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
+import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
+import com.prasadam.kmrplayer.SocketClasses.NetworkServiceDiscovery.NSDClient;
+import com.prasadam.kmrplayer.SocketClasses.NetworkServiceDiscovery.NSDServer;
 
 /*
  * Created by Prasadam Saiteja on 7/3/2016.
@@ -36,11 +38,11 @@ public class SocketExtensionMethods {
     }
 
     public static String GenerateSocketMessage(String command, String timeStamp, String result){
-        return ExtensionMethods.deviceName() + KeyConstants.DIVIDER + command + KeyConstants.DIVIDER + timeStamp + KeyConstants.DIVIDER + result;
+        return getMACAddress(SharedVariables.globalActivityContext) + KeyConstants.DIVIDER + ExtensionMethods.deviceName() + KeyConstants.DIVIDER + command + KeyConstants.DIVIDER + timeStamp + KeyConstants.DIVIDER + result;
     }
 
     public static String GenerateSocketMessage(String command, String timeStamp){
-        return ExtensionMethods.deviceName() + KeyConstants.DIVIDER + command + KeyConstants.DIVIDER + timeStamp;
+        return getMACAddress(SharedVariables.globalActivityContext) + KeyConstants.DIVIDER + ExtensionMethods.deviceName() + KeyConstants.DIVIDER + command + KeyConstants.DIVIDER + timeStamp;
     }
 
     public static void requestForDeviceType(NsdServiceInfo nsdClient) {
@@ -92,5 +94,11 @@ public class SocketExtensionMethods {
         String message = GenerateSocketMessage(KeyConstants.SOCKET_REQUEST_CURRENT_SONG_NAME, ExtensionMethods.getTimeStamp());
         Client client = new Client(nsdClient.getHost(), message);
         client.execute();
+    }
+
+    public static String getMACAddress(Context context){
+        WifiManager manager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        WifiInfo info = manager.getConnectionInfo();
+        return info.getMacAddress();
     }
 }

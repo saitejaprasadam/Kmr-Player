@@ -1,4 +1,4 @@
-package com.prasadam.kmrplayer.socketClasses.NetworkServiceDiscovery;
+package com.prasadam.kmrplayer.SocketClasses.NetworkServiceDiscovery;
 
 import android.content.Context;
 import android.net.nsd.NsdManager;
@@ -6,8 +6,8 @@ import android.net.nsd.NsdServiceInfo;
 import android.os.Build;
 import android.util.Log;
 
-import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
-import com.prasadam.kmrplayer.sharedClasses.KeyConstants;
+import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
+import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
 
 /*
  * Created by Prasadam Saiteja on 7/5/2016.

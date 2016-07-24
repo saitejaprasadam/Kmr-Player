@@ -112,4 +112,8 @@
     <string name="please_wait_text">please wait</string>
     <string name="updating_songs_list">Updating songs list</string>
     <string name="no_results_found_text">No results found</string>
+    <string name="add_to_dialog">Add to</string>
+    <string name="play_next">Play next</string>
+    <string name="loading_list_text">Loading list</string>
+    <string name="please_wait">please wait</string>
 </resources>

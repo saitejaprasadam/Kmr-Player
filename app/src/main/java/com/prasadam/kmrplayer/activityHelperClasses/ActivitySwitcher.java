@@ -1,4 +1,4 @@
-package com.prasadam.kmrplayer.activityHelperClasses;
+package com.prasadam.kmrplayer.ActivityHelperClasses;
 
 import android.app.Activity;
 import android.content.Context;
@@ -14,10 +14,9 @@ import com.prasadam.kmrplayer.ExpandedAlbumartActivity;
 import com.prasadam.kmrplayer.QuickShareActivity;
 import com.prasadam.kmrplayer.SearchActivity;
 import com.prasadam.kmrplayer.TagEditorActivity;
-import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
-import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicService;
-import com.prasadam.kmrplayer.sharedClasses.KeyConstants;
-import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
+import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.MusicService;
+import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
 
 import java.util.ArrayList;
 
@@ -82,6 +81,14 @@ public class ActivitySwitcher {
         for (Song song : songsList){
             songsPath.add(song.getData());
         }
+        quickShareIntent.putStringArrayListExtra(KeyConstants.INTENT_SONGS_PATH_LIST, songsPath);
+        context.startActivity(quickShareIntent);
+    }
+
+    public static void jumpToQuickShareActivity(final Context context, final Song song){
+        Intent quickShareIntent = new Intent(context, QuickShareActivity.class);
+        ArrayList<String> songsPath = new ArrayList<>();
+        songsPath.add(song.getData());
         quickShareIntent.putStringArrayListExtra(KeyConstants.INTENT_SONGS_PATH_LIST, songsPath);
         context.startActivity(quickShareIntent);
     }

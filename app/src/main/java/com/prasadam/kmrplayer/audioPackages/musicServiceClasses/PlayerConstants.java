@@ -1,9 +1,9 @@
-package com.prasadam.kmrplayer.audioPackages.musicServiceClasses;
+package com.prasadam.kmrplayer.AudioPackages.musicServiceClasses;
 
 import java.util.ArrayList;
 import android.os.Handler;
 
-import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 
 /*
  * Created by Prasadam Saiteja on 5/31/2016.
@@ -23,12 +23,8 @@ public class PlayerConstants {
     public static Handler PROGRESSBAR_HANDLER;
     public static PLAYBACK_STATE_ENUM PLAY_BACK_STATE = PLAYBACK_STATE_ENUM.OFF;
 
-    public static boolean getIsPlayingState(){
-
-        if(MusicService.player == null)
-            return false;
-
-        return MusicService.player.isPlaying();
+    public static boolean getIsPlayingState() {
+        return MusicService.player != null && MusicService.player.isPlaying();
     }
 
     public enum PLAYBACK_STATE_ENUM{

@@ -1,8 +1,8 @@
-package com.prasadam.kmrplayer.socketClasses.NetworkServiceDiscovery;
+package com.prasadam.kmrplayer.SocketClasses.NetworkServiceDiscovery;
 
 import android.net.nsd.NsdServiceInfo;
 
-import com.prasadam.kmrplayer.socketClasses.SocketExtensionMethods;
+import com.prasadam.kmrplayer.SocketClasses.SocketExtensionMethods;
 
 /*
  * Created by Prasadam Saiteja on 7/19/2016.

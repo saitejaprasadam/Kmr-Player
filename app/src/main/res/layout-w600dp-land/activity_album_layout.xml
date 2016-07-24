@@ -32,7 +32,7 @@
                 <include
                     layout="@layout/include_action_bar_gradient"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="120dp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -55,7 +55,7 @@
                         card_view:cardUseCompatPadding="false"
                         card_view:cardBackgroundColor="@android:color/white">
 
-                        <com.prasadam.kmrplayer.subClasses.SquareImageview
+                        <com.prasadam.kmrplayer.SubClasses.SquareImageview
                             android:transitionName="AlbumArtImageTranscition"
                             android:id="@+id/actual_album_art"
                             android:layout_width="fill_parent"

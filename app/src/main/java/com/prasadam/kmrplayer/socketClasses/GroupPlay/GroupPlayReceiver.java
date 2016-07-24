@@ -1,17 +1,11 @@
-package com.prasadam.kmrplayer.socketClasses.GroupPlay;
+package com.prasadam.kmrplayer.SocketClasses.GroupPlay;
 
 import android.os.AsyncTask;
-import com.prasadam.kmrplayer.sharedClasses.KeyConstants;
-import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
+import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.nio.channels.ServerSocketChannel;
-import java.nio.channels.SocketChannel;
 
 /*
  * Created by Prasadam Saiteja on 7/16/2016.

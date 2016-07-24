@@ -90,6 +90,8 @@
             <ImageView
                 android:id="@+id/context_menu"
                 android:clickable="true"
+                android:padding="10dp"
+                android:paddingRight="0dp"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
                 android:layout_width="wrap_content"

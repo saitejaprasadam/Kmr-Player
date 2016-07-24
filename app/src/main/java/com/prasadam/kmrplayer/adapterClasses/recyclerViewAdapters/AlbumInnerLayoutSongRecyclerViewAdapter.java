@@ -1,4 +1,4 @@
-package com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters;
+package com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters;
 
 import android.app.Activity;
 import android.content.Context;
@@ -21,11 +21,12 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
+import com.prasadam.kmrplayer.ActivityHelperClasses.ActivityHelper;
 import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.activityHelperClasses.ActivitySwitcher;
-import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
-import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
-import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicPlayerExtensionMethods;
+import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
+import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
+import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.MusicPlayerExtensionMethods;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -100,7 +101,7 @@ public class AlbumInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapte
             @Override
             public void onClick(View v) {
                 final PopupMenu popup = new PopupMenu(v.getContext(), v);
-                popup.inflate(R.menu.album_inner_layout_song_item_menu);
+                popup.inflate(R.menu.song_item_menu_album_inner_layout);
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 
                     @Override
@@ -133,8 +134,16 @@ public class AlbumInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapte
                                             .show();
                                     break;
 
+                                case R.id.song_context_menu_quick_share:
+                                    ActivitySwitcher.jumpToQuickShareActivity(context, currentSongDetails);
+                                    break;
+
                                 case R.id.song_context_menu_share:
                                     AudioExtensionMethods.sendSong(context, currentSongDetails.getTitle(), Uri.parse(currentSongDetails.getData()));
+                                    break;
+
+                                case R.id.song_context_menu_add_to_dialog:
+                                    ActivityHelper.AddToDialog(context, currentSongDetails);
                                     break;
 
                                 case R.id.song_context_menu_details:

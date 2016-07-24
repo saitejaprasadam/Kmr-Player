@@ -1,10 +1,12 @@
-package com.prasadam.kmrplayer.fragments;
+package com.prasadam.kmrplayer.Fragments;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
@@ -13,13 +15,14 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.SongRecyclerViewAdapter;
-import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
-import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicPlayerExtensionMethods;
-import com.prasadam.kmrplayer.sharedClasses.KeyConstants;
-import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
-import com.prasadam.kmrplayer.adapterClasses.uiAdapters.DividerItemDecoration;
-import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
+import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.SongRecyclerViewAdapter;
+import com.prasadam.kmrplayer.AdapterClasses.UIAdapters.HidingScrollListener;
+import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
+import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.MusicPlayerExtensionMethods;
+import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
+import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
+import com.prasadam.kmrplayer.AdapterClasses.UIAdapters.DividerItemDecoration;
+import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 /*
@@ -37,14 +40,36 @@ public class SongsFragment extends Fragment {
         super.onAttach(activity);
         mActivity = activity;
     }
-
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_song_list, container, false);
         recyclerView = (FastScrollRecyclerView) rootView.findViewById(R.id.songs_recylcer_view_layout);
+        setScrollListener();
         shuffleButton = (FloatingActionButton) rootView.findViewById(R.id.shuffle_fab_button);
         return rootView;
     }
+    private void setScrollListener() {
+        recyclerView.setOnScrollListener(new HidingScrollListener() {
+            @Override
+            public void onHide() {
+                try{
+                    ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+                    actionBar.hide();
+                    actionBar.getCustomView().animate().translationY(actionBar.getHeight()).setDuration(500);
+                }
+                catch (NullPointerException ignored){}
 
+            }
+            @Override
+            public void onShow() {
+                try{
+                    ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+                    actionBar.show();
+                    actionBar.getCustomView().animate().translationY(0).setDuration(500);
+                }
+                catch (NullPointerException ignored){}
+            }
+        });
+    }
     public void onResume(){
         super.onResume();
         new Thread() {
@@ -55,7 +80,6 @@ public class SongsFragment extends Fragment {
             }
         }.run();
     }
-
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 

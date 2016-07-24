@@ -1,4 +1,4 @@
-package com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters;
+package com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters;
 
 import android.app.Activity;
 import android.content.Context;
@@ -20,12 +20,13 @@ import android.widget.TextView;
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.prasadam.kmrplayer.ArtistActivity;
 import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
-import com.prasadam.kmrplayer.audioPackages.modelClasses.Artist;
-import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
+import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
+import com.prasadam.kmrplayer.AudioPackages.modelClasses.Artist;
+import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -39,20 +40,36 @@ public class ArtistRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Ar
     private Activity mActivity;
     private Context context;
     private LayoutInflater inflater;
+    private ArrayList<Artist> artistArrayList = null;
 
     public ArtistRecyclerViewAdapter(Activity mActivity, Context baseContext) {
         this.mActivity = mActivity;
         this.context = baseContext;
         inflater = LayoutInflater.from(context);
     }
+    public ArtistRecyclerViewAdapter(Activity mActivity, Context baseContext, ArrayList<Artist> artistArrayList) {
+
+        this.artistArrayList = artistArrayList;
+        this.mActivity = mActivity;
+        this.context = baseContext;
+        inflater = LayoutInflater.from(context);
+    }
 
     public ArtistViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.recycler_view_artist_layout, parent, false);
+        View view;
+        if(artistArrayList == null)
+            view = inflater.inflate(R.layout.recycler_view_artist_layout, parent, false);
+        else
+            view = inflater.inflate(R.layout.recylcer_view_artist_search_layout, parent, false);
         return new ArtistViewHolder(view);
     }
     public void onBindViewHolder(final ArtistViewHolder holder, int position) {
 
-        final Artist artist = SharedVariables.fullArtistList.get(position);
+        final Artist artist;
+        if(artistArrayList == null)
+            artist = SharedVariables.fullArtistList.get(position);
+        else
+            artist = artistArrayList.get(position);
         holder.artistNameTextView.setText(artist.getArtistTitle());
         setAlbumArt(holder, artist);
         setColor(holder, artist);
@@ -138,12 +155,19 @@ public class ArtistRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Ar
         }
     }
     public int getItemCount() {
-        return SharedVariables.fullArtistList.size();
+        if(artistArrayList == null)
+            return SharedVariables.fullArtistList.size();
+        else
+            return artistArrayList.size();
     }
 
     @NonNull
     public String getSectionName(int position) {
-        Character c = SharedVariables.fullArtistList.get(position).getArtistTitle().charAt(0);
+        Character c;
+        if(artistArrayList == null)
+            c = SharedVariables.fullArtistList.get(position).getArtistTitle().charAt(0);
+        else
+            c = artistArrayList.get(position).getArtistTitle().charAt(0);
         if(Character.isDigit(c) || !Character.isLetter(c)){
             c = '#';
         }

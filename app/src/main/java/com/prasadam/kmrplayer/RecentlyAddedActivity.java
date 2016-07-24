@@ -1,6 +1,5 @@
 package com.prasadam.kmrplayer;
 
-import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -11,23 +10,23 @@ import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.prasadam.kmrplayer.ListenerClasses.SongsSearchListener;
-import com.prasadam.kmrplayer.activityHelperClasses.ActivityHelper;
-import com.prasadam.kmrplayer.activityHelperClasses.ActivitySwitcher;
-import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.RecentlyAddedRecyclerViewAdapter;
-import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
-import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
-import com.prasadam.kmrplayer.fragments.NoItemsFragment;
-import com.prasadam.kmrplayer.adapterClasses.uiAdapters.DividerItemDecoration;
-import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
-import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
+import com.prasadam.kmrplayer.ActivityHelperClasses.ActivityHelper;
+import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
+import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.RecentlyAddedRecyclerViewAdapter;
+import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
+import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.AdapterClasses.UIAdapters.DividerItemDecoration;
+import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
+import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 
 import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-import static com.prasadam.kmrplayer.sharedClasses.ExtensionMethods.setStatusBarTranslucent;
+import static com.prasadam.kmrplayer.SharedClasses.ExtensionMethods.setStatusBarTranslucent;
 
 /*
  * Created by Prasadam Saiteja on 5/27/2016.

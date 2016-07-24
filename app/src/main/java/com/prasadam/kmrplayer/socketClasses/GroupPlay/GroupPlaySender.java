@@ -1,8 +1,8 @@
-package com.prasadam.kmrplayer.socketClasses.GroupPlay;
+package com.prasadam.kmrplayer.SocketClasses.GroupPlay;
 
 import android.util.Log;
 
-import com.prasadam.kmrplayer.sharedClasses.KeyConstants;
+import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
 
 import java.io.File;
 import java.io.IOException;

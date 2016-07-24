@@ -1,10 +1,10 @@
-package com.prasadam.kmrplayer.audioPackages.musicServiceClasses;
+package com.prasadam.kmrplayer.AudioPackages.musicServiceClasses;
 
 import android.content.Context;
 
 import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
-import com.prasadam.kmrplayer.socketClasses.GroupPlay.GroupPlayHelper;
+import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.SocketClasses.GroupPlay.GroupPlayHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,15 +16,13 @@ import java.util.Random;
 
 public class Controls {
 
-    static String LOG_CLASS = "Controls";
-
     public static void playControl(Context context) {
         GroupPlayHelper.notifyGroupPlayClientsIfExists();
         sendMessage(context.getResources().getString(R.string.play));
         PlayerConstants.SONG_PAUSED = false;
     }
 
-    public static void pauseControl(Context context) {
+    public static void pauseControl(Context context){
         sendMessage(context.getResources().getString(R.string.pause));
         PlayerConstants.SONG_PAUSED = true;
     }
@@ -34,7 +32,7 @@ public class Controls {
         if (!isServiceRunning)
             return;
         if(PlayerConstants.SONGS_LIST.size() > 0 ){
-            if(PlayerConstants.SONG_NUMBER < (PlayerConstants.SONGS_LIST.size()-1)){
+            if(PlayerConstants.SONG_NUMBER < (PlayerConstants.SONGS_LIST.size() - 1)){
                 PlayerConstants.SONG_NUMBER++;
                 PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
                 PlayerConstants.SONG_PAUSED = false;
@@ -44,6 +42,11 @@ public class Controls {
                     PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
                     PlayerConstants.SONG_PAUSED = false;
                 }
+                else{
+                    sendMessage(context.getResources().getString(R.string.pause));
+                    PlayerConstants.SONG_PAUSED = true;
+                }
+
             }
         }
     }
@@ -67,7 +70,7 @@ public class Controls {
     private static void sendMessage(String message) {
         try{
             PlayerConstants.PLAY_PAUSE_HANDLER.sendMessage(PlayerConstants.PLAY_PAUSE_HANDLER.obtainMessage(0, message));
-        }catch(Exception e){}
+        }catch(Exception ignored){}
     }
 
     public static void setLoop(boolean loop){

@@ -7,10 +7,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 
-import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.NowPlayingPlaylistAdapter;
-import com.prasadam.kmrplayer.adapterClasses.uiAdapters.NowPlayingPlaylistInterfaces;
-import com.prasadam.kmrplayer.adapterClasses.uiAdapters.SimpleItemTouchHelperCallback;
-import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
+import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.NowPlayingPlaylistAdapter;
+import com.prasadam.kmrplayer.AdapterClasses.UIAdapters.NowPlayingPlaylistInterfaces;
+import com.prasadam.kmrplayer.AdapterClasses.UIAdapters.SimpleItemTouchHelperCallback;
+import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 
 /*
  * Created by Prasadam Saiteja on 6/30/2016.

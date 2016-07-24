@@ -1,9 +1,8 @@
-package com.prasadam.kmrplayer.socketClasses.QuickShare;
+package com.prasadam.kmrplayer.SocketClasses.QuickShare;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
-import com.prasadam.kmrplayer.socketClasses.FileTransfer.FileSender;
+import com.prasadam.kmrplayer.SocketClasses.FileTransfer.FileSender;
 
 import java.util.ArrayList;
 

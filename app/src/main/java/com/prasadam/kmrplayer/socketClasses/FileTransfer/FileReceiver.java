@@ -1,11 +1,11 @@
-package com.prasadam.kmrplayer.socketClasses.FileTransfer;
+package com.prasadam.kmrplayer.SocketClasses.FileTransfer;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 
-import com.prasadam.kmrplayer.sharedClasses.KeyConstants;
-import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
+import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
+import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 
 import java.io.File;
 import java.io.IOException;

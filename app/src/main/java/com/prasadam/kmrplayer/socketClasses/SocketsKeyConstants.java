@@ -1,11 +1,11 @@
-package com.prasadam.kmrplayer.socketClasses;/*
+package com.prasadam.kmrplayer.SocketClasses;/*
  * Created by Prasadam Saiteja on 7/19/2016.
  */
 
 import android.os.Environment;
 
 import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
+import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 
 import java.io.File;
 

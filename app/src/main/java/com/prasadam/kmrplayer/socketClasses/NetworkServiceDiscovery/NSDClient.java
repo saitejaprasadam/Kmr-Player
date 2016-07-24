@@ -1,4 +1,4 @@
-package com.prasadam.kmrplayer.socketClasses.NetworkServiceDiscovery;
+package com.prasadam.kmrplayer.SocketClasses.NetworkServiceDiscovery;
 
 import android.content.Context;
 import android.net.nsd.NsdManager;
@@ -7,7 +7,7 @@ import android.util.Log;
 
 import com.prasadam.kmrplayer.NearbyDevicesActivity;
 import com.prasadam.kmrplayer.QuickShareActivity;
-import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
+import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 
 import java.util.ArrayList;
 

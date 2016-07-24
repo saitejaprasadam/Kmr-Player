@@ -1,4 +1,4 @@
-package com.prasadam.kmrplayer.fragments;
+package com.prasadam.kmrplayer.Fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,6 +7,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +33,27 @@ public class TabFragment extends Fragment{
         viewPager = (ViewPager) x.findViewById(R.id.viewpager);
         viewPager.setAdapter(new MyAdapter(getChildFragmentManager()));
         viewPager.setOffscreenPageLimit(3);
+        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if(position == 3){
+                    ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+                    if(actionBar != null){
+                        actionBar.show();
+                    }
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         tabLayout.post(new Runnable() {
             @Override
             public void run() {
@@ -56,8 +79,7 @@ public class TabFragment extends Fragment{
         }
 
         @Override
-        public Fragment getItem(int position)
-        {
+        public Fragment getItem(int position) {
             switch (position){
                 case 0 : return songsFragment;
                 case 1 : return albumsFragment;

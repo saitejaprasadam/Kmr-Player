@@ -1,8 +1,8 @@
-package com.prasadam.kmrplayer.socketClasses;
+package com.prasadam.kmrplayer.SocketClasses;
 
-import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
-import com.prasadam.kmrplayer.sharedClasses.KeyConstants;
-import com.prasadam.kmrplayer.socketClasses.NetworkServiceDiscovery.NSD;
+import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
+import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
+import com.prasadam.kmrplayer.SocketClasses.NetworkServiceDiscovery.NSD;
 
 import java.util.ArrayList;
 

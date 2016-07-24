@@ -1,9 +1,8 @@
-package com.prasadam.kmrplayer.socketClasses;
+package com.prasadam.kmrplayer.SocketClasses;
 
 import android.util.Log;
 
-import com.prasadam.kmrplayer.sharedClasses.KeyConstants;
-import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
+import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
 
 import java.net.ServerSocket;
 import java.net.Socket;

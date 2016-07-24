@@ -1,4 +1,4 @@
-package com.prasadam.kmrplayer.subClasses;
+package com.prasadam.kmrplayer.SubClasses;
 
 import android.content.Context;
 import android.util.AttributeSet;

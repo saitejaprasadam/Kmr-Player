@@ -13,13 +13,13 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.prasadam.kmrplayer.activityHelperClasses.ActivityHelper;
-import com.prasadam.kmrplayer.activityHelperClasses.ActivitySwitcher;
-import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.CustomPlaylistRecyclerViewAdapter;
-import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
-import com.prasadam.kmrplayer.fragments.NoItemsFragment;
-import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
-import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
+import com.prasadam.kmrplayer.ActivityHelperClasses.ActivityHelper;
+import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
+import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.CustomPlaylistRecyclerViewAdapter;
+import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
+import com.prasadam.kmrplayer.Fragments.NoItemsFragment;
+import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
+import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 
 import java.util.ArrayList;
 
@@ -27,8 +27,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods.createNewCustomPlaylist;
-import static com.prasadam.kmrplayer.sharedClasses.ExtensionMethods.setStatusBarTranslucent;
+import static com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods.createNewCustomPlaylist;
+import static com.prasadam.kmrplayer.SharedClasses.ExtensionMethods.setStatusBarTranslucent;
 
 /*
  * Created by Prasadam Saiteja on 5/29/2016.

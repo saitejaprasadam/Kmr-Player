@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -16,12 +17,14 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:id="@+id/search_icon"
+                android:id="@+id/back_button"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_centerVertical="true"
-                android:padding="10dp"
-                android:src="@mipmap/ic_search_white_24dp"/>
+                android:paddingEnd="10dp"
+                android:clickable="true"
+                android:background="?attr/selectableItemBackground"
+                android:src="@mipmap/ic_chevron_left_white_24dp"/>
 
             <ImageView
                 android:id="@+id/voice_button"
@@ -38,10 +41,12 @@
                 android:id="@+id/search_textbox"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_toEndOf="@+id/search_icon"
+                android:layout_toEndOf="@+id/back_button"
                 android:layout_toStartOf="@+id/voice_button"
                 android:textColorHint="@color/common_plus_signin_btn_text_dark_disabled"
                 android:textColor="@color/white"
+                android:singleLine="true"
+                android:imeOptions="actionDone"
                 android:hint="@string/search_for_songs_albums_artist_text"
                 android:background="@android:color/transparent"/>
 
@@ -59,7 +64,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <LinearLayout android:id="@+id/songs_layout"
+            <LinearLayout android:id="@+id/albums_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -68,7 +73,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
-                    android:text="@string/songs_text"
+                    android:text="@string/albums_text"
                     android:textSize="15sp"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
@@ -76,7 +81,7 @@
                     android:background="@color/cardview_dark_background"/>
 
                 <android.support.v7.widget.RecyclerView
-                    android:id="@+id/songs_recycler_view"
+                    android:id="@+id/albums_recycler_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:nestedScrollingEnabled="false"/>
@@ -107,7 +112,7 @@
 
             </LinearLayout>
 
-            <LinearLayout android:id="@+id/albums_layout"
+            <LinearLayout android:id="@+id/songs_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -116,7 +121,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
-                    android:text="@string/albums_text"
+                    android:text="@string/songs_text"
                     android:textSize="15sp"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
@@ -124,7 +129,7 @@
                     android:background="@color/cardview_dark_background"/>
 
                 <android.support.v7.widget.RecyclerView
-                    android:id="@+id/albums_recycler_view"
+                    android:id="@+id/songs_recycler_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:nestedScrollingEnabled="false"/>

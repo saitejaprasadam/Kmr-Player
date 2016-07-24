@@ -42,33 +42,35 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
 import com.prasadam.kmrplayer.ListenerClasses.GoogleLoginListeners;
-import com.prasadam.kmrplayer.activityHelperClasses.ActivitySwitcher;
-import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.NowPlayingPlaylistAdapter;
-import com.prasadam.kmrplayer.adapterClasses.uiAdapters.NowPlayingPlaylistInterfaces;
-import com.prasadam.kmrplayer.adapterClasses.uiAdapters.SimpleItemTouchHelperCallback;
-import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
-import com.prasadam.kmrplayer.audioPackages.BlurBuilder;
-import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
-import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.Controls;
-import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicPlayerExtensionMethods;
-import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicService;
-import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.PlayerConstants;
-import com.prasadam.kmrplayer.fragments.AlbumsFragment;
-import com.prasadam.kmrplayer.fragments.SongsFragment;
-import com.prasadam.kmrplayer.fragments.TabFragment;
-import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
-import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
-import com.prasadam.kmrplayer.socketClasses.SocketExtensionMethods;
+import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
+import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.NowPlayingPlaylistAdapter;
+import com.prasadam.kmrplayer.AdapterClasses.UIAdapters.NowPlayingPlaylistInterfaces;
+import com.prasadam.kmrplayer.AdapterClasses.UIAdapters.SimpleItemTouchHelperCallback;
+import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
+import com.prasadam.kmrplayer.AudioPackages.BlurBuilder;
+import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.Controls;
+import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.MusicPlayerExtensionMethods;
+import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.MusicService;
+import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.PlayerConstants;
+import com.prasadam.kmrplayer.Fragments.AlbumsFragment;
+import com.prasadam.kmrplayer.Fragments.ArtistFragment;
+import com.prasadam.kmrplayer.Fragments.SongsFragment;
+import com.prasadam.kmrplayer.Fragments.TabFragment;
+import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
+import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
+import com.prasadam.kmrplayer.SocketClasses.SocketExtensionMethods;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.File;
 import java.util.Calendar;
 
-import static com.prasadam.kmrplayer.sharedClasses.ExtensionMethods.setStatusBarTranslucent;
+import static com.prasadam.kmrplayer.SharedClasses.ExtensionMethods.setStatusBarTranslucent;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener , NowPlayingPlaylistInterfaces.OnStartDragListener{
 
     private static GoogleLoginListeners googleLoginListeners;
+    public static Toolbar toolbar;
     private static ImageView nowPlayingMinimalAlbumArt, nowPlayingActualAlbumArt, nowPlayingBlurredAlbumArt;
     private static RelativeLayout nowPlayingColorPallatteView;
     private static ImageView nowPlayingNextButton, nowPlayingPreviousButton, nowPlayingPlayButton, nowPlayingSongContextMenu;
@@ -144,6 +146,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 ActivitySwitcher.jumpToAvaiableDevies(MainActivity.this);
                 break;
 
+            //case R.id.action_settings:
+                //LastFm.getLastFmImages("akon");
+                //break;
+
             default:
                 Toast.makeText(MainActivity.this, "Pending", Toast.LENGTH_SHORT).show();
         }
@@ -199,6 +205,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         nowPlayingToolbar.inflateMenu(R.menu.fragment_now_playing_menu);
         nowPlayingToolbar.setOverflowIcon(getResources().getDrawable(R.mipmap.ic_more_vert_white_24dp));
         setNowPlayingToolBarMenuListener(nowPlayingToolbar);
+        nowPlayingToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mainLayoutRootLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+            }
+        });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             nowPlayingToolbar.setPadding(0, ExtensionMethods.getStatusBarHeight(this), 0, 0);
@@ -369,7 +381,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                             .show();
                                     break;
 
-                                case R.id.song_context_menu_add_to_playlist:
+                                case R.id.song_context_menu_add_to_dialog:
                                     AudioExtensionMethods.addToPlaylist(MainActivity.this, MusicService.currentSong.getHashID());
                                     break;
 
@@ -416,9 +428,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
     private void setNavigationDrawer() {
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setOverflowIcon(getResources().getDrawable(R.mipmap.ic_more_vert_white_24dp));
         setSupportActionBar(toolbar);
+        if(getSupportActionBar() != null)
+            getSupportActionBar().setShowHideAnimationEnabled(true);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -459,6 +473,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 AudioExtensionMethods.updateLists(MainActivity.this);
                 SongsFragment.updateList();
                 AlbumsFragment.updateList();
+                ArtistFragment.updateList();
                 if(prevCount < SharedVariables.fullSongsList.size())
                     Toast.makeText(MainActivity.this, "Songs lists updated, " + String.valueOf(SharedVariables.fullSongsList.size() - prevCount) + " songs added", Toast.LENGTH_SHORT).show();
                 else
@@ -594,10 +609,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
     private static void playPausePressed(Context context) {
-        if (PlayerConstants.SONG_PAUSED)
-            Controls.playControl(context);
-        else
-            Controls.pauseControl(context);
+        try{
+            if (PlayerConstants.SONG_PAUSED)
+                Controls.playControl(context);
+            else
+                Controls.pauseControl(context);
+        }
+
+        catch (Exception e){ Log.d("Exception", e.toString());}
     }
     public static void changeButton(){
         if(PlayerConstants.SONG_PAUSED){
@@ -610,7 +629,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             nowPlayingPlayButton.setImageResource(R.mipmap.ic_pause_black_36dp);
         }
 
-        Log.d("Shuffle", String.valueOf(PlayerConstants.SHUFFLE));
         if(PlayerConstants.SHUFFLE)
             nowPlayingShuffleButton.setAlpha(1f);
         else

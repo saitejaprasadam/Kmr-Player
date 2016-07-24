@@ -1,4 +1,4 @@
-package com.prasadam.kmrplayer.activityHelperClasses;
+package com.prasadam.kmrplayer.ActivityHelperClasses;
 
 import android.content.Context;
 

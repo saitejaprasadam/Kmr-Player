@@ -1,4 +1,4 @@
-package com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters;
+package com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters;
 
 import android.app.Activity;
 import android.content.Context;
@@ -17,14 +17,14 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.prasadam.kmrplayer.NearbyDevicesActivity;
 import com.prasadam.kmrplayer.QuickShareActivity;
 import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
-import com.prasadam.kmrplayer.sharedClasses.KeyConstants;
-import com.prasadam.kmrplayer.socketClasses.ClientHelper;
-import com.prasadam.kmrplayer.socketClasses.GroupPlay.GroupPlayHelper;
-import com.prasadam.kmrplayer.socketClasses.NetworkServiceDiscovery.NSD;
-import com.prasadam.kmrplayer.socketClasses.NetworkServiceDiscovery.NSDClient;
-import com.prasadam.kmrplayer.socketClasses.QuickShare.QuickShareHelper;
-import com.prasadam.kmrplayer.socketClasses.SocketExtensionMethods;
+import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
+import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
+import com.prasadam.kmrplayer.SocketClasses.ClientHelper;
+import com.prasadam.kmrplayer.SocketClasses.GroupPlay.GroupPlayHelper;
+import com.prasadam.kmrplayer.SocketClasses.NetworkServiceDiscovery.NSD;
+import com.prasadam.kmrplayer.SocketClasses.NetworkServiceDiscovery.NSDClient;
+import com.prasadam.kmrplayer.SocketClasses.QuickShare.QuickShareHelper;
+import com.prasadam.kmrplayer.SocketClasses.SocketExtensionMethods;
 
 import java.util.ArrayList;
 

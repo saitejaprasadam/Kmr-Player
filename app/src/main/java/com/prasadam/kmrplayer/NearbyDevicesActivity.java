@@ -8,14 +8,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import com.prasadam.kmrplayer.activityHelperClasses.ActivityHelper;
-import com.prasadam.kmrplayer.activityHelperClasses.DialogHelper;
-import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.NearbyDevicesRecyclerViewAdapter;
-import com.prasadam.kmrplayer.adapterClasses.uiAdapters.DividerItemDecoration;
-import com.prasadam.kmrplayer.sharedClasses.KeyConstants;
-import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
+import com.prasadam.kmrplayer.ActivityHelperClasses.ActivityHelper;
+import com.prasadam.kmrplayer.ActivityHelperClasses.DialogHelper;
+import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.NearbyDevicesRecyclerViewAdapter;
+import com.prasadam.kmrplayer.AdapterClasses.UIAdapters.DividerItemDecoration;
+import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
+import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 
-import static com.prasadam.kmrplayer.sharedClasses.ExtensionMethods.setStatusBarTranslucent;
+import static com.prasadam.kmrplayer.SharedClasses.ExtensionMethods.setStatusBarTranslucent;
 
 /*
  * Created by Prasadam Saiteja on 7/5/2016.

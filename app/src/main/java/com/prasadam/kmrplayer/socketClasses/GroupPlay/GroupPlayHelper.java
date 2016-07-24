@@ -1,7 +1,6 @@
-package com.prasadam.kmrplayer.socketClasses.GroupPlay;
+package com.prasadam.kmrplayer.SocketClasses.GroupPlay;
 
-import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
-import com.prasadam.kmrplayer.socketClasses.SocketExtensionMethods;
+import com.prasadam.kmrplayer.SocketClasses.SocketExtensionMethods;
 
 import java.util.ArrayList;
 

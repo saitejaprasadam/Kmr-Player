@@ -31,7 +31,7 @@
                 <include
                     layout="@layout/include_action_bar_gradient"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="120dp" />
 
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/toolbar"
@@ -47,7 +47,7 @@
                     android:orientation="horizontal"
                     android:layout_below="@+id/toolbar">
 
-                    <com.prasadam.kmrplayer.subClasses.SquareImageviewInverted
+                    <com.prasadam.kmrplayer.SubClasses.SquareImageviewInverted
                         android:transitionName="AlbumArtImageTranscition"
                         android:id="@+id/artist_image"
                         android:layout_margin="10dp"
@@ -67,7 +67,12 @@
                             android:layout_height="wrap_content"
                             android:textSize="26sp"
                             android:textStyle="bold"
+                            android:singleLine="true"
+                            android:ellipsize="marquee"
+                            android:marqueeRepeatLimit="marquee_forever"
+                            android:scrollHorizontally="true"
                             android:maxLines="2"
+                            style="@style/shadowTextView"
                             android:textColor="@color/white"/>
 
                         <LinearLayout
@@ -80,6 +85,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textColor="@color/white"
+                                style="@style/shadowTextView"
                                 android:layout_margin="5dp"/>
 
                             <TextView
@@ -87,6 +93,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textColor="@color/white"
+                                style="@style/shadowTextView"
                                 android:layout_margin="5dp"/>
 
                         </LinearLayout>

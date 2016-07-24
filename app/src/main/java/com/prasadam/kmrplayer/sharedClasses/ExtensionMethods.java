@@ -1,4 +1,4 @@
-package com.prasadam.kmrplayer.sharedClasses;
+package com.prasadam.kmrplayer.SharedClasses;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
-import android.util.Log;
 
 import com.prasadam.kmrplayer.R;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
@@ -20,15 +19,6 @@ import java.util.UUID;
  * Created by Prasadam Saiteja on 3/20/2016.
  */
 public class ExtensionMethods {
-
-    public static void testPing() {
-        Log.d("Test", "Works");
-    }
-
-    public static void logwritter(String data) {
-
-        Log.d("Log  :  ", data);
-    }
 
     public static String formatIntoHHMMSS(int secsIn) {
 

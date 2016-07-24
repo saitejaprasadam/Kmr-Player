@@ -1,6 +1,4 @@
-package com.prasadam.kmrplayer.audioPackages.musicServiceClasses;/*
- * Created by Prasadam Saiteja on 5/31/2016.
- */
+package com.prasadam.kmrplayer.AudioPackages.musicServiceClasses;
 
 import android.app.ActivityManager;
 import android.content.ContentUris;
@@ -14,8 +12,11 @@ import com.prasadam.kmrplayer.R;
 
 import java.io.FileDescriptor;
 
+/*
+ * Created by Prasadam Saiteja on 5/31/2016.
+ */
+
 public class UtilFunctions {
-    static String LOG_CLASS = "UtilFunctions";
 
     public static boolean isServiceRunning(String serviceName, Context context) {
         ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);

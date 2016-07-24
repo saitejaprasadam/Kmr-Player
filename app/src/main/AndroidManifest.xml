@@ -118,11 +118,11 @@
 
         </activity>
 
-        <service android:name=".audioPackages.musicServiceClasses.MusicService"
+        <service android:name=".AudioPackages.musicServiceClasses.MusicService"
             android:enabled="true"
             android:stopWithTask="false"/>
 
-        <receiver android:name=".audioPackages.musicServiceClasses.NotificationBroadcast">
+        <receiver android:name=".AudioPackages.musicServiceClasses.NotificationBroadcast">
             <intent-filter>
                 <action android:name="com.prasadam.kmrplayer.delete" />
                 <action android:name="com.prasadam.kmrplayer.pause" />
@@ -131,6 +131,13 @@
                 <action android:name="com.prasadam.kmrplayer.previous" />
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
+        </receiver>
+
+        <receiver android:name=".Widgets.QuickShuffleWidget" android:label="Quick shuffle">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/quick_shuffle_widget_info" />
         </receiver>
 
     </application>

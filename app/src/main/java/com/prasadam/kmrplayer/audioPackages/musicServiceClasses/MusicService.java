@@ -1,4 +1,4 @@
-package com.prasadam.kmrplayer.audioPackages.musicServiceClasses;
+package com.prasadam.kmrplayer.AudioPackages.musicServiceClasses;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -27,9 +27,9 @@ import android.widget.RemoteViews;
 
 import com.prasadam.kmrplayer.MainActivity;
 import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
-import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
-import com.prasadam.kmrplayer.socketClasses.SocketExtensionMethods;
+import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
+import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.SocketClasses.SocketExtensionMethods;
 
 import java.io.IOException;
 
@@ -121,7 +121,6 @@ public class MusicService extends Service implements
                             PlayerConstants.SONG_PAUSED = false;
                             MainActivity.changeButton();
                             MainActivity.updateNowPlayingUI(getBaseContext());
-                            //AudioPlayerActivity.changeUI();
                         }catch(Exception e){
                             e.printStackTrace();
                         }
@@ -151,11 +150,11 @@ public class MusicService extends Service implements
                         }
                         player.pause();
                     }
-                    newNotification();
                     try{
+                        newNotification();
                         MainActivity.changeButton();
-                        //AudioPlayerActivity.changeButton();
-                    }catch(Exception e){}
+                    }
+                    catch(Exception e){}
                     return false;
                 }
             });
@@ -327,34 +326,38 @@ public class MusicService extends Service implements
     }
     public void onAudioFocusChange(int focusChange) {
 
-        switch (focusChange) {
+        try{
+            switch (focusChange) {
 
-            case AudioManager.AUDIOFOCUS_LOSS:
-                if(PlayerConstants.getIsPlayingState())
-                    isFocusSnatched = true;
-                Controls.pauseControl(getContext());
-                break;
+                case AudioManager.AUDIOFOCUS_LOSS:
+                    if(PlayerConstants.getIsPlayingState())
+                        isFocusSnatched = true;
+                    Controls.pauseControl(getContext());
+                    break;
 
-            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
-                if(PlayerConstants.getIsPlayingState())
-                    isFocusSnatched = true;
-                Controls.pauseControl(getContext());
-                break;
+                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+                    if(PlayerConstants.getIsPlayingState())
+                        isFocusSnatched = true;
+                    Controls.pauseControl(getContext());
+                    break;
 
-            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
-                player.setVolume(0.5f, 0.5f);
-                break;
+                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                    player.setVolume(0.5f, 0.5f);
+                    break;
 
-            case AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK:
-                player.setVolume(1.0f, 1.0f);
-                break;
+                case AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK:
+                    player.setVolume(1.0f, 1.0f);
+                    break;
 
-            case AudioManager.AUDIOFOCUS_REQUEST_GRANTED:
-                if(isFocusSnatched)
-                    Controls.playControl(getContext());
-                isFocusSnatched = false;
-                break;
+                case AudioManager.AUDIOFOCUS_REQUEST_GRANTED:
+                    if(isFocusSnatched)
+                        Controls.playControl(getContext());
+                    isFocusSnatched = false;
+                    break;
+            }
         }
+
+        catch (Exception e){ Log.d("Exception", e.toString());}
 
     }
     public Context getContext(){ return getBaseContext();}

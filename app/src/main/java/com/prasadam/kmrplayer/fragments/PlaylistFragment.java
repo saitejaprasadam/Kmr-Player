@@ -1,4 +1,4 @@
-package com.prasadam.kmrplayer.fragments;
+package com.prasadam.kmrplayer.Fragments;
 
 import android.app.Activity;
 import android.content.Intent;

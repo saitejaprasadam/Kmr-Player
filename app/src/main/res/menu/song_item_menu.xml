@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+
+    <item
+        android:id="@+id/song_context_menu_quick_share"
+        android:title="@string/quick_share_text" />
+
     <item
         android:id="@+id/song_context_menu_share"
         android:title="@string/share_text" />
 
     <item
-        android:id="@+id/song_context_menu_add_to_playlist"
-        android:title="@string/add_to_playlist"/>
+        android:id="@+id/song_context_menu_add_to_dialog"
+        android:title="@string/add_to_dialog"/>
 
     <item
         android:id="@+id/song_context_menu_jump_to_album"

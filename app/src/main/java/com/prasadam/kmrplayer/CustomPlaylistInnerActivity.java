@@ -14,16 +14,16 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.CustomPlaylistSongsRecylcerViewAdapter;
-import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
-import com.prasadam.kmrplayer.audioPackages.BlurBuilder;
-import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
-import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicService;
-import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.PlayerConstants;
-import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.UtilFunctions;
-import com.prasadam.kmrplayer.adapterClasses.uiAdapters.DividerItemDecoration;
-import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
-import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
+import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.CustomPlaylistSongsRecylcerViewAdapter;
+import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
+import com.prasadam.kmrplayer.AudioPackages.BlurBuilder;
+import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.MusicService;
+import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.PlayerConstants;
+import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.UtilFunctions;
+import com.prasadam.kmrplayer.AdapterClasses.UIAdapters.DividerItemDecoration;
+import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
+import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods.getAlbumArtsForPlaylistCover;
+import static com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods.getAlbumArtsForPlaylistCover;
 
 /*
  * Created by Prasadam Saiteja on 5/30/2016.
@@ -85,7 +85,6 @@ public class CustomPlaylistInnerActivity extends Activity{
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.mipmap.ic_chevron_left_white_24dp);
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
-        toolbar.setTitle(playlistName);
         playlistNameTextView.setText(playlistName);
 
         if (Build.VERSION.SDK_INT >= 21)

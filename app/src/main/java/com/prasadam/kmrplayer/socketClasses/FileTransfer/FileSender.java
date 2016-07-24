@@ -1,6 +1,6 @@
-package com.prasadam.kmrplayer.socketClasses.FileTransfer;
+package com.prasadam.kmrplayer.SocketClasses.FileTransfer;
 
-import com.prasadam.kmrplayer.sharedClasses.KeyConstants;
+import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package com.prasadam.kmrplayer.sharedClasses;
+package com.prasadam.kmrplayer.SharedClasses;
 
 import android.Manifest;
 import android.app.Activity;

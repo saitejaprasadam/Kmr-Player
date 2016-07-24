@@ -2,6 +2,7 @@ package com.prasadam.kmrplayer;
 
 import android.app.SearchManager;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,19 +12,26 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.actions.SearchIntents;
-import com.prasadam.kmrplayer.activityHelperClasses.ActivityHelper;
-import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.SongRecyclerViewAdapterForArtistActivity;
-import com.prasadam.kmrplayer.adapterClasses.uiAdapters.DividerItemDecoration;
-import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
-import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
-import com.prasadam.kmrplayer.fragments.NoItemsFragment;
+import com.prasadam.kmrplayer.ActivityHelperClasses.ActivityHelper;
+import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.AlbumRecyclerViewAdapter;
+import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.ArtistRecyclerViewAdapter;
+import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.SongRecyclerViewAdapterForArtistActivity;
+import com.prasadam.kmrplayer.AdapterClasses.UIAdapters.DividerItemDecoration;
+import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
+import com.prasadam.kmrplayer.AudioPackages.modelClasses.Album;
+import com.prasadam.kmrplayer.AudioPackages.modelClasses.Artist;
+import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.Fragments.NoItemsFragment;
 
 import java.util.ArrayList;
 
@@ -31,7 +39,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.prasadam.kmrplayer.sharedClasses.ExtensionMethods.setStatusBarTranslucent;
+import static com.prasadam.kmrplayer.SharedClasses.ExtensionMethods.setStatusBarTranslucent;
 
 /*
  * Created by Prasadam Saiteja on 7/18/2016.
@@ -52,6 +60,8 @@ public class SearchActivity extends AppCompatActivity{
     private NoItemsFragment noResultFragment = null;
 
     private SongRecyclerViewAdapterForArtistActivity songRecyclerViewAdapter;
+    private ArtistRecyclerViewAdapter artistRecyclerViewAdapter;
+    private AlbumRecyclerViewAdapter albumRecyclerViewAdapter;
 
     @OnClick(R.id.voice_button)
     public void voiceSearch(View view){
@@ -65,15 +75,42 @@ public class SearchActivity extends AppCompatActivity{
         }
     }
 
+    @OnClick(R.id.back_button)
+    public void backClick(View view){
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(searchBox.getWindowToken(), 0);
+        finish();
+    }
+
     public void onCreate(Bundle bundle){
         super.onCreate(bundle);
         setContentView(R.layout.activity_search_layout);
         ButterKnife.bind(this);
         setStatusBarTranslucent(this);
 
+        searchBox.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
         setEmptyFragment();
+        searchBox.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if(!b){
+                    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(searchBox.getWindowToken(), 0);
+                }
+            }
+        });
         songsRecyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
-
+        searchBox.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (event != null&& (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                    InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    in.hideSoftInputFromWindow(searchBox.getApplicationWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
+                }
+                return false;
+            }
+        });
         searchBox.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -98,9 +135,9 @@ public class SearchActivity extends AppCompatActivity{
     }
     private void searchQueryChanged() {
         if(searchBox.getText().toString().length() == 0){
-            songsLayout.setVisibility(View.INVISIBLE);
-            artistLayout.setVisibility(View.INVISIBLE);
-            albumLayout.setVisibility(View.INVISIBLE);
+            songsLayout.setVisibility(View.GONE);
+            artistLayout.setVisibility(View.GONE);
+            albumLayout.setVisibility(View.GONE);
             if(noResultFragment == null)
                 setEmptyFragment();
         }
@@ -131,6 +168,8 @@ public class SearchActivity extends AppCompatActivity{
                 if (resultCode == RESULT_OK && null != data) {
                     ArrayList<String> text = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     searchBox.setText(text.get(0));
+                    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(searchBox.getWindowToken(), 0);
                 }
                 break;
             }
@@ -141,6 +180,8 @@ public class SearchActivity extends AppCompatActivity{
     private class setRecyclerViews extends AsyncTask<Void, Void, Void>{
 
         private ArrayList<Song> songsResult = new ArrayList<>();
+        private ArrayList<Album> albumResult = new ArrayList<>();
+        private ArrayList<Artist> artistResult = new ArrayList<>();
         private String searchQuery;
 
         public setRecyclerViews(String searchQuery){
@@ -151,12 +192,51 @@ public class SearchActivity extends AppCompatActivity{
         protected Void doInBackground(Void... voids) {
 
             songsResult = AudioExtensionMethods.getSongListForSearch(searchQuery);
+            albumResult = AudioExtensionMethods.getAlbumListForSearch(searchQuery);
+            artistResult = AudioExtensionMethods.getArtistListForSearch(searchQuery);
             return null;
         }
 
         @Override
         protected void onPostExecute(Void th){
 
+            setSongRecyclerView();
+            setAlbumRecyclerView();
+            setArtistRecyclerView();
+
+            if(albumResult.size() == 0 && artistResult.size() == 0 && songsResult.size() == 0)
+                setEmptyFragment();
+        }
+
+        private void setArtistRecyclerView() {
+            if(artistResult.size() > 0){
+                artistLayout.setVisibility(View.VISIBLE);
+                artistRecyclerViewAdapter = new ArtistRecyclerViewAdapter(SearchActivity.this, SearchActivity.this, artistResult);
+                artistRecyclerView.setLayoutManager(new LinearLayoutManager(SearchActivity.this, LinearLayoutManager.HORIZONTAL, false));
+                artistRecyclerView.setAdapter(artistRecyclerViewAdapter);
+            }
+
+            else{
+                artistRecyclerViewAdapter = null;
+                artistRecyclerView.setAdapter(null);
+                artistLayout.setVisibility(View.GONE);
+            }
+        }
+        private void setAlbumRecyclerView() {
+            if(albumResult.size() > 0){
+                albumLayout.setVisibility(View.VISIBLE);
+                albumRecyclerViewAdapter = new AlbumRecyclerViewAdapter(SearchActivity.this, SearchActivity.this, albumResult);
+                albumRecyclerView.setLayoutManager(new LinearLayoutManager(SearchActivity.this, LinearLayoutManager.HORIZONTAL, false));
+                albumRecyclerView.setAdapter(albumRecyclerViewAdapter);
+            }
+
+            else{
+                albumRecyclerViewAdapter = null;
+                albumRecyclerView.setAdapter(null);
+                albumLayout.setVisibility(View.GONE);
+            }
+        }
+        private void setSongRecyclerView() {
             if(songsResult.size() > 0){
                 songsLayout.setVisibility(View.VISIBLE);
                 songRecyclerViewAdapter = new SongRecyclerViewAdapterForArtistActivity(SearchActivity.this, songsResult);
@@ -167,8 +247,7 @@ public class SearchActivity extends AppCompatActivity{
             else{
                 songRecyclerViewAdapter = null;
                 songsRecyclerView.setAdapter(null);
-                songsLayout.setVisibility(View.INVISIBLE);
-                setEmptyFragment();
+                songsLayout.setVisibility(View.GONE);
             }
         }
     }

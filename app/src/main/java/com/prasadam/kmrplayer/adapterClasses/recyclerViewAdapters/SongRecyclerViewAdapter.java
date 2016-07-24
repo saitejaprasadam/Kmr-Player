@@ -1,4 +1,4 @@
-package com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters;
+package com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters;
 
 import android.app.Activity;
 import android.content.Context;
@@ -22,12 +22,13 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
+import com.prasadam.kmrplayer.ActivityHelperClasses.ActivityHelper;
 import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.activityHelperClasses.ActivitySwitcher;
-import com.prasadam.kmrplayer.audioPackages.AudioExtensionMethods;
-import com.prasadam.kmrplayer.audioPackages.modelClasses.Song;
-import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.MusicPlayerExtensionMethods;
-import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
+import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
+import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
+import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.MusicPlayerExtensionMethods;
+import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 import java.io.File;
@@ -125,8 +126,12 @@ public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Song
                                             .show();
                                     break;
 
-                                case R.id.song_context_menu_add_to_playlist:
-                                    AudioExtensionMethods.addToPlaylist(context, currentSongDetails.getHashID());
+                                case R.id.song_context_menu_quick_share:
+                                    ActivitySwitcher.jumpToQuickShareActivity(context, currentSongDetails);
+                                    break;
+
+                                case R.id.song_context_menu_add_to_dialog:
+                                    ActivityHelper.AddToDialog(context, currentSongDetails);
                                     break;
 
                                 case R.id.song_context_menu_share:

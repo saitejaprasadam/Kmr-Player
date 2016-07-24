@@ -1,4 +1,4 @@
-package com.prasadam.kmrplayer.socketClasses;
+package com.prasadam.kmrplayer.SocketClasses;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -11,18 +11,18 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.prasadam.kmrplayer.NearbyDevicesActivity;
 import com.prasadam.kmrplayer.QuickShareActivity;
 import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.adapterClasses.recyclerViewAdapters.NearbyDevicesRecyclerViewAdapter;
-import com.prasadam.kmrplayer.audioPackages.musicServiceClasses.PlayerConstants;
-import com.prasadam.kmrplayer.sharedClasses.ExtensionMethods;
-import com.prasadam.kmrplayer.sharedClasses.KeyConstants;
-import com.prasadam.kmrplayer.sharedClasses.SharedVariables;
-import com.prasadam.kmrplayer.socketClasses.FileTransfer.FileReceiver;
-import com.prasadam.kmrplayer.socketClasses.FileTransfer.FileSender;
-import com.prasadam.kmrplayer.socketClasses.GroupPlay.GroupPlayHelper;
-import com.prasadam.kmrplayer.socketClasses.NetworkServiceDiscovery.NSD;
-import com.prasadam.kmrplayer.socketClasses.NetworkServiceDiscovery.NSDClient;
-import com.prasadam.kmrplayer.socketClasses.QuickShare.InitiateQuickShare;
-import com.prasadam.kmrplayer.socketClasses.QuickShare.QuickShareHelper;
+import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.NearbyDevicesRecyclerViewAdapter;
+import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.PlayerConstants;
+import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
+import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
+import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
+import com.prasadam.kmrplayer.SocketClasses.FileTransfer.FileReceiver;
+import com.prasadam.kmrplayer.SocketClasses.FileTransfer.FileSender;
+import com.prasadam.kmrplayer.SocketClasses.GroupPlay.GroupPlayHelper;
+import com.prasadam.kmrplayer.SocketClasses.NetworkServiceDiscovery.NSD;
+import com.prasadam.kmrplayer.SocketClasses.NetworkServiceDiscovery.NSDClient;
+import com.prasadam.kmrplayer.SocketClasses.QuickShare.InitiateQuickShare;
+import com.prasadam.kmrplayer.SocketClasses.QuickShare.QuickShareHelper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -52,12 +52,13 @@ public class ServerResponseThread extends Thread {
             String receivedCommand = br.readLine();
             Log.d("command", receivedCommand);
             final String[] commandArray = receivedCommand.split(" ");
-            String clientName = commandArray[0],
-                    command = commandArray[1],
-                    timeStamp = commandArray[2],
+            String clientMacAddress = commandArray[0],
+                    clientName = commandArray[1],
+                    command = commandArray[2],
+                    timeStamp = commandArray[3],
                     result = "";
-            if(commandArray.length > 3)
-                result = commandArray[3];
+            if(commandArray.length > 4)
+                result = commandArray[4];
 
             switch (command){
 
