@@ -23,7 +23,8 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
-import com.prasadam.kmrplayer.ActivityHelperClasses.ActivityHelper;
+import com.prasadam.kmrplayer.ActivityHelperClasses.DialogHelper;
+import com.prasadam.kmrplayer.ActivityHelperClasses.ShareIntentHelper;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
@@ -123,11 +124,11 @@ public class CustomPlaylistSongsRecylcerViewAdapter extends RecyclerView.Adapter
                                             break;
 
                                         case R.id.song_context_menu_share:
-                                            AudioExtensionMethods.sendSong(context, currentSongDetails.getTitle(), Uri.parse(currentSongDetails.getData()));
+                                            ShareIntentHelper.sendSong(context, currentSongDetails.getTitle(), Uri.parse(currentSongDetails.getData()));
                                             break;
 
                                         case R.id.song_context_menu_add_to_dialog:
-                                            ActivityHelper.AddToDialog(context, currentSongDetails);
+                                            DialogHelper.AddToDialog(context, currentSongDetails);
                                             break;
 
                                         case R.id.song_context_menu_details:

@@ -26,7 +26,6 @@ public class PlayerConstants {
     public static boolean getIsPlayingState() {
         return MusicService.player != null && MusicService.player.isPlaying();
     }
-
     public enum PLAYBACK_STATE_ENUM{
         LOOP, SINGLE_LOOP, OFF
     }

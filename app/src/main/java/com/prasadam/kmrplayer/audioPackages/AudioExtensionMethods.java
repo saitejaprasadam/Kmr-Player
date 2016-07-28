@@ -185,20 +185,6 @@ public class AudioExtensionMethods {
                 .show();
     } //Prototype won't wait for material dialog result
 
-    public static void sendSong(Context context ,String songName,Uri songLocation) {
-
-        Intent share = new Intent(Intent.ACTION_SEND);
-        share.setType("audio/*");
-        share.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        share.putExtra(Intent.EXTRA_STREAM, songLocation);
-
-        songName = songName.trim();
-        if(songName.length() > 20)
-            songName = songName.substring(0, 18) + "...";
-
-        context.startActivity(Intent.createChooser(share, "Share " + "\'" + songName + "\'"  + " using"));
-    }
-
     public static void setSongAsRingtone(final Context context, final Song currentSongDetails) {
 
         new MaterialDialog.Builder(context)
@@ -389,27 +375,6 @@ public class AudioExtensionMethods {
             return BitmapFactory.decodeResource(context.getResources(), R.mipmap.unkown_album_art);
 
         return BitmapFactory.decodeFile(absolutePath);
-    }
-
-    public static void shareAlbum(Context context, ArrayList<Song> songsList, String albumTitle){
-
-        Intent share = new Intent();
-        share.setAction(Intent.ACTION_SEND_MULTIPLE);
-        share.setType("audio/*");
-
-        ArrayList<Uri> files = new ArrayList<>();
-
-        for(Song song : songsList) {
-            files.add(Uri.parse(song.getData()));
-        }
-
-        albumTitle = albumTitle.trim();
-        if(albumTitle.length() > 20)
-            albumTitle =  albumTitle.substring(0, 18) + "...";
-
-        share.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files);
-        context.startActivity(Intent.createChooser(share, "Share " + "\'" + albumTitle  + "\'" +  " album using"));
-
     }
 
     public static void addToPlaylist(final Context context, final String songHashID){
@@ -834,25 +799,6 @@ public class AudioExtensionMethods {
         return albumArrayList;
     }
 
-    public static void shareAllSongsFromCurrentArtist(Context context, ArrayList<Song> songsList, String artistTitle) {
-        Intent share = new Intent();
-        share.setAction(Intent.ACTION_SEND_MULTIPLE);
-        share.setType("audio/*");
-
-        ArrayList<Uri> files = new ArrayList<>();
-
-        for(Song song : songsList) {
-            files.add(Uri.parse(song.getData()));
-        }
-
-        artistTitle = artistTitle.trim();
-        if(artistTitle.length() > 20)
-            artistTitle =  artistTitle.substring(0, 18) + "...";
-
-        share.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files);
-        context.startActivity(Intent.createChooser(share, "Share all songs of " + "\'" + artistTitle  + "\'" +  " artist using"));
-    }
-
     public static String getAlbumArtistTitle(Context context, String albumTitle) {
 
         ContentResolver musicResolver = context.getContentResolver();
@@ -950,35 +896,4 @@ public class AudioExtensionMethods {
         return result;
     }
 
-    public static void addToNowPlayingPlaylist(Context context, Song songToBeAdded) {
-        boolean found = false;
-        for (Song song : PlayerConstants.SONGS_LIST) {
-            if(song.getHashID().equals(songToBeAdded.getHashID())){
-                found = true;
-                break;
-            }
-        }
-        if(found)
-            Toast.makeText(context, "Song already present in now playing playlist", Toast.LENGTH_SHORT).show();
-        else{
-            PlayerConstants.SONGS_LIST.add(songToBeAdded);
-            Toast.makeText(context, "Song added to now playing playlist", Toast.LENGTH_SHORT).show();
-            MainActivity.recyclerViewAdapter.notifyDataSetChanged();
-        }
-    }
-
-    public static void playNext(Context context, Song songToBeAdded) {
-        int index = 0;
-        for (Song song : PlayerConstants.SONGS_LIST) {
-            if(song.getHashID().equals(songToBeAdded.getHashID())){
-                if(index < PlayerConstants.SONGS_LIST.size())
-                    PlayerConstants.SONGS_LIST.remove(index);
-                break;
-            }
-            index++;
-        }
-
-        PlayerConstants.SONGS_LIST.add(PlayerConstants.SONG_NUMBER + 1, songToBeAdded);
-        Toast.makeText(context, "Song will be played next", Toast.LENGTH_SHORT).show();
-    }
 }

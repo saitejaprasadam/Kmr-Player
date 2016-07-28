@@ -10,10 +10,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
+import com.prasadam.kmrplayer.ActivityHelperClasses.DialogHelper;
+import com.prasadam.kmrplayer.ActivityHelperClasses.SharedPreferenceHelper;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.SongRecyclerViewAdapter;
 import com.prasadam.kmrplayer.AdapterClasses.UIAdapters.HidingScrollListener;
@@ -41,34 +47,12 @@ public class SongsFragment extends Fragment {
         mActivity = activity;
     }
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        //setHasOptionsMenu(true);
         View rootView = inflater.inflate(R.layout.fragment_song_list, container, false);
         recyclerView = (FastScrollRecyclerView) rootView.findViewById(R.id.songs_recylcer_view_layout);
         setScrollListener();
         shuffleButton = (FloatingActionButton) rootView.findViewById(R.id.shuffle_fab_button);
         return rootView;
-    }
-    private void setScrollListener() {
-        recyclerView.setOnScrollListener(new HidingScrollListener() {
-            @Override
-            public void onHide() {
-                try{
-                    ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
-                    actionBar.hide();
-                    actionBar.getCustomView().animate().translationY(actionBar.getHeight()).setDuration(500);
-                }
-                catch (NullPointerException ignored){}
-
-            }
-            @Override
-            public void onShow() {
-                try{
-                    ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
-                    actionBar.show();
-                    actionBar.getCustomView().animate().translationY(0).setDuration(500);
-                }
-                catch (NullPointerException ignored){}
-            }
-        });
     }
     public void onResume(){
         super.onResume();
@@ -134,6 +118,29 @@ public class SongsFragment extends Fragment {
         }.start();
     }
 
+    private void setScrollListener() {
+        recyclerView.setOnScrollListener(new HidingScrollListener() {
+            @Override
+            public void onHide() {
+                try{
+                    ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+                    actionBar.hide();
+                    actionBar.getCustomView().animate().translationY(actionBar.getHeight()).setDuration(500);
+                }
+                catch (NullPointerException ignored){}
+
+            }
+            @Override
+            public void onShow() {
+                try{
+                    ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+                    actionBar.show();
+                    actionBar.getCustomView().animate().translationY(0).setDuration(500);
+                }
+                catch (NullPointerException ignored){}
+            }
+        });
+    }
     private void checkForDuplicates() {
         try{
             for(int index = 0; index < SharedVariables.fullSongsList.size(); index++){
@@ -162,5 +169,21 @@ public class SongsFragment extends Fragment {
                 recyclerViewAdapter.notifyDataSetChanged();
         }
         catch (Exception ignore){}
+    }
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.main_in_songs_fragment, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+
+            case R.id.action_sort:
+                DialogHelper.songsSortDialog(getContext());
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

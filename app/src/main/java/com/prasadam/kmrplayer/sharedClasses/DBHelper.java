@@ -285,7 +285,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
                     if(mostPlayedSongs.size() > 40){
                         musicCursor.close();
-                        albumArtCursor.close();
                         cursor.close();
                         rdb.close();
                         return mostPlayedSongs;

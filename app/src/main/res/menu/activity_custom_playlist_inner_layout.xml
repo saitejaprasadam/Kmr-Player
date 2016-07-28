@@ -21,12 +21,12 @@
         android:title="@string/quick_share_text" />
 
     <item
-        android:id="@+id/action_share_all_songs_from_artist"
-        android:title="@string/share_all_songs_text" />
+        android:id="@+id/action_share_playlist"
+        android:title="@string/share_playlist_text" />
 
     <item
-        android:id="@+id/action_delete_artist"
-        android:title="@string/delete_artist_text" />
+        android:id="@+id/action_delete_playlist"
+        android:title="@string/delete_playlist_text" />
 
     <item
         android:id="@+id/action_equilzer"

@@ -116,4 +116,14 @@
     <string name="play_next">Play next</string>
     <string name="loading_list_text">Loading list</string>
     <string name="please_wait">please wait</string>
+    <string name="lyrics_text">Lyrics</string>
+    <string name="pie_chart_text">Pie chart</string>
+    <string name="share_playlist_text">Share playlist</string>
+    <string name="delete_playlist_text">Delete playlist</string>
+    <string name="populating_list_text">Populating list</string>
+    <string name="please_wait_while_we_populate_list_text">please wait, while we populate list</string>
+    <string name="no_fav_songs_text">You don\'t have any favorite songs yet...</string>
+    <string name="sort_by_text">Sort by</string>
+    <string name="name_asc_text">Name asc</string>
+    <string name="name_desc_text">Name desc</string>
 </resources>

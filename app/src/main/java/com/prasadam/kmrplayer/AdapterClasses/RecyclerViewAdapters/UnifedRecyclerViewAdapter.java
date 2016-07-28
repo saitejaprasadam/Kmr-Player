@@ -21,7 +21,8 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
-import com.prasadam.kmrplayer.ActivityHelperClasses.ActivityHelper;
+import com.prasadam.kmrplayer.ActivityHelperClasses.DialogHelper;
+import com.prasadam.kmrplayer.ActivityHelperClasses.ShareIntentHelper;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
@@ -38,15 +39,15 @@ import butterknife.ButterKnife;
  * Created by Prasadam Saiteja on 5/28/2016.
  */
 
-public class RecentlyAddedRecyclerViewAdapter extends RecyclerView.Adapter<RecentlyAddedRecyclerViewAdapter.songsViewHolder>{
+public class UnifedRecyclerViewAdapter extends RecyclerView.Adapter<UnifedRecyclerViewAdapter.songsViewHolder>{
 
     private LayoutInflater inflater;
     private Context context;
-    private ArrayList<Song> recentlyAddedSongsList;
+    private ArrayList<Song> songsList;
 
-    public RecentlyAddedRecyclerViewAdapter(Context context, ArrayList<Song> recentlyAddedSongsList){
+    public UnifedRecyclerViewAdapter(Context context, ArrayList<Song> songsList){
         this.context = context;
-        this.recentlyAddedSongsList = recentlyAddedSongsList;
+        this.songsList = songsList;
         inflater = LayoutInflater.from(context);
     }
 
@@ -60,7 +61,7 @@ public class RecentlyAddedRecyclerViewAdapter extends RecyclerView.Adapter<Recen
     public void onBindViewHolder(final songsViewHolder holder, final int position) {
         try
         {
-            final Song currentSongDetails = recentlyAddedSongsList.get(position);
+            final Song currentSongDetails = songsList.get(position);
 
             holder.titleTextView.setText(currentSongDetails.getTitle());
             holder.artistTextView.setText(currentSongDetails.getArtist());
@@ -80,7 +81,7 @@ public class RecentlyAddedRecyclerViewAdapter extends RecyclerView.Adapter<Recen
             });
             holder.rootLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {MusicPlayerExtensionMethods.playSong((Activity) context, recentlyAddedSongsList, position);}
+                public void onClick(View view) {MusicPlayerExtensionMethods.playSong((Activity) context, songsList, position);}
             });
 
 
@@ -111,7 +112,6 @@ public class RecentlyAddedRecyclerViewAdapter extends RecyclerView.Adapter<Recen
                                                             {
                                                                 Toast.makeText(context, "Song Deleted : \'" + currentSongDetails.getTitle() + "\'", Toast.LENGTH_SHORT).show();
                                                                 context.getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.MediaColumns._ID + "='" + currentSongDetails.getID() + "'", null);
-                                                                recentlyAddedSongsList =  AudioExtensionMethods.getSongList(context);
                                                                 notifyDataSetChanged();
                                                                 AudioExtensionMethods.updateLists(context);
                                                             }
@@ -126,11 +126,11 @@ public class RecentlyAddedRecyclerViewAdapter extends RecyclerView.Adapter<Recen
                                             break;
 
                                         case R.id.song_context_menu_share:
-                                            AudioExtensionMethods.sendSong(context, currentSongDetails.getTitle(), Uri.parse(currentSongDetails.getData()));
+                                            ShareIntentHelper.sendSong(context, currentSongDetails.getTitle(), Uri.parse(currentSongDetails.getData()));
                                             break;
 
                                         case R.id.song_context_menu_add_to_dialog:
-                                            ActivityHelper.AddToDialog(context, currentSongDetails);
+                                            DialogHelper.AddToDialog(context, currentSongDetails);
                                             break;
 
                                         case R.id.song_context_menu_details:
@@ -193,7 +193,7 @@ public class RecentlyAddedRecyclerViewAdapter extends RecyclerView.Adapter<Recen
 
     @Override
     public int getItemCount() {
-        return recentlyAddedSongsList.size();
+        return songsList.size();
     }
 
     /// <summary>RecyclerView view holder (Inner class)

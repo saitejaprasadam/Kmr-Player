@@ -17,16 +17,6 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:id="@+id/back_button"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_centerVertical="true"
-                android:paddingEnd="10dp"
-                android:clickable="true"
-                android:background="?attr/selectableItemBackground"
-                android:src="@mipmap/ic_chevron_left_white_24dp"/>
-
-            <ImageView
                 android:id="@+id/voice_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -41,7 +31,6 @@
                 android:id="@+id/search_textbox"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_toEndOf="@+id/back_button"
                 android:layout_toStartOf="@+id/voice_button"
                 android:textColorHint="@color/common_plus_signin_btn_text_dark_disabled"
                 android:textColor="@color/white"

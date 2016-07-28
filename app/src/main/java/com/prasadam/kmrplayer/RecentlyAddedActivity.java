@@ -14,7 +14,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.prasadam.kmrplayer.ListenerClasses.SongsSearchListener;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivityHelper;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
-import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.RecentlyAddedRecyclerViewAdapter;
+import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.UnifedRecyclerViewAdapter;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.AdapterClasses.UIAdapters.DividerItemDecoration;
@@ -36,7 +36,8 @@ public class RecentlyAddedActivity extends AppCompatActivity {
 
     @Bind (R.id.recently_added_playlist_recycler_view) RecyclerView recentlyAddedRecyclerView;
     private ArrayList<Song> songsList;
-    private RecentlyAddedRecyclerViewAdapter recyclerViewAdapter;
+    private UnifedRecyclerViewAdapter recyclerViewAdapter;
+    private Menu mOptionsMenu;
 
     public void onCreate(Bundle b){
         super.onCreate(b);
@@ -46,31 +47,55 @@ public class RecentlyAddedActivity extends AppCompatActivity {
         setStatusBarTranslucent(RecentlyAddedActivity.this);
         ActivityHelper.setDisplayHome(this);
 
-        songsList = AudioExtensionMethods.getRecentlyAddedSongs(RecentlyAddedActivity.this);
+        final MaterialDialog loading = new MaterialDialog.Builder(this)
+                .content(R.string.please_wait_while_we_populate_list_text)
+                .progress(true, 0)
+                .show();
 
-        if(songsList.size() == 0)
-            ActivityHelper.showEmptyFragment(RecentlyAddedActivity.this, getResources().getString(R.string.no_songs_text));
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                songsList = AudioExtensionMethods.getRecentlyAddedSongs(RecentlyAddedActivity.this);
 
-        else
-        {
-            recyclerViewAdapter = new RecentlyAddedRecyclerViewAdapter(this, songsList);
-            if (!ExtensionMethods.isTablet(this)) {
-                if (!ExtensionMethods.isLandScape(this))    //Mobile Portrait
-                    recentlyAddedRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+                if(songsList.size() == 0)
+                    ActivityHelper.showEmptyFragment(RecentlyAddedActivity.this, getResources().getString(R.string.no_songs_text));
 
-                if (ExtensionMethods.isLandScape(this))    //Mobile Landscape
-                    recentlyAddedRecyclerView.setLayoutManager(new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false));
-            } else {
-                if (!ExtensionMethods.isLandScape(this))    //Tablet Portrait
-                    recentlyAddedRecyclerView.setLayoutManager(new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false));
+                else
+                {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            setSearchListener();
+                            recyclerViewAdapter = new UnifedRecyclerViewAdapter(RecentlyAddedActivity.this, songsList);
+                            if (!ExtensionMethods.isTablet(RecentlyAddedActivity.this)) {
+                                if (!ExtensionMethods.isLandScape(RecentlyAddedActivity.this))    //Mobile Portrait
+                                    recentlyAddedRecyclerView.setLayoutManager(new LinearLayoutManager(RecentlyAddedActivity.this));
 
-                if (ExtensionMethods.isLandScape(this))    //Tablet Landscape
-                    recentlyAddedRecyclerView.setLayoutManager(new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false));
+                                if (ExtensionMethods.isLandScape(RecentlyAddedActivity.this))    //Mobile Landscape
+                                    recentlyAddedRecyclerView.setLayoutManager(new GridLayoutManager(RecentlyAddedActivity.this, 2, GridLayoutManager.VERTICAL, false));
+                            } else {
+                                if (!ExtensionMethods.isLandScape(RecentlyAddedActivity.this))    //Tablet Portrait
+                                    recentlyAddedRecyclerView.setLayoutManager(new GridLayoutManager(RecentlyAddedActivity.this, 2, GridLayoutManager.VERTICAL, false));
+
+                                if (ExtensionMethods.isLandScape(RecentlyAddedActivity.this))    //Tablet Landscape
+                                    recentlyAddedRecyclerView.setLayoutManager(new GridLayoutManager(RecentlyAddedActivity.this, 3, GridLayoutManager.VERTICAL, false));
+                            }
+
+                            recentlyAddedRecyclerView.setAdapter(recyclerViewAdapter);
+                            recentlyAddedRecyclerView.addItemDecoration(new DividerItemDecoration(RecentlyAddedActivity.this, LinearLayoutManager.VERTICAL));
+                            loading.dismiss();
+                        }
+                    });
+                }
             }
-
-            recentlyAddedRecyclerView.setAdapter(recyclerViewAdapter);
-            recentlyAddedRecyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
-        }
+        }).start();
+    }
+    private void setSearchListener() {
+        MenuItem searchItem = mOptionsMenu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        MenuItemCompat.setActionView(searchItem, searchView);
+        SongsSearchListener searchListener = new SongsSearchListener(RecentlyAddedActivity.this, songsList, recentlyAddedRecyclerView, recyclerViewAdapter);
+        searchView.setOnQueryTextListener(searchListener);
     }
     public void onResume() {
         super.onResume();
@@ -81,11 +106,7 @@ public class RecentlyAddedActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
 
         getMenuInflater().inflate(R.menu.activity_recently_added_songs_menu, menu);
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        MenuItemCompat.setActionView(searchItem, searchView);
-        SongsSearchListener searchListener = new SongsSearchListener(RecentlyAddedActivity.this, songsList, recentlyAddedRecyclerView, recyclerViewAdapter);
-        searchView.setOnQueryTextListener(searchListener);
+        mOptionsMenu = menu;
         return true;
     }
     public boolean onOptionsItemSelected(MenuItem item) {

@@ -1,8 +1,12 @@
 package com.prasadam.kmrplayer.ActivityHelperClasses;
 
 import android.content.Context;
+import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
+import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.MusicPlayerExtensionMethods;
 import com.prasadam.kmrplayer.R;
 
 /*
@@ -17,4 +21,45 @@ public class DialogHelper {
                 .show();
     }
 
+    public static void AddToDialog(final Context context, final Song song){
+
+        new MaterialDialog.Builder(context)
+                .items(R.array.add_to_dialog_items)
+                .itemsCallback(new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                        switch (which){
+
+                            case 0:
+                                MusicPlayerExtensionMethods.playNext(context, song);
+                                break;
+
+                            case 1:
+                                AudioExtensionMethods.addToPlaylist(context, song.getHashID());
+                                break;
+
+                            case 2:
+                                MusicPlayerExtensionMethods.addToNowPlayingPlaylist(context, song);
+                                break;
+                        }
+                    }
+                })
+                .show();
+    }
+
+    public static void songsSortDialog(Context context) {
+
+        new MaterialDialog.Builder(context)
+                .title(R.string.sort_by_text)
+                .items(R.array.songs_sort_by)
+                .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
+                    @Override
+                    public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+
+                        return true;
+                    }
+                })
+                .positiveText(R.string.ok_text)
+                .show();
+    }
 }

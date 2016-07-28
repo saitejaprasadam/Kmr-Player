@@ -48,6 +48,8 @@ public class TagEditorActivity extends Activity{
     @Bind (R.id.input_song_title) EditText songTitle;
     @Bind (R.id.input_song_album) EditText songAlbum;
     @Bind (R.id.input_song_artist) EditText songArtist;
+    @Bind (R.id.input_song_year) EditText songYear;
+    @Bind (R.id.input_song_genre) EditText songGenre;
     @Bind (R.id.blurred_album_art) ImageView blurredAlbumArt;
     @Bind (R.id.actual_album_art) ImageView actualAlbumArt;
     @Bind (R.id.apply_fab_button) ImageView applyFabButton;
@@ -78,6 +80,8 @@ public class TagEditorActivity extends Activity{
             tag.setField(FieldKey.ARTIST, String.valueOf(songArtist.getText()));
             tag.setField(FieldKey.ALBUM, String.valueOf(songAlbum.getText()));
             tag.setField(FieldKey.TITLE, String.valueOf(songTitle.getText()));
+            tag.setField(FieldKey.YEAR, String.valueOf(songYear.getText()));
+            tag.setField(FieldKey.GENRE, String.valueOf(songGenre.getText()));
             audioFile.commit();
             ExtensionMethods.scanMedia(TagEditorActivity.this, songLocation);
             Toast.makeText(TagEditorActivity.this, "Successfully changed", Toast.LENGTH_SHORT).show();
@@ -126,6 +130,8 @@ public class TagEditorActivity extends Activity{
             songTitle.setText(musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.TITLE)));
             songAlbum.setText(musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM)));
             songArtist.setText(musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)));
+            songYear.setText(musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.YEAR)));
+            int songID = musicCursor.getInt(musicCursor.getColumnIndex(MediaStore.Audio.Media._ID));
             songLocation = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.DATA));
             String albumID = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
 
@@ -146,6 +152,12 @@ public class TagEditorActivity extends Activity{
                     }
                     cursor.close();
                 }
+
+                Uri uri = MediaStore.Audio.Genres.getContentUriForAudioId("external", songID);
+                Cursor genresCursor = getContentResolver().query(uri, new String[]{MediaStore.Audio.Genres.NAME}, null, null, null);
+
+                if (genresCursor != null && genresCursor.moveToFirst())
+                    songGenre.setText(genresCursor.getString(genresCursor.getColumnIndexOrThrow(MediaStore.Audio.Genres.NAME)));
             }
             catch(Exception ignored){}
         }
@@ -162,6 +174,8 @@ public class TagEditorActivity extends Activity{
         songTitle.addTextChangedListener(textWatcher);
         songAlbum.addTextChangedListener(textWatcher);
         songTitle.addTextChangedListener(textWatcher);
+        songYear.addTextChangedListener(textWatcher);
+        songGenre.addTextChangedListener(textWatcher);
     }
 
     private TextWatcher textWatcher = new TextWatcher() {

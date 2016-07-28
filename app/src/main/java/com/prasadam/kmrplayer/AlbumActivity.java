@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
+import com.prasadam.kmrplayer.ActivityHelperClasses.ShareIntentHelper;
 import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.AlbumInnerLayoutSongRecyclerViewAdapter;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.BlurBuilder;
@@ -200,7 +201,7 @@ public class AlbumActivity extends Activity{
                     switch (id) {
 
                         case R.id.album_context_menu_share_album:
-                            AudioExtensionMethods.shareAlbum(AlbumActivity.this, songList, albumTitle);
+                            ShareIntentHelper.shareAlbum(AlbumActivity.this, songList, albumTitle);
                             break;
 
                         case R.id.album_context_menu_delete_album:

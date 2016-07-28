@@ -8,6 +8,8 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -29,36 +31,11 @@ public class AlbumsFragment extends Fragment {
     public static AlbumRecyclerViewAdapter recyclerViewAdapter;
     private Activity mActivity;
 
-    @SuppressWarnings("deprecation")
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         mActivity = activity;
     }
-    private void setScrollListener() {
-        recyclerView.setOnScrollListener(new HidingScrollListener() {
-            @Override
-            public void onHide() {
-                try{
-                    ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
-                    actionBar.hide();
-                    actionBar.getCustomView().animate().translationY(actionBar.getHeight()).setDuration(500);
-                }
-                catch (NullPointerException ignored){}
-
-            }
-            @Override
-            public void onShow() {
-                try{
-                    ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
-                    actionBar.show();
-                    actionBar.getCustomView().animate().translationY(0).setDuration(500);
-                }
-                catch (NullPointerException ignored){}
-            }
-        });
-    }
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_album_list, container, false);
         recyclerView = (FastScrollRecyclerView) rootView.findViewById(R.id.album_recylcer_view_layout);
@@ -124,6 +101,29 @@ public class AlbumsFragment extends Fragment {
         }.start();
     }
 
+    private void setScrollListener() {
+        recyclerView.setOnScrollListener(new HidingScrollListener() {
+            @Override
+            public void onHide() {
+                try{
+                    ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+                    actionBar.hide();
+                    actionBar.getCustomView().animate().translationY(actionBar.getHeight()).setDuration(500);
+                }
+                catch (NullPointerException ignored){}
+
+            }
+            @Override
+            public void onShow() {
+                try{
+                    ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+                    actionBar.show();
+                    actionBar.getCustomView().animate().translationY(0).setDuration(500);
+                }
+                catch (NullPointerException ignored){}
+            }
+        });
+    }
     public static void updateList(){
         try{
             if(recyclerViewAdapter != null && SharedVariables.globalActivityContext != null && SharedVariables.globalActivityContext.getClass().getSimpleName().equals(KeyConstants.ACTIVITY_MAIN))

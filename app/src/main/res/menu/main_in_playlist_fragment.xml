@@ -17,19 +17,15 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_quick_share"
-        android:title="@string/quick_share_text" />
-
-    <item
-        android:id="@+id/action_share_all_songs_from_artist"
-        android:title="@string/share_all_songs_text" />
-
-    <item
-        android:id="@+id/action_delete_artist"
-        android:title="@string/delete_artist_text" />
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:title="@string/action_settings"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/action_equilzer"
-        android:title="@string/action_equilzer" />
+        android:orderInCategory="100"
+        android:title="@string/action_equilzer"
+        app:showAsAction="never" />
 
 </menu>

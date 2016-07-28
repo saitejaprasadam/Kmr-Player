@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
+import com.prasadam.kmrplayer.ActivityHelperClasses.ShareIntentHelper;
 import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.SmallAlbumRecyclerViewAdapter;
 import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.SongRecyclerViewAdapterForArtistActivity;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
@@ -220,7 +221,11 @@ public class ArtistActivity extends Activity {
                     switch (id) {
 
                         case R.id.action_share_all_songs_from_artist:
-                            AudioExtensionMethods.shareAllSongsFromCurrentArtist(ArtistActivity.this, songsList, artist.getArtistTitle());
+                            ShareIntentHelper.shareAllSongsFromCurrentArtist(ArtistActivity.this, songsList, artist.getArtistTitle());
+                            break;
+
+                        case R.id.action_search:
+                            ActivitySwitcher.launchSearchActivity(ArtistActivity.this);
                             break;
 
                         case R.id.action_equilzer:

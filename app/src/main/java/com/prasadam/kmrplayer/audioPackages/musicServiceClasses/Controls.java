@@ -2,6 +2,7 @@ package com.prasadam.kmrplayer.AudioPackages.musicServiceClasses;
 
 import android.content.Context;
 
+import com.prasadam.kmrplayer.MainActivity;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.SocketClasses.GroupPlay.GroupPlayHelper;
@@ -110,6 +111,8 @@ public class Controls {
                 index++;
             }
         }
+
+        MainActivity.updateAlbumAdapter();
     }
 }
 

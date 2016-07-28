@@ -9,6 +9,8 @@ import android.widget.ImageView;
 
 import com.prasadam.kmrplayer.AlbumActivity;
 import com.prasadam.kmrplayer.ArtistActivity;
+import com.prasadam.kmrplayer.MostPlayedSongsActivity;
+import com.prasadam.kmrplayer.MostPlayedSongsPieChartActivity;
 import com.prasadam.kmrplayer.NearbyDevicesActivity;
 import com.prasadam.kmrplayer.ExpandedAlbumartActivity;
 import com.prasadam.kmrplayer.QuickShareActivity;
@@ -97,5 +99,10 @@ public class ActivitySwitcher {
         Intent searchAcrivityIntent = new Intent(context, SearchActivity.class);
         searchAcrivityIntent.setAction(Intent.ACTION_SEARCH);
         context.startActivity(searchAcrivityIntent);
+    }
+
+    public static void launchMostPlayedActivity(MostPlayedSongsActivity mostPlayedSongsActivity) {
+        Intent mostPlayedSongsPieChartIntent = new Intent(mostPlayedSongsActivity, MostPlayedSongsPieChartActivity.class);
+        mostPlayedSongsActivity.startActivity(mostPlayedSongsPieChartIntent);
     }
 }

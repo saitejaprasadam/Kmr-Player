@@ -1,6 +1,5 @@
 package com.prasadam.kmrplayer;
 
-import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -11,13 +10,13 @@ import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.UnifedRecyclerViewAdapter;
 import com.prasadam.kmrplayer.ListenerClasses.SongsSearchListener;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivityHelper;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
-import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.FavoritesRecyclerViewAdapter;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
-import com.prasadam.kmrplayer.Fragments.NoItemsFragment;
 import com.prasadam.kmrplayer.AdapterClasses.UIAdapters.DividerItemDecoration;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
@@ -33,8 +32,9 @@ import static com.prasadam.kmrplayer.SharedClasses.ExtensionMethods.setStatusBar
 public class FavoritesActivity extends AppCompatActivity{
 
     private ArrayList<Song> favoriteSongList;
-    private FavoritesRecyclerViewAdapter recyclerViewAdapter;
+    private UnifedRecyclerViewAdapter recyclerViewAdapter;
     private RecyclerView recyclerView;
+    private Menu mOptionsMenu;
 
     public void onCreate(Bundle b){
         super.onCreate(b);
@@ -44,58 +44,72 @@ public class FavoritesActivity extends AppCompatActivity{
         setStatusBarTranslucent(FavoritesActivity.this);
         ActivityHelper.setDisplayHome(this);
 
-        favoriteSongList = AudioExtensionMethods.getFavoriteSongsList(this);
+        final MaterialDialog loading = new MaterialDialog.Builder(this)
+                .content(R.string.please_wait_while_we_populate_list_text)
+                .progress(true, 0)
+                .show();
 
-        if(favoriteSongList.size() == 0)
-        {
-            NoItemsFragment newFragment = new NoItemsFragment();
-            FragmentTransaction ft = getFragmentManager().beginTransaction();
-            ft.add(android.R.id.content, newFragment).commit();
-            newFragment.setDescriptionTextView("You don't have any favorite songs yet...");
-        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                favoriteSongList = AudioExtensionMethods.getFavoriteSongsList(FavoritesActivity.this);
 
-        else{
-            recyclerViewAdapter = new FavoritesRecyclerViewAdapter(this, favoriteSongList);
+                if(favoriteSongList.size() == 0)
+                    ActivityHelper.showEmptyFragment(FavoritesActivity.this, getResources().getString(R.string.no_fav_songs_text));
 
-            if (!ExtensionMethods.isTablet(this))
-            {
-                if(!ExtensionMethods.isLandScape(this))    //Mobile Portrait
-                    recyclerView.setLayoutManager(new LinearLayoutManager(this));
+                else{
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            setSearchListener();
+                            recyclerViewAdapter = new UnifedRecyclerViewAdapter(FavoritesActivity.this, favoriteSongList);
 
-                if(ExtensionMethods.isLandScape(this))    //Mobile Landscape
-                    recyclerView.setLayoutManager(new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false));
+                            if (!ExtensionMethods.isTablet(FavoritesActivity.this))
+                            {
+                                if(!ExtensionMethods.isLandScape(FavoritesActivity.this))    //Mobile Portrait
+                                    recyclerView.setLayoutManager(new LinearLayoutManager(FavoritesActivity.this));
+
+                                if(ExtensionMethods.isLandScape(FavoritesActivity.this))    //Mobile Landscape
+                                    recyclerView.setLayoutManager(new GridLayoutManager(FavoritesActivity.this, 2, GridLayoutManager.VERTICAL, false));
+                            }
+
+                            else{
+                                if(!ExtensionMethods.isLandScape(FavoritesActivity.this))    //Tablet Portrait
+                                    recyclerView.setLayoutManager(new GridLayoutManager(FavoritesActivity.this, 2, GridLayoutManager.VERTICAL, false));
+
+                                if(ExtensionMethods.isLandScape(FavoritesActivity.this))    //Tablet Landscape
+                                    recyclerView.setLayoutManager(new GridLayoutManager(FavoritesActivity.this, 3, GridLayoutManager.VERTICAL, false));
+                            }
+
+                            recyclerView.setAdapter(recyclerViewAdapter);
+                            recyclerView.addItemDecoration(new DividerItemDecoration(FavoritesActivity.this, LinearLayoutManager.VERTICAL));
+                            loading.dismiss();
+                        }
+                    });
+                }
             }
-
-            else{
-                if(!ExtensionMethods.isLandScape(this))    //Tablet Portrait
-                    recyclerView.setLayoutManager(new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false));
-
-                if(ExtensionMethods.isLandScape(this))    //Tablet Landscape
-                    recyclerView.setLayoutManager(new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false));
-            }
-
-            recyclerView.setAdapter(recyclerViewAdapter);
-            recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
-        }
+        }).start();
     }
     public void onResume() {
         super.onResume();
         SharedVariables.globalActivityContext = this;
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        getMenuInflater().inflate(R.menu.activity_recently_added_songs_menu, menu);
-        MenuItem searchItem = menu.findItem(R.id.action_search);
+    public void setSearchListener(){
+        MenuItem searchItem = mOptionsMenu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         MenuItemCompat.setActionView(searchItem, searchView);
         SongsSearchListener searchListener = new SongsSearchListener(this, favoriteSongList, recyclerView, recyclerViewAdapter);
         searchView.setOnQueryTextListener(searchListener);
-        return true;
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.activity_recently_added_songs_menu, menu);
+        mOptionsMenu = menu;
+        return true;
+    }
     public boolean onOptionsItemSelected(MenuItem item) {
 
         final int id = item.getItemId();

@@ -1,7 +1,9 @@
 package com.prasadam.kmrplayer.AudioPackages.musicServiceClasses;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.widget.Toast;
 
 import com.prasadam.kmrplayer.MainActivity;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
@@ -39,8 +41,10 @@ public class MusicPlayerExtensionMethods {
         if (!isServiceRunning) {
             Intent i = new Intent(mActivity, MusicService.class);
             mActivity.startService(i);
-        } else
+        } else{
             PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
+            MainActivity.updateAlbumAdapter();
+        }
 
         PlayerConstants.SHUFFLE = true;
         MainActivity.changeButton();
@@ -58,6 +62,7 @@ public class MusicPlayerExtensionMethods {
 
         else{
             GroupPlayHelper.notifyGroupPlayClientsIfExists();
+            MainActivity.updateAlbumAdapter();
             PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
         }
 
@@ -92,5 +97,39 @@ public class MusicPlayerExtensionMethods {
 
         else
             PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
+    }
+
+    public static void addToNowPlayingPlaylist(Context context, Song songToBeAdded) {
+        boolean found = false;
+        for (Song song : PlayerConstants.SONGS_LIST) {
+            if(song.getHashID().equals(songToBeAdded.getHashID())){
+                found = true;
+                break;
+            }
+        }
+        if(found)
+            Toast.makeText(context, "Song already present in now playing playlist", Toast.LENGTH_SHORT).show();
+        else{
+            PlayerConstants.SONGS_LIST.add(songToBeAdded);
+            Toast.makeText(context, "Song added to now playing playlist", Toast.LENGTH_SHORT).show();
+            MainActivity.updateAlbumAdapter();
+            MainActivity.recyclerViewAdapter.notifyDataSetChanged();
+        }
+    }
+
+    public static void playNext(Context context, Song songToBeAdded) {
+        int index = 0;
+        for (Song song : PlayerConstants.SONGS_LIST) {
+            if(song.getHashID().equals(songToBeAdded.getHashID())){
+                if(index < PlayerConstants.SONGS_LIST.size())
+                    PlayerConstants.SONGS_LIST.remove(index);
+                break;
+            }
+            index++;
+        }
+
+        PlayerConstants.SONGS_LIST.add(PlayerConstants.SONG_NUMBER + 1, songToBeAdded);
+        Toast.makeText(context, "Song will be played next", Toast.LENGTH_SHORT).show();
+        MainActivity.updateAlbumAdapter();
     }
 }

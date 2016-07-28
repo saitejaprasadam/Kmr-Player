@@ -1,11 +1,14 @@
 package com.prasadam.kmrplayer;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,6 +20,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -31,6 +35,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -41,6 +46,8 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
+import com.prasadam.kmrplayer.ActivityHelperClasses.ShareIntentHelper;
+import com.prasadam.kmrplayer.AdapterClasses.UIAdapters.NowPlayingAlbumArtAdapter;
 import com.prasadam.kmrplayer.ListenerClasses.GoogleLoginListeners;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.NowPlayingPlaylistAdapter;
@@ -64,15 +71,16 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.File;
 import java.util.Calendar;
+import java.util.Map;
 
 import static com.prasadam.kmrplayer.SharedClasses.ExtensionMethods.setStatusBarTranslucent;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener , NowPlayingPlaylistInterfaces.OnStartDragListener{
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener , NowPlayingPlaylistInterfaces.OnStartDragListener, ViewPager.OnPageChangeListener {
 
     private static GoogleLoginListeners googleLoginListeners;
     public static Toolbar toolbar;
-    private static ImageView nowPlayingMinimalAlbumArt, nowPlayingActualAlbumArt, nowPlayingBlurredAlbumArt;
-    private static RelativeLayout nowPlayingColorPallatteView;
+    private static ImageView nowPlayingMinimalAlbumArt, nowPlayingBlurredAlbumArt;
+    private static RelativeLayout nowPlayingColorPallatteView, nowPlayingColorPallatteViewBackground;
     private static ImageView nowPlayingNextButton, nowPlayingPreviousButton, nowPlayingPlayButton, nowPlayingSongContextMenu;
     private static TextView nowPlayingSongArtistTextView, nowPlayingSongMinimalArtistTextView, nowPlayingSongMinimalTitleTextView, nowPlayingSongTitleTextView;
     private static LikeButton nowPlayingFavButton;
@@ -81,11 +89,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static RecyclerView nowPlayingPlaylistRecyclerView;
     public static NowPlayingPlaylistAdapter recyclerViewAdapter;
     public static TextView navHeaderProfileName;
+    private static ViewPager viewPager;
+    private static NowPlayingAlbumArtAdapter albumArtParallaxAdapter;
     private ItemTouchHelper mItemTouchHelper;
     private RelativeLayout nowPlayingsongInfoCardView;
     private CardView nowPlayingAlbumArtContainer;
     private RelativeLayout nowPlayingMinimalRootLayout;
     private SlidingUpPanelLayout mainLayoutRootLayout;
+    private int width;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -146,9 +157,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 ActivitySwitcher.jumpToAvaiableDevies(MainActivity.this);
                 break;
 
-            //case R.id.action_settings:
-                //LastFm.getLastFmImages("akon");
-                //break;
+            case R.id.action_sort:
+                super.onOptionsItemSelected(item);
+                break;
 
             default:
                 Toast.makeText(MainActivity.this, "Pending", Toast.LENGTH_SHORT).show();
@@ -179,9 +190,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         nowPlayingMinimalRootLayout = (RelativeLayout) findViewById(R.id.now_playing_minimal_root_layout);
         mainLayoutRootLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
         nowPlayingMinimalAlbumArt = (ImageView) findViewById(R.id.now_playing_minimal_album_art);
-        nowPlayingActualAlbumArt = (ImageView) findViewById(R.id.vertical_slide_drawer_actual_image_view);
         nowPlayingBlurredAlbumArt = (ImageView) findViewById(R.id.vertical_slide_drawer_blurred_image_view);
         nowPlayingColorPallatteView = (RelativeLayout) findViewById(R.id.now_playing_color_pallete_view);
+        nowPlayingColorPallatteViewBackground = (RelativeLayout) findViewById(R.id.now_playing_color_pallete_view_background);
         nowPlayingPlayButton = (ImageView) findViewById(R.id.now_playing_play_pause_button);
         nowPlayingNextButton = (ImageView) findViewById(R.id.now_playing_next_button);
         nowPlayingPreviousButton = (ImageView) findViewById(R.id.now_playing_previous_button);
@@ -220,6 +231,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         nowPlayingListeners();
         setNowPlayingSongContextMenu();
+        viewPager = (ViewPager) findViewById(R.id.parallaxSlider);
+        albumArtParallaxAdapter = new NowPlayingAlbumArtAdapter(this);
+        viewPager.setAdapter(albumArtParallaxAdapter);
+        viewPager.setOnPageChangeListener(this);
+        viewPager.setOffscreenPageLimit(0);
+        calculateWidth();
+    }
+
+    private void calculateWidth() {
+        viewPager.post(new Runnable() {
+            @Override
+            public void run() {
+                width = viewPager.getMeasuredWidth();
+            }
+        });
     }
     private void setNowPlayingToolBarMenuListener(Toolbar nowPlayingToolbar) {
         nowPlayingToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
@@ -228,6 +254,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 try {
                     int id = item.getItemId();
                     switch (id) {
+
+                        case R.id.action_search:
+                            ActivitySwitcher.launchSearchActivity(MainActivity.this);
+                            break;
 
                         case R.id.action_devices_button:
                             ActivitySwitcher.jumpToAvaiableDevies(MainActivity.this);
@@ -386,7 +416,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     break;
 
                                 case R.id.song_context_menu_share:
-                                    AudioExtensionMethods.sendSong(MainActivity.this, MusicService.currentSong.getTitle(), Uri.parse(MusicService.currentSong.getData()));
+                                    ShareIntentHelper.sendSong(MainActivity.this, MusicService.currentSong.getTitle(), Uri.parse(MusicService.currentSong.getData()));
                                     break;
 
                                 case R.id.song_context_menu_details:
@@ -494,6 +524,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         final Song currentPlayingSong = MusicService.currentSong;
         if(currentPlayingSong != null){
+            setImagesInAlbumArtParallaxAdapater();
             setNowPlayingAlbumArt(context, currentPlayingSong);
             nowPlayingSongArtistTextView.setText(currentPlayingSong.getArtist());
             nowPlayingSongMinimalArtistTextView.setText(currentPlayingSong.getArtist());
@@ -542,47 +573,77 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String albumArtPath = currentPlayingSong.getAlbumArtLocation();
         final Bitmap bitmap;
 
+        albumArtParallaxAdapter.updateAlbumArt(viewPager);
         if(albumArtPath != null) {
             final File imgFile = new File(albumArtPath);
             if (imgFile.exists())
             {
                 nowPlayingMinimalAlbumArt.setImageURI(Uri.parse("file://" + imgFile.getAbsolutePath()));
-                nowPlayingActualAlbumArt.setImageURI(Uri.parse("file://" + imgFile.getAbsolutePath()));
-                nowPlayingBlurredAlbumArt.setImageBitmap(BlurBuilder.blur(context, ((BitmapDrawable) nowPlayingActualAlbumArt.getDrawable()).getBitmap()));
+                nowPlayingBlurredAlbumArt.setImageBitmap(BlurBuilder.blur(context, ((BitmapDrawable) nowPlayingMinimalAlbumArt.getDrawable()).getBitmap()));
                 bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
             }
             else{
                 bitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.unkown_album_art);
-                nowPlayingActualAlbumArt.setImageResource(R.mipmap.unkown_album_art);
-                nowPlayingBlurredAlbumArt.setImageBitmap(BlurBuilder.blur(context, ((BitmapDrawable) nowPlayingActualAlbumArt.getDrawable()).getBitmap()));
+                nowPlayingMinimalAlbumArt.setImageResource(R.mipmap.unkown_album_art);
+                nowPlayingBlurredAlbumArt.setImageBitmap(BlurBuilder.blur(context, BitmapFactory.decodeResource(context.getResources(), R.mipmap.unkown_album_art)));
             }
         }
 
         else{
             bitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.unkown_album_art);
-            nowPlayingActualAlbumArt.setImageResource(R.mipmap.unkown_album_art);
-            nowPlayingBlurredAlbumArt.setImageBitmap(BlurBuilder.blur(context, ((BitmapDrawable) nowPlayingActualAlbumArt.getDrawable()).getBitmap()));
+            nowPlayingMinimalAlbumArt.setImageResource(R.mipmap.unkown_album_art);
+            nowPlayingBlurredAlbumArt.setImageBitmap(BlurBuilder.blur(context, BitmapFactory.decodeResource(context.getResources(), R.mipmap.unkown_album_art)));
         }
 
         Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
             @Override
             public void onGenerated(Palette palette) {
                 Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
-                if (vibrantSwatch != null) {
-                    nowPlayingColorPallatteView.setBackgroundColor(vibrantSwatch.getRgb());
-
-                }
+                if (vibrantSwatch != null)
+                    setColorPallete(vibrantSwatch.getRgb(), ((ColorDrawable)nowPlayingColorPallatteView.getBackground()).getColor());
 
                 else
                 {
                     vibrantSwatch = palette.getMutedSwatch();
-                    if (vibrantSwatch != null) {
-                        nowPlayingColorPallatteView.setBackgroundColor(vibrantSwatch.getRgb());
-                    }
-
+                    if (vibrantSwatch != null)
+                        setColorPallete(vibrantSwatch.getRgb(), ((ColorDrawable)nowPlayingColorPallatteView.getBackground()).getColor());
                 }
             }
         });
+    }
+
+    private static void setColorPallete(final int toRGB, final int fromRGB) {
+
+        nowPlayingColorPallatteView.post(new Runnable(){
+            @Override
+            public void run()
+            {
+                if (Build.VERSION.SDK_INT >= 21){
+                    Animator animator = ViewAnimationUtils.createCircularReveal(nowPlayingColorPallatteView,
+                            nowPlayingColorPallatteView.getWidth() / 2,
+                            nowPlayingColorPallatteView.getHeight() / 2, 0,
+                            nowPlayingColorPallatteView.getWidth() / 2);
+
+                    animator.addListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                            nowPlayingColorPallatteView.setBackgroundColor(toRGB);
+                        }
+                    });
+
+                    nowPlayingColorPallatteViewBackground.setBackgroundColor(fromRGB);
+                    animator.setStartDelay(0);
+                    animator.setDuration(400);
+                    animator.start();
+                }
+
+                else
+                    nowPlayingColorPallatteView.setBackgroundColor(toRGB);
+
+
+            }
+        });
+
     }
     private static void setNowPlayingControlButtons(final Context context) {
         nowPlayingNextButton.setOnClickListener(new View.OnClickListener() {
@@ -665,12 +726,53 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         PlayerConstants.SHOWING_PLAYLIST = false;
         mainLayoutRootLayout.setScrollableView(null);
     }
+    private static void setImagesInAlbumArtParallaxAdapater(){
 
+    }
+    private void parallaxImages(int position, int positionOffsetPixels) {
+        Map<Integer, View> imageViews = albumArtParallaxAdapter.getImageViews();
+
+        for (Map.Entry<Integer, View> entry: imageViews.entrySet()){
+            int imagePosition = entry.getKey();
+            int correctedPosition = imagePosition - position;
+            int displace = -(correctedPosition * width/2)+ (positionOffsetPixels / 2);
+
+            View view = entry.getValue();
+            view.setX(displace);
+        }
+    }
+    public static void updateAlbumAdapter(){
+        if(albumArtParallaxAdapter != null){
+            albumArtParallaxAdapter.dataSetChange();
+            viewPager.setAdapter(albumArtParallaxAdapter);
+            viewPager.setCurrentItem(PlayerConstants.SONG_NUMBER);
+        }
+    }
     @Override
     public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
         mItemTouchHelper.startDrag(viewHolder);
     }
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         googleLoginListeners.onActivityResult(requestCode, resultCode, data);
+    }
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        parallaxImages(position, positionOffsetPixels);
+    }
+    public void onPageSelected(final int position) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(200);
+                    if(position != PlayerConstants.SONG_NUMBER)
+                        MusicPlayerExtensionMethods.changeSong(MainActivity.this, position);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+    }
+    public void onPageScrollStateChanged(int state) {
     }
 }
