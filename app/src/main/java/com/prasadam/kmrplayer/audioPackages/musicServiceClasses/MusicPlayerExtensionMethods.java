@@ -3,6 +3,7 @@ package com.prasadam.kmrplayer.AudioPackages.musicServiceClasses;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.prasadam.kmrplayer.MainActivity;
@@ -117,19 +118,98 @@ public class MusicPlayerExtensionMethods {
         }
     }
 
-    public static void playNext(Context context, Song songToBeAdded) {
+    public static void addToNowPlayingPlaylistAlbum(Context context, ArrayList<Song> songsToBeAdded) {
+        ArrayList<Song> temp = new ArrayList<>(songsToBeAdded);
+        for (Song songToBeAdded : temp){
+            for (Song song : PlayerConstants.SONGS_LIST) {
+                if(song.getHashID().equals(songToBeAdded.getHashID())){
+                    songsToBeAdded.remove(songToBeAdded);
+                    break;
+                }
+            }
+        }
+
+        for (Song song : songsToBeAdded)
+            PlayerConstants.SONGS_LIST.add(song);
+        Toast.makeText(context, "Album added to now playing playlist", Toast.LENGTH_SHORT).show();
+        MainActivity.updateAlbumAdapter();
+        MainActivity.recyclerViewAdapter.notifyDataSetChanged();
+
+    }
+
+    public static void addToNowPlayingPlaylistArtist(Context context, ArrayList<Song> songsToBeAdded) {
         int index = 0;
+        ArrayList<Song> temp = new ArrayList<>(songsToBeAdded);
+        for (Song songToBeAdded : temp){
+            for (Song song : PlayerConstants.SONGS_LIST) {
+                Log.d(String.valueOf(PlayerConstants.SONGS_LIST.size()), String.valueOf(index));
+                if(song.getHashID().equals(songToBeAdded.getHashID())){
+                    songsToBeAdded.remove(songToBeAdded);
+                    break;
+                }
+                index++;
+            }
+            index = 0;
+        }
+
+        for (Song song : songsToBeAdded)
+            PlayerConstants.SONGS_LIST.add(song);
+        Toast.makeText(context, "Artist songs added to now playing playlist", Toast.LENGTH_SHORT).show();
+        MainActivity.updateAlbumAdapter();
+        MainActivity.recyclerViewAdapter.notifyDataSetChanged();
+
+    }
+
+    public static void playNext(Context context, Song songToBeAdded) {
         for (Song song : PlayerConstants.SONGS_LIST) {
             if(song.getHashID().equals(songToBeAdded.getHashID())){
-                if(index < PlayerConstants.SONGS_LIST.size())
-                    PlayerConstants.SONGS_LIST.remove(index);
+                PlayerConstants.SONGS_LIST.remove(song);
                 break;
             }
-            index++;
         }
 
         PlayerConstants.SONGS_LIST.add(PlayerConstants.SONG_NUMBER + 1, songToBeAdded);
         Toast.makeText(context, "Song will be played next", Toast.LENGTH_SHORT).show();
+        MainActivity.updateAlbumAdapter();
+    }
+
+    public static void playNext(Context context, ArrayList<Song> songsToBeAdded) {
+        for (Song songToBeAdded : songsToBeAdded){
+            for (Song song : PlayerConstants.SONGS_LIST) {
+                if(song.getHashID().equals(songToBeAdded.getHashID())){
+                    PlayerConstants.SONGS_LIST.remove(song);
+                    break;
+                }
+            }
+        }
+
+        int index = 1;
+        for (Song songToBeAdded : songsToBeAdded){
+            PlayerConstants.SONGS_LIST.add(PlayerConstants.SONG_NUMBER + index, songToBeAdded);
+            index++;
+        }
+
+        Toast.makeText(context, "Album will be played next", Toast.LENGTH_SHORT).show();
+        MainActivity.updateAlbumAdapter();
+    }
+
+    public static void playNextArtist(Context context, ArrayList<Song> songsToBeAdded) {
+        for (Song songToBeAdded : songsToBeAdded){
+            for (Song song : PlayerConstants.SONGS_LIST) {
+                if(song.getHashID().equals(songToBeAdded.getHashID())){
+                    PlayerConstants.SONGS_LIST.remove(song);
+                    break;
+                }
+            }
+        }
+
+        int index = 1;
+        for (Song songToBeAdded : songsToBeAdded){
+            PlayerConstants.SONGS_LIST.add(PlayerConstants.SONG_NUMBER + index, songToBeAdded);
+            index++;
+        }
+
+        Toast.makeText(context, "Artist songs will be played next", Toast.LENGTH_SHORT).show();
         MainActivity.updateAlbumAdapter();
     }
 }

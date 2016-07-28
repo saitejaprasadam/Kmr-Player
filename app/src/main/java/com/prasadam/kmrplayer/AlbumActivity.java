@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
+import com.prasadam.kmrplayer.ActivityHelperClasses.DialogHelper;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ShareIntentHelper;
 import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.AlbumInnerLayoutSongRecyclerViewAdapter;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
@@ -52,7 +53,7 @@ public class AlbumActivity extends Activity{
 
     private AlbumInnerLayoutSongRecyclerViewAdapter recyclerViewAdapter;
     private String albumTitle, albumArtist, albumartPath = null;
-    private ArrayList<Song> songList;
+    private ArrayList<Song> songsList;
     @Bind (R.id.actual_album_art) ImageView actualAlbumArt;
     @Bind (R.id.blurred_album_art) ImageView blurredAlbumArt;
     @Bind (R.id.album_info_colored_box) RelativeLayout colorBoxLayout;
@@ -167,9 +168,9 @@ public class AlbumActivity extends Activity{
     }
     private void getSongsList() {
 
-        songList = AudioExtensionMethods.getSongList(this, albumTitle);
+        songsList = AudioExtensionMethods.getSongList(this, albumTitle);
         albumArtist = AudioExtensionMethods.getAlbumArtistTitle(this, albumTitle);
-        recyclerViewAdapter = new AlbumInnerLayoutSongRecyclerViewAdapter(this, songList, albumTitle);
+        recyclerViewAdapter = new AlbumInnerLayoutSongRecyclerViewAdapter(this, songsList, albumTitle);
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.songs_recylcer_view_layout);
 
         runOnUiThread(new Runnable() {
@@ -182,7 +183,7 @@ public class AlbumActivity extends Activity{
             }
         });
 
-        setShuffleOnClick(songList);
+        setShuffleOnClick(songsList);
     }
     private void setShuffleOnClick(final ArrayList<Song> songsList) {
         shuffleFabButton.setOnClickListener(new View.OnClickListener() {
@@ -201,7 +202,7 @@ public class AlbumActivity extends Activity{
                     switch (id) {
 
                         case R.id.album_context_menu_share_album:
-                            ShareIntentHelper.shareAlbum(AlbumActivity.this, songList, albumTitle);
+                            ShareIntentHelper.shareAlbum(AlbumActivity.this, songsList, albumTitle);
                             break;
 
                         case R.id.album_context_menu_delete_album:
@@ -211,7 +212,7 @@ public class AlbumActivity extends Activity{
                                     .onPositive(new MaterialDialog.SingleButtonCallback() {
                                         @Override
                                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                            for (Song song : songList) {
+                                            for (Song song : songsList) {
                                                 File file = new File(song.getData());
                                                 if(file.delete())
                                                     getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.MediaColumns._ID + "='" + song.getID() + "'", null);
@@ -227,6 +228,14 @@ public class AlbumActivity extends Activity{
 
                         case R.id.action_devices_button:
                             ActivitySwitcher.jumpToAvaiableDevies(AlbumActivity.this);
+                            break;
+
+                        case R.id.action_add_to:
+                            DialogHelper.AddToDialogAlbum(AlbumActivity.this, songsList);
+                            break;
+
+                        case R.id.action_play_next:
+                            MusicPlayerExtensionMethods.playNext(AlbumActivity.this, songsList);
                             break;
 
                         case R.id.album_context_menu_jump_to_artist:

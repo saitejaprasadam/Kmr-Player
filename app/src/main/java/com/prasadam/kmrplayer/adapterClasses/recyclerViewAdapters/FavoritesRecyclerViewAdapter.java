@@ -116,6 +116,10 @@ public class FavoritesRecyclerViewAdapter extends RecyclerView.Adapter<Favorites
                                             ShareIntentHelper.sendSong(context, currentSongDetails.getTitle(), Uri.parse(currentSongDetails.getData()));
                                             break;
 
+                                        case R.id.song_context_menu_play_next:
+                                            MusicPlayerExtensionMethods.playNext(context, currentSongDetails);
+                                            break;
+
                                         case R.id.song_context_menu_add_to_dialog:
                                             DialogHelper.AddToDialog(context, currentSongDetails);
                                             break;

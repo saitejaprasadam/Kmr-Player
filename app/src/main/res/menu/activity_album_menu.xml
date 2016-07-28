@@ -18,6 +18,14 @@
         android:title="@string/share_album_text" />
 
     <item
+        android:id="@+id/action_play_next"
+        android:title="@string/play_next" />
+
+    <item
+        android:id="@+id/action_add_to"
+        android:title="@string/add_to_text" />
+
+    <item
         android:id="@+id/album_context_menu_jump_to_artist"
         android:title="@string/jump_to_artist_text" />
 

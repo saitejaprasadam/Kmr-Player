@@ -11,8 +11,12 @@
         android:title="@string/share_text" />
 
     <item
+        android:id="@+id/song_context_menu_play_next"
+        android:title="@string/play_next"/>
+
+    <item
         android:id="@+id/song_context_menu_add_to_dialog"
-        android:title="@string/add_to_dialog"/>
+        android:title="@string/add_to_text"/>
 
     <item
         android:id="@+id/song_context_menu_jump_to_album"

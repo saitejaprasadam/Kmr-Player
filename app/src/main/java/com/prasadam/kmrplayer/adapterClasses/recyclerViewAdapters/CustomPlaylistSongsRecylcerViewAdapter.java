@@ -119,6 +119,10 @@ public class CustomPlaylistSongsRecylcerViewAdapter extends RecyclerView.Adapter
                                                     .show();
                                             break;
 
+                                        case R.id.song_context_menu_play_next:
+                                            MusicPlayerExtensionMethods.playNext(context, currentSongDetails);
+                                            break;
+
                                         case R.id.song_context_menu_quick_share:
                                             ActivitySwitcher.jumpToQuickShareActivity(context, currentSongDetails);
                                             break;

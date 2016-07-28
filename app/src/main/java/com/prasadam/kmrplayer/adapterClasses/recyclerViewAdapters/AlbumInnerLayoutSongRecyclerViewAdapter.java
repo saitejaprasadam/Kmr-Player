@@ -139,6 +139,10 @@ public class AlbumInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapte
                                     ActivitySwitcher.jumpToQuickShareActivity(context, currentSongDetails);
                                     break;
 
+                                case R.id.song_context_menu_play_next:
+                                    MusicPlayerExtensionMethods.playNext(context, currentSongDetails);
+                                    break;
+
                                 case R.id.song_context_menu_share:
                                     ShareIntentHelper.sendSong(context, currentSongDetails.getTitle(), Uri.parse(currentSongDetails.getData()));
                                     break;

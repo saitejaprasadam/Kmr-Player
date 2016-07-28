@@ -9,7 +9,6 @@
     </string-array>
 
     <string-array name="add_to_dialog_items">
-        <item>@string/play_next</item>
         <item>@string/add_to_playlist</item>
         <item>@string/add_to_now_playing_queue</item>
     </string-array>

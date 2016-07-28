@@ -148,6 +148,10 @@ public class SongRecyclerViewAdapterForArtistActivity extends RecyclerView.Adapt
                                     ActivitySwitcher.launchTagEditor((Activity) context, currentSongDetails.getID(), position);
                                     break;
 
+                                case R.id.song_context_menu_play_next:
+                                    MusicPlayerExtensionMethods.playNext(context, currentSongDetails);
+                                    break;
+
                                 case R.id.song_context_menu_jump_to_album:
                                     ActivitySwitcher.jumpToAlbum(context, currentSongDetails.getAlbum());
                                     break;

@@ -567,6 +567,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static void setDefaultNowPlayingScreen(Context context) {
         MusicService.currentSong = AudioExtensionMethods.getLastPlayedSong(context);
         PlayerConstants.SONGS_LIST.add(MusicService.currentSong);
+        albumArtParallaxAdapter.dataSetChange();
+        viewPager.setAdapter(albumArtParallaxAdapter);
+        viewPager.setCurrentItem(PlayerConstants.SONG_NUMBER);
         updateNowPlayingUI(context);
     }
     private static void setNowPlayingAlbumArt(Context context, Song currentPlayingSong) {

@@ -9,6 +9,8 @@ import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.MusicPlayerExtensionMethods;
 import com.prasadam.kmrplayer.R;
 
+import java.util.ArrayList;
+
 /*
  * Created by Prasadam Saiteja on 7/14/2016.
  */
@@ -31,15 +33,55 @@ public class DialogHelper {
                         switch (which){
 
                             case 0:
-                                MusicPlayerExtensionMethods.playNext(context, song);
-                                break;
-
-                            case 1:
                                 AudioExtensionMethods.addToPlaylist(context, song.getHashID());
                                 break;
 
-                            case 2:
+                            case 1:
                                 MusicPlayerExtensionMethods.addToNowPlayingPlaylist(context, song);
+                                break;
+                        }
+                    }
+                })
+                .show();
+    }
+
+    public static void AddToDialogAlbum(final Context context, final ArrayList<Song> songsList){
+
+        new MaterialDialog.Builder(context)
+                .items(R.array.add_to_dialog_items)
+                .itemsCallback(new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                        switch (which){
+
+                            case 0:
+                                //AudioExtensionMethods.addToPlaylist(context, song.getHashID());
+                                break;
+
+                            case 1:
+                                MusicPlayerExtensionMethods.addToNowPlayingPlaylistAlbum(context, songsList);
+                                break;
+                        }
+                    }
+                })
+                .show();
+    }
+
+    public static void AddToDialogArtist(final Context context, final ArrayList<Song> songsList){
+
+        new MaterialDialog.Builder(context)
+                .items(R.array.add_to_dialog_items)
+                .itemsCallback(new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                        switch (which){
+
+                            case 0:
+                                //AudioExtensionMethods.addToPlaylist(context, song.getHashID());
+                                break;
+
+                            case 1:
+                                MusicPlayerExtensionMethods.addToNowPlayingPlaylistArtist(context, songsList);
                                 break;
                         }
                     }

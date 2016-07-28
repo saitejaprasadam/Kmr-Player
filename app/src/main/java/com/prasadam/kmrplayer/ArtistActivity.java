@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
+import com.prasadam.kmrplayer.ActivityHelperClasses.DialogHelper;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ShareIntentHelper;
 import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.SmallAlbumRecyclerViewAdapter;
 import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.SongRecyclerViewAdapterForArtistActivity;
@@ -226,6 +227,14 @@ public class ArtistActivity extends Activity {
 
                         case R.id.action_search:
                             ActivitySwitcher.launchSearchActivity(ArtistActivity.this);
+                            break;
+
+                        case R.id.action_play_next:
+                            MusicPlayerExtensionMethods.playNextArtist(ArtistActivity.this, songsList);
+                            break;
+
+                        case R.id.action_add_to:
+                            DialogHelper.AddToDialogArtist(ArtistActivity.this, songsList);
                             break;
 
                         case R.id.action_equilzer:

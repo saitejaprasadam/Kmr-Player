@@ -137,6 +137,10 @@ public class UnifedRecyclerViewAdapter extends RecyclerView.Adapter<UnifedRecycl
                                             AudioExtensionMethods.songDetails(context, currentSongDetails, holder.albumPath);
                                             break;
 
+                                        case R.id.song_context_menu_play_next:
+                                            MusicPlayerExtensionMethods.playNext(context, currentSongDetails);
+                                            break;
+
                                         case R.id.song_context_menu_ringtone:
                                             AudioExtensionMethods.setSongAsRingtone(context, currentSongDetails);
                                             break;

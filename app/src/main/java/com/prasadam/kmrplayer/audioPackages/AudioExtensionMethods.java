@@ -20,8 +20,6 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.PlayerConstants;
-import com.prasadam.kmrplayer.MainActivity;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Album;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Artist;
