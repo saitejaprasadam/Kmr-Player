@@ -6,8 +6,11 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.prasadam.kmrplayer.MainActivity;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.R;
+import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 import com.prasadam.kmrplayer.SocketClasses.GroupPlay.GroupPlayHelper;
 
 import java.util.ArrayList;
@@ -118,45 +121,43 @@ public class MusicPlayerExtensionMethods {
         }
     }
 
-    public static void addToNowPlayingPlaylistAlbum(Context context, ArrayList<Song> songsToBeAdded) {
-        ArrayList<Song> temp = new ArrayList<>(songsToBeAdded);
-        for (Song songToBeAdded : temp){
-            for (Song song : PlayerConstants.SONGS_LIST) {
-                if(song.getHashID().equals(songToBeAdded.getHashID())){
-                    songsToBeAdded.remove(songToBeAdded);
-                    break;
+    public static void addToNowPlayingPlaylist(Context context, ArrayList<Song> songsToBeAdded, String message) {
+
+        final MaterialDialog[] loading = new MaterialDialog[1];
+
+        try{
+
+            loading[0] = new MaterialDialog.Builder(SharedVariables.globalActivityContext)
+                    .title(R.string.adding_songs_to_playlist)
+                    .content(R.string.please_wait)
+                    .cancelable(false)
+                    .progress(true, 0)
+                    .show();
+
+            ArrayList<Song> temp = new ArrayList<>(songsToBeAdded);
+            for (Song songToBeAdded : temp){
+                for (Song song : PlayerConstants.SONGS_LIST) {
+                    if(song.getHashID().equals(songToBeAdded.getHashID())){
+                        songsToBeAdded.remove(songToBeAdded);
+                        break;
+                    }
                 }
             }
+
+            for (Song song : songsToBeAdded)
+                PlayerConstants.SONGS_LIST.add(song);
+            loading[0].dismiss();
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+            MainActivity.updateAlbumAdapter();
+            MainActivity.recyclerViewAdapter.notifyDataSetChanged();
         }
 
-        for (Song song : songsToBeAdded)
-            PlayerConstants.SONGS_LIST.add(song);
-        Toast.makeText(context, "Album added to now playing playlist", Toast.LENGTH_SHORT).show();
-        MainActivity.updateAlbumAdapter();
-        MainActivity.recyclerViewAdapter.notifyDataSetChanged();
-
-    }
-
-    public static void addToNowPlayingPlaylistArtist(Context context, ArrayList<Song> songsToBeAdded) {
-        int index = 0;
-        ArrayList<Song> temp = new ArrayList<>(songsToBeAdded);
-        for (Song songToBeAdded : temp){
-            for (Song song : PlayerConstants.SONGS_LIST) {
-                Log.d(String.valueOf(PlayerConstants.SONGS_LIST.size()), String.valueOf(index));
-                if(song.getHashID().equals(songToBeAdded.getHashID())){
-                    songsToBeAdded.remove(songToBeAdded);
-                    break;
-                }
-                index++;
-            }
-            index = 0;
+        catch (Exception ignored){}
+        finally {
+            if(loading[0] != null)
+                loading[0].dismiss();
         }
 
-        for (Song song : songsToBeAdded)
-            PlayerConstants.SONGS_LIST.add(song);
-        Toast.makeText(context, "Artist songs added to now playing playlist", Toast.LENGTH_SHORT).show();
-        MainActivity.updateAlbumAdapter();
-        MainActivity.recyclerViewAdapter.notifyDataSetChanged();
 
     }
 
@@ -173,7 +174,7 @@ public class MusicPlayerExtensionMethods {
         MainActivity.updateAlbumAdapter();
     }
 
-    public static void playNext(Context context, ArrayList<Song> songsToBeAdded) {
+    public static void playNext(Context context, ArrayList<Song> songsToBeAdded, String message) {
         for (Song songToBeAdded : songsToBeAdded){
             for (Song song : PlayerConstants.SONGS_LIST) {
                 if(song.getHashID().equals(songToBeAdded.getHashID())){
@@ -189,27 +190,7 @@ public class MusicPlayerExtensionMethods {
             index++;
         }
 
-        Toast.makeText(context, "Album will be played next", Toast.LENGTH_SHORT).show();
-        MainActivity.updateAlbumAdapter();
-    }
-
-    public static void playNextArtist(Context context, ArrayList<Song> songsToBeAdded) {
-        for (Song songToBeAdded : songsToBeAdded){
-            for (Song song : PlayerConstants.SONGS_LIST) {
-                if(song.getHashID().equals(songToBeAdded.getHashID())){
-                    PlayerConstants.SONGS_LIST.remove(song);
-                    break;
-                }
-            }
-        }
-
-        int index = 1;
-        for (Song songToBeAdded : songsToBeAdded){
-            PlayerConstants.SONGS_LIST.add(PlayerConstants.SONG_NUMBER + index, songToBeAdded);
-            index++;
-        }
-
-        Toast.makeText(context, "Artist songs will be played next", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
         MainActivity.updateAlbumAdapter();
     }
 }

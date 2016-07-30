@@ -9,10 +9,13 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -43,7 +46,7 @@ import butterknife.OnClick;
  * Created by Prasadam Saiteja on 5/2/2016.
  */
 
-public class TagEditorActivity extends Activity{
+public class TagEditorActivity extends AppCompatActivity {
 
     @Bind (R.id.input_song_title) EditText songTitle;
     @Bind (R.id.input_song_album) EditText songAlbum;
@@ -111,8 +114,11 @@ public class TagEditorActivity extends Activity{
         songPosition = getIntent().getExtras().getInt("position");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.mipmap.ic_clear_white_24dp);
-        if (Build.VERSION.SDK_INT >= 21)
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+            Window w = getWindow(); // in Activity's onCreate() for instance
+            w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        }
 
         toolbar.setPadding(0, ExtensionMethods.getStatusBarHeight(this), 0, 0);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {

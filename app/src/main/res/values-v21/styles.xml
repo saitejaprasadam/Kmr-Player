@@ -9,8 +9,15 @@
 
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="android:popupMenuStyle">@style/PopupMenu</item>
-        <item name="android:windowContentTransitions">true</item>
-        <item name="android:windowActivityTransitions">true</item>
+    </style>
+
+    <style name="MainActivityNoActionBar" parent="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:elevation">0dp</item>
+
         <item name="android:windowEnterTransition">@transition/albums_image_transition</item>
         <item name="android:windowExitTransition">@transition/albums_image_transition</item>
         <item name="android:windowSharedElementEnterTransition">@transition/albums_image_transition</item>
@@ -24,23 +31,14 @@
         <item name="android:windowLightStatusBar">true</item>
     </style>
 
-    <style name="AppTheme.ActionBar.TransparentContextTranscition" parent="AppTheme">
+    <style name="AppTheme.ActionBar.TransparentContextTranscition" parent="AppTheme.NoActionBar">
         <item name="android:windowActivityTransitions">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowContentTransitions">true</item>
         <item name="android:windowLightStatusBar">true</item>
-    </style>
-
-    <style name="ContextTranscition" parent="AppTheme">
-        <item name="android:windowContentTransitions">true</item>
-    </style>
-
-    <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
-        <item name="color">@android:color/white</item>
-    </style>
-
-    <style name="PopupMenu" parent="@android:style/Widget.PopupMenu">
-        <item name="android:popupBackground">@android:color/white</item>
+        <item name="android:itemBackground">@android:color/white</item>
+        <item name="android:textColor">@android:color/black</item>
     </style>
 
     <style name="ColoredStatusBar.NoActionBar" parent="AppTheme.NoActionBar">
@@ -50,6 +48,13 @@
 
     <style name="ColoredStatusBar" parent="AppTheme">
 
+    </style>
+
+    <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
+        <item name="color">@android:color/white</item>
+    </style>
+    <style name="PopupMenu" parent="@android:style/Widget.PopupMenu">
+        <item name="android:popupBackground">@android:color/white</item>
     </style>
 
 </resources>

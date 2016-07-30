@@ -164,11 +164,6 @@
         android:layout_height="wrap_content"
         app:theme="@style/TransperantToolbar">
 
-        <ViewStub
-            android:id="@+id/cab_stub"
-            android:layout_width="match_parent"
-            android:layout_height="?actionBarSize" />
-
     </android.support.v7.widget.Toolbar>
 
 </RelativeLayout>

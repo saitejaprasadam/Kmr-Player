@@ -13,6 +13,8 @@ import android.media.MediaFormat;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.view.View;
@@ -392,6 +394,44 @@ public class AudioExtensionMethods {
                     }
                 })
                 .show();
+    }
+
+    public static void addToPlaylist(final Context context, final ArrayList<Song> songsList){
+
+        final MaterialDialog[] loading = new MaterialDialog[1];
+
+        try{
+            ArrayList<String> playlistNames = getCustomPlaylistNames(context);
+            new MaterialDialog.Builder(context)
+                    .title("Choose playlist")
+                    .items(playlistNames)
+                    .itemsCallback(new MaterialDialog.ListCallback() {
+                        @Override
+                        public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+
+                            loading[0] = new MaterialDialog.Builder(SharedVariables.globalActivityContext)
+                                    .title(R.string.adding_songs_to_playlist)
+                                    .content(R.string.please_wait)
+                                    .cancelable(false)
+                                    .progress(true, 0)
+                                    .show();
+
+                            DBHelper dbHelper = new DBHelper(context);
+                            for (Song song : songsList)
+                                dbHelper.addSongToPlaylist(String.valueOf(text), song.getHashID());
+
+                            loading[0].dismiss();
+                            Toast.makeText(context, R.string.songs_added_to_playlist_text, Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .show();
+        }
+
+        catch (Exception ignored){}
+        finally {
+            if(loading[0] != null)
+                loading[0].dismiss();
+        }
     }
 
     public static ArrayList<Song> getSongList(Context context){

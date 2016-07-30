@@ -120,6 +120,10 @@ public class SongPlaybackHistoryActivity extends AppCompatActivity {
                 finish();
                 break;
 
+            case R.id.action_equilzer:
+                ActivitySwitcher.initEqualizer(SongPlaybackHistoryActivity.this);
+                break;
+
             case R.id.action_devices_button:
                 ActivitySwitcher.jumpToAvaiableDevies(SongPlaybackHistoryActivity.this);
                 break;

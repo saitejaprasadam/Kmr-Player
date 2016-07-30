@@ -55,11 +55,11 @@ public class DialogHelper {
                         switch (which){
 
                             case 0:
-                                //AudioExtensionMethods.addToPlaylist(context, song.getHashID());
+                                AudioExtensionMethods.addToPlaylist(context, new ArrayList<>(songsList));
                                 break;
 
                             case 1:
-                                MusicPlayerExtensionMethods.addToNowPlayingPlaylistAlbum(context, songsList);
+                                MusicPlayerExtensionMethods.addToNowPlayingPlaylist(context, new ArrayList<>(songsList), "Album added to now playing playlist");
                                 break;
                         }
                     }
@@ -77,11 +77,33 @@ public class DialogHelper {
                         switch (which){
 
                             case 0:
-                                //AudioExtensionMethods.addToPlaylist(context, song.getHashID());
+                                AudioExtensionMethods.addToPlaylist(context, new ArrayList<>(songsList));
                                 break;
 
                             case 1:
-                                MusicPlayerExtensionMethods.addToNowPlayingPlaylistArtist(context, songsList);
+                                MusicPlayerExtensionMethods.addToNowPlayingPlaylist(context, new ArrayList<>(songsList), "Artist songs added to now playing playlist");
+                                break;
+                        }
+                    }
+                })
+                .show();
+    }
+
+    public static void AddToDialogPlaylist(final Context context, final ArrayList<Song> songsList){
+
+        new MaterialDialog.Builder(context)
+                .items(R.array.add_to_dialog_items)
+                .itemsCallback(new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                        switch (which){
+
+                            case 0:
+                                AudioExtensionMethods.addToPlaylist(context, new ArrayList<>(songsList));
+                                break;
+
+                            case 1:
+                                MusicPlayerExtensionMethods.addToNowPlayingPlaylist(context, new ArrayList<>(songsList), "Playlist songs added to now playing playlist");
                                 break;
                         }
                     }

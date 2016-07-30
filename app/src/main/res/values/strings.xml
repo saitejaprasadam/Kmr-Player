@@ -57,6 +57,7 @@
     <string name="add_to_playlist">Add to playlist</string>
     <string name="error_adding_song_to_playlist_text">error adding song to playlist</string>
     <string name="song_added_to_playlist_text">song added to playlist</string>
+    <string name="songs_added_to_playlist_text">songs added to playlist</string>
     <string name="rename_text">Rename</string>
     <string name="enter_a_new_name_text">Enter a new name</string>
     <string name="search_text">Search</string>
@@ -126,4 +127,6 @@
     <string name="sort_by_text">Sort by</string>
     <string name="name_asc_text">Name asc</string>
     <string name="name_desc_text">Name desc</string>
+    <string name="adding_songs_to_playlist">Adding songs to playlist</string>
+    <string name="add_to_now_playing_queue">Add to now playing queue</string>
 </resources>

@@ -1,28 +1,32 @@
 package com.prasadam.kmrplayer;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
+import com.prasadam.kmrplayer.ActivityHelperClasses.DialogHelper;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ShareIntentHelper;
 import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.CustomPlaylistSongsRecylcerViewAdapter;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.BlurBuilder;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.MusicPlayerExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.MusicService;
 import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.PlayerConstants;
 import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.UtilFunctions;
@@ -45,7 +49,7 @@ import static com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods.getAlbu
  * Created by Prasadam Saiteja on 5/30/2016.
  */
 
-public class CustomPlaylistInnerActivity extends Activity{
+public class CustomPlaylistInnerActivity extends AppCompatActivity {
 
     private String playlistName;
     private CustomPlaylistSongsRecylcerViewAdapter customPlaylistSongsRecylcerViewAdapter;
@@ -88,8 +92,11 @@ public class CustomPlaylistInnerActivity extends Activity{
         setToolbar();
         playlistName = getIntent().getExtras().getString("playlistName");
         playlistNameTextView.setText(playlistName);
-        if (Build.VERSION.SDK_INT >= 21)
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+            Window w = getWindow(); // in Activity's onCreate() for instance
+            w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        }
 
         int songCount = AudioExtensionMethods.getPlaylistSongCount(CustomPlaylistInnerActivity.this, playlistName);
         songCountTextView.setText(songCount + " " + getResources().getString(R.string.songs_text));
@@ -170,6 +177,14 @@ public class CustomPlaylistInnerActivity extends Activity{
 
                         case R.id.action_search:
                             ActivitySwitcher.launchSearchActivity(CustomPlaylistInnerActivity.this);
+                            break;
+
+                        case R.id.action_add_to_now_playing_queue:
+                            MusicPlayerExtensionMethods.addToNowPlayingPlaylist(CustomPlaylistInnerActivity.this, songsList, "Playlist songs added to now playing playlist");
+                            break;
+
+                        case R.id.action_play_next:
+                            MusicPlayerExtensionMethods.playNext(CustomPlaylistInnerActivity.this, songsList, "Playlist will be played next");
                             break;
                     }
                 }

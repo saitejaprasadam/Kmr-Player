@@ -11,7 +11,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.prasadam.kmrplayer.ActivityHelperClasses.DialogHelper;
 import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.UnifedRecyclerViewAdapter;
+import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.MusicPlayerExtensionMethods;
 import com.prasadam.kmrplayer.ListenerClasses.SongsSearchListener;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivityHelper;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
@@ -106,7 +108,7 @@ public class FavoritesActivity extends AppCompatActivity{
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        getMenuInflater().inflate(R.menu.activity_recently_added_songs_menu, menu);
+        getMenuInflater().inflate(R.menu.activity_favorites_menu, menu);
         mOptionsMenu = menu;
         return true;
     }
@@ -117,6 +119,18 @@ public class FavoritesActivity extends AppCompatActivity{
 
             case android.R.id.home:
                 finish();
+                break;
+
+            case R.id.action_equilzer:
+                ActivitySwitcher.initEqualizer(FavoritesActivity.this);
+                break;
+
+            case R.id.action_add_to:
+                DialogHelper.AddToDialogPlaylist(FavoritesActivity.this, favoriteSongList);
+                break;
+
+            case R.id.action_play_next:
+                MusicPlayerExtensionMethods.playNext(FavoritesActivity.this, favoriteSongList, "Playlist will be played next");
                 break;
 
             case R.id.action_devices_button:

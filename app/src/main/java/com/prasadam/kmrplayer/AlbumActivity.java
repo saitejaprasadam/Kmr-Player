@@ -12,12 +12,15 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -49,7 +52,7 @@ import butterknife.OnClick;
  * Created by Prasadam Saiteja on 5/6/2016.
  */
 
-public class AlbumActivity extends Activity{
+public class AlbumActivity extends AppCompatActivity{
 
     private AlbumInnerLayoutSongRecyclerViewAdapter recyclerViewAdapter;
     private String albumTitle, albumArtist, albumartPath = null;
@@ -93,8 +96,10 @@ public class AlbumActivity extends Activity{
         toolbar.setOverflowIcon(getResources().getDrawable(R.mipmap.ic_more_vert_white_24dp));
         setToolBarMenuListener(toolbar);
 
-        if (Build.VERSION.SDK_INT >= 21)
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+            Window w = getWindow(); // in Activity's onCreate() for instance
+            w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        }
 
         toolbar.setPadding(0, ExtensionMethods.getStatusBarHeight(this), 0, 0);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -235,7 +240,7 @@ public class AlbumActivity extends Activity{
                             break;
 
                         case R.id.action_play_next:
-                            MusicPlayerExtensionMethods.playNext(AlbumActivity.this, songsList);
+                            MusicPlayerExtensionMethods.playNext(AlbumActivity.this, songsList, "Album will be played next");
                             break;
 
                         case R.id.album_context_menu_jump_to_artist:

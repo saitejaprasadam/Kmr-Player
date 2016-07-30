@@ -11,7 +11,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.prasadam.kmrplayer.ActivityHelperClasses.DialogHelper;
 import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.UnifedRecyclerViewAdapter;
+import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.MusicPlayerExtensionMethods;
 import com.prasadam.kmrplayer.ListenerClasses.SongsSearchListener;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivityHelper;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
@@ -122,6 +124,18 @@ public class MostPlayedSongsActivity extends AppCompatActivity {
 
             case android.R.id.home:
                 finish();
+                break;
+
+            case R.id.action_equilzer:
+                ActivitySwitcher.initEqualizer(MostPlayedSongsActivity.this);
+                break;
+
+            case R.id.action_add_to:
+                DialogHelper.AddToDialogPlaylist(MostPlayedSongsActivity.this, songsList);
+                break;
+
+            case R.id.action_play_next:
+                MusicPlayerExtensionMethods.playNext(MostPlayedSongsActivity.this, songsList, "Playlist will be played next");
                 break;
 
             case R.id.action_devices_button:

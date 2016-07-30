@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.FileProvider;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -30,7 +31,7 @@ import butterknife.OnClick;
  * Created by Prasadam Saiteja on 6/21/2016.
  */
 
-public class ExpandedAlbumartActivity extends Activity {
+public class ExpandedAlbumartActivity extends AppCompatActivity {
 
     private String albumArtPath;
     @Bind(R.id.blurred_album_art) ImageView blurredAlbumArt;

@@ -118,6 +118,10 @@ public class RecentlyAddedActivity extends AppCompatActivity {
                 finish();
                 break;
 
+            case R.id.action_equilzer:
+                ActivitySwitcher.initEqualizer(RecentlyAddedActivity.this);
+                break;
+
             case R.id.action_devices_button:
                 ActivitySwitcher.jumpToAvaiableDevies(RecentlyAddedActivity.this);
                 break;

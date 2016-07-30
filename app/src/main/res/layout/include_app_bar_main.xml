@@ -24,11 +24,6 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary" />
 
-            <ViewStub
-                android:id="@+id/cab_stub"
-                android:layout_width="match_parent"
-                android:layout_height="?actionBarSize" />
-
         </FrameLayout>
 
     </android.support.design.widget.AppBarLayout>

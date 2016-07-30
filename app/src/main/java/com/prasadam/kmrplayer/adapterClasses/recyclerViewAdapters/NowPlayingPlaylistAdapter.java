@@ -251,6 +251,7 @@ public class NowPlayingPlaylistAdapter extends RecyclerView.Adapter<NowPlayingPl
             }
         }
         notifyItemMoved(fromPosition, toPosition);
+        MainActivity.updateAlbumAdapter();
         return true;
     }
 
@@ -259,6 +260,7 @@ public class NowPlayingPlaylistAdapter extends RecyclerView.Adapter<NowPlayingPl
         if(position < PlayerConstants.SONG_NUMBER)
             PlayerConstants.SONG_NUMBER--;
         notifyItemRemoved(position);
+        MainActivity.updateAlbumAdapter();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements NowPlayingPlaylistInterfaces.ItemTouchHelperViewHolder {

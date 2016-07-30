@@ -3,6 +3,7 @@ package com.prasadam.kmrplayer;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
@@ -10,6 +11,7 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivityHelper;
+import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
@@ -44,6 +46,17 @@ public class MostPlayedSongsPieChartActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         SharedVariables.globalActivityContext = this;
+    }
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        final int id = item.getItemId();
+        switch (id){
+
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return true;
     }
 
     private void configPieChart() {

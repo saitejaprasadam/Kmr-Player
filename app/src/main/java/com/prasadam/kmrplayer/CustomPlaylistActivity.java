@@ -112,8 +112,16 @@ public class CustomPlaylistActivity extends AppCompatActivity {
                 finish();
                 break;
 
+            case R.id.action_search:
+                ActivitySwitcher.launchSearchActivity(this);
+                break;
+
+            case R.id.action_equilzer:
+                ActivitySwitcher.initEqualizer(this);
+                break;
+
             case R.id.action_devices_button:
-                ActivitySwitcher.jumpToAvaiableDevies(CustomPlaylistActivity.this);
+                ActivitySwitcher.jumpToAvaiableDevies(this);
                 break;
         }
         return true;
