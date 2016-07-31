@@ -1,48 +1,27 @@
-<?xml version="1.0" encoding="utf-8"?>
-<com.sothree.slidinguppanel.SlidingUpPanelLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:sothree="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/sliding_layout"
+<android.support.v4.widget.DrawerLayout android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="bottom"
-    sothree:umanoPanelHeight="55dp"
-    sothree:umanoShadowHeight="10dp">
+    android:fitsSystemWindows="true"
+    tools:openDrawer="start"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- Main Content-->
-    <android.support.v4.widget.DrawerLayout
-        android:id="@+id/drawer_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        tools:openDrawer="start">
-
-        <include
-            layout="@layout/include_app_bar_main"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <android.support.design.widget.NavigationView
-            android:id="@+id/nav_view"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="start"
-            android:fitsSystemWindows="true"
-            app:headerLayout="@layout/include_nav_header_main"
-            app:menu="@menu/activity_main_drawer" >
-
-        </android.support.design.widget.NavigationView>
-
-    </android.support.v4.widget.DrawerLayout>
-
-    <!-- Sliding Content -->
     <include
-        layout="@layout/fragment_vertical_sliding_drawer"
+        layout="@layout/include_app_bar_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-</com.sothree.slidinguppanel.SlidingUpPanelLayout>
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/include_nav_header_main"
+        app:menu="@menu/activity_main_drawer" >
 
+    </android.support.design.widget.NavigationView>
+
+</android.support.v4.widget.DrawerLayout>
 

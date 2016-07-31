@@ -8,7 +8,7 @@
         <item name="android:elevation">0dp</item>
 
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
-        <item name="android:popupMenuStyle">@style/PopupMenu</item>
+        <item name="popupMenuStyle">@style/PopupMenu</item>
     </style>
 
     <style name="MainActivityNoActionBar" parent="AppTheme.NoActionBar">
@@ -24,19 +24,13 @@
         <item name="android:windowSharedElementExitTransition">@transition/albums_image_transition</item>
     </style>
 
-    <style name="TransperantToolbar" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-        <item name="android:windowActionBarOverlay">true</item>
-        <item name="windowActionBarOverlay">true</item>
-        <item name="android:popupMenuStyle">@style/PopupMenu</item>
-        <item name="android:windowLightStatusBar">true</item>
-    </style>
-
     <style name="AppTheme.ActionBar.TransparentContextTranscition" parent="AppTheme.NoActionBar">
         <item name="android:windowActivityTransitions">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowContentTransitions">true</item>
         <item name="android:windowLightStatusBar">true</item>
+
         <item name="android:itemBackground">@android:color/white</item>
         <item name="android:textColor">@android:color/black</item>
     </style>
@@ -53,8 +47,16 @@
     <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
         <item name="color">@android:color/white</item>
     </style>
-    <style name="PopupMenu" parent="@android:style/Widget.PopupMenu">
+    <style name="PopupMenu" parent="@style/Widget.AppCompat.PopupMenu.Overflow">
         <item name="android:popupBackground">@android:color/white</item>
+        <item name="android:dropDownHorizontalOffset">-4dp</item>
+        <item name="android:dropDownVerticalOffset">4dp</item>
+    </style>
+    <style name="TransperantToolbar" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="windowActionBarOverlay">true</item>
+        <item name="android:popupMenuStyle">@style/PopupMenu</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 
 </resources>

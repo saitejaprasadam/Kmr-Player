@@ -47,7 +47,7 @@ import static com.prasadam.kmrplayer.SharedClasses.ExtensionMethods.setStatusBar
  * Created by Prasadam Saiteja on 7/18/2016.
  */
 
-public class SearchActivity extends AppCompatActivity{
+public class SearchActivity extends VerticalSlidingDrawerBaseActivity{
 
     protected static final int RESULT_SPEECH = 1;
     @Bind(R.id.search_textbox) EditText searchBox;

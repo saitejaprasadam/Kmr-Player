@@ -60,7 +60,6 @@ public class ExtensionMethods {
     public static void setStatusBarTranslucent(Activity activity) {
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
-
             SystemBarTintManager tintManager = new SystemBarTintManager(activity);
             tintManager.setStatusBarTintColor(activity.getResources().getColor(R.color.colorPrimaryDark));
             tintManager.setStatusBarTintEnabled(true);

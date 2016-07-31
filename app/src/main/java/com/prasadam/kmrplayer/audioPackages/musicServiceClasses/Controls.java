@@ -6,6 +6,7 @@ import com.prasadam.kmrplayer.MainActivity;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.SocketClasses.GroupPlay.GroupPlayHelper;
+import com.prasadam.kmrplayer.VerticalSlidingDrawerBaseActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -112,7 +113,7 @@ public class Controls {
             }
         }
 
-        MainActivity.updateAlbumAdapter();
+        VerticalSlidingDrawerBaseActivity.updateAlbumAdapter();
     }
 }
 

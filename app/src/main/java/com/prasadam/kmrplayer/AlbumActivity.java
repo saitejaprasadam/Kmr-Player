@@ -19,7 +19,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -52,7 +51,7 @@ import butterknife.OnClick;
  * Created by Prasadam Saiteja on 5/6/2016.
  */
 
-public class AlbumActivity extends AppCompatActivity{
+public class AlbumActivity extends VerticalSlidingDrawerBaseActivity {
 
     private AlbumInnerLayoutSongRecyclerViewAdapter recyclerViewAdapter;
     private String albumTitle, albumArtist, albumartPath = null;
@@ -96,10 +95,8 @@ public class AlbumActivity extends AppCompatActivity{
         toolbar.setOverflowIcon(getResources().getDrawable(R.mipmap.ic_more_vert_white_24dp));
         setToolBarMenuListener(toolbar);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
-            Window w = getWindow(); // in Activity's onCreate() for instance
-            w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
         toolbar.setPadding(0, ExtensionMethods.getStatusBarHeight(this), 0, 0);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {

@@ -49,7 +49,7 @@ import static com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods.getAlbu
  * Created by Prasadam Saiteja on 5/30/2016.
  */
 
-public class CustomPlaylistInnerActivity extends AppCompatActivity {
+public class CustomPlaylistInnerActivity extends VerticalSlidingDrawerBaseActivity {
 
     private String playlistName;
     private CustomPlaylistSongsRecylcerViewAdapter customPlaylistSongsRecylcerViewAdapter;
@@ -93,10 +93,8 @@ public class CustomPlaylistInnerActivity extends AppCompatActivity {
         playlistName = getIntent().getExtras().getString("playlistName");
         playlistNameTextView.setText(playlistName);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
-            Window w = getWindow(); // in Activity's onCreate() for instance
-            w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
         int songCount = AudioExtensionMethods.getPlaylistSongCount(CustomPlaylistInnerActivity.this, playlistName);
         songCountTextView.setText(songCount + " " + getResources().getString(R.string.songs_text));

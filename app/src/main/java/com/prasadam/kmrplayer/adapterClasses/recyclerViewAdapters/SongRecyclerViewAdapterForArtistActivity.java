@@ -91,7 +91,7 @@ public class SongRecyclerViewAdapterForArtistActivity extends RecyclerView.Adapt
         holder.contextMenuView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final PopupMenu popup = new PopupMenu(v.getContext(), v);
+                final PopupMenu popup = new PopupMenu(v.getContext(), holder.favoriteButton);
                 popup.inflate(R.menu.song_item_menu_artist_inner_layout);
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override

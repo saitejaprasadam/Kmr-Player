@@ -34,7 +34,7 @@ import static com.prasadam.kmrplayer.SharedClasses.ExtensionMethods.setStatusBar
  * Created by Prasadam Saiteja on 5/29/2016.
  */
 
-public class MostPlayedSongsActivity extends AppCompatActivity {
+public class MostPlayedSongsActivity extends VerticalSlidingDrawerBaseActivity {
 
     @Bind(R.id.most_played_recycer_view) RecyclerView mostPlayedRecylcerView;
     private ArrayList<Song> songsList;

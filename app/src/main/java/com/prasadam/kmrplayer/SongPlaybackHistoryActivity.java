@@ -32,7 +32,7 @@ import static com.prasadam.kmrplayer.SharedClasses.ExtensionMethods.setStatusBar
  * Created by Prasadam Saiteja on 5/29/2016.
  */
 
-public class SongPlaybackHistoryActivity extends AppCompatActivity {
+public class SongPlaybackHistoryActivity extends VerticalSlidingDrawerBaseActivity {
 
     @Bind(R.id.history_recycler_view) RecyclerView recyclerView;
     private Menu mOptionsMenu;

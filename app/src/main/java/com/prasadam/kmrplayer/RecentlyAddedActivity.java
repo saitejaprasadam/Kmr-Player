@@ -2,7 +2,6 @@ package com.prasadam.kmrplayer;
 
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,7 +31,7 @@ import static com.prasadam.kmrplayer.SharedClasses.ExtensionMethods.setStatusBar
  * Created by Prasadam Saiteja on 5/27/2016.
  */
 
-public class RecentlyAddedActivity extends AppCompatActivity {
+public class RecentlyAddedActivity extends VerticalSlidingDrawerBaseActivity {
 
     @Bind (R.id.recently_added_playlist_recycler_view) RecyclerView recentlyAddedRecyclerView;
     private ArrayList<Song> songsList;

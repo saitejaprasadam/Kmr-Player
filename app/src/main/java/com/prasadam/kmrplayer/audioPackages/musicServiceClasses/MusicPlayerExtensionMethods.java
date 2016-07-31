@@ -12,6 +12,7 @@ import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 import com.prasadam.kmrplayer.SocketClasses.GroupPlay.GroupPlayHelper;
+import com.prasadam.kmrplayer.VerticalSlidingDrawerBaseActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,11 +48,11 @@ public class MusicPlayerExtensionMethods {
             mActivity.startService(i);
         } else{
             PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
-            MainActivity.updateAlbumAdapter();
+            VerticalSlidingDrawerBaseActivity.updateAlbumAdapter();
         }
 
         PlayerConstants.SHUFFLE = true;
-        MainActivity.changeButton();
+        VerticalSlidingDrawerBaseActivity.changeButton();
     }
 
     public static void playSong(Activity mActivity, final ArrayList<Song> songsList, int position){
@@ -66,7 +67,7 @@ public class MusicPlayerExtensionMethods {
 
         else{
             GroupPlayHelper.notifyGroupPlayClientsIfExists();
-            MainActivity.updateAlbumAdapter();
+            VerticalSlidingDrawerBaseActivity.updateAlbumAdapter();
             PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
         }
 
@@ -116,8 +117,8 @@ public class MusicPlayerExtensionMethods {
         else{
             PlayerConstants.SONGS_LIST.add(songToBeAdded);
             Toast.makeText(context, "Song added to now playing playlist", Toast.LENGTH_SHORT).show();
-            MainActivity.updateAlbumAdapter();
-            MainActivity.recyclerViewAdapter.notifyDataSetChanged();
+            VerticalSlidingDrawerBaseActivity.updateAlbumAdapter();
+            VerticalSlidingDrawerBaseActivity.recyclerViewAdapter.notifyDataSetChanged();
         }
     }
 
@@ -148,8 +149,8 @@ public class MusicPlayerExtensionMethods {
                 PlayerConstants.SONGS_LIST.add(song);
             loading[0].dismiss();
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-            MainActivity.updateAlbumAdapter();
-            MainActivity.recyclerViewAdapter.notifyDataSetChanged();
+            VerticalSlidingDrawerBaseActivity.updateAlbumAdapter();
+            VerticalSlidingDrawerBaseActivity.recyclerViewAdapter.notifyDataSetChanged();
         }
 
         catch (Exception ignored){}
@@ -171,7 +172,7 @@ public class MusicPlayerExtensionMethods {
 
         PlayerConstants.SONGS_LIST.add(PlayerConstants.SONG_NUMBER + 1, songToBeAdded);
         Toast.makeText(context, "Song will be played next", Toast.LENGTH_SHORT).show();
-        MainActivity.updateAlbumAdapter();
+        VerticalSlidingDrawerBaseActivity.updateAlbumAdapter();
     }
 
     public static void playNext(Context context, ArrayList<Song> songsToBeAdded, String message) {
@@ -191,6 +192,6 @@ public class MusicPlayerExtensionMethods {
         }
 
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-        MainActivity.updateAlbumAdapter();
+        VerticalSlidingDrawerBaseActivity.updateAlbumAdapter();
     }
 }

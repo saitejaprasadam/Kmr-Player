@@ -32,6 +32,7 @@ import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.MusicPlayerExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.PlayerConstants;
 import com.prasadam.kmrplayer.Fragments.SongsFragment;
+import com.prasadam.kmrplayer.VerticalSlidingDrawerBaseActivity;
 
 import java.io.File;
 import java.util.Collections;
@@ -85,14 +86,14 @@ public class NowPlayingPlaylistAdapter extends RecyclerView.Adapter<NowPlayingPl
             public void liked(LikeButton likeButton) {
                 song.setIsLiked(context, true);
                 SongsFragment.recyclerViewAdapter.notifyDataSetChanged();
-                MainActivity.updateSongLikeStatus(context);
+                VerticalSlidingDrawerBaseActivity.updateSongLikeStatus(context);
             }
 
             @Override
             public void unLiked(LikeButton likeButton) {
                 song.setIsLiked(context, false);
                 SongsFragment.recyclerViewAdapter.notifyDataSetChanged();
-                MainActivity.updateSongLikeStatus(context);
+                VerticalSlidingDrawerBaseActivity.updateSongLikeStatus(context);
             }
         });
         holder.cardviewRootLayout.setOnClickListener(new View.OnClickListener() {
@@ -251,7 +252,7 @@ public class NowPlayingPlaylistAdapter extends RecyclerView.Adapter<NowPlayingPl
             }
         }
         notifyItemMoved(fromPosition, toPosition);
-        MainActivity.updateAlbumAdapter();
+        VerticalSlidingDrawerBaseActivity.updateAlbumAdapter();
         return true;
     }
 
@@ -260,7 +261,7 @@ public class NowPlayingPlaylistAdapter extends RecyclerView.Adapter<NowPlayingPl
         if(position < PlayerConstants.SONG_NUMBER)
             PlayerConstants.SONG_NUMBER--;
         notifyItemRemoved(position);
-        MainActivity.updateAlbumAdapter();
+        VerticalSlidingDrawerBaseActivity.updateAlbumAdapter();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements NowPlayingPlaylistInterfaces.ItemTouchHelperViewHolder {

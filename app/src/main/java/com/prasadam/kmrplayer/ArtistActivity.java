@@ -48,7 +48,7 @@ import butterknife.OnClick;
  * Created by Prasadam Saiteja on 6/22/2016.
  */
 
-public class ArtistActivity extends AppCompatActivity {
+public class ArtistActivity extends VerticalSlidingDrawerBaseActivity {
 
     public static String ARTIST_EXTRA = "artist";
     private Artist artist;
@@ -200,10 +200,8 @@ public class ArtistActivity extends AppCompatActivity {
         toolbar.setOverflowIcon(getResources().getDrawable(R.mipmap.ic_more_vert_white_24dp));
         setToolBarMenuListener(toolbar);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
-            Window w = getWindow(); // in Activity's onCreate() for instance
-            w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
         toolbar.setPadding(0, ExtensionMethods.getStatusBarHeight(this), 0, 0);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {

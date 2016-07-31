@@ -34,7 +34,7 @@ import static com.prasadam.kmrplayer.SharedClasses.ExtensionMethods.setStatusBar
  * Created by Prasadam Saiteja on 5/29/2016.
  */
 
-public class CustomPlaylistActivity extends AppCompatActivity {
+public class CustomPlaylistActivity extends VerticalSlidingDrawerBaseActivity {
 
     @Bind(R.id.custom_playlist_recycler_view) RecyclerView recyclerView;
     @OnClick (R.id.add_new_custom_playlist)
