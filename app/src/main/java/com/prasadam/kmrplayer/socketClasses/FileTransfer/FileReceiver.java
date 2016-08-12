@@ -3,6 +3,8 @@ package com.prasadam.kmrplayer.SocketClasses.FileTransfer;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
 import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
@@ -27,14 +29,12 @@ public class FileReceiver extends AsyncTask<Void, Void, Void>{
     private static ServerSocketChannel serverSocketChannel;
     private SecureRandom random = new SecureRandom();
     public int countToBeRecevied;
-    public boolean limitedCount = false;
 
     public FileReceiver(int countToBeRecevied){
 
         try {
             if(serverSocketChannel == null){
                 this.countToBeRecevied = countToBeRecevied;
-                this.limitedCount = true;
                 serverSocketChannel = ServerSocketChannel.open();
                 serverSocketChannel.socket().bind(new InetSocketAddress(KeyConstants.FILE_TRANSFER_SOCKET_PORT_ADDRESS));
                 System.out.println("Started server");
@@ -80,10 +80,11 @@ public class FileReceiver extends AsyncTask<Void, Void, Void>{
                 countToBeRecevied--;
             } catch (IOException | InterruptedException e) {
                 countToBeRecevied--;
-                e.printStackTrace();
+                Toast.makeText(SharedVariables.globalActivityContext, "Bull shit", Toast.LENGTH_SHORT).show();
+                Log.d("Exception", e.toString());
             }
 
-        }while(!limitedCount || countToBeRecevied > 0);
+        }while(countToBeRecevied > 0);
 
         return null;
     }

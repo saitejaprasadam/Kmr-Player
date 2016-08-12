@@ -1,9 +1,8 @@
-package com.prasadam.kmrplayer.AudioPackages.musicServiceClasses;
+package com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.KeyEvent;
 
 import com.prasadam.kmrplayer.MainActivity;

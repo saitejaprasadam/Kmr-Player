@@ -2,19 +2,12 @@ package com.prasadam.kmrplayer.ActivityHelperClasses;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.FrameLayout;
 
-import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
-import com.prasadam.kmrplayer.CustomPlaylistInnerActivity;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.Fragments.NoItemsFragment;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
-
-import java.util.ArrayList;
 
 /*
  * Created by Prasadam Saiteja on 7/14/2016.
@@ -45,5 +38,4 @@ public class ActivityHelper {
         newFragment.setDescriptionTextView(message);
         return newFragment;
     }
-
 }

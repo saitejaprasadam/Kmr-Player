@@ -5,10 +5,8 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -27,7 +25,7 @@ import com.google.android.gms.actions.SearchIntents;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivityHelper;
 import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.AlbumRecyclerViewAdapter;
 import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.ArtistRecyclerViewAdapter;
-import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.SongRecyclerViewAdapterForArtistActivity;
+import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.UnifedRecyclerViewAdapter;
 import com.prasadam.kmrplayer.AdapterClasses.UIAdapters.DividerItemDecoration;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Album;
@@ -61,7 +59,7 @@ public class SearchActivity extends VerticalSlidingDrawerBaseActivity{
     @Bind(R.id.albums_recycler_view) RecyclerView albumRecyclerView;
     private NoItemsFragment noResultFragment = null;
 
-    private SongRecyclerViewAdapterForArtistActivity songRecyclerViewAdapter;
+    private UnifedRecyclerViewAdapter songRecyclerViewAdapter;
     private ArtistRecyclerViewAdapter artistRecyclerViewAdapter;
     private AlbumRecyclerViewAdapter albumRecyclerViewAdapter;
 
@@ -246,7 +244,7 @@ public class SearchActivity extends VerticalSlidingDrawerBaseActivity{
         private void setSongRecyclerView() {
             if(songsResult.size() > 0){
                 songsLayout.setVisibility(View.VISIBLE);
-                songRecyclerViewAdapter = new SongRecyclerViewAdapterForArtistActivity(SearchActivity.this, songsResult);
+                songRecyclerViewAdapter = new UnifedRecyclerViewAdapter(SearchActivity.this, songsResult);
                 songsRecyclerView.setLayoutManager(new LinearLayoutManager(SearchActivity.this));
                 songsRecyclerView.setAdapter(songRecyclerViewAdapter);
             }

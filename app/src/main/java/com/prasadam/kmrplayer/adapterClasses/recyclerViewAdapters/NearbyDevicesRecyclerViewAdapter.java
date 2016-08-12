@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.prasadam.kmrplayer.ActivityHelperClasses.SharedPreferenceHelper;
 import com.prasadam.kmrplayer.NearbyDevicesActivity;
 import com.prasadam.kmrplayer.QuickShareActivity;
 import com.prasadam.kmrplayer.R;
@@ -62,6 +63,12 @@ public class NearbyDevicesRecyclerViewAdapter extends RecyclerView.Adapter<Nearb
     public void onBindViewHolder(NearbyDevicesRecyclerViewAdapter.ViewAdapter holder, int position) {
 
         final NSD serverObject = NSDClient.devicesList.get(position);
+
+        if(serverObject.GetDeviceType() == null)
+            SocketExtensionMethods.requestForDeviceType(serverObject.GetClientNSD());
+
+        SocketExtensionMethods.requestForCurrentSongPlaying(serverObject.GetClientNSD());
+
         holder.nearbyDeviceNameTextView.setText(serverObject.GetClientNSD().getServiceName());
         if(mActivity.getClass().getSimpleName().equals(KeyConstants.ACTIVITY_QUICK_SHARE))
             setHolderQuickShareActivity(holder, serverObject);
@@ -70,9 +77,6 @@ public class NearbyDevicesRecyclerViewAdapter extends RecyclerView.Adapter<Nearb
 
         if(holder.imageID == 0)
             holder.imageID = SocketExtensionMethods.getDeviceImage(serverObject.GetDeviceType());
-
-        if(serverObject.GetDeviceType() == null)
-            SocketExtensionMethods.requestForDeviceType(serverObject.GetClientNSD());
 
         holder.nearbyDevicesImageView.setImageResource(holder.imageID);
     }
@@ -143,7 +147,6 @@ public class NearbyDevicesRecyclerViewAdapter extends RecyclerView.Adapter<Nearb
             holder.currentSongTextView.setText(mActivity.getResources().getString(R.string.now_playing_text) + KeyConstants.SPACE + serverObject.getCurrentSongPlaying());
         else
             holder.currentSongTextView.setText(mActivity.getResources().getString(R.string.problem_fetching_current_playing_song));
-        SocketExtensionMethods.requestForCurrentSongPlaying(serverObject.GetClientNSD());
 
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,9 +162,14 @@ public class NearbyDevicesRecyclerViewAdapter extends RecyclerView.Adapter<Nearb
                                if(text.equals(mActivity.getResources().getString(R.string.request_for_group_play_text)))
                                    ClientHelper.requestForGroupPlay(serverObject);
 
-                                else if(text.equals(mActivity.getResources().getString(R.string.get_current_playing_song))){
+                                else if(text.equals(mActivity.getResources().getString(R.string.get_current_playing_song)))
                                    ClientHelper.requestForCurrentSong(serverObject);
-                               }
+
+                                   else if(text.equals(mActivity.getResources().getString(R.string.accept_all_transfers_without_confirmation)))
+                                       SharedPreferenceHelper.setClientTransferRequestAlwaysAccept(mActivity, serverObject.getMacAddress(), true);
+
+                                        else if(text.equals(mActivity.getResources().getString(R.string.prompt_confirmation_before_initating_transfers)))
+                                            SharedPreferenceHelper.setClientTransferRequestAlwaysAccept(mActivity, serverObject.getMacAddress(), false);
                             }
                         })
                         .show();
@@ -180,6 +188,14 @@ public class NearbyDevicesRecyclerViewAdapter extends RecyclerView.Adapter<Nearb
 
         if(serverObject.getCurrentSongPlaying() != null)
             dialogOptions.add(mActivity.getResources().getString(R.string.get_current_playing_song));
+
+        if(serverObject.getMacAddress() != null){
+            if(!SharedPreferenceHelper.getClientTransferRequestAlwaysAccept(mActivity, serverObject.getMacAddress()))
+                dialogOptions.add(mActivity.getResources().getString(R.string.accept_all_transfers_without_confirmation));
+            else
+                dialogOptions.add(mActivity.getResources().getString(R.string.prompt_confirmation_before_initating_transfers));
+        }
+
 
         return dialogOptions;
     }

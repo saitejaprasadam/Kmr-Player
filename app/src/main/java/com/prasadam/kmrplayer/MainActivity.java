@@ -12,7 +12,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,7 +23,7 @@ import android.widget.Toast;
 import com.prasadam.kmrplayer.ListenerClasses.GoogleLoginListeners;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
-import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.MusicPlayerExtensionMethods;
+import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicPlayerExtensionMethods;
 import com.prasadam.kmrplayer.Fragments.AlbumsFragment;
 import com.prasadam.kmrplayer.Fragments.ArtistFragment;
 import com.prasadam.kmrplayer.Fragments.SongsFragment;
@@ -118,6 +117,7 @@ public class MainActivity extends VerticalSlidingDrawerBaseActivity implements N
         setNavigationDrawer();
         setStatusBarTranslucent(MainActivity.this);
         MusicPlayerExtensionMethods.startMusicService(MainActivity.this);
+        SharedVariables.globalActivityContext = this;
         SocketExtensionMethods.startNSDServices(this);
     }
 

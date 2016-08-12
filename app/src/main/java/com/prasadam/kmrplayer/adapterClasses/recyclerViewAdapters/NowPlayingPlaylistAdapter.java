@@ -23,14 +23,14 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ShareIntentHelper;
-import com.prasadam.kmrplayer.MainActivity;
+import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.Controls;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
-import com.prasadam.kmrplayer.AdapterClasses.UIAdapters.NowPlayingPlaylistInterfaces;
+import com.prasadam.kmrplayer.AdapterClasses.Interfaces.NowPlayingPlaylistInterfaces;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
-import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.MusicPlayerExtensionMethods;
-import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.PlayerConstants;
+import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicPlayerExtensionMethods;
+import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.PlayerConstants;
 import com.prasadam.kmrplayer.Fragments.SongsFragment;
 import com.prasadam.kmrplayer.VerticalSlidingDrawerBaseActivity;
 
@@ -127,14 +127,34 @@ public class NowPlayingPlaylistAdapter extends RecyclerView.Adapter<NowPlayingPl
                                             .onPositive(new MaterialDialog.SingleButtonCallback() {
                                                 @Override
                                                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                                    File file = new File(currentSongDetails.getData());
-                                                    if(file.delete())
-                                                    {
-                                                        Toast.makeText(context, "Song Deleted : \'" + currentSongDetails.getTitle() + "\'", Toast.LENGTH_SHORT).show();
-                                                        context.getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.MediaColumns._ID + "='" + currentSongDetails.getID() + "'", null);
-                                                        AudioExtensionMethods.updateLists(context);
-                                                        notifyDataSetChanged();
-                                                    }
+                                                    new Thread(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            new Thread(new Runnable() {
+                                                                @Override
+                                                                public void run() {
+                                                                    File file = new File(currentSongDetails.getData());
+                                                                    if (file.delete()) {
+                                                                        if (position == PlayerConstants.SONG_NUMBER)
+                                                                            Controls.nextControl(context);
+
+                                                                        PlayerConstants.SONGS_LIST.remove(position);
+                                                                        mActivity.runOnUiThread(new Runnable() {
+                                                                            @Override
+                                                                            public void run() {
+                                                                                notifyItemRemoved(position);
+                                                                                Toast.makeText(context, "Song Deleted : \'" + currentSongDetails.getTitle() + "\'", Toast.LENGTH_SHORT).show();
+                                                                                context.getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.MediaColumns._ID + "='" + currentSongDetails.getID() + "'", null);
+                                                                            }
+                                                                        });
+
+                                                                        AudioExtensionMethods.updateLists(context);
+                                                                    } else
+                                                                        Toast.makeText(context, context.getResources().getString(R.string.problem_deleting_song), Toast.LENGTH_SHORT).show();
+                                                                }
+                                                            });
+                                                        }
+                                                    }).start();
                                                 }
                                             })
                                             .negativeText(R.string.cancel_text)
@@ -165,7 +185,7 @@ public class NowPlayingPlaylistAdapter extends RecyclerView.Adapter<NowPlayingPl
                                     break;
 
                                 case R.id.song_context_menu_jump_to_album:
-                                    ActivitySwitcher.jumpToAlbum(context, currentSongDetails.getAlbum());
+                                    ActivitySwitcher.jumpToAlbum(mActivity, currentSongDetails.getAlbum());
                                     break;
 
                                 case R.id.song_context_menu_jump_to_artist:

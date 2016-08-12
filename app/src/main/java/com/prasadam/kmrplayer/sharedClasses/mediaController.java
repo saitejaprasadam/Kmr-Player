@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 
-import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.MusicService;
+import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicService;
 
 /*
  * Created by Prasadam Saiteja on 2/28/2016.

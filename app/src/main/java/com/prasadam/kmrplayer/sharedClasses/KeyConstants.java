@@ -14,7 +14,9 @@ public class KeyConstants extends com.prasadam.kmrplayer.SocketClasses.SocketsKe
     public static final String ACTIVITY_NEARBY_DEVICES = "NearbyDevicesActivity";
     public static final String ACTIVITY_MAIN = "MainActivity";
 
-    public static final int TAG_EDITOR_REQUEST_CODE = 1104;
     public static final String SPECIAL_CHAR = "Ӝ";
     public static final String EMPTY_FRAGMENT_TAG = "EMPTY_FRAGMENT_TAG";
+
+    public static final int REQUEST_CODE_DELETE_ALBUM = 44980231;
+    public static final int REQUEST_CODE_TAG_EDITOR = 1104;
 }

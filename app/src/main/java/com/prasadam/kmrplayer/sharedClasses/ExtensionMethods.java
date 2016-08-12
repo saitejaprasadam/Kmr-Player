@@ -22,6 +22,7 @@ public class ExtensionMethods {
 
     public static String formatIntoHHMMSS(int secsIn) {
 
+        secsIn = secsIn / 1000;
         int hours = secsIn / 3600;
         int minutes = (secsIn % 3600) / 60;
         int seconds = (secsIn % 3600) % 60;
@@ -83,7 +84,7 @@ public class ExtensionMethods {
     }
 
     public static String deviceName(){
-        return BluetoothAdapter.getDefaultAdapter().getName();
+        return BluetoothAdapter.getDefaultAdapter().getName().replaceAll(KeyConstants.SPACE, KeyConstants.SPECIAL_CHAR);
     }
 
     public static String getTimeStamp(){

@@ -1,4 +1,4 @@
-package com.prasadam.kmrplayer.AudioPackages.musicServiceClasses;
+package com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses;
 
 import java.util.ArrayList;
 import android.os.Handler;

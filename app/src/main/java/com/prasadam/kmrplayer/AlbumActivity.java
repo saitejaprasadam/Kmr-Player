@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -34,7 +33,7 @@ import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.AlbumInnerLayo
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.BlurBuilder;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
-import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.MusicPlayerExtensionMethods;
+import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicPlayerExtensionMethods;
 import com.prasadam.kmrplayer.AdapterClasses.UIAdapters.DividerItemDecoration;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
@@ -172,7 +171,7 @@ public class AlbumActivity extends VerticalSlidingDrawerBaseActivity {
 
         songsList = AudioExtensionMethods.getSongList(this, albumTitle);
         albumArtist = AudioExtensionMethods.getAlbumArtistTitle(this, albumTitle);
-        recyclerViewAdapter = new AlbumInnerLayoutSongRecyclerViewAdapter(this, songsList, albumTitle);
+        recyclerViewAdapter = new AlbumInnerLayoutSongRecyclerViewAdapter(this, songsList);
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.songs_recylcer_view_layout);
 
         runOnUiThread(new Runnable() {
@@ -214,13 +213,20 @@ public class AlbumActivity extends VerticalSlidingDrawerBaseActivity {
                                     .onPositive(new MaterialDialog.SingleButtonCallback() {
                                         @Override
                                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                            for (Song song : songsList) {
+                                            for (final Song song : songsList) {
                                                 File file = new File(song.getData());
-                                                if(file.delete())
+                                                if (file.delete())
                                                     getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.MediaColumns._ID + "='" + song.getID() + "'", null);
                                             }
-                                            AudioExtensionMethods.updateLists(AlbumActivity.this);
+
                                             Toast.makeText(AlbumActivity.this, "Album Deleted : \'" + albumTitle + "\'", Toast.LENGTH_SHORT).show();
+                                            Intent returnIntent = new Intent();
+                                            setResult(Activity.RESULT_OK, returnIntent);
+                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                                                finishAfterTransition();
+
+                                            else
+                                                finish();
                                             finish();
                                         }
                                     })
@@ -262,7 +268,7 @@ public class AlbumActivity extends VerticalSlidingDrawerBaseActivity {
         });
     }
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == KeyConstants.TAG_EDITOR_REQUEST_CODE) {
+        if (requestCode == KeyConstants.REQUEST_CODE_TAG_EDITOR) {
             if(resultCode == Activity.RESULT_OK)
                 recyclerViewAdapter.notifyDataSetChanged();
         }

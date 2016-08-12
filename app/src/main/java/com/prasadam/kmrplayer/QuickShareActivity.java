@@ -1,6 +1,11 @@
 package com.prasadam.kmrplayer;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,6 +32,7 @@ public class QuickShareActivity extends AppCompatActivity{
 
     public static TextView NoDevicesTextView;
     public static NearbyDevicesRecyclerViewAdapter QuickShareRecyclerviewAdapter;
+    private BroadcastReceiver receiver;
 
     public void onCreate(Bundle bundle){
         super.onCreate(bundle);
@@ -35,11 +41,36 @@ public class QuickShareActivity extends AppCompatActivity{
         final ArrayList<String> songsPathList = getIntent().getStringArrayListExtra(KeyConstants.INTENT_SONGS_PATH_LIST);
         NoDevicesTextView = (TextView) findViewById(R.id.no_devices_available_text_view);
         InitActionBarAndToolBar();
+        DialogHelper.checkForNetworkState(this, (FloatingActionButton) findViewById(R.id.wifi_fab));
+        wifiBroadCastReceiver();
         setRecyclerView(songsPathList);
     }
     public void onResume() {
         super.onResume();
         SharedVariables.globalActivityContext = this;
+    }
+    public void onDestroy(){
+        if (receiver != null) {
+            unregisterReceiver(receiver);
+            receiver = null;
+        }
+        super.onDestroy();
+    }
+
+    private void wifiBroadCastReceiver() {
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.net.wifi.STATE_CHANGE");
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        filter.addAction("android.net.wifi.WIFI_AP_STATE_CHANGED");
+
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                DialogHelper.checkForNetworkState(QuickShareActivity.this, (FloatingActionButton) findViewById(R.id.wifi_fab));
+            }
+        };
+        registerReceiver(receiver, filter);
     }
 
     private void InitActionBarAndToolBar() {

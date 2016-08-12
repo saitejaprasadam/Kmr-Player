@@ -5,11 +5,8 @@ import android.content.Context;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -27,7 +24,7 @@ import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
-import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.MusicPlayerExtensionMethods;
+import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicPlayerExtensionMethods;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -39,13 +36,13 @@ import butterknife.ButterKnife;
  * Created by Prasadam Saiteja on 5/28/2016.
  */
 
-public class SongRecyclerViewAdapterForArtistActivity extends RecyclerView.Adapter<SongRecyclerViewAdapterForArtistActivity.songsViewHolder>{
+public class ArtistInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapter<ArtistInnerLayoutSongRecyclerViewAdapter.songsViewHolder>{
 
     private LayoutInflater inflater;
-    private Context context;
+    private Activity context;
     private ArrayList<Song> songsList;
 
-    public SongRecyclerViewAdapterForArtistActivity(Context context, ArrayList<Song> recentlyAddedSongsList){
+    public ArtistInnerLayoutSongRecyclerViewAdapter(Activity context, ArrayList<Song> recentlyAddedSongsList){
         this.context = context;
         this.songsList = recentlyAddedSongsList;
         inflater = LayoutInflater.from(context);
@@ -91,7 +88,87 @@ public class SongRecyclerViewAdapterForArtistActivity extends RecyclerView.Adapt
         holder.contextMenuView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final PopupMenu popup = new PopupMenu(v.getContext(), holder.favoriteButton);
+
+                new MaterialDialog.Builder(context)
+                        .title(currentSongDetails.getTitle())
+                        .titleColor(context.getResources().getColor(R.color.colorPrimary))
+                        .itemsColor(context.getResources().getColor(R.color.black))
+                        .items(R.array.song_item_menu_album_inner_layout)
+                        .itemsCallback(new MaterialDialog.ListCallback() {
+                            @Override
+                            public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                                switch(which)
+                                {
+                                    case 0:
+                                        ActivitySwitcher.jumpToQuickShareActivity(context, currentSongDetails);
+                                        break;
+
+                                    case 1:
+                                        ShareIntentHelper.sendSong(context, currentSongDetails.getTitle(), Uri.parse(currentSongDetails.getData()));
+                                        break;
+
+                                    case 2:
+                                        MusicPlayerExtensionMethods.playNext(context, currentSongDetails);
+                                        break;
+
+                                    case 3:
+                                        DialogHelper.AddToDialog(context, currentSongDetails);
+                                        break;
+
+                                    case 4:
+                                        ActivitySwitcher.jumpToAlbum(context, currentSongDetails.getAlbum());
+                                        break;
+
+                                    case 5:
+                                        ActivitySwitcher.launchTagEditor((Activity) context, currentSongDetails.getID(), position);
+                                        break;
+
+                                    case 6:
+                                        AudioExtensionMethods.setSongAsRingtone(context, currentSongDetails);
+                                        break;
+
+                                    case 7:
+                                        AudioExtensionMethods.songDetails(context, currentSongDetails, holder.albumPath);
+                                        break;
+
+                                    case 8:
+                                        new MaterialDialog.Builder(context)
+                                                .content("Delete this song \'" +  currentSongDetails.getTitle() + "\' ?")
+                                                .positiveText(R.string.delete_text)
+                                                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                                    @Override
+                                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                                        new Thread(new Runnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                File file = new File(currentSongDetails.getData());
+                                                                if (file.delete()) {
+                                                                    songsList.remove(position);
+                                                                    context.runOnUiThread(new Runnable() {
+                                                                        @Override
+                                                                        public void run() {
+                                                                            notifyItemRemoved(position);
+                                                                            Toast.makeText(context, "Song Deleted : \'" + currentSongDetails.getTitle() + "\'", Toast.LENGTH_SHORT).show();
+                                                                            context.getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.MediaColumns._ID + "='" + currentSongDetails.getID() + "'", null);
+                                                                        }
+                                                                    });
+
+                                                                    AudioExtensionMethods.updateLists(context);
+                                                                } else
+                                                                    Toast.makeText(context, context.getResources().getString(R.string.problem_deleting_song), Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        });
+                                                    }
+                                                })
+                                                .negativeText(R.string.cancel_text)
+                                                .show();
+                                        break;
+                                }
+                            }
+                        })
+                        .show();
+
+                /*final PopupMenu popup = new PopupMenu(v.getContext(), holder.favoriteButton);
                 popup.inflate(R.menu.song_item_menu_artist_inner_layout);
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
@@ -164,7 +241,7 @@ public class SongRecyclerViewAdapterForArtistActivity extends RecyclerView.Adapt
                         return true;
                     }
                 });
-                popup.show();
+                popup.show();*/
             }
         });
     }

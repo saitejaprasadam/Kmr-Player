@@ -5,13 +5,13 @@ import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 
 /*
- * Created by Prasadam Saiteja on 7/28/2016.
+ * Created by Prasadam Saiteja on 8/8/2016.
  */
 
-public class SquareViewPager extends ViewPager{
+public class SquareViewPagerInverted extends ViewPager{
 
-    public SquareViewPager(Context context) {super(context);}
-    public SquareViewPager(Context context, AttributeSet attrs) {
+    public SquareViewPagerInverted(Context context) {super(context);}
+    public SquareViewPagerInverted(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
@@ -19,7 +19,7 @@ public class SquareViewPager extends ViewPager{
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        int width = getMeasuredWidth();
-        setMeasuredDimension(width, width);
+        int height = getMeasuredHeight();
+        setMeasuredDimension(height, height);
     }
 }

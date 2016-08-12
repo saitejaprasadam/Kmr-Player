@@ -1,13 +1,11 @@
-package com.prasadam.kmrplayer.AudioPackages.musicServiceClasses;
+package com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.prasadam.kmrplayer.MainActivity;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
@@ -56,9 +54,37 @@ public class MusicPlayerExtensionMethods {
     }
 
     public static void playSong(Activity mActivity, final ArrayList<Song> songsList, int position){
+
         PlayerConstants.SONG_PAUSED = false;
-        PlayerConstants.SONGS_LIST = songsList;
-        PlayerConstants.SONG_NUMBER = position;
+
+        if(PlayerConstants.SHUFFLE){
+            PlayerConstants.HASH_ID_CURRENT_PLAYLIST.clear();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    for (Song song: songsList) {
+                        PlayerConstants.HASH_ID_CURRENT_PLAYLIST.add(song.getHashID());
+                    }
+                }
+            }).start();
+
+            long seed = System.nanoTime();
+            ArrayList<Song> shuffledPlaylist = new ArrayList<>(songsList);
+            Collections.shuffle(shuffledPlaylist, new Random(seed));
+            PlayerConstants.SONGS_LIST.clear();
+            PlayerConstants.SONGS_LIST.add(songsList.get(position));
+            PlayerConstants.SONG_NUMBER = 0;
+            for (Song song : shuffledPlaylist) {
+                if(!PlayerConstants.SONGS_LIST.contains(song))
+                    PlayerConstants.SONGS_LIST.add(song);
+            }
+        }
+
+        else{
+            PlayerConstants.SONGS_LIST = songsList;
+            PlayerConstants.SONG_NUMBER = position;
+        }
+
         boolean isServiceRunning = UtilFunctions.isServiceRunning(MusicService.class.getName(), mActivity);
         if (!isServiceRunning) {
             Intent i = new Intent(mActivity, MusicService.class);
@@ -70,7 +96,6 @@ public class MusicPlayerExtensionMethods {
             VerticalSlidingDrawerBaseActivity.updateAlbumAdapter();
             PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
         }
-
 
         PlayerConstants.HASH_ID_CURRENT_PLAYLIST.clear();
         new Thread(new Runnable() {
@@ -171,6 +196,9 @@ public class MusicPlayerExtensionMethods {
         }
 
         PlayerConstants.SONGS_LIST.add(PlayerConstants.SONG_NUMBER + 1, songToBeAdded);
+        if(PlayerConstants.SHUFFLE)
+            PlayerConstants.HASH_ID_CURRENT_PLAYLIST.add(songToBeAdded.getHashID());
+
         Toast.makeText(context, "Song will be played next", Toast.LENGTH_SHORT).show();
         VerticalSlidingDrawerBaseActivity.updateAlbumAdapter();
     }
@@ -188,6 +216,8 @@ public class MusicPlayerExtensionMethods {
         int index = 1;
         for (Song songToBeAdded : songsToBeAdded){
             PlayerConstants.SONGS_LIST.add(PlayerConstants.SONG_NUMBER + index, songToBeAdded);
+            if(PlayerConstants.SHUFFLE)
+                PlayerConstants.HASH_ID_CURRENT_PLAYLIST.add(songToBeAdded.getHashID());
             index++;
         }
 

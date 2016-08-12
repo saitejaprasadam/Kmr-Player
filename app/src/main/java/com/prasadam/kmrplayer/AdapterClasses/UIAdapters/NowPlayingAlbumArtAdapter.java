@@ -5,13 +5,18 @@ import android.net.Uri;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
 
-import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.PlayerConstants;
+import com.prasadam.kmrplayer.AdapterClasses.Interfaces.OnDoubleTapListener;
+import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.PlayerConstants;
+import com.prasadam.kmrplayer.Fragments.SongsFragment;
 import com.prasadam.kmrplayer.R;
+import com.prasadam.kmrplayer.VerticalSlidingDrawerBaseActivity;
 
 import java.io.File;
 import java.util.HashMap;
@@ -53,6 +58,20 @@ public class NowPlayingAlbumArtAdapter extends PagerAdapter {
         LayoutInflater inflater = activity.getLayoutInflater();
         View view = inflater.inflate(R.layout.fragment_now_playing_album_view, null);
         ImageView imageView = (ImageView) view.findViewById(R.id.vertical_slide_drawer_actual_image_view);
+        imageView.setOnTouchListener(new OnDoubleTapListener(activity){
+            @Override
+            public void onDoubleTap(MotionEvent e) {
+                if(PlayerConstants.SONGS_LIST.get(PlayerConstants.SONG_NUMBER).getIsLiked(activity))
+                    PlayerConstants.SONGS_LIST.get(PlayerConstants.SONG_NUMBER).setIsLiked(activity, false);
+                else
+                    PlayerConstants.SONGS_LIST.get(PlayerConstants.SONG_NUMBER).setIsLiked(activity, true);
+
+                SongsFragment.recyclerViewAdapter.notifyDataSetChanged();
+                VerticalSlidingDrawerBaseActivity.updateSongLikeStatus(activity);
+                VerticalSlidingDrawerBaseActivity.recyclerViewAdapter.notifyDataSetChanged();
+            }
+        });
+
         String albumArtPath = PlayerConstants.SONGS_LIST.get(position).getAlbumArtLocation();
 
         if(albumArtPath != null) {

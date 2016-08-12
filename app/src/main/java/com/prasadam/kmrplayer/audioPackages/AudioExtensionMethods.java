@@ -134,7 +134,7 @@ public class AudioExtensionMethods {
         try
         {
             content.append(context.getString(R.string.file_size_text) + " : " + ExtensionMethods.readableFileSize(songFile.length()) + "\n\n");
-            content.append(context.getString(R.string.duration_text) + " : " + ExtensionMethods.formatIntoHHMMSS((int)currentSongDetails.getDuration()/ 1000) + "\n\n");
+            content.append(context.getString(R.string.duration_text) + " : " + ExtensionMethods.formatIntoHHMMSS((int)currentSongDetails.getDuration()) + "\n\n");
         }
         catch (Exception ignored){}
 

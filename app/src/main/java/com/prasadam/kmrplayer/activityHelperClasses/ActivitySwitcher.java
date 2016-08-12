@@ -17,7 +17,7 @@ import com.prasadam.kmrplayer.QuickShareActivity;
 import com.prasadam.kmrplayer.SearchActivity;
 import com.prasadam.kmrplayer.TagEditorActivity;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
-import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.MusicService;
+import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicService;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ import java.util.ArrayList;
 
 public class ActivitySwitcher {
 
-    public static void jumpToAlbum(final Context context, final String albumTitle) {
+    public static void jumpToAlbum(final Activity context, final String albumTitle) {
         Intent albumActivityIntent = new Intent(context, AlbumActivity.class);
         albumActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         albumActivityIntent.putExtra("albumTitle", albumTitle);
@@ -62,7 +62,7 @@ public class ActivitySwitcher {
         Intent tagEditorIntent = new Intent(mActivity, TagEditorActivity.class);
         tagEditorIntent.putExtra("songID", String.valueOf(songID));
         tagEditorIntent.putExtra("position", position);
-        mActivity.startActivityForResult(tagEditorIntent, KeyConstants.TAG_EDITOR_REQUEST_CODE);
+        mActivity.startActivityForResult(tagEditorIntent, KeyConstants.REQUEST_CODE_TAG_EDITOR);
     }
 
     public static void initEqualizer(final Context context) {

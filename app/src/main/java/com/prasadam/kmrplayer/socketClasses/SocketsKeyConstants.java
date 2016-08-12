@@ -1,6 +1,4 @@
-package com.prasadam.kmrplayer.SocketClasses;/*
- * Created by Prasadam Saiteja on 7/19/2016.
- */
+package com.prasadam.kmrplayer.SocketClasses;
 
 import android.os.Environment;
 
@@ -8,6 +6,10 @@ import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 
 import java.io.File;
+
+/*
+ * Created by Prasadam Saiteja on 7/19/2016.
+ */
 
 public class SocketsKeyConstants {
     public static final String TABLET = "TABLET";
@@ -45,4 +47,9 @@ public class SocketsKeyConstants {
 
     public static final String SOCKET_REQUEST_CURRENT_SONG = "SOCKET_REQUEST_CURRENT_SONG";
     public static final String SOCKET_CURRENT_SONG_RESULT = "SOCKET_CURRENT_SONG_RESULT";
+
+    public static final String SOCKET_FEATURE_NOT_AVAILABLE = "SOCKET_FEATURE_NOT_AVAILABLE";
+
+    public static final String SOCKET_REQUEST_MAC_ADDRESS = "SOCKET_REQUEST_MAC_ADDRESS";
+    public static final String SOCKET_MAC_ADDRESS_RESULT = "SOCKET_MAC_ADDRESS_RESULT";
 }

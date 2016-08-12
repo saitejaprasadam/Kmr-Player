@@ -28,7 +28,7 @@ import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
-import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.MusicPlayerExtensionMethods;
+import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicPlayerExtensionMethods;
 import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
@@ -113,14 +113,29 @@ public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Song
                                             .onPositive(new MaterialDialog.SingleButtonCallback() {
                                                 @Override
                                                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                                    File file = new File(currentSongDetails.getData());
-                                                    if(file.delete())
-                                                    {
-                                                        Toast.makeText(context, "Song Deleted : \'" + currentSongDetails.getTitle() + "\'", Toast.LENGTH_SHORT).show();
-                                                        context.getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.MediaColumns._ID + "='" + currentSongDetails.getID() + "'", null);
-                                                        AudioExtensionMethods.updateLists(context);
-                                                        notifyDataSetChanged();
-                                                    }
+                                                    new Thread(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            File file = new File(currentSongDetails.getData());
+                                                            if(file.delete())
+                                                            {
+                                                                SharedVariables.fullSongsList.remove(position);
+                                                                activity.runOnUiThread(new Runnable() {
+                                                                    @Override
+                                                                    public void run() {
+                                                                        notifyItemRemoved(position);
+                                                                        Toast.makeText(context, "Song Deleted : \'" + currentSongDetails.getTitle() + "\'", Toast.LENGTH_SHORT).show();
+                                                                        context.getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.MediaColumns._ID + "='" + currentSongDetails.getID() + "'", null);}
+                                                                });
+
+                                                                AudioExtensionMethods.updateAlbumList(context);
+                                                                AudioExtensionMethods.updateArtistList(context);
+                                                            }
+
+                                                            else
+                                                                Toast.makeText(context, context.getResources().getString(R.string.problem_deleting_song), Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    }).start();
                                                 }
                                             })
                                             .negativeText(R.string.cancel_text)
@@ -140,7 +155,7 @@ public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Song
                                     break;
 
                                 case R.id.song_context_menu_details:
-                                    AudioExtensionMethods.songDetails(activity, currentSongDetails, holder.albumPath);
+                                    AudioExtensionMethods.songDetails(context, currentSongDetails, holder.albumPath);
                                     break;
 
                                 case R.id.song_context_menu_ringtone:
@@ -156,7 +171,7 @@ public class SongRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Song
                                     break;
 
                                 case R.id.song_context_menu_jump_to_album:
-                                    ActivitySwitcher.jumpToAlbum(context, currentSongDetails.getAlbum());
+                                    ActivitySwitcher.jumpToAlbum(activity, currentSongDetails.getAlbum());
                                     break;
 
                                 case R.id.song_context_menu_jump_to_artist:

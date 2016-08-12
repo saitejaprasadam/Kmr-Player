@@ -27,7 +27,7 @@ import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
-import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.MusicPlayerExtensionMethods;
+import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicPlayerExtensionMethods;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -42,10 +42,10 @@ import butterknife.ButterKnife;
 public class CustomPlaylistSongsRecylcerViewAdapter extends RecyclerView.Adapter<CustomPlaylistSongsRecylcerViewAdapter.songsViewHolder>{
 
     private LayoutInflater inflater;
-    private Context context;
+    private Activity context;
     private ArrayList<Song> customPlaylistSongsList;
 
-    public CustomPlaylistSongsRecylcerViewAdapter(Context context, ArrayList<Song> customPlaylistSongsList){
+    public CustomPlaylistSongsRecylcerViewAdapter(Activity context, ArrayList<Song> customPlaylistSongsList){
         this.context = context;
         this.customPlaylistSongsList = customPlaylistSongsList;
         inflater = LayoutInflater.from(context);
@@ -94,7 +94,91 @@ public class CustomPlaylistSongsRecylcerViewAdapter extends RecyclerView.Adapter
         holder.contextMenuView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final PopupMenu popup = new PopupMenu(v.getContext(), holder.favoriteButton);
+
+                new MaterialDialog.Builder(context)
+                        .title(currentSongDetails.getTitle())
+                        .titleColor(context.getResources().getColor(R.color.colorPrimary))
+                        .itemsColor(context.getResources().getColor(R.color.black))
+                        .items(R.array.song_item_menu_artist_inner_layout)
+                        .itemsCallback(new MaterialDialog.ListCallback() {
+
+                            @Override
+                            public void onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
+                                switch(which)
+                                {
+                                    case 0:
+                                        ActivitySwitcher.jumpToQuickShareActivity(context, currentSongDetails);
+                                        break;
+
+                                    case 1:
+                                        ShareIntentHelper.sendSong(context, currentSongDetails.getTitle(), Uri.parse(currentSongDetails.getData()));
+                                        break;
+
+                                    case 2:
+                                        MusicPlayerExtensionMethods.playNext(context, currentSongDetails);
+                                        break;
+
+                                    case 3:
+                                        DialogHelper.AddToDialog(context, currentSongDetails);
+                                        break;
+
+                                    case 4:
+                                        ActivitySwitcher.jumpToAlbum(context, currentSongDetails.getArtist());
+                                        break;
+
+                                    case 5:
+                                        ActivitySwitcher.jumpToArtist(context, currentSongDetails.getArtist());
+                                        break;
+
+                                    case 6:
+                                        ActivitySwitcher.launchTagEditor((Activity) context, currentSongDetails.getID(), position);
+                                        break;
+
+                                    case 7:
+                                        AudioExtensionMethods.setSongAsRingtone(context, currentSongDetails);
+                                        break;
+
+                                    case 8:
+                                        AudioExtensionMethods.songDetails(context, currentSongDetails, holder.albumPath);
+                                        break;
+
+                                    case 9:
+                                        new MaterialDialog.Builder(context)
+                                                .content("Delete this song \'" +  currentSongDetails.getTitle() + "\' ?")
+                                                .positiveText(R.string.delete_text)
+                                                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                                    @Override
+                                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                                        new Thread(new Runnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                File file = new File(currentSongDetails.getData());
+                                                                if (file.delete()) {
+                                                                    customPlaylistSongsList.remove(position);
+                                                                    context.runOnUiThread(new Runnable() {
+                                                                        @Override
+                                                                        public void run() {
+                                                                            notifyItemRemoved(position);
+                                                                            Toast.makeText(context, "Song Deleted : \'" + currentSongDetails.getTitle() + "\'", Toast.LENGTH_SHORT).show();
+                                                                            context.getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.MediaColumns._ID + "='" + currentSongDetails.getID() + "'", null);
+                                                                        }
+                                                                    });
+
+                                                                    AudioExtensionMethods.updateLists(context);
+                                                                } else
+                                                                    Toast.makeText(context, context.getResources().getString(R.string.problem_deleting_song), Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        });
+                                                    }
+                                                })
+                                                .negativeText(R.string.cancel_text)
+                                                .show();
+                                        break;
+                                }
+                            }
+                        }).show();
+
+                /*final PopupMenu popup = new PopupMenu(v.getContext(), holder.favoriteButton);
                 popup.inflate(R.menu.song_item_menu);
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
@@ -167,7 +251,7 @@ public class CustomPlaylistSongsRecylcerViewAdapter extends RecyclerView.Adapter
                         return true;
                     }
                 });
-                popup.show();
+                popup.show();*/
             }
         });
     }

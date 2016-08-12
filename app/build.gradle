@@ -47,4 +47,5 @@ dependencies {
     compile 'com.github.jd-alexander:LikeButton:0.2.0'
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.0-beta1'
     compile 'com.afollestad:material-cab:0.1.12'
+    compile 'org.adw.library:discrete-seekbar:1.0.1'
 }

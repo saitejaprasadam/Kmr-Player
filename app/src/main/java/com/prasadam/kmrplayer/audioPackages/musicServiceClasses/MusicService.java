@@ -1,4 +1,4 @@
-package com.prasadam.kmrplayer.AudioPackages.musicServiceClasses;
+package com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;

@@ -2,9 +2,12 @@ package com.prasadam.kmrplayer;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -29,6 +32,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,17 +44,20 @@ import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ShareIntentHelper;
 import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.NowPlayingPlaylistAdapter;
 import com.prasadam.kmrplayer.AdapterClasses.UIAdapters.NowPlayingAlbumArtAdapter;
-import com.prasadam.kmrplayer.AdapterClasses.UIAdapters.NowPlayingPlaylistInterfaces;
-import com.prasadam.kmrplayer.AdapterClasses.UIAdapters.SimpleItemTouchHelperCallback;
+import com.prasadam.kmrplayer.AdapterClasses.Interfaces.NowPlayingPlaylistInterfaces;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.BlurBuilder;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
-import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.Controls;
-import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.MusicPlayerExtensionMethods;
-import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.MusicService;
-import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.PlayerConstants;
+import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.Controls;
+import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicPlayerExtensionMethods;
+import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicService;
+import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.PlayerConstants;
+import com.prasadam.kmrplayer.Fragments.AlbumsFragment;
+import com.prasadam.kmrplayer.Fragments.ArtistFragment;
 import com.prasadam.kmrplayer.Fragments.SongsFragment;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
+import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
+import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.File;
@@ -79,6 +86,9 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
     private static RelativeLayout nowPlayingsongInfoCardView;
     private static CardView nowPlayingAlbumArtContainer;
     protected static RelativeLayout nowPlayingMinimalRootLayout;
+    private static SeekBar nowPlayingSeekBar;
+    private TextView nowPlayingCurrentDuration;
+    private static TextView nowPlayingMaxDuration;
     private static int width;
 
     @Override
@@ -90,12 +100,34 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
         getLayoutInflater().inflate(layoutResID, actContent, true);
         super.setContentView(mainLayoutRootLayout);
 
+        Toolbar nowPlayingToolbar = (Toolbar) findViewById(R.id.now_playing_toolbar);
+        nowPlayingToolbar.setNavigationIcon(R.mipmap.ic_keyboard_arrow_down_white_24dp);
+        nowPlayingToolbar.inflateMenu(R.menu.fragment_now_playing_menu);
+        nowPlayingToolbar.setOverflowIcon(getResources().getDrawable(R.mipmap.ic_more_vert_white_24dp));
+        setNowPlayingToolBarMenuListener(nowPlayingToolbar);
+        nowPlayingToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mainLayoutRootLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+            }
+        });
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+            nowPlayingToolbar.setPadding(0, ExtensionMethods.getStatusBarHeight(this), 0, 0);
+
         initalize();
     }
     public void onResume() {
         super.onResume();
         if(mainLayoutRootLayout != null && mainLayoutRootLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED)
             nowPlayingMinimalRootLayout.setVisibility(View.INVISIBLE);
+
+        if((ExtensionMethods.isTablet(VerticalSlidingDrawerBaseActivity.this) && ExtensionMethods.isLandScape(VerticalSlidingDrawerBaseActivity.this))){
+            nowPlayingPlaylistRecyclerView.setVisibility(View.VISIBLE);
+            nowPlayingPlaylistRecyclerView.scrollToPosition(PlayerConstants.SONG_NUMBER);
+        }
+
+
         initalize();
         updateNowPlayingUI(this);
     }
@@ -129,30 +161,27 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
         nowPlayingMinimalNextButton = (ImageView) findViewById(R.id.now_playing_minimal_next_button);
         nowPlayingMinimalPlayButton = (ImageView) findViewById(R.id.now_playing_minimal_play_button);
         nowPlayingSongContextMenu = (ImageView) findViewById(R.id.now_playing_song_context_menu);
-        Toolbar nowPlayingToolbar = (Toolbar) findViewById(R.id.now_playing_toolbar);
         nowPlayingShuffleButton = (ImageView) findViewById(R.id.now_playing_shuffle_button);
         nowPlayingRepeatButton = (ImageView) findViewById(R.id.now_playing_repeat_button);
         nowPlayingMinimalProgressBar = (ProgressBar) findViewById(R.id.now_playing_minimal_progress_bar);
         nowPlayingsongInfoCardView = (RelativeLayout) findViewById(R.id.now_playing_song_info_layout);
         nowPlayingAlbumArtContainer = (CardView) findViewById(R.id.now_playing_album_art_container);
         nowPlayingPlaylistRecyclerView = (RecyclerView) findViewById(R.id.now_playing_playlist_recycler_view);
+        nowPlayingSeekBar = (SeekBar) findViewById(R.id.window_song_seekbar);
+        nowPlayingMaxDuration = (TextView) findViewById(R.id.now_playing_max_duration);
+        nowPlayingCurrentDuration = (TextView) findViewById(R.id.now_playing_current_duration);
 
-        nowPlayingToolbar.setNavigationIcon(R.mipmap.ic_keyboard_arrow_down_white_24dp);
-        nowPlayingToolbar.inflateMenu(R.menu.fragment_now_playing_menu);
-        nowPlayingToolbar.setOverflowIcon(getResources().getDrawable(R.mipmap.ic_more_vert_white_24dp));
-        setNowPlayingToolBarMenuListener(nowPlayingToolbar);
-        nowPlayingToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mainLayoutRootLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-            }
-        });
+        nowPlayingSeekBar.getProgressDrawable().setColorFilter(getResources().getColor(R.color.colorAccentGeneric), PorterDuff.Mode.MULTIPLY);
+        if(!(ExtensionMethods.isLandScape(this) && !ExtensionMethods.isTablet(this)))
+            nowPlayingSeekBar.setPadding(0, 0, 0, 0);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-            nowPlayingToolbar.setPadding(0, ExtensionMethods.getStatusBarHeight(this), 0, 0);
-
+        if(mainLayoutRootLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED)
+            nowPlayingMinimalRootLayout.setVisibility(View.INVISIBLE);
         else
             nowPlayingMinimalRootLayout.setVisibility(View.VISIBLE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+            nowPlayingPlaylistRecyclerView.setPadding(0, ExtensionMethods.getStatusBarHeight(this), 0, 0);
 
         nowPlayingListeners();
         setNowPlayingSongContextMenu();
@@ -215,7 +244,7 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
                 else
                     nowPlayingMinimalRootLayout.setVisibility(View.VISIBLE);
 
-                if(newState == SlidingUpPanelLayout.PanelState.COLLAPSED){
+                if(newState == SlidingUpPanelLayout.PanelState.COLLAPSED && !(ExtensionMethods.isTablet(VerticalSlidingDrawerBaseActivity.this) && ExtensionMethods.isLandScape(VerticalSlidingDrawerBaseActivity.this))){
                     hidePlaylist();
                 }
             }
@@ -229,9 +258,11 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
             @Override
             public void onClick(View v) {
                 recyclerViewAdapter.notifyDataSetChanged();
-                if(!PlayerConstants.SHOWING_PLAYLIST)
+
+                if(!PlayerConstants.SHOWING_PLAYLIST && !(ExtensionMethods.isTablet(VerticalSlidingDrawerBaseActivity.this) && ExtensionMethods.isLandScape(VerticalSlidingDrawerBaseActivity.this)))
                     showPlaylist();
-                else
+
+                else if(PlayerConstants.SHOWING_PLAYLIST && !(ExtensionMethods.isTablet(VerticalSlidingDrawerBaseActivity.this) && ExtensionMethods.isLandScape(VerticalSlidingDrawerBaseActivity.this)))
                     hidePlaylist();
             }
         });
@@ -291,9 +322,32 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
             public void run() {
                 if(MusicService.player != null){
                     int mCurrentPosition = MusicService.player.getCurrentPosition();
-                    nowPlayingMinimalProgressBar.setProgress(mCurrentPosition);
+                    if(MusicService.currentSong != null && mCurrentPosition <= MusicService.currentSong.getDuration()){
+                        nowPlayingMinimalProgressBar.setProgress(mCurrentPosition);
+                        nowPlayingCurrentDuration.setText(ExtensionMethods.formatIntoHHMMSS(mCurrentPosition));
+                        if(!nowPlayingSeekBar.isInEditMode())
+                            nowPlayingSeekBar.setProgress(mCurrentPosition);
+                    }
                 }
                 mHandler.postDelayed(this, 1000);
+            }
+        });
+
+        nowPlayingSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                MusicService.player.seekTo(seekBar.getProgress());
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress,boolean fromUser) {
+
             }
         });
     }
@@ -320,14 +374,24 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
                                             .onPositive(new MaterialDialog.SingleButtonCallback() {
                                                 @Override
                                                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                                    File file = new File(MusicService.currentSong.getData());
-                                                    if(file.delete())
-                                                    {
-                                                        Controls.nextControl(VerticalSlidingDrawerBaseActivity.this);
-                                                        Toast.makeText(VerticalSlidingDrawerBaseActivity.this, "Song Deleted : \'" + MusicService.currentSong.getTitle() + "\'", Toast.LENGTH_SHORT).show();
-                                                        VerticalSlidingDrawerBaseActivity.this.getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.MediaColumns._ID + "='" + MusicService.currentSong.getID() + "'", null);
-                                                        AudioExtensionMethods.updateLists(VerticalSlidingDrawerBaseActivity.this);
-                                                    }
+                                                    new Thread(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            File file = new File(MusicService.currentSong.getData());
+                                                            if (file.delete()) {
+                                                                Controls.nextControl(VerticalSlidingDrawerBaseActivity.this);
+                                                                PlayerConstants.SONGS_LIST.remove(PlayerConstants.SONG_NUMBER - 1);
+                                                                runOnUiThread(new Runnable() {
+                                                                    @Override
+                                                                    public void run() {
+                                                                        Toast.makeText(VerticalSlidingDrawerBaseActivity.this, "Song Deleted : \'" + MusicService.currentSong.getTitle() + "\'", Toast.LENGTH_SHORT).show();
+                                                                        VerticalSlidingDrawerBaseActivity.this.getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.MediaColumns._ID + "='" + MusicService.currentSong.getID() + "'", null);
+                                                                    }
+                                                                });
+                                                                AudioExtensionMethods.updateLists(VerticalSlidingDrawerBaseActivity.this);
+                                                            }
+                                                        }
+                                                    });
                                                 }
                                             })
                                             .negativeText(R.string.cancel_text)
@@ -378,7 +442,7 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
         recyclerViewAdapter = new NowPlayingPlaylistAdapter(this, this);
         nowPlayingPlaylistRecyclerView.setAdapter(recyclerViewAdapter);
         nowPlayingPlaylistRecyclerView.setLayoutManager(new LinearLayoutManager(VerticalSlidingDrawerBaseActivity.this));
-        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(recyclerViewAdapter);
+        ItemTouchHelper.Callback callback = new NowPlayingPlaylistInterfaces.SimpleItemTouchHelperCallback(recyclerViewAdapter);
         mItemTouchHelper = new ItemTouchHelper(callback);
         mItemTouchHelper.attachToRecyclerView(nowPlayingPlaylistRecyclerView);
     }
@@ -397,6 +461,9 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
 
             updateSongLikeStatus(context);
             nowPlayingMinimalProgressBar.setMax((int) currentPlayingSong.getDuration());
+            nowPlayingSeekBar.setMax((int) currentPlayingSong.getDuration());
+            nowPlayingMaxDuration.setText(ExtensionMethods.formatIntoHHMMSS((int) currentPlayingSong.getDuration()));
+
             nowPlayingFavButton.setOnLikeListener(new OnLikeListener() {
                 @Override
                 public void liked(LikeButton likeButton) {
@@ -500,7 +567,8 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
                                 }
                             });
 
-                            nowPlayingColorPallatteViewBackground.setBackgroundColor(fromRGB);
+                            if(nowPlayingColorPallatteViewBackground != null)
+                                nowPlayingColorPallatteViewBackground.setBackgroundColor(fromRGB);
                             animator.setStartDelay(0);
                             animator.setDuration(400);
                             animator.start();
@@ -593,7 +661,7 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
     }
     private void hidePlaylist(){
         nowPlayingAlbumArtContainer.setVisibility(View.VISIBLE);
-        nowPlayingPlaylistRecyclerView.setVisibility(View.INVISIBLE);
+        nowPlayingPlaylistRecyclerView.setVisibility(View.GONE);
         PlayerConstants.SHOWING_PLAYLIST = false;
         mainLayoutRootLayout.setScrollableView(null);
     }
@@ -642,6 +710,24 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
         }).start();
 
     }
-    public void onPageScrollStateChanged(int state) {
+    public void onPageScrollStateChanged(int state) {}
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if(resultCode == Activity.RESULT_OK && requestCode == KeyConstants.REQUEST_CODE_DELETE_ALBUM){
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    AudioExtensionMethods.updateLists(VerticalSlidingDrawerBaseActivity.this);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            SongsFragment.updateList();
+                            AlbumsFragment.updateList();
+                            ArtistFragment.updateList();
+                        }
+                    });
+                }
+            });
+        }
     }
 }

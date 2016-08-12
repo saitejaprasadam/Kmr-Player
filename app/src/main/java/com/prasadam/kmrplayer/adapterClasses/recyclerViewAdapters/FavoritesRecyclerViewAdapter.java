@@ -25,7 +25,7 @@ import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
-import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.MusicPlayerExtensionMethods;
+import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicPlayerExtensionMethods;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -40,10 +40,10 @@ import butterknife.ButterKnife;
 public class FavoritesRecyclerViewAdapter extends RecyclerView.Adapter<FavoritesRecyclerViewAdapter.songsViewHolder>{
 
     private LayoutInflater inflater;
-    private Context context;
+    private Activity context;
     private ArrayList<Song> favoriteSongsList;
 
-    public FavoritesRecyclerViewAdapter(Context context, ArrayList<Song> favoriteSongsList){
+    public FavoritesRecyclerViewAdapter(Activity context, ArrayList<Song> favoriteSongsList){
         this.context = context;
         this.favoriteSongsList = favoriteSongsList;
         inflater = LayoutInflater.from(context);
@@ -92,16 +92,26 @@ public class FavoritesRecyclerViewAdapter extends RecyclerView.Adapter<Favorites
                                                     .onPositive(new MaterialDialog.SingleButtonCallback() {
                                                         @Override
                                                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                                            File file = new File(currentSongDetails.getData());
-                                                            if(file.delete())
-                                                            {
-                                                                Toast.makeText(context, "Song Deleted : \'" + currentSongDetails.getTitle() + "\'", Toast.LENGTH_SHORT).show();
-                                                                context.getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.MediaColumns._ID + "='" + currentSongDetails.getID() + "'", null);
-                                                                favoriteSongsList = AudioExtensionMethods.getFavoriteSongsList(context);
-                                                                notifyDataSetChanged();
-                                                                AudioExtensionMethods.updateLists(context);
-                                                                notifyDataSetChanged();
-                                                            }
+                                                            new Thread(new Runnable() {
+                                                                @Override
+                                                                public void run() {
+                                                                    File file = new File(currentSongDetails.getData());
+                                                                    if (file.delete()) {
+                                                                        favoriteSongsList.remove(position);
+                                                                        context.runOnUiThread(new Runnable() {
+                                                                            @Override
+                                                                            public void run() {
+                                                                                notifyItemRemoved(position);
+                                                                                Toast.makeText(context, "Song Deleted : \'" + currentSongDetails.getTitle() + "\'", Toast.LENGTH_SHORT).show();
+                                                                                context.getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.MediaColumns._ID + "='" + currentSongDetails.getID() + "'", null);
+                                                                            }
+                                                                        });
+
+                                                                        AudioExtensionMethods.updateLists(context);
+                                                                    } else
+                                                                        Toast.makeText(context, context.getResources().getString(R.string.problem_deleting_song), Toast.LENGTH_SHORT).show();
+                                                                }
+                                                            });
                                                         }
                                                     })
                                                     .negativeText(R.string.cancel_text)

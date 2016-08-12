@@ -3,7 +3,7 @@ package com.prasadam.kmrplayer.SocketClasses.GroupPlay;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.PlayerConstants;
+import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.PlayerConstants;
 
 import java.util.ArrayList;
 

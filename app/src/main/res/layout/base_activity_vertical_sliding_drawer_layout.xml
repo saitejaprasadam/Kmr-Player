@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="bottom"
-    sothree:umanoOverlay="true"
+    sothree:umanoScrollableView="@+id/now_playing_playlist_recycler_view"
     sothree:umanoPanelHeight="55dp"
     sothree:umanoShadowHeight="10dp">
 

@@ -8,11 +8,12 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.prasadam.kmrplayer.ActivityHelperClasses.SharedPreferenceHelper;
 import com.prasadam.kmrplayer.NearbyDevicesActivity;
 import com.prasadam.kmrplayer.QuickShareActivity;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.NearbyDevicesRecyclerViewAdapter;
-import com.prasadam.kmrplayer.AudioPackages.musicServiceClasses.PlayerConstants;
+import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.PlayerConstants;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
 import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
@@ -29,6 +30,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
+
+import javax.crypto.Mac;
 
 /*
  * Created by Prasadam Saiteja on 7/3/2016.
@@ -52,18 +55,20 @@ public class ServerResponseThread extends Thread {
             String receivedCommand = br.readLine();
             Log.d("command", receivedCommand);
             final String[] commandArray = receivedCommand.split(" ");
+
             String clientMacAddress = commandArray[0],
-                    clientName = commandArray[1],
+                    clientName = commandArray[1].replaceAll(KeyConstants.SPECIAL_CHAR, KeyConstants.SPACE),
                     command = commandArray[2],
                     timeStamp = commandArray[3],
                     result = "";
+
             if(commandArray.length > 4)
                 result = commandArray[4];
 
             switch (command){
 
                 case KeyConstants.SOCKET_INITIATE_QUICK_SHARE_TRANSFER_REQUEST:
-                    InitateQuickShareTransferRequest(timeStamp, clientName, result);
+                    InitateQuickShareTransferRequest(timeStamp, clientName, result, clientMacAddress);
                     break;
 
                 case KeyConstants.SOCKET_QUICK_SHARE_TRANSFER_RESULT:
@@ -95,23 +100,51 @@ public class ServerResponseThread extends Thread {
                     break;
 
                 case KeyConstants.SOCKET_REQUEST_CURRENT_SONG:
-                    RequestCurrentSong(clientName);
+                    RequestCurrentSong(clientName, clientMacAddress);
                     break;
 
                 case KeyConstants.SOCKET_CURRENT_SONG_RESULT:
                     CurrentSongResult(clientName, result);
                     break;
+
+                case KeyConstants.SOCKET_FEATURE_NOT_AVAILABLE:
+                    InvalidCommandResult(result);
+                    break;
+
+                case KeyConstants.SOCKET_REQUEST_MAC_ADDRESS:
+                    RequestMacAddress();
+                    break;
+
+                case KeyConstants.SOCKET_MAC_ADDRESS_RESULT:
+                    MacAddressResult(result);
+                    break;
+
+                default:
+                    InvalidCommand(command);
+                    break;
+
             }
         } catch (IOException e) {
             Log.e("ServerResponseThread", String.valueOf(e));
         }
     }
 
-    private void InitateQuickShareTransferRequest(final String timeStamp, final String clientName, final String songsCount) {
+    private void InitateQuickShareTransferRequest(final String timeStamp, final String clientName, final String songsCount, final String macAddress) {
         Handler handler = new Handler(Looper.getMainLooper());
         handler.post(new Runnable() {
             @Override
             public void run() {
+
+                if(SharedPreferenceHelper.getClientTransferRequestAlwaysAccept(SharedVariables.globalActivityContext, macAddress)){
+                    SocketExtensionMethods.requestStrictModePermit();
+                    String result = SocketExtensionMethods.GenerateSocketMessage(KeyConstants.SOCKET_QUICK_SHARE_TRANSFER_RESULT, timeStamp, KeyConstants.SOCKET_RESULT_OK);
+                    Client quickShareResponse = new Client(clientIPAddress, result);
+                    quickShareResponse.execute();
+                    FileReceiver nioServer = new FileReceiver(Integer.valueOf(songsCount));
+                    nioServer.execute();
+                }
+
+                else
                 new MaterialDialog.Builder(SharedVariables.globalActivityContext)
                         .title(SharedVariables.globalActivityContext.getString(R.string.quick_share_request_text))
                         .content("Receive " + songsCount + " songs from " + clientName)
@@ -273,7 +306,7 @@ public class ServerResponseThread extends Thread {
         NearbyDevicesActivity.updateAdapater();
     }
 
-    private void RequestCurrentSong(final String clientName) {
+    private void RequestCurrentSong(final String clientName, final String MacAddress) {
 
         if(PlayerConstants.SONGS_LIST.size() != 0 && PlayerConstants.SONGS_LIST.size() >= PlayerConstants.SONG_NUMBER) {
 
@@ -283,6 +316,28 @@ public class ServerResponseThread extends Thread {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
+
+                    if(SharedPreferenceHelper.getClientTransferRequestAlwaysAccept(SharedVariables.globalActivityContext, MacAddress)) {
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                SocketExtensionMethods.requestStrictModePermit();
+                                String result = SocketExtensionMethods.GenerateSocketMessage(KeyConstants.SOCKET_CURRENT_SONG_RESULT, ExtensionMethods.getTimeStamp(), KeyConstants.SOCKET_RESULT_OK);
+                                Client quickShareResponse = new Client(clientIPAddress, result);
+                                quickShareResponse.execute();
+                                try {
+                                    Thread.sleep(1000);
+                                    FileSender fileSender = new FileSender(clientIPAddress);
+                                    fileSender.sendFile(currentSongFilePath);
+                                    fileSender.endConnection();
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }).start();
+                    }
+
+                    else
                     new MaterialDialog.Builder(SharedVariables.globalActivityContext)
                             .title(SharedVariables.globalActivityContext.getString(R.string.request_for_current_playing_song_text))
                             .content(clientName + KeyConstants.SPACE + SharedVariables.globalActivityContext.getResources().getString(R.string.request_for_current_playing_song))
@@ -346,6 +401,27 @@ public class ServerResponseThread extends Thread {
                     Toast.makeText(SharedVariables.globalActivityContext, SharedVariables.globalActivityContext.getString(R.string.current_song_request_accepted) + KeyConstants.SPACE + clientName, Toast.LENGTH_SHORT).show();
                 }
             });
+        }
+    }
+
+    private void InvalidCommand(final String receivedCommand) {
+        String message = SocketExtensionMethods.GenerateSocketMessage(KeyConstants.SOCKET_FEATURE_NOT_AVAILABLE, ExtensionMethods.getTimeStamp(), receivedCommand);
+        Client invalidCommand = new Client(clientIPAddress, message);
+        invalidCommand.execute();
+    }
+    private void InvalidCommandResult(final String result) {
+
+    }
+
+    private void RequestMacAddress() {
+        String message = SocketExtensionMethods.GenerateSocketMessage(KeyConstants.SOCKET_MAC_ADDRESS_RESULT, ExtensionMethods.getTimeStamp(), SocketExtensionMethods.getMACAddress());
+        Client macAddressResponse = new Client(clientIPAddress, message);
+        macAddressResponse.execute();
+    }
+    private void MacAddressResult(final String result){
+        for (NSD device : NSDClient.devicesList) {
+            if(device.getHostAddress().equals(clientIPAddress))
+                device.setMacAddress(result);
         }
     }
 }

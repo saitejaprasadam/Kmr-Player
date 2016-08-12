@@ -10,6 +10,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
@@ -36,7 +37,7 @@
 
         <activity android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/MainActivityNoActionBar">
+            android:theme="@style/MainActivityNoActionBar.BrandedLaunch">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -93,10 +94,6 @@
         <activity android:name=".ArtistActivity"
             android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition"  />
 
-        <activity android:name=".testActivity"
-            android:label="@string/recently_added_text"
-            android:theme="@style/ColoredStatusBar" />
-
         <activity android:name=".NearbyDevicesActivity"
             android:label="@string/available_devices_text"
             android:theme="@style/ColoredStatusBar" />
@@ -124,11 +121,11 @@
 
         <activity android:name=".VerticalSlidingDrawerBaseActivity"/>
 
-        <service android:name=".AudioPackages.musicServiceClasses.MusicService"
+        <service android:name=".AudioPackages.MusicServiceClasses.MusicService"
             android:enabled="true"
             android:stopWithTask="false"/>
 
-        <receiver android:name=".AudioPackages.musicServiceClasses.NotificationBroadcast">
+        <receiver android:name=".AudioPackages.MusicServiceClasses.NotificationBroadcast">
             <intent-filter>
                 <action android:name="com.prasadam.kmrplayer.delete" />
                 <action android:name="com.prasadam.kmrplayer.pause" />

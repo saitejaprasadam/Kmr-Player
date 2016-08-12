@@ -129,4 +129,12 @@
     <string name="name_desc_text">Name desc</string>
     <string name="adding_songs_to_playlist">Adding songs to playlist</string>
     <string name="add_to_now_playing_queue">Add to now playing queue</string>
+    <string name="Connect_to_a_network_text">Connect to a network</string>
+    <string name="WIFI_text">wifi</string>
+    <string name="Create_hotspot_text">Create a hotspot</string>
+    <string name="hotspot_text">Hotspot</string>
+    <string name="accept_all_transfers_without_confirmation">Accept all transfer without confirmation</string>
+    <string name="prompt_confirmation_before_initating_transfers">Prompt confirmation before initating transfers</string>
+    <string name="_0_00">0:00</string>
+    <string name="problem_deleting_song">Problem deleting song</string>
 </resources>

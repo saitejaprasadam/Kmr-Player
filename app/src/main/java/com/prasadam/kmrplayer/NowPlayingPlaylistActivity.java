@@ -8,8 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 
 import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.NowPlayingPlaylistAdapter;
-import com.prasadam.kmrplayer.AdapterClasses.UIAdapters.NowPlayingPlaylistInterfaces;
-import com.prasadam.kmrplayer.AdapterClasses.UIAdapters.SimpleItemTouchHelperCallback;
+import com.prasadam.kmrplayer.AdapterClasses.Interfaces.NowPlayingPlaylistInterfaces;
 import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 
 /*
@@ -36,7 +35,7 @@ public class NowPlayingPlaylistActivity extends AppCompatActivity implements Now
         final NowPlayingPlaylistAdapter recyclerViewAdapter = new NowPlayingPlaylistAdapter(this, this);
         nowPlayingPlaylistRecyclerView.setAdapter(recyclerViewAdapter);
         nowPlayingPlaylistRecyclerView.setLayoutManager(new LinearLayoutManager(NowPlayingPlaylistActivity.this));
-        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(recyclerViewAdapter);
+        ItemTouchHelper.Callback callback = new NowPlayingPlaylistInterfaces.SimpleItemTouchHelperCallback(recyclerViewAdapter);
         mItemTouchHelper = new ItemTouchHelper(callback);
         mItemTouchHelper.attachToRecyclerView(nowPlayingPlaylistRecyclerView);
     }

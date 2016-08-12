@@ -1,6 +1,11 @@
 package com.prasadam.kmrplayer;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,6 +30,7 @@ public class NearbyDevicesActivity extends AppCompatActivity{
 
     public static NearbyDevicesRecyclerViewAdapter nearbyDevicesRecyclerviewAdapter;
     public static TextView NoDevicesTextView;
+    private BroadcastReceiver receiver;
 
     public void onCreate(Bundle bundle){
         super.onCreate(bundle);
@@ -33,11 +39,21 @@ public class NearbyDevicesActivity extends AppCompatActivity{
         NoDevicesTextView = (TextView) findViewById(R.id.no_devices_available_text_view);
         ActivityHelper.setDisplayHome(this);
         setStatusBarTranslucent(NearbyDevicesActivity.this);
+        DialogHelper.checkForNetworkState(this, (FloatingActionButton) findViewById(R.id.wifi_fab));
+        wifiBroadCastReceiver();
         setRecyclerView();
     }
+
     public void onResume() {
         super.onResume();
         SharedVariables.globalActivityContext = this;
+    }
+    public void onDestroy(){
+        if (receiver != null) {
+            unregisterReceiver(receiver);
+            receiver = null;
+        }
+        super.onDestroy();
     }
 
     private void setRecyclerView() {
@@ -54,6 +70,21 @@ public class NearbyDevicesActivity extends AppCompatActivity{
                 nearbyDevicesRecyclerviewAdapter.notifyDataSetChanged();
         }
         catch (Exception ignore){}
+    }
+    private void wifiBroadCastReceiver() {
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.net.wifi.STATE_CHANGE");
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        filter.addAction("android.net.wifi.WIFI_AP_STATE_CHANGED");
+
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                DialogHelper.checkForNetworkState(NearbyDevicesActivity.this, (FloatingActionButton) findViewById(R.id.wifi_fab));
+            }
+        };
+        registerReceiver(receiver, filter);
     }
 
     @Override

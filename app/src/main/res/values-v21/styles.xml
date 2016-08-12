@@ -40,17 +40,13 @@
         <item name="android:titleTextColor">@color/white</item>
     </style>
 
-    <style name="ColoredStatusBar" parent="AppTheme">
-
-    </style>
+    <style name="ColoredStatusBar" parent="AppTheme"/>
 
     <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
         <item name="color">@android:color/white</item>
     </style>
     <style name="PopupMenu" parent="@style/Widget.AppCompat.PopupMenu.Overflow">
         <item name="android:popupBackground">@android:color/white</item>
-        <item name="android:dropDownHorizontalOffset">-4dp</item>
-        <item name="android:dropDownVerticalOffset">4dp</item>
     </style>
     <style name="TransperantToolbar" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="android:windowActionBarOverlay">true</item>

@@ -18,6 +18,10 @@
         android:title="@string/add_to_text"/>
 
     <item
+        android:id="@+id/song_contet_menu_jump_to_album"
+        android:title="@string/jump_to_album_text"/>
+
+    <item
         android:id="@+id/song_context_menu_tagEditor"
         android:title="@string/tag_editor_text" />
 
