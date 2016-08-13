@@ -22,6 +22,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
+import com.prasadam.kmrplayer.ActivityHelperClasses.DialogHelper;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ShareIntentHelper;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.Controls;
 import com.prasadam.kmrplayer.R;
@@ -169,8 +170,8 @@ public class NowPlayingPlaylistAdapter extends RecyclerView.Adapter<NowPlayingPl
                                     ShareIntentHelper.sendSong(context, currentSongDetails.getTitle(), Uri.parse(currentSongDetails.getData()));
                                     break;
 
-                                case R.id.song_context_menu_add_to_playlist:
-                                    AudioExtensionMethods.addToPlaylist(context, currentSongDetails.getHashID());
+                                case R.id.song_context_menu_add_to_dialog:
+                                    DialogHelper.AddToDialog(context, currentSongDetails);
                                     break;
 
                                 case R.id.song_context_menu_details:

@@ -22,7 +22,7 @@ import java.util.Random;
 
 public class MusicPlayerExtensionMethods {
 
-    public static void shufflePlay(Activity mActivity, final ArrayList<Song> songsList){
+    public static void shufflePlay(Context mActivity, final ArrayList<Song> songsList){
 
         PlayerConstants.SONG_PAUSED = false;
         PlayerConstants.HASH_ID_CURRENT_PLAYLIST.clear();
@@ -50,10 +50,11 @@ public class MusicPlayerExtensionMethods {
         }
 
         PlayerConstants.SHUFFLE = true;
-        VerticalSlidingDrawerBaseActivity.changeButton();
+        if(SharedVariables.globalActivityContext != null)
+            VerticalSlidingDrawerBaseActivity.changeButton();
     }
 
-    public static void playSong(Activity mActivity, final ArrayList<Song> songsList, int position){
+    public static void playSong(Context mActivity, final ArrayList<Song> songsList, int position){
 
         PlayerConstants.SONG_PAUSED = false;
 
@@ -93,8 +94,8 @@ public class MusicPlayerExtensionMethods {
 
         else{
             GroupPlayHelper.notifyGroupPlayClientsIfExists();
-            VerticalSlidingDrawerBaseActivity.updateAlbumAdapter();
             PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
+            VerticalSlidingDrawerBaseActivity.updateAlbumAdapter();
         }
 
         PlayerConstants.HASH_ID_CURRENT_PLAYLIST.clear();
@@ -188,6 +189,12 @@ public class MusicPlayerExtensionMethods {
     }
 
     public static void playNext(Context context, Song songToBeAdded) {
+
+        if(songToBeAdded.getHashID().equals(MusicService.currentSong.getHashID())){
+            Toast.makeText(context, "This is song is currently playing", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         for (Song song : PlayerConstants.SONGS_LIST) {
             if(song.getHashID().equals(songToBeAdded.getHashID())){
                 PlayerConstants.SONGS_LIST.remove(song);
@@ -204,9 +211,10 @@ public class MusicPlayerExtensionMethods {
     }
 
     public static void playNext(Context context, ArrayList<Song> songsToBeAdded, String message) {
+
         for (Song songToBeAdded : songsToBeAdded){
             for (Song song : PlayerConstants.SONGS_LIST) {
-                if(song.getHashID().equals(songToBeAdded.getHashID())){
+                if(song.getHashID().equals(songToBeAdded.getHashID()) && !songToBeAdded.getHashID().equals(MusicService.currentSong.getHashID())){
                     PlayerConstants.SONGS_LIST.remove(song);
                     break;
                 }

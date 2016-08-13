@@ -29,6 +29,7 @@ import com.prasadam.kmrplayer.MainActivity;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 import com.prasadam.kmrplayer.SocketClasses.SocketExtensionMethods;
 import com.prasadam.kmrplayer.VerticalSlidingDrawerBaseActivity;
 
@@ -120,8 +121,10 @@ public class MusicService extends Service implements
                             currentSong = song;
                             playSong(songPath, song);
                             PlayerConstants.SONG_PAUSED = false;
-                            VerticalSlidingDrawerBaseActivity.changeButton();
-                            VerticalSlidingDrawerBaseActivity.updateNowPlayingUI(getBaseContext());
+                            if(SharedVariables.globalActivityContext != null){
+                                VerticalSlidingDrawerBaseActivity.changeButton();
+                                VerticalSlidingDrawerBaseActivity.updateNowPlayingUI(getBaseContext());
+                            }
                         }catch(Exception e){
                             e.printStackTrace();
                         }
@@ -192,7 +195,9 @@ public class MusicService extends Service implements
     }
     private void UpdateMetadata(Song song){
 
-        VerticalSlidingDrawerBaseActivity.updateNowPlayingUI(getBaseContext());
+        currentSong = song;
+        if(SharedVariables.globalActivityContext != null)
+            VerticalSlidingDrawerBaseActivity.updateNowPlayingUI(getBaseContext());
         if (remoteControlClient == null)
             return;
 

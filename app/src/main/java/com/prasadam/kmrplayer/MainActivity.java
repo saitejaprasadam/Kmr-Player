@@ -2,9 +2,11 @@ package com.prasadam.kmrplayer;
 
 import android.app.SearchManager;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
@@ -42,6 +44,8 @@ public class MainActivity extends VerticalSlidingDrawerBaseActivity implements N
     public static TextView navHeaderProfileName;
 
     protected void onCreate(Bundle savedInstanceState) {
+        checkInitalLaunch();
+        setTheme(R.style.MainActivityNoActionBar);
         super.onCreate(savedInstanceState);
         SharedVariables.Initializers(this);
         setContentView(R.layout.activity_main);
@@ -55,6 +59,24 @@ public class MainActivity extends VerticalSlidingDrawerBaseActivity implements N
         googleLoginListeners = new GoogleLoginListeners(MainActivity.this);
         initalizer();
     }
+    private void checkInitalLaunch() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                SharedPreferences getPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+                boolean isFirstStart = getPrefs.getBoolean("testFirstStart2", true);
+
+                if (isFirstStart) {
+                    Intent i = new Intent(MainActivity.this, AppIntroActivity.class);
+                    startActivity(i);
+                    SharedPreferences.Editor e = getPrefs.edit();
+                    e.putBoolean("testFirstStart2", false);
+                    e.apply();
+                }
+            }
+        }).start();
+    }
+
     public void onResume() {
         super.onResume();
         SharedVariables.globalActivityContext = this;
@@ -85,6 +107,10 @@ public class MainActivity extends VerticalSlidingDrawerBaseActivity implements N
                 ActivitySwitcher.launchSearchActivity(this);
                 break;
 
+            case R.id.action_about:
+                ActivitySwitcher.launchAboutActivity(this);
+                break;
+
             case R.id.action_equilzer:
                 ActivitySwitcher.initEqualizer(MainActivity.this);
                 break;
@@ -105,8 +131,15 @@ public class MainActivity extends VerticalSlidingDrawerBaseActivity implements N
     }
     public boolean onNavigationItemSelected(MenuItem item) {
 
-        if(item.getItemId() == R.id.google_login){
-            googleLoginListeners.signInMethod();
+        switch (item.getItemId()){
+
+            case R.id.google_login:
+                googleLoginListeners.signInMethod();
+                break;
+
+            case R.id.main_drawer_about:
+                ActivitySwitcher.launchAboutActivity(this);
+                break;
         }
         return true;
     }
@@ -120,7 +153,6 @@ public class MainActivity extends VerticalSlidingDrawerBaseActivity implements N
         SharedVariables.globalActivityContext = this;
         SocketExtensionMethods.startNSDServices(this);
     }
-
     private void createTabFragment() {
         FragmentManager mFragmentManager = getSupportFragmentManager();
         FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();

@@ -11,39 +11,40 @@ import android.widget.Toast;
 
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicPlayerExtensionMethods;
+import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
+
+import java.util.ArrayList;
 
 /*
  * Created by Prasadam Saiteja on 7/22/2016.
  */
 
-public class QuickShuffleWidget extends AppWidgetProvider {
+public class QuickFavoritePlayWidget extends AppWidgetProvider {
 
-    private static final String SHUFFLE_WIDGET_ACTION = "SHUFFLE_WIDGET_ACTION";
+    private static final String FAVORITE_WIDGET_ACTION = "FAVORITE_WIDGET_ACTION";
 
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 
-        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_quick_shuffle);
-        ComponentName watchWidget = new ComponentName(context, QuickShuffleWidget.class);
+        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_play_favorites);
+        ComponentName watchWidget = new ComponentName(context, QuickFavoritePlayWidget.class);
 
-        remoteViews.setOnClickPendingIntent(R.id.quick_shuffle_widget_image_view, getPendingSelfIntent(context, SHUFFLE_WIDGET_ACTION));
+        remoteViews.setOnClickPendingIntent(R.id.favorites_widget_image_view, getPendingSelfIntent(context, FAVORITE_WIDGET_ACTION));
         appWidgetManager.updateAppWidget(watchWidget, remoteViews);
     }
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
 
-        if (SHUFFLE_WIDGET_ACTION.equals(intent.getAction())) {
+        if (FAVORITE_WIDGET_ACTION.equals(intent.getAction())) {
 
-            if (SharedVariables.fullSongsList.size() == 0){
-                AudioExtensionMethods.updateSongList(context);
-                Toast.makeText(context, context.getResources().getString(R.string.please_wait_quick_shuffle), Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, context.getResources().getString(R.string.please_wait_quick_shuffle), Toast.LENGTH_SHORT).show();
+            ArrayList<Song> FavoriteSongs = AudioExtensionMethods.getFavoriteSongsList(context);
+            if(FavoriteSongs.size() > 0){
+                MusicPlayerExtensionMethods.playSong(context, FavoriteSongs, 0);
+                Toast.makeText(context, context.getResources().getString(R.string.Favorites_widget_text), Toast.LENGTH_SHORT).show();
             }
 
-            if (SharedVariables.fullSongsList.size() > 0) {
-                MusicPlayerExtensionMethods.shufflePlay(context, SharedVariables.fullSongsList);
-                Toast.makeText(context, context.getResources().getString(R.string.Quick_shuffle_widget_text), Toast.LENGTH_SHORT).show();
-            } else
+            else
                 Toast.makeText(context, context.getResources().getString(R.string.widget_no_songs_text), Toast.LENGTH_SHORT).show();
         }
     }

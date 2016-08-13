@@ -17,22 +17,19 @@
     </group>
 
     <item android:title="@string/others_text">
+
         <menu>
 
             <item
+                android:id="@+id/main_drawer_about"
+                android:icon="@mipmap/ic_info_outline_black_24dp"
+                android:title="@string/About_player_text" />
+
+            <item
+                android:visible="false"
                 android:id="@+id/google_login"
                 android:icon="@mipmap/ic_error_outline_black_24dp"
                 android:title="@string/Login_with_google" />
-
-            <item
-                android:id="@+id/nav_send"
-                android:icon="@mipmap/ic_settings_white_24dp"
-                android:title="@string/settings_text" />
-
-            <item
-                android:id="@+id/nav_share"
-                android:icon="@mipmap/ic_share_white_24dp"
-                android:title="@string/share_a_word_text" />
 
         </menu>
     </item>

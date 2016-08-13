@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />    <!-- Ringtone -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
@@ -50,6 +50,9 @@
             </intent-filter>
 
         </activity>
+
+        <activity android:name=".AppIntroActivity"
+            android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition" />
 
         <activity android:name=".TagEditorActivity"
             android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition" />
@@ -137,10 +140,16 @@
         </receiver>
 
         <receiver android:name=".Widgets.QuickShuffleWidget" android:label="Quick shuffle">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/quick_shuffle_widget_info" />
+        </receiver>
+        <receiver android:name=".Widgets.QuickMostPlayedWidget" android:label="Play Most Played">
+            <intent-filter> <action android:name="android.appwidget.action.APPWIDGET_UPDATE" /> </intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/quick_most_played_widget_info" />
+        </receiver>
+        <receiver android:name=".Widgets.QuickFavoritePlayWidget" android:label="Play Favorites">
+            <intent-filter> <action android:name="android.appwidget.action.APPWIDGET_UPDATE" /> </intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/quick_favorites_widget_info" />
         </receiver>
 
     </application>

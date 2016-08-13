@@ -5,11 +5,11 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/quick_shuffle_widget_image_view"
+        android:id="@+id/favorites_widget_image_view"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:backgroundTint="@color/widget_color_shuffle"
-        android:src="@mipmap/ic_shuffle_white_24dp"
+        android:src="@mipmap/ic_favorite_white_24dp"
+        android:backgroundTint="@color/widget_color_favorites"
         android:scaleType="centerInside"
         android:background="@drawable/circular_button" />
 

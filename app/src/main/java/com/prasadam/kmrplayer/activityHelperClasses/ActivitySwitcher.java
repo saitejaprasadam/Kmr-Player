@@ -7,6 +7,8 @@ import android.media.audiofx.AudioEffect;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.widget.ImageView;
 
+import com.mikepenz.aboutlibraries.Libs;
+import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.prasadam.kmrplayer.AlbumActivity;
 import com.prasadam.kmrplayer.ArtistActivity;
 import com.prasadam.kmrplayer.MostPlayedSongsActivity;
@@ -14,6 +16,7 @@ import com.prasadam.kmrplayer.MostPlayedSongsPieChartActivity;
 import com.prasadam.kmrplayer.NearbyDevicesActivity;
 import com.prasadam.kmrplayer.ExpandedAlbumartActivity;
 import com.prasadam.kmrplayer.QuickShareActivity;
+import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SearchActivity;
 import com.prasadam.kmrplayer.TagEditorActivity;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
@@ -104,5 +107,20 @@ public class ActivitySwitcher {
     public static void launchMostPlayedActivity(MostPlayedSongsActivity mostPlayedSongsActivity) {
         Intent mostPlayedSongsPieChartIntent = new Intent(mostPlayedSongsActivity, MostPlayedSongsPieChartActivity.class);
         mostPlayedSongsActivity.startActivity(mostPlayedSongsPieChartIntent);
+    }
+
+    public static void launchAboutActivity(Context context){
+
+        new LibsBuilder()
+                .withAutoDetect(true)
+                .withLicenseShown(true)
+                .withVersionShown(true)
+                .withActivityTitle(context.getResources().getString(R.string.about_text))
+                .withAboutIconShown(true)
+                .withAboutVersionShown(true)
+                .withAboutAppName(context.getResources().getString(R.string.app_name))
+                .withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR)
+                .withAboutDescription(context.getResources().getString(R.string.app_description_text))
+                .start(context);
     }
 }

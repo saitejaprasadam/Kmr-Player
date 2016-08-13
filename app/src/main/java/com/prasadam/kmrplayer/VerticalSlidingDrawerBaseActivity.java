@@ -41,6 +41,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
+import com.prasadam.kmrplayer.ActivityHelperClasses.DialogHelper;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ShareIntentHelper;
 import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.NowPlayingPlaylistAdapter;
 import com.prasadam.kmrplayer.AdapterClasses.UIAdapters.NowPlayingAlbumArtAdapter;
@@ -57,7 +58,6 @@ import com.prasadam.kmrplayer.Fragments.ArtistFragment;
 import com.prasadam.kmrplayer.Fragments.SongsFragment;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
-import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.File;
@@ -399,7 +399,7 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
                                     break;
 
                                 case R.id.song_context_menu_add_to_dialog:
-                                    AudioExtensionMethods.addToPlaylist(VerticalSlidingDrawerBaseActivity.this, MusicService.currentSong.getHashID());
+                                    DialogHelper.AddToDialog(VerticalSlidingDrawerBaseActivity.this, MusicService.currentSong);
                                     break;
 
                                 case R.id.song_context_menu_share:

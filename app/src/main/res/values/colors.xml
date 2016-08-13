@@ -12,6 +12,14 @@
     <color name="View_Background">#FAFAFA</color>
     <color name="layout_Background">#e6dfdfdf</color>
 
-    <color name="theme_primary_text_inverted">#ffffff</color>
-    <color name="theme_secondary_text_inverted">#8affffff</color>
+    <color name="temp">#4DB6AC</color>
+    <color name="launch_screen_red_palette_color">#EF5350</color>
+    <color name="launch_screen_green_palette_color">#81C784</color>
+    <color name="launch_screen_yellow_palette_color">#FBC02D</color>
+    <color name="launch_screen_blue_palette_color">#5C6BC0</color>
+
+    <color name="widget_color_shuffle">#009688</color>
+    <color name="widget_color_most_played">#C62828</color>
+    <color name="widget_color_favorites">#673AB7</color>
+
 </resources>
