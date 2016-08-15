@@ -16,11 +16,10 @@ public class PlayerConstants {
     public static boolean SHOWING_PLAYLIST = false;
     public static int SONG_NUMBER = 0;
     public static boolean SONG_PAUSED = true;
-    public static boolean SONG_CHANGED = false;
     public static boolean SHUFFLE = false;
     public static Handler SONG_CHANGE_HANDLER;
+    public static Handler NOTIFICATION_HANDLER;
     public static Handler PLAY_PAUSE_HANDLER;
-    public static Handler PROGRESSBAR_HANDLER;
     public static PLAYBACK_STATE_ENUM PLAY_BACK_STATE = PLAYBACK_STATE_ENUM.OFF;
 
     public static boolean getIsPlayingState() {

@@ -8,6 +8,7 @@
         android:id="@+id/most_played_widget_image_view"
         android:layout_width="60dp"
         android:layout_height="60dp"
+        android:clickable="true"
         android:src="@mipmap/ic_whatshot_white_24dp"
         android:backgroundTint="@color/widget_color_most_played"
         android:scaleType="centerInside"

@@ -109,6 +109,62 @@ public class MusicPlayerExtensionMethods {
         }).start();
     }
 
+    public static void playSong(Context mActivity, final Song parsong, int position){
+
+        PlayerConstants.SONG_PAUSED = false;
+        final ArrayList<Song> songsList = new ArrayList<>();
+        songsList.add(parsong);
+        if(PlayerConstants.SHUFFLE){
+            PlayerConstants.HASH_ID_CURRENT_PLAYLIST.clear();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    for (Song song: songsList) {
+                        PlayerConstants.HASH_ID_CURRENT_PLAYLIST.add(song.getHashID());
+                    }
+                }
+            }).start();
+
+            long seed = System.nanoTime();
+            ArrayList<Song> shuffledPlaylist = new ArrayList<>(songsList);
+            Collections.shuffle(shuffledPlaylist, new Random(seed));
+            PlayerConstants.SONGS_LIST.clear();
+            PlayerConstants.SONGS_LIST.add(songsList.get(position));
+            PlayerConstants.SONG_NUMBER = 0;
+            for (Song song : shuffledPlaylist) {
+                if(!PlayerConstants.SONGS_LIST.contains(song))
+                    PlayerConstants.SONGS_LIST.add(song);
+            }
+        }
+
+        else{
+            PlayerConstants.SONGS_LIST = songsList;
+            PlayerConstants.SONG_NUMBER = position;
+        }
+
+        boolean isServiceRunning = UtilFunctions.isServiceRunning(MusicService.class.getName(), mActivity);
+        if (!isServiceRunning) {
+            Intent i = new Intent(mActivity, MusicService.class);
+            mActivity.startService(i);
+        }
+
+        else{
+            GroupPlayHelper.notifyGroupPlayClientsIfExists();
+            PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
+            VerticalSlidingDrawerBaseActivity.updateAlbumAdapter();
+        }
+
+        PlayerConstants.HASH_ID_CURRENT_PLAYLIST.clear();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (Song song: songsList) {
+                    PlayerConstants.HASH_ID_CURRENT_PLAYLIST.add(song.getHashID());
+                }
+            }
+        }).start();
+    }
+
     public static void startMusicService(Activity mActivity){
         boolean isServiceRunning = UtilFunctions.isServiceRunning(MusicService.class.getName(), mActivity);
         if (!isServiceRunning) {

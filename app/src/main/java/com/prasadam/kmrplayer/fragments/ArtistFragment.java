@@ -60,7 +60,8 @@ public class ArtistFragment extends Fragment {
         new Thread() {
             public void run() {
 
-                AudioExtensionMethods.updateArtistList(mActivity.getBaseContext());
+                if(SharedVariables.fullArtistList.size() == 0)
+                    AudioExtensionMethods.updateArtistList(mActivity.getBaseContext());
 
                 if(!SharedVariables.fullArtistList.isEmpty())
                 {

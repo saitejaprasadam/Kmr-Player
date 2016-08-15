@@ -70,7 +70,7 @@ import java.util.Map;
 public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity implements NowPlayingPlaylistInterfaces.OnStartDragListener, ViewPager.OnPageChangeListener{
 
     protected static SlidingUpPanelLayout mainLayoutRootLayout;
-    protected static FrameLayout actContent;
+    protected FrameLayout actContent;
     private static ImageView nowPlayingMinimalAlbumArt, nowPlayingBlurredAlbumArt;
     private static RelativeLayout nowPlayingColorPallatteView, nowPlayingColorPallatteViewBackground;
     private static ImageView nowPlayingNextButton, nowPlayingPreviousButton, nowPlayingPlayButton, nowPlayingSongContextMenu;

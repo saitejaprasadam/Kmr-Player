@@ -26,7 +26,7 @@ public class TabFragment extends Fragment{
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
 
         View x =  inflater.inflate(R.layout.fragment_songs_tab_layout, null);
         tabLayout = (TabLayout) x.findViewById(R.id.tabs);
@@ -60,9 +60,20 @@ public class TabFragment extends Fragment{
                 tabLayout.setupWithViewPager(viewPager);
             }
         });
+        if (savedInstanceState != null){
+            viewPager.post(new Runnable() {
+                @Override
+                public void run() {
+                    viewPager.setCurrentItem(savedInstanceState.getInt("viewPager_current_item"));
+                }
+            });
+        }
         return x;
     }
-
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putInt("viewPager_current_item", viewPager.getCurrentItem());
+        super.onSaveInstanceState(savedInstanceState);
+    }
     class MyAdapter extends FragmentPagerAdapter {
 
         private SongsFragment songsFragment;

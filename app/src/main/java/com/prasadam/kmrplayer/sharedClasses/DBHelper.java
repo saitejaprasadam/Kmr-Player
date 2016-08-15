@@ -472,19 +472,19 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public long getLastPlayedSong() {
-            SQLiteDatabase rdb = this.getReadableDatabase();
-            Cursor cursor =  rdb.rawQuery( "select hashID from " + HISTORY_TABLE_NAME, null );
+        SQLiteDatabase rdb = this.getReadableDatabase();
+        Cursor cursor =  rdb.rawQuery( "select hashID from " + HISTORY_TABLE_NAME, null );
 
-            if(cursor != null && cursor.moveToLast()) {
-                String songHashID = cursor.getString(cursor.getColumnIndex(ID_COLUMN_NAME));
-                long songID = getSongID(songHashID);
-                cursor.close();
-                rdb.close();
-                return songID;
-            }
-
+        if(cursor != null && cursor.moveToLast()) {
+            String songHashID = cursor.getString(cursor.getColumnIndex(ID_COLUMN_NAME));
+            long songID = getSongID(songHashID);
+            cursor.close();
             rdb.close();
-            return 0;
+            return songID;
+        }
+
+        rdb.close();
+        return 0;
 
     }
 }

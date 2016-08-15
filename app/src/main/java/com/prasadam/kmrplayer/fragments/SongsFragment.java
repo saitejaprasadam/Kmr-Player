@@ -68,7 +68,8 @@ public class SongsFragment extends Fragment {
         new Thread(){
             public void run(){
 
-                AudioExtensionMethods.updateSongList(mActivity);
+                if(SharedVariables.fullSongsList.size() == 0)
+                    AudioExtensionMethods.updateSongList(mActivity);
 
                 if(!SharedVariables.fullSongsList.isEmpty()) {
 

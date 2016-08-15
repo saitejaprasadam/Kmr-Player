@@ -47,6 +47,7 @@ public class MainActivity extends VerticalSlidingDrawerBaseActivity implements N
         checkInitalLaunch();
         setTheme(R.style.MainActivityNoActionBar);
         super.onCreate(savedInstanceState);
+
         SharedVariables.Initializers(this);
         setContentView(R.layout.activity_main);
 

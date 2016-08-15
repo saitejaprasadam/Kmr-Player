@@ -2,6 +2,7 @@ package com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses;
 
 import android.content.Context;
 
+import com.prasadam.kmrplayer.Fragments.SongsFragment;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.SocketClasses.GroupPlay.GroupPlayHelper;
@@ -68,6 +69,14 @@ public class Controls {
         PlayerConstants.SONG_PAUSED = false;
     }
 
+    public static void favControl(Context context) {
+        MusicService.currentSong.setIsLiked(context, !MusicService.currentSong.getIsLiked(context));
+        PlayerConstants.NOTIFICATION_HANDLER.sendEmptyMessage(0);
+        VerticalSlidingDrawerBaseActivity.updateSongLikeStatus(context);
+        SongsFragment.recyclerViewAdapter.notifyDataSetChanged();
+        VerticalSlidingDrawerBaseActivity.recyclerViewAdapter.notifyDataSetChanged();
+    }
+
     private static void sendMessage(String message) {
         try{
             PlayerConstants.PLAY_PAUSE_HANDLER.sendMessage(PlayerConstants.PLAY_PAUSE_HANDLER.obtainMessage(0, message));
@@ -115,4 +124,3 @@ public class Controls {
         VerticalSlidingDrawerBaseActivity.updateAlbumAdapter();
     }
 }
-

@@ -61,12 +61,8 @@ public class NotificationBroadcast extends BroadcastReceiver {
                     Controls.pauseControl(context);
                 } else if (intent.getAction().equals(MusicService.NOTIFY_NEXT)) {
                     Controls.nextControl(context);
-                } else if (intent.getAction().equals(MusicService.NOTIFY_DELETE)) {
-                    Intent i = new Intent(context, MusicService.class);
-                    context.stopService(i);
-                    Intent in = new Intent(context, MainActivity.class);
-                    in.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(in);
+                } else if (intent.getAction().equals(MusicService.NOTIFY_FAV)) {
+                    Controls.favControl(context);
                 }else if (intent.getAction().equals(MusicService.NOTIFY_PREVIOUS)) {
                     Controls.previousControl(context);
                 }

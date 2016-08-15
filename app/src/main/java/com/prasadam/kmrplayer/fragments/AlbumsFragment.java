@@ -58,7 +58,8 @@ public class AlbumsFragment extends Fragment {
         new Thread(){
             public void run() {
 
-                AudioExtensionMethods.updateAlbumList(mActivity.getBaseContext());
+                if(SharedVariables.fullAlbumList.size() == 0)
+                    AudioExtensionMethods.updateAlbumList(mActivity.getBaseContext());
 
                 if(!SharedVariables.fullAlbumList.isEmpty())
                 {

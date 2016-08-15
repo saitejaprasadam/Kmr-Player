@@ -2,6 +2,7 @@ package com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ComponentName;
@@ -10,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.RemoteControlClient;
@@ -19,13 +21,11 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.PowerManager;
 import android.os.Handler.Callback;
-import android.support.v7.app.NotificationCompat;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.media.MediaMetadataRetriever;
-import android.view.View;
 import android.widget.RemoteViews;
 
-import com.prasadam.kmrplayer.MainActivity;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
@@ -41,23 +41,22 @@ public class MusicService extends Service implements
         AudioManager.OnAudioFocusChangeListener{
 
     public static final String NOTIFY_PREVIOUS = "com.prasadam.kmrplayer.previous";
-    public static final String NOTIFY_DELETE = "com.prasadam.kmrplayer.delete";
+    public static final String NOTIFY_FAV = "com.prasadam.kmrplayer.favorite";
     public static final String NOTIFY_PAUSE = "com.prasadam.kmrplayer.pause";
     public static final String NOTIFY_PLAY = "com.prasadam.kmrplayer.play";
     public static final String NOTIFY_NEXT = "com.prasadam.kmrplayer.next";
     public static boolean isFocusSnatched = false;
 
-    Bitmap mDummyAlbumArt;
     private static boolean currentVersionSupportLockScreenControls = false;
     private static boolean currentVersionSupportBigNotification = false;
-    private ComponentName remoteComponentName;
     private RemoteControlClient remoteControlClient;
     private static NotificationBroadcast notificationBroadcast;
-    AudioManager audioManager;
+    private AudioManager audioManager;
     public static MediaPlayer player;
     private final IBinder musicBind = new MusicBinder();
     private static final int NOTIFY_ID = 626272;
     public static Song currentSong;
+    private static Handler historyHandler;
 
     public void onCreate(){
 
@@ -79,26 +78,28 @@ public class MusicService extends Service implements
     }
     public void setListeners(RemoteViews view) {
         Intent previous = new Intent(NOTIFY_PREVIOUS);
-        //Intent delete = new Intent(NOTIFY_DELETE);
+        Intent fav = new Intent(NOTIFY_FAV);
         Intent pause = new Intent(NOTIFY_PAUSE);
         Intent next = new Intent(NOTIFY_NEXT);
         Intent play = new Intent(NOTIFY_PLAY);
 
         PendingIntent pPrevious = PendingIntent.getBroadcast(getApplicationContext(), 0, previous, PendingIntent.FLAG_UPDATE_CURRENT);
-        view.setOnClickPendingIntent(R.id.btnPrevious, pPrevious);
+        view.setOnClickPendingIntent(R.id.notification_prev_button, pPrevious);
 
-        /*PendingIntent pDelete = PendingIntent.getBroadcast(getApplicationContext(), 0, delete, PendingIntent.FLAG_UPDATE_CURRENT);
-        view.setOnClickPendingIntent(R.id.btnDelete, pDelete);*/
+        if(player.isPlaying()){
+            PendingIntent pPause = PendingIntent.getBroadcast(getApplicationContext(), 0, pause, PendingIntent.FLAG_UPDATE_CURRENT);
+            view.setOnClickPendingIntent(R.id.notification_play_pause_button, pPause);
+        }
+        else{
+            PendingIntent pPlay = PendingIntent.getBroadcast(getApplicationContext(), 0, play, PendingIntent.FLAG_UPDATE_CURRENT);
+            view.setOnClickPendingIntent(R.id.notification_play_pause_button, pPlay);
+        }
 
-        PendingIntent pPause = PendingIntent.getBroadcast(getApplicationContext(), 0, pause, PendingIntent.FLAG_UPDATE_CURRENT);
-        view.setOnClickPendingIntent(R.id.btnPause, pPause);
+        PendingIntent pFav = PendingIntent.getBroadcast(getApplicationContext(), 0, fav, PendingIntent.FLAG_UPDATE_CURRENT);
+        view.setOnClickPendingIntent(R.id.notification_favorite_button, pFav);
 
         PendingIntent pNext = PendingIntent.getBroadcast(getApplicationContext(), 0, next, PendingIntent.FLAG_UPDATE_CURRENT);
-        view.setOnClickPendingIntent(R.id.btnNext, pNext);
-
-        PendingIntent pPlay = PendingIntent.getBroadcast(getApplicationContext(), 0, play, PendingIntent.FLAG_UPDATE_CURRENT);
-        view.setOnClickPendingIntent(R.id.btnPlay, pPlay);
-
+        view.setOnClickPendingIntent(R.id.notification_next_button, pNext);
     }
 
     @SuppressLint("NewApi")
@@ -158,17 +159,26 @@ public class MusicService extends Service implements
                         newNotification();
                         VerticalSlidingDrawerBaseActivity.changeButton();
                     }
-                    catch(Exception e){}
+                    catch(Exception ignored){}
                     return false;
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        PlayerConstants.NOTIFICATION_HANDLER = new Handler(new Callback() {
+            @Override
+            public boolean handleMessage(Message msg) {
+                newNotification();
+                return true;
+            }
+        });
+
         return START_STICKY;
     }
     private void RegisterRemoteClient(){
-        remoteComponentName = new ComponentName(getApplicationContext(), notificationBroadcast.ComponentName());
+        ComponentName remoteComponentName = new ComponentName(getApplicationContext(), notificationBroadcast.ComponentName());
         try{
             if(remoteControlClient == null) {
                 audioManager.registerMediaButtonEventReceiver(remoteComponentName);
@@ -190,7 +200,7 @@ public class MusicService extends Service implements
                             RemoteControlClient.FLAG_KEY_MEDIA_NEXT);
         }
 
-        catch (Exception ex){}
+        catch (Exception ignored){}
 
     }
     private void UpdateMetadata(Song song){
@@ -206,7 +216,7 @@ public class MusicService extends Service implements
         metadataEditor.putLong(MediaMetadataRetriever.METADATA_KEY_DURATION, song.getDuration());
         metadataEditor.putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, song.getArtist());
         metadataEditor.putString(MediaMetadataRetriever.METADATA_KEY_TITLE, song.getTitle());
-        mDummyAlbumArt = AudioExtensionMethods.getBitMap(getBaseContext(), song.getAlbumArtLocation());
+        Bitmap mDummyAlbumArt = AudioExtensionMethods.getBitMap(getBaseContext(), song.getAlbumArtLocation());
         if(mDummyAlbumArt == null)
             mDummyAlbumArt = BitmapFactory.decodeResource(getResources(), R.mipmap.unkown_album_art);
         metadataEditor.putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, mDummyAlbumArt);
@@ -232,68 +242,58 @@ public class MusicService extends Service implements
 
         currentSong = PlayerConstants.SONGS_LIST.get(PlayerConstants.SONG_NUMBER);
 
-        String songName = currentSong.getTitle();
-        String albumName = currentSong.getAlbum();
-        RemoteViews simpleContentView = new RemoteViews(getApplicationContext().getPackageName(),R.layout.custom_notification);
-        RemoteViews expandedView = new RemoteViews(getApplicationContext().getPackageName(), R.layout.big_notification);
+        RemoteViews smallView = new RemoteViews(getPackageName(), R.layout.notification);
+        smallView.setTextViewText(R.id.notification_song_name, currentSong.getTitle());
+        smallView.setTextViewText(R.id.notification_artist_name, currentSong.getArtist());
 
-        Notification notification = new NotificationCompat.Builder(getApplicationContext())
-                .setSmallIcon(R.mipmap.launcher_icon)
-                .setContentTitle(songName).build();
+        RemoteViews expanedView = new RemoteViews(getPackageName(), R.layout.notification_expanded);
+        expanedView.setTextViewText(R.id.notification_song_name, currentSong.getTitle());
+        expanedView.setTextViewText(R.id.notification_album_name, currentSong.getAlbum());
+        expanedView.setTextViewText(R.id.notification_artist_name, currentSong.getArtist());
 
-        setListeners(simpleContentView);
-        setListeners(expandedView);
-
-        notification.contentView = simpleContentView;
-        if(currentVersionSupportBigNotification){
-            notification.bigContentView = expandedView;
-        }
-
-        try{
-            Bitmap albumArt = AudioExtensionMethods.getBitMap(getBaseContext(), currentSong.getAlbumArtLocation());
-
-            if(albumArt != null){
-                notification.contentView.setImageViewBitmap(R.id.imageViewAlbumArt, albumArt);
-                if(currentVersionSupportBigNotification){
-                    notification.bigContentView.setImageViewBitmap(R.id.imageViewAlbumArt, albumArt);
-                }
-            }else{
-                notification.contentView.setImageViewResource(R.id.imageViewAlbumArt, R.mipmap.unkown_album_art);
-                if(currentVersionSupportBigNotification){
-                    notification.bigContentView.setImageViewResource(R.id.imageViewAlbumArt, R.mipmap.unkown_album_art);
-                }
-            }
-        }catch(Exception e){
-            e.printStackTrace();
-        }
         if(PlayerConstants.SONG_PAUSED){
-            notification.contentView.setViewVisibility(R.id.btnPause, View.GONE);
-            notification.contentView.setViewVisibility(R.id.btnPlay, View.VISIBLE);
-
-            if(currentVersionSupportBigNotification){
-                notification.bigContentView.setViewVisibility(R.id.btnPause, View.GONE);
-                notification.bigContentView.setViewVisibility(R.id.btnPlay, View.VISIBLE);
-            }
-        }else{
-            notification.contentView.setViewVisibility(R.id.btnPause, View.VISIBLE);
-            notification.contentView.setViewVisibility(R.id.btnPlay, View.GONE);
-
-            if(currentVersionSupportBigNotification){
-                notification.bigContentView.setViewVisibility(R.id.btnPause, View.VISIBLE);
-                notification.bigContentView.setViewVisibility(R.id.btnPlay, View.GONE);
-            }
+            smallView.setImageViewBitmap(R.id.notification_play_pause_button, ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_play_arrow_black_24dp)).getBitmap());
+            expanedView.setImageViewBitmap(R.id.notification_play_pause_button, ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_play_arrow_black_24dp)).getBitmap());
+        }
+        else{
+            smallView.setImageViewBitmap(R.id.notification_play_pause_button, ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_pause_black_24dp)).getBitmap());
+            expanedView.setImageViewBitmap(R.id.notification_play_pause_button, ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_pause_black_24dp)).getBitmap());
         }
 
-        notification.contentView.setTextViewText(R.id.textSongName, songName);
-        notification.contentView.setTextViewText(R.id.textAlbumName, albumName);
-        if(currentVersionSupportBigNotification){
-            notification.bigContentView.setTextViewText(R.id.textSongName, songName);
-            notification.bigContentView.setTextViewText(R.id.textAlbumName, albumName);
+        if(currentSong.getIsLiked(this))
+            expanedView.setImageViewBitmap(R.id.notification_favorite_button, ((BitmapDrawable) getResources().getDrawable(R.drawable.ic_favorite_red_24dp)).getBitmap());
+
+        else
+            expanedView.setImageViewBitmap(R.id.notification_favorite_button, ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_favorite_border_black_24dp)).getBitmap());
+
+
+        setListeners(smallView);
+        setListeners(expanedView);
+
+        Bitmap albumArt = AudioExtensionMethods.getBitMap(getBaseContext(), currentSong.getAlbumArtLocation());
+        if(albumArt != null){
+            smallView.setImageViewBitmap(R.id.notification_album_art, albumArt);
+            expanedView.setImageViewBitmap(R.id.notification_album_art, albumArt);
         }
 
-        notification.flags |= Notification.FLAG_ONGOING_EVENT;
-        startForeground(NOTIFY_ID, notification);
-        Log.d("showed", "notification");
+        else{
+            smallView.setImageViewBitmap(R.id.notification_album_art, ((BitmapDrawable) getResources().getDrawable(R.mipmap.unkown_album_art)).getBitmap());
+            expanedView.setImageViewBitmap(R.id.notification_album_art, ((BitmapDrawable) getResources().getDrawable(R.mipmap.unkown_album_art)).getBitmap());
+        }
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                .setContent(smallView)
+                .setSmallIcon(R.mipmap.launcher_icon)
+                .setOngoing(true);
+
+        if(currentVersionSupportBigNotification)
+            builder.setCustomBigContentView(expanedView);
+
+        Notification notification = builder.build();
+        NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        nm.notify(NOTIFY_ID, notification);
+
+        Log.d("showed", "notifications");
     }
 
     @Override
@@ -315,13 +315,10 @@ public class MusicService extends Service implements
     }
     public void onPrepared(MediaPlayer mp) {
         mp.start();
-        Intent notIntent = new Intent(this, MainActivity.class);
-        notIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendInt = PendingIntent.getActivity(this, 0,
-                notIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        Notification.Builder builder = new Notification.Builder(this);
-        AudioExtensionMethods.addSongToHistory(getBaseContext(), currentSong.getHashID());
+        if(historyHandler != null)
+            historyHandler.removeCallbacks(historyRunnable);
+        historyHandler = new Handler();
+        historyHandler.postDelayed(historyRunnable, 10000);
     }
     public void onDestroy() {
         if(player != null){
@@ -368,12 +365,19 @@ public class MusicService extends Service implements
     }
     public Context getContext(){ return getBaseContext();}
 
+    Runnable historyRunnable = new Runnable() {
+        @Override
+        public void run() {
+            AudioExtensionMethods.addSongToHistory(getBaseContext(), currentSong.getHashID());
+            historyHandler.removeCallbacks(this);
+        }
+    };
+
     public class MusicBinder extends Binder {
         public MusicService getService() {
             return MusicService.this;
         }
     }
-    @Override
     public void onTaskRemoved(Intent rootIntent) {
         new Thread(new Runnable() {
             @Override

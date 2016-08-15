@@ -38,6 +38,7 @@ public class QuickFavoritePlayWidget extends AppWidgetProvider {
         if (FAVORITE_WIDGET_ACTION.equals(intent.getAction())) {
 
             Toast.makeText(context, context.getResources().getString(R.string.please_wait_quick_shuffle), Toast.LENGTH_SHORT).show();
+
             ArrayList<Song> FavoriteSongs = AudioExtensionMethods.getFavoriteSongsList(context);
             if(FavoriteSongs.size() > 0){
                 MusicPlayerExtensionMethods.playSong(context, FavoriteSongs, 0);
