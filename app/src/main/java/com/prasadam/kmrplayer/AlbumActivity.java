@@ -61,6 +61,7 @@ public class AlbumActivity extends VerticalSlidingDrawerBaseActivity {
     @Bind (R.id.Album_name_albumrecyclerview) TextView albumNameTextView;
     @Bind (R.id.Artist_name_albumrecyclerview) TextView artistNameTextView;
     @Bind (R.id.shuffle_fab_button) FloatingActionButton shuffleFabButton;
+    @Bind (R.id.songs_recylcer_view_layout) RecyclerView recyclerView;
 
     @OnClick (R.id.album_info)
     public void artistOnClickListener(View view){
@@ -80,6 +81,12 @@ public class AlbumActivity extends VerticalSlidingDrawerBaseActivity {
         initalize();
         setAlbumArt();
         getSongsList();
+    }
+    public void onDestroy(){
+        super.onDestroy();
+        recyclerView.setAdapter(null);
+        recyclerViewAdapter = null;
+        songsList.clear();
     }
     public void onResume() {
         super.onResume();
@@ -172,7 +179,6 @@ public class AlbumActivity extends VerticalSlidingDrawerBaseActivity {
         songsList = AudioExtensionMethods.getSongList(this, albumTitle);
         albumArtist = AudioExtensionMethods.getAlbumArtistTitle(this, albumTitle);
         recyclerViewAdapter = new AlbumInnerLayoutSongRecyclerViewAdapter(this, songsList);
-        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.songs_recylcer_view_layout);
 
         runOnUiThread(new Runnable() {
             @Override

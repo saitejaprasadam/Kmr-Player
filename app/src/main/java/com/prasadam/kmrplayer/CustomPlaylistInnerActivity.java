@@ -139,6 +139,16 @@ public class CustomPlaylistInnerActivity extends VerticalSlidingDrawerBaseActivi
             }).start();
         }
     }
+    public void onDestroy(){
+        super.onDestroy();
+        customPlaylistInnerRecyclerView.setAdapter(null);
+        customPlaylistSongsRecylcerViewAdapter = null;
+        songsList.clear();
+    }
+    public void onResume() {
+        super.onResume();
+        SharedVariables.globalActivityContext = this;
+    }
 
     private void setToolbar() {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -199,10 +209,6 @@ public class CustomPlaylistInnerActivity extends VerticalSlidingDrawerBaseActivi
                     finish();
             }
         });
-    }
-    public void onResume() {
-        super.onResume();
-        SharedVariables.globalActivityContext = this;
     }
     private void setAlbumArt(final ArrayList<String> albumArtPathList) {
         File imgFile;

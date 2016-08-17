@@ -32,6 +32,7 @@ public class QuickShareActivity extends AppCompatActivity{
 
     public static TextView NoDevicesTextView;
     public static NearbyDevicesRecyclerViewAdapter QuickShareRecyclerviewAdapter;
+    private RecyclerView quickShareRecyclerView;
     private BroadcastReceiver receiver;
 
     public void onCreate(Bundle bundle){
@@ -55,6 +56,9 @@ public class QuickShareActivity extends AppCompatActivity{
             receiver = null;
         }
         super.onDestroy();
+        quickShareRecyclerView.setAdapter(null);
+        QuickShareRecyclerviewAdapter = null;
+        NoDevicesTextView = null;
     }
 
     private void wifiBroadCastReceiver() {
@@ -80,7 +84,7 @@ public class QuickShareActivity extends AppCompatActivity{
     private void setRecyclerView(ArrayList<String> songsPathList) {
         QuickShareRecyclerviewAdapter = new NearbyDevicesRecyclerViewAdapter(QuickShareActivity.this, this);
         QuickShareRecyclerviewAdapter.setQuickShareSongPathList(songsPathList);
-        final RecyclerView quickShareRecyclerView = (RecyclerView) findViewById(R.id.quick_share_recycler_view);
+        quickShareRecyclerView = (RecyclerView) findViewById(R.id.quick_share_recycler_view);
         quickShareRecyclerView.setAdapter(QuickShareRecyclerviewAdapter);
         quickShareRecyclerView.addItemDecoration(new DividerItemDecoration(QuickShareActivity.this, LinearLayoutManager.VERTICAL));
         quickShareRecyclerView.setLayoutManager(new LinearLayoutManager(QuickShareActivity.this));

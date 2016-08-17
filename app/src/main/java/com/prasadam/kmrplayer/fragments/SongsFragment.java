@@ -169,6 +169,7 @@ public class SongsFragment extends Fragment {
         }
         catch (Exception ignore){}
     }
+
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
         inflater.inflate(R.menu.main_in_songs_fragment, menu);

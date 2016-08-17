@@ -134,9 +134,6 @@ public class SmallAlbumRecyclerViewAdapter extends ObservableRecyclerView.Adapte
     public int getItemCount() {
         return albumArrayList.size();
     }
-    public void setAlbumList(ArrayList<Album> albumList){
-        this.albumArrayList = albumList;
-    }
 
     public class ArtistViewHolder extends RecyclerView.ViewHolder {
 

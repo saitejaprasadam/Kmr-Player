@@ -1,7 +1,6 @@
 package com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters;
 
 import android.app.Activity;
-import android.content.Context;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -157,7 +156,7 @@ public class ArtistInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapt
                                                                 } else
                                                                     Toast.makeText(context, context.getResources().getString(R.string.problem_deleting_song), Toast.LENGTH_SHORT).show();
                                                             }
-                                                        });
+                                                        }).start();
                                                     }
                                                 })
                                                 .negativeText(R.string.cancel_text)

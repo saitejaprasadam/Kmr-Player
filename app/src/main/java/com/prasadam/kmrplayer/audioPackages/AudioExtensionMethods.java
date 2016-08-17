@@ -375,6 +375,13 @@ public class AudioExtensionMethods {
         return BitmapFactory.decodeFile(absolutePath);
     }
 
+    public static Bitmap getBitMap(String absolutePath) {
+        if(absolutePath == null)
+            return null;
+
+        return BitmapFactory.decodeFile(absolutePath);
+    }
+
     public static void addToPlaylist(final Context context, final String songHashID){
 
         ArrayList<String> playlistNames = getCustomPlaylistNames(context);

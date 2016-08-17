@@ -2,7 +2,6 @@ package com.prasadam.kmrplayer;
 
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -37,7 +36,7 @@ public class SongPlaybackHistoryActivity extends VerticalSlidingDrawerBaseActivi
     @Bind(R.id.history_recycler_view) RecyclerView recyclerView;
     private Menu mOptionsMenu;
     private ArrayList<Song> songsList;
-    private UnifedRecyclerViewAdapter recyclerViewAdapter;
+    private UnifedRecyclerViewAdapter songHistoryActivityrecyclerViewAdapter;
 
     public void onCreate(Bundle b){
         super.onCreate(b);
@@ -67,7 +66,7 @@ public class SongPlaybackHistoryActivity extends VerticalSlidingDrawerBaseActivi
                         @Override
                         public void run() {
                             setSearchListener();
-                            recyclerViewAdapter = new UnifedRecyclerViewAdapter(SongPlaybackHistoryActivity.this, songsList);
+                            songHistoryActivityrecyclerViewAdapter = new UnifedRecyclerViewAdapter(SongPlaybackHistoryActivity.this, songsList);
                             if (!ExtensionMethods.isTablet(SongPlaybackHistoryActivity.this)) {
                                 if (!ExtensionMethods.isLandScape(SongPlaybackHistoryActivity.this))    //Mobile Portrait
                                     recyclerView.setLayoutManager(new LinearLayoutManager(SongPlaybackHistoryActivity.this));
@@ -82,7 +81,7 @@ public class SongPlaybackHistoryActivity extends VerticalSlidingDrawerBaseActivi
                                     recyclerView.setLayoutManager(new GridLayoutManager(SongPlaybackHistoryActivity.this, 3, GridLayoutManager.VERTICAL, false));
                             }
 
-                            recyclerView.setAdapter(recyclerViewAdapter);
+                            recyclerView.setAdapter(songHistoryActivityrecyclerViewAdapter);
                             recyclerView.addItemDecoration(new DividerItemDecoration(SongPlaybackHistoryActivity.this, LinearLayoutManager.VERTICAL));
                             loading.dismiss();
                         }
@@ -90,6 +89,12 @@ public class SongPlaybackHistoryActivity extends VerticalSlidingDrawerBaseActivi
                 }
             }
         }).start();
+    }
+    public void onDestroy() {
+        super.onDestroy();
+        recyclerView.setAdapter(null);
+        songHistoryActivityrecyclerViewAdapter = null;
+        songsList.clear();
     }
     public void onResume() {
         super.onResume();
@@ -100,7 +105,7 @@ public class SongPlaybackHistoryActivity extends VerticalSlidingDrawerBaseActivi
         MenuItem searchItem = mOptionsMenu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         MenuItemCompat.setActionView(searchItem, searchView);
-        SongsSearchListener searchListener = new SongsSearchListener(SongPlaybackHistoryActivity.this, songsList, recyclerView, recyclerViewAdapter);
+        SongsSearchListener searchListener = new SongsSearchListener(SongPlaybackHistoryActivity.this, songsList, recyclerView, songHistoryActivityrecyclerViewAdapter);
         searchView.setOnQueryTextListener(searchListener);
     }
 

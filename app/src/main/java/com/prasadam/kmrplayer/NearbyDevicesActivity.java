@@ -30,6 +30,7 @@ public class NearbyDevicesActivity extends AppCompatActivity{
 
     public static NearbyDevicesRecyclerViewAdapter nearbyDevicesRecyclerviewAdapter;
     public static TextView NoDevicesTextView;
+    private RecyclerView NearbyRecyclerView;
     private BroadcastReceiver receiver;
 
     public void onCreate(Bundle bundle){
@@ -54,15 +55,18 @@ public class NearbyDevicesActivity extends AppCompatActivity{
             receiver = null;
         }
         super.onDestroy();
+        NearbyRecyclerView.setAdapter(null);
+        nearbyDevicesRecyclerviewAdapter = null;
+        NoDevicesTextView = null;
     }
 
     private void setRecyclerView() {
 
         nearbyDevicesRecyclerviewAdapter = new NearbyDevicesRecyclerViewAdapter(NearbyDevicesActivity.this, this);
-        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.available_devices_recycler_view);
-        recyclerView.setAdapter(nearbyDevicesRecyclerviewAdapter);
-        recyclerView.addItemDecoration(new DividerItemDecoration(NearbyDevicesActivity.this, LinearLayoutManager.VERTICAL));
-        recyclerView.setLayoutManager(new LinearLayoutManager(NearbyDevicesActivity.this));
+        NearbyRecyclerView = (RecyclerView) findViewById(R.id.available_devices_recycler_view);
+        NearbyRecyclerView.setAdapter(nearbyDevicesRecyclerviewAdapter);
+        NearbyRecyclerView.addItemDecoration(new DividerItemDecoration(NearbyDevicesActivity.this, LinearLayoutManager.VERTICAL));
+        NearbyRecyclerView.setLayoutManager(new LinearLayoutManager(NearbyDevicesActivity.this));
     }
     public static void updateAdapater(){
         try{
@@ -80,9 +84,7 @@ public class NearbyDevicesActivity extends AppCompatActivity{
 
         receiver = new BroadcastReceiver() {
             @Override
-            public void onReceive(Context context, Intent intent) {
-                DialogHelper.checkForNetworkState(NearbyDevicesActivity.this, (FloatingActionButton) findViewById(R.id.wifi_fab));
-            }
+            public void onReceive(Context context, Intent intent) {DialogHelper.checkForNetworkState(NearbyDevicesActivity.this, (FloatingActionButton) findViewById(R.id.wifi_fab));}
         };
         registerReceiver(receiver, filter);
     }

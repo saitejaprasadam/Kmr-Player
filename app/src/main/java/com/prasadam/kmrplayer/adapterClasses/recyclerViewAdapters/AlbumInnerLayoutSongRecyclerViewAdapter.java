@@ -148,9 +148,6 @@ public class AlbumInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapte
                                                         new Thread(new Runnable() {
                                                             @Override
                                                             public void run() {
-                                                                new Thread(new Runnable() {
-                                                                    @Override
-                                                                    public void run() {
                                                                         File file = new File(currentSongDetails.getData());
                                                                         if (file.delete()) {
                                                                             songsList.remove(position);
@@ -169,9 +166,7 @@ public class AlbumInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapte
                                                                         } else
                                                                             Toast.makeText(context, context.getResources().getString(R.string.problem_deleting_song), Toast.LENGTH_SHORT).show();
                                                                     }
-                                                                });
-                                                            }
-                                                        });
+                                                                }).start();
                                                     }
                                                 })
                                                 .negativeText(R.string.cancel_text)

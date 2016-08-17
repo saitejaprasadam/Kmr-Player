@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/control_layout"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:background="@color/white"
+        android:layout_alignParentBottom="true">
+
+        <ImageView
+            android:id="@+id/widget_fav_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:padding="10dp"
+            android:layout_weight="0.25"
+            android:src="@mipmap/ic_favorite_border_black_24dp"/>
+
+        <ImageView
+            android:id="@+id/widget_prev_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:padding="10dp"
+            android:layout_weight="0.25"
+            android:src="@mipmap/ic_chevron_left_black_24dp"/>
+
+        <ImageView
+            android:id="@+id/widget_play_pause_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.25"
+            android:clickable="true"
+            android:padding="10dp"
+            android:src="@mipmap/ic_play_arrow_black_24dp"/>
+
+        <ImageView
+            android:id="@+id/widget_next_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.25"
+            android:clickable="true"
+            android:padding="10dp"
+            android:src="@mipmap/ic_chevron_right_black_24dp"/>
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_above="@+id/control_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/widget_now_playing_album_art"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@mipmap/unkown_album_art"
+            android:scaleType="centerCrop"/>
+        
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_gravity="bottom"
+            android:padding="7dp"
+            android:background="#4D000000">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/widget_song_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:textStyle="bold"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textSize="14sp"
+                    android:textColor="@color/white"
+                    android:text="@string/songs_text"/>
+
+                <TextView
+                    android:id="@+id/widget_artist_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textSize="10sp"
+                    android:textColor="#CCCCCC"
+                    android:text="@string/artist_text"/>
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/widget_album_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:elevation="5dp"/>
+
+    </FrameLayout>
+
+</RelativeLayout>

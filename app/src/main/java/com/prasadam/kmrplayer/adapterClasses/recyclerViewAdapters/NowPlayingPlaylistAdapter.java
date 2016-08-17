@@ -131,9 +131,6 @@ public class NowPlayingPlaylistAdapter extends RecyclerView.Adapter<NowPlayingPl
                                                     new Thread(new Runnable() {
                                                         @Override
                                                         public void run() {
-                                                            new Thread(new Runnable() {
-                                                                @Override
-                                                                public void run() {
                                                                     File file = new File(currentSongDetails.getData());
                                                                     if (file.delete()) {
                                                                         if (position == PlayerConstants.SONG_NUMBER)
@@ -153,8 +150,6 @@ public class NowPlayingPlaylistAdapter extends RecyclerView.Adapter<NowPlayingPl
                                                                     } else
                                                                         Toast.makeText(context, context.getResources().getString(R.string.problem_deleting_song), Toast.LENGTH_SHORT).show();
                                                                 }
-                                                            });
-                                                        }
                                                     }).start();
                                                 }
                                             })

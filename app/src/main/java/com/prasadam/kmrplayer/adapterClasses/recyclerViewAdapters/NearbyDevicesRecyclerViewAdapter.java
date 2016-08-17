@@ -98,7 +98,6 @@ public class NearbyDevicesRecyclerViewAdapter extends RecyclerView.Adapter<Nearb
             if(NearbyDevicesActivity.NoDevicesTextView != null)
                 NearbyDevicesActivity.NoDevicesTextView.setVisibility(View.INVISIBLE);
         }
-
         return count;
     }
 

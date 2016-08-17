@@ -1,15 +1,11 @@
 package com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters;
 
 import android.app.Activity;
-import android.content.Context;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -80,7 +76,7 @@ public class CustomPlaylistSongsRecylcerViewAdapter extends RecyclerView.Adapter
             });
             holder.rootLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {MusicPlayerExtensionMethods.playSong((Activity) context, customPlaylistSongsList, position);}
+                public void onClick(View view) {MusicPlayerExtensionMethods.playSong(context, customPlaylistSongsList, position);}
             });
             setContextMenu(holder, position, currentSongDetails);
             setAlbumArt(holder, currentSongDetails);
@@ -131,7 +127,7 @@ public class CustomPlaylistSongsRecylcerViewAdapter extends RecyclerView.Adapter
                                         break;
 
                                     case 6:
-                                        ActivitySwitcher.launchTagEditor((Activity) context, currentSongDetails.getID(), position);
+                                        ActivitySwitcher.launchTagEditor(context, currentSongDetails.getID(), position);
                                         break;
 
                                     case 7:
@@ -168,7 +164,7 @@ public class CustomPlaylistSongsRecylcerViewAdapter extends RecyclerView.Adapter
                                                                 } else
                                                                     Toast.makeText(context, context.getResources().getString(R.string.problem_deleting_song), Toast.LENGTH_SHORT).show();
                                                             }
-                                                        });
+                                                        }).start();
                                                     }
                                                 })
                                                 .negativeText(R.string.cancel_text)

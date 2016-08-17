@@ -200,7 +200,7 @@ public class MusicPlayerExtensionMethods {
             PlayerConstants.SONGS_LIST.add(songToBeAdded);
             Toast.makeText(context, "Song added to now playing playlist", Toast.LENGTH_SHORT).show();
             VerticalSlidingDrawerBaseActivity.updateAlbumAdapter();
-            VerticalSlidingDrawerBaseActivity.recyclerViewAdapter.notifyDataSetChanged();
+            VerticalSlidingDrawerBaseActivity.NowPlayingPlaylistRecyclerViewAdapter.notifyDataSetChanged();
         }
     }
 
@@ -232,7 +232,7 @@ public class MusicPlayerExtensionMethods {
             loading[0].dismiss();
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
             VerticalSlidingDrawerBaseActivity.updateAlbumAdapter();
-            VerticalSlidingDrawerBaseActivity.recyclerViewAdapter.notifyDataSetChanged();
+            VerticalSlidingDrawerBaseActivity.NowPlayingPlaylistRecyclerViewAdapter.notifyDataSetChanged();
         }
 
         catch (Exception ignored){}

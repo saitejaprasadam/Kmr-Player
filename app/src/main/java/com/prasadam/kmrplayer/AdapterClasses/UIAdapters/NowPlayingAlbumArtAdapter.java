@@ -67,7 +67,7 @@ public class NowPlayingAlbumArtAdapter extends PagerAdapter {
 
                 SongsFragment.recyclerViewAdapter.notifyDataSetChanged();
                 VerticalSlidingDrawerBaseActivity.updateSongLikeStatus(activity);
-                VerticalSlidingDrawerBaseActivity.recyclerViewAdapter.notifyDataSetChanged();
+                VerticalSlidingDrawerBaseActivity.NowPlayingPlaylistRecyclerViewAdapter.notifyDataSetChanged();
             }
         });
 

@@ -140,7 +140,7 @@ public class DialogHelper {
 
     public static void checkForNetworkState(final Context context, FloatingActionButton fab) {
 
-        ConnectivityManager connManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connManager = (ConnectivityManager) context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
         WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);

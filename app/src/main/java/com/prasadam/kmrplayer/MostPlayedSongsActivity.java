@@ -37,7 +37,7 @@ public class MostPlayedSongsActivity extends VerticalSlidingDrawerBaseActivity {
 
     @Bind(R.id.most_played_recycer_view) RecyclerView mostPlayedRecylcerView;
     private ArrayList<Song> songsList;
-    private UnifedRecyclerViewAdapter recyclerViewAdapter;
+    private UnifedRecyclerViewAdapter MostPlayedActivityrecyclerViewAdapter;
     private Menu mOptionsMenu;
 
     public void onCreate(Bundle b){
@@ -67,7 +67,7 @@ public class MostPlayedSongsActivity extends VerticalSlidingDrawerBaseActivity {
                         @Override
                         public void run() {
                             setSearchListener();
-                            recyclerViewAdapter = new UnifedRecyclerViewAdapter(MostPlayedSongsActivity.this, songsList);
+                            MostPlayedActivityrecyclerViewAdapter = new UnifedRecyclerViewAdapter(MostPlayedSongsActivity.this, songsList);
 
                             if (!ExtensionMethods.isTablet(MostPlayedSongsActivity.this))
                             {
@@ -86,7 +86,7 @@ public class MostPlayedSongsActivity extends VerticalSlidingDrawerBaseActivity {
                                     mostPlayedRecylcerView.setLayoutManager(new GridLayoutManager(MostPlayedSongsActivity.this, 3, GridLayoutManager.VERTICAL, false));
                             }
 
-                            mostPlayedRecylcerView.setAdapter(recyclerViewAdapter);
+                            mostPlayedRecylcerView.setAdapter(MostPlayedActivityrecyclerViewAdapter);
                             mostPlayedRecylcerView.addItemDecoration(new DividerItemDecoration(MostPlayedSongsActivity.this, LinearLayoutManager.VERTICAL));
                             loading.dismiss();
                         }
@@ -96,18 +96,23 @@ public class MostPlayedSongsActivity extends VerticalSlidingDrawerBaseActivity {
         }).start();
 
     }
+    public void onDestroy() {
+        super.onDestroy();
+        mostPlayedRecylcerView.setAdapter(null);
+        MostPlayedActivityrecyclerViewAdapter = null;
+        songsList.clear();
+    }
+    public void onResume() {
+        super.onResume();
+        SharedVariables.globalActivityContext = this;
+    }
 
     private void setSearchListener() {
         MenuItem searchItem = mOptionsMenu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         MenuItemCompat.setActionView(searchItem, searchView);
-        SongsSearchListener searchListener = new SongsSearchListener(MostPlayedSongsActivity.this, songsList, mostPlayedRecylcerView, recyclerViewAdapter);
+        SongsSearchListener searchListener = new SongsSearchListener(MostPlayedSongsActivity.this, songsList, mostPlayedRecylcerView, MostPlayedActivityrecyclerViewAdapter);
         searchView.setOnQueryTextListener(searchListener);
-    }
-
-    public void onResume() {
-        super.onResume();
-        SharedVariables.globalActivityContext = this;
     }
 
     @Override

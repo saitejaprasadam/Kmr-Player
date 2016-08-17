@@ -111,7 +111,7 @@ public class FavoritesRecyclerViewAdapter extends RecyclerView.Adapter<Favorites
                                                                     } else
                                                                         Toast.makeText(context, context.getResources().getString(R.string.problem_deleting_song), Toast.LENGTH_SHORT).show();
                                                                 }
-                                                            });
+                                                            }).start();
                                                         }
                                                     })
                                                     .negativeText(R.string.cancel_text)

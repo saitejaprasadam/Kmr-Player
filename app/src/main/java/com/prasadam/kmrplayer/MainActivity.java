@@ -32,6 +32,7 @@ import com.prasadam.kmrplayer.Fragments.SongsFragment;
 import com.prasadam.kmrplayer.Fragments.TabFragment;
 import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 import com.prasadam.kmrplayer.SocketClasses.SocketExtensionMethods;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.Calendar;
 
@@ -81,6 +82,11 @@ public class MainActivity extends VerticalSlidingDrawerBaseActivity implements N
     public void onResume() {
         super.onResume();
         SharedVariables.globalActivityContext = this;
+    }
+    public void onNewIntent(Intent intent){
+        super.onNewIntent(intent);
+        if(intent.getBooleanExtra("notificationIntent", false))
+            mainLayoutRootLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
     }
     public void onBackPressed() {
 

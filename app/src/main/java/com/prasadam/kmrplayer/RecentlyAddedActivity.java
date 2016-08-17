@@ -35,7 +35,7 @@ public class RecentlyAddedActivity extends VerticalSlidingDrawerBaseActivity {
 
     @Bind (R.id.recently_added_playlist_recycler_view) RecyclerView recentlyAddedRecyclerView;
     private ArrayList<Song> songsList;
-    private UnifedRecyclerViewAdapter recyclerViewAdapter;
+    private UnifedRecyclerViewAdapter RecentlyAddedAcitivityrecyclerViewAdapter;
     private Menu mOptionsMenu;
 
     public void onCreate(Bundle b){
@@ -65,7 +65,7 @@ public class RecentlyAddedActivity extends VerticalSlidingDrawerBaseActivity {
                         @Override
                         public void run() {
                             setSearchListener();
-                            recyclerViewAdapter = new UnifedRecyclerViewAdapter(RecentlyAddedActivity.this, songsList);
+                            RecentlyAddedAcitivityrecyclerViewAdapter = new UnifedRecyclerViewAdapter(RecentlyAddedActivity.this, songsList);
                             if (!ExtensionMethods.isTablet(RecentlyAddedActivity.this)) {
                                 if (!ExtensionMethods.isLandScape(RecentlyAddedActivity.this))    //Mobile Portrait
                                     recentlyAddedRecyclerView.setLayoutManager(new LinearLayoutManager(RecentlyAddedActivity.this));
@@ -80,7 +80,7 @@ public class RecentlyAddedActivity extends VerticalSlidingDrawerBaseActivity {
                                     recentlyAddedRecyclerView.setLayoutManager(new GridLayoutManager(RecentlyAddedActivity.this, 3, GridLayoutManager.VERTICAL, false));
                             }
 
-                            recentlyAddedRecyclerView.setAdapter(recyclerViewAdapter);
+                            recentlyAddedRecyclerView.setAdapter(RecentlyAddedAcitivityrecyclerViewAdapter);
                             recentlyAddedRecyclerView.addItemDecoration(new DividerItemDecoration(RecentlyAddedActivity.this, LinearLayoutManager.VERTICAL));
                             loading.dismiss();
                         }
@@ -89,16 +89,23 @@ public class RecentlyAddedActivity extends VerticalSlidingDrawerBaseActivity {
             }
         }).start();
     }
-    private void setSearchListener() {
-        MenuItem searchItem = mOptionsMenu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        MenuItemCompat.setActionView(searchItem, searchView);
-        SongsSearchListener searchListener = new SongsSearchListener(RecentlyAddedActivity.this, songsList, recentlyAddedRecyclerView, recyclerViewAdapter);
-        searchView.setOnQueryTextListener(searchListener);
+    public void onDestroy() {
+        super.onDestroy();
+        recentlyAddedRecyclerView.setAdapter(null);
+        RecentlyAddedAcitivityrecyclerViewAdapter = null;
+        songsList.clear();
     }
     public void onResume() {
         super.onResume();
         SharedVariables.globalActivityContext = this;
+    }
+
+    private void setSearchListener() {
+        MenuItem searchItem = mOptionsMenu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        MenuItemCompat.setActionView(searchItem, searchView);
+        SongsSearchListener searchListener = new SongsSearchListener(RecentlyAddedActivity.this, songsList, recentlyAddedRecyclerView, RecentlyAddedAcitivityrecyclerViewAdapter);
+        searchView.setOnQueryTextListener(searchListener);
     }
 
     @Override

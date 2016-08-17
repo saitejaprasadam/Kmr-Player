@@ -165,6 +165,15 @@ public class SearchActivity extends VerticalSlidingDrawerBaseActivity{
         imm.hideSoftInputFromWindow(searchBox.getWindowToken(), 0);
         finish();
     }
+    public void onDestroy(){
+        super.onDestroy();
+        songsRecyclerView.setAdapter(null);
+        artistRecyclerView.setAdapter(null);
+        albumRecyclerView.setAdapter(null);
+        songRecyclerViewAdapter = null;
+        artistRecyclerViewAdapter = null;
+        albumRecyclerViewAdapter = null;
+    }
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 

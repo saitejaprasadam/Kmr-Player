@@ -16,6 +16,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivityHelper;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.CustomPlaylistRecyclerViewAdapter;
+import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.CustomPlaylistSongsRecylcerViewAdapter;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.Fragments.NoItemsFragment;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
@@ -36,6 +37,7 @@ import static com.prasadam.kmrplayer.SharedClasses.ExtensionMethods.setStatusBar
 
 public class CustomPlaylistActivity extends VerticalSlidingDrawerBaseActivity {
 
+    private CustomPlaylistRecyclerViewAdapter CustomPlaylistActivityrecyclerViewAdapter;
     @Bind(R.id.custom_playlist_recycler_view) RecyclerView recyclerView;
     @OnClick (R.id.add_new_custom_playlist)
     public void addNewPlaylist(View view){
@@ -72,8 +74,8 @@ public class CustomPlaylistActivity extends VerticalSlidingDrawerBaseActivity {
         }
 
         else{
-            CustomPlaylistRecyclerViewAdapter recyclerViewAdapter = new CustomPlaylistRecyclerViewAdapter(this, playlistNames);
-            recyclerView.setAdapter(recyclerViewAdapter);
+            CustomPlaylistActivityrecyclerViewAdapter = new CustomPlaylistRecyclerViewAdapter(this, playlistNames);
+            recyclerView.setAdapter(CustomPlaylistActivityrecyclerViewAdapter);
 
             if (!ExtensionMethods.isTablet(this))
             {
@@ -92,6 +94,11 @@ public class CustomPlaylistActivity extends VerticalSlidingDrawerBaseActivity {
                     recyclerView.setLayoutManager(new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false));
             }
         }
+    }
+    public void onDestroy(){
+        super.onDestroy();
+        recyclerView.setAdapter(null);
+        CustomPlaylistActivityrecyclerViewAdapter = null;
     }
     public void onResume() {
         super.onResume();

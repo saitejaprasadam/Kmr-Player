@@ -1,12 +1,15 @@
 package com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses;
 
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
+import android.content.Intent;
 
 import com.prasadam.kmrplayer.Fragments.SongsFragment;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.SocketClasses.GroupPlay.GroupPlayHelper;
 import com.prasadam.kmrplayer.VerticalSlidingDrawerBaseActivity;
+import com.prasadam.kmrplayer.Widgets.NowPlayingWidget;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -74,7 +77,7 @@ public class Controls {
         PlayerConstants.NOTIFICATION_HANDLER.sendEmptyMessage(0);
         VerticalSlidingDrawerBaseActivity.updateSongLikeStatus(context);
         SongsFragment.recyclerViewAdapter.notifyDataSetChanged();
-        VerticalSlidingDrawerBaseActivity.recyclerViewAdapter.notifyDataSetChanged();
+        VerticalSlidingDrawerBaseActivity.NowPlayingPlaylistRecyclerViewAdapter.notifyDataSetChanged();
     }
 
     private static void sendMessage(String message) {

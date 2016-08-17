@@ -50,8 +50,11 @@ public class ArtistActivity extends VerticalSlidingDrawerBaseActivity {
     public static String ARTIST_EXTRA = "artist";
     private Artist artist;
     private ArrayList<Song> songsList;
+    private ArrayList<Album> albumList;
     private FrameLayout colorPaletteView;
     private String artistAlbumArt = null;
+    private ArtistInnerLayoutSongRecyclerViewAdapter songRecyclerViewAdapter;
+    private SmallAlbumRecyclerViewAdapter albumRecyclerViewAdapter;
 
     @Bind(R.id.artist_image) ImageView artistAlbumArtImageView;
     @Bind(R.id.blurred_album_art) ImageView blurredAlbumArt;
@@ -84,6 +87,15 @@ public class ArtistActivity extends VerticalSlidingDrawerBaseActivity {
         setAlbumRecyclerView();
         setSongRecyclerView();
     }
+    public void onDestroy(){
+        super.onDestroy();
+        songRecyclerview.setAdapter(null);
+        albumRecyclerview.setAdapter(null);
+        songRecyclerViewAdapter = null;
+        albumRecyclerViewAdapter = null;
+        songsList.clear();
+        albumList.clear();
+    }
     public void onResume() {
         super.onResume();
         SharedVariables.globalActivityContext = this;
@@ -92,15 +104,15 @@ public class ArtistActivity extends VerticalSlidingDrawerBaseActivity {
     private void setSongRecyclerView() {
 
         songsList = AudioExtensionMethods.getSongListFromArtist(ArtistActivity.this, artist.getArtistTitle());
-        ArtistInnerLayoutSongRecyclerViewAdapter songRecyclerViewAdapter = new ArtistInnerLayoutSongRecyclerViewAdapter(ArtistActivity.this, songsList);
+        songRecyclerViewAdapter = new ArtistInnerLayoutSongRecyclerViewAdapter(ArtistActivity.this, songsList);
         songRecyclerview.setLayoutManager(new LinearLayoutManager(ArtistActivity.this));
         songRecyclerview.setAdapter(songRecyclerViewAdapter);
         songRecyclerview.addItemDecoration(new DividerItemDecoration(ArtistActivity.this, LinearLayoutManager.VERTICAL));
     }
     private void setAlbumRecyclerView() {
 
-        ArrayList<Album> albumList = AudioExtensionMethods.getAlbumListFromArtist(ArtistActivity.this, artist.getArtistTitle());
-        SmallAlbumRecyclerViewAdapter albumRecyclerViewAdapter = new SmallAlbumRecyclerViewAdapter(ArtistActivity.this, this, albumList);
+        albumList = AudioExtensionMethods.getAlbumListFromArtist(ArtistActivity.this, artist.getArtistTitle());
+        albumRecyclerViewAdapter = new SmallAlbumRecyclerViewAdapter(ArtistActivity.this, this, albumList);
         albumRecyclerview.setLayoutManager(new LinearLayoutManager(ArtistActivity.this, LinearLayoutManager.HORIZONTAL, false));
         albumRecyclerview.setAdapter(albumRecyclerViewAdapter);
     }

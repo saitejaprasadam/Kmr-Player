@@ -70,7 +70,6 @@ import java.util.Map;
 public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity implements NowPlayingPlaylistInterfaces.OnStartDragListener, ViewPager.OnPageChangeListener{
 
     protected static SlidingUpPanelLayout mainLayoutRootLayout;
-    protected FrameLayout actContent;
     private static ImageView nowPlayingMinimalAlbumArt, nowPlayingBlurredAlbumArt;
     private static RelativeLayout nowPlayingColorPallatteView, nowPlayingColorPallatteViewBackground;
     private static ImageView nowPlayingNextButton, nowPlayingPreviousButton, nowPlayingPlayButton, nowPlayingSongContextMenu;
@@ -79,23 +78,23 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
     private static ImageView nowPlayingMinimalNextButton, nowPlayingMinimalPlayButton, nowPlayingShuffleButton, nowPlayingRepeatButton;
     private static ProgressBar nowPlayingMinimalProgressBar;
     public static RecyclerView nowPlayingPlaylistRecyclerView;
-    public static NowPlayingPlaylistAdapter recyclerViewAdapter;
+    public static NowPlayingPlaylistAdapter NowPlayingPlaylistRecyclerViewAdapter;
     private static ViewPager viewPager;
     private static NowPlayingAlbumArtAdapter albumArtParallaxAdapter;
     private static ItemTouchHelper mItemTouchHelper;
     private static RelativeLayout nowPlayingsongInfoCardView;
     private static CardView nowPlayingAlbumArtContainer;
-    protected static RelativeLayout nowPlayingMinimalRootLayout;
+    private static RelativeLayout nowPlayingMinimalRootLayout;
     private static SeekBar nowPlayingSeekBar;
     private TextView nowPlayingCurrentDuration;
     private static TextView nowPlayingMaxDuration;
-    private static int width;
+    private Handler progressHandler;
 
     @Override
     public void setContentView(final int layoutResID) {
 
         mainLayoutRootLayout = (SlidingUpPanelLayout) getLayoutInflater().inflate(R.layout.base_activity_vertical_sliding_drawer_layout, null);
-        actContent = (FrameLayout) mainLayoutRootLayout.findViewById(R.id.main_content);
+        FrameLayout actContent = (FrameLayout) mainLayoutRootLayout.findViewById(R.id.main_content);
 
         getLayoutInflater().inflate(layoutResID, actContent, true);
         super.setContentView(mainLayoutRootLayout);
@@ -131,15 +130,19 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
         initalize();
         updateNowPlayingUI(this);
     }
+    public void onDestroy(){
+        super.onDestroy();
+        progressHandler = null;
+    }
     public void onBackPressed() {
-        super.onBackPressed();
         if (mainLayoutRootLayout != null && (mainLayoutRootLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED || mainLayoutRootLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED))
             mainLayoutRootLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+        else
+            super.onBackPressed();
     }
 
     private void initalize() {
         initalizeNowPlayingUI();
-        calculateWidth();
         initalizePlaylistRecyclerView();
         updateNowPlayingUI(this);
     }
@@ -221,14 +224,6 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
             }
         });
     }
-    private void calculateWidth() {
-        viewPager.post(new Runnable() {
-            @Override
-            public void run() {
-                width = viewPager.getMeasuredWidth();
-            }
-        });
-    }
     private void nowPlayingListeners() {
         mainLayoutRootLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
@@ -257,7 +252,7 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
         nowPlayingsongInfoCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                recyclerViewAdapter.notifyDataSetChanged();
+                NowPlayingPlaylistRecyclerViewAdapter.notifyDataSetChanged();
 
                 if(!PlayerConstants.SHOWING_PLAYLIST && !(ExtensionMethods.isTablet(VerticalSlidingDrawerBaseActivity.this) && ExtensionMethods.isLandScape(VerticalSlidingDrawerBaseActivity.this)))
                     showPlaylist();
@@ -270,7 +265,7 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
         nowPlayingShuffleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                recyclerViewAdapter.notifyDataSetChanged();
+                NowPlayingPlaylistRecyclerViewAdapter.notifyDataSetChanged();
                 if(PlayerConstants.SHUFFLE){
                     PlayerConstants.SHUFFLE = false;
                     Controls.shuffleMashUpMethod();
@@ -316,7 +311,7 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
             nowPlayingMinimalProgressBar.getProgressDrawable().setColorFilter(getResources().getColor(R.color.colorAccentGeneric), android.graphics.PorterDuff.Mode.SRC_IN);
 
-        final Handler mHandler = new Handler();
+        progressHandler = new Handler();
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -329,7 +324,8 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
                             nowPlayingSeekBar.setProgress(mCurrentPosition);
                     }
                 }
-                mHandler.postDelayed(this, 1000);
+                if(progressHandler != null)
+                    progressHandler.postDelayed(this, 1000);
             }
         });
 
@@ -439,10 +435,10 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
         });
     }
     private void initalizePlaylistRecyclerView(){
-        recyclerViewAdapter = new NowPlayingPlaylistAdapter(this, this);
-        nowPlayingPlaylistRecyclerView.setAdapter(recyclerViewAdapter);
+        NowPlayingPlaylistRecyclerViewAdapter = new NowPlayingPlaylistAdapter(this, this);
+        nowPlayingPlaylistRecyclerView.setAdapter(NowPlayingPlaylistRecyclerViewAdapter);
         nowPlayingPlaylistRecyclerView.setLayoutManager(new LinearLayoutManager(VerticalSlidingDrawerBaseActivity.this));
-        ItemTouchHelper.Callback callback = new NowPlayingPlaylistInterfaces.SimpleItemTouchHelperCallback(recyclerViewAdapter);
+        ItemTouchHelper.Callback callback = new NowPlayingPlaylistInterfaces.SimpleItemTouchHelperCallback(NowPlayingPlaylistRecyclerViewAdapter);
         mItemTouchHelper = new ItemTouchHelper(callback);
         mItemTouchHelper.attachToRecyclerView(nowPlayingPlaylistRecyclerView);
     }
@@ -469,18 +465,18 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
                 public void liked(LikeButton likeButton) {
                     currentPlayingSong.setIsLiked(context, true);
                     SongsFragment.recyclerViewAdapter.notifyDataSetChanged();
-                    recyclerViewAdapter.notifyDataSetChanged();
+                    NowPlayingPlaylistRecyclerViewAdapter.notifyDataSetChanged();
                 }
 
                 @Override
                 public void unLiked(LikeButton likeButton) {
                     currentPlayingSong.setIsLiked(context, false);
                     SongsFragment.recyclerViewAdapter.notifyDataSetChanged();
-                    recyclerViewAdapter.notifyDataSetChanged();
+                    NowPlayingPlaylistRecyclerViewAdapter.notifyDataSetChanged();
                 }
             });
-            if(recyclerViewAdapter != null)
-                recyclerViewAdapter.notifyDataSetChanged();
+            if(NowPlayingPlaylistRecyclerViewAdapter != null)
+                NowPlayingPlaylistRecyclerViewAdapter.notifyDataSetChanged();
 
             nowPlayingPlaylistRecyclerView.scrollToPosition(PlayerConstants.SONG_NUMBER);
         }
@@ -674,7 +670,7 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
         for (Map.Entry<Integer, View> entry: imageViews.entrySet()){
             int imagePosition = entry.getKey();
             int correctedPosition = imagePosition - position;
-            int displace = -(correctedPosition * width/2)+ (positionOffsetPixels / 2);
+            int displace = -(correctedPosition * viewPager.getMeasuredWidth()/2)+ (positionOffsetPixels / 2);
 
             View view = entry.getValue();
             view.setX(displace);

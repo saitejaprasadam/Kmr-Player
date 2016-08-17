@@ -34,7 +34,7 @@ import static com.prasadam.kmrplayer.SharedClasses.ExtensionMethods.setStatusBar
 public class FavoritesActivity extends AppCompatActivity{
 
     private ArrayList<Song> favoriteSongList;
-    private UnifedRecyclerViewAdapter recyclerViewAdapter;
+    private UnifedRecyclerViewAdapter FavoritesActivityrecyclerViewAdapter;
     private RecyclerView recyclerView;
     private Menu mOptionsMenu;
 
@@ -64,7 +64,7 @@ public class FavoritesActivity extends AppCompatActivity{
                         @Override
                         public void run() {
                             setSearchListener();
-                            recyclerViewAdapter = new UnifedRecyclerViewAdapter(FavoritesActivity.this, favoriteSongList);
+                            FavoritesActivityrecyclerViewAdapter = new UnifedRecyclerViewAdapter(FavoritesActivity.this, favoriteSongList);
 
                             if (!ExtensionMethods.isTablet(FavoritesActivity.this))
                             {
@@ -83,7 +83,7 @@ public class FavoritesActivity extends AppCompatActivity{
                                     recyclerView.setLayoutManager(new GridLayoutManager(FavoritesActivity.this, 3, GridLayoutManager.VERTICAL, false));
                             }
 
-                            recyclerView.setAdapter(recyclerViewAdapter);
+                            recyclerView.setAdapter(FavoritesActivityrecyclerViewAdapter);
                             recyclerView.addItemDecoration(new DividerItemDecoration(FavoritesActivity.this, LinearLayoutManager.VERTICAL));
                             loading.dismiss();
                         }
@@ -91,6 +91,12 @@ public class FavoritesActivity extends AppCompatActivity{
                 }
             }
         }).start();
+    }
+    public void onDestroy() {
+        super.onDestroy();
+        recyclerView.setAdapter(null);
+        FavoritesActivityrecyclerViewAdapter = null;
+        favoriteSongList.clear();
     }
     public void onResume() {
         super.onResume();
@@ -101,7 +107,7 @@ public class FavoritesActivity extends AppCompatActivity{
         MenuItem searchItem = mOptionsMenu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         MenuItemCompat.setActionView(searchItem, searchView);
-        SongsSearchListener searchListener = new SongsSearchListener(this, favoriteSongList, recyclerView, recyclerViewAdapter);
+        SongsSearchListener searchListener = new SongsSearchListener(this, favoriteSongList, recyclerView, FavoritesActivityrecyclerViewAdapter);
         searchView.setOnQueryTextListener(searchListener);
     }
 

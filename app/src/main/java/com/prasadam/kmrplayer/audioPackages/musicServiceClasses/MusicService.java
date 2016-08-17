@@ -5,6 +5,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -21,17 +22,21 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.PowerManager;
 import android.os.Handler.Callback;
+import android.provider.MediaStore;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.media.MediaMetadataRetriever;
 import android.widget.RemoteViews;
 
+import com.prasadam.kmrplayer.ListenerClasses.SongsContentObserver;
+import com.prasadam.kmrplayer.MainActivity;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 import com.prasadam.kmrplayer.SocketClasses.SocketExtensionMethods;
 import com.prasadam.kmrplayer.VerticalSlidingDrawerBaseActivity;
+import com.prasadam.kmrplayer.Widgets.NowPlayingWidget;
 
 import java.io.IOException;
 
@@ -45,18 +50,17 @@ public class MusicService extends Service implements
     public static final String NOTIFY_PAUSE = "com.prasadam.kmrplayer.pause";
     public static final String NOTIFY_PLAY = "com.prasadam.kmrplayer.play";
     public static final String NOTIFY_NEXT = "com.prasadam.kmrplayer.next";
-    public static boolean isFocusSnatched = false;
+    public boolean isFocusSnatched = false;
 
-    private static boolean currentVersionSupportLockScreenControls = false;
-    private static boolean currentVersionSupportBigNotification = false;
-    private RemoteControlClient remoteControlClient;
-    private static NotificationBroadcast notificationBroadcast;
-    private AudioManager audioManager;
-    public static MediaPlayer player;
+    private boolean currentVersionSupportLockScreenControls = false;
+    private boolean currentVersionSupportBigNotification = false;
     private final IBinder musicBind = new MusicBinder();
-    private static final int NOTIFY_ID = 626272;
+    private RemoteControlClient remoteControlClient;
+    private NotificationBroadcast notificationBroadcast;
+    private AudioManager audioManager;
+    private Handler historyHandler;
+    public static MediaPlayer player;
     public static Song currentSong;
-    private static Handler historyHandler;
 
     public void onCreate(){
 
@@ -65,6 +69,7 @@ public class MusicService extends Service implements
         currentVersionSupportLockScreenControls = UtilFunctions.currentVersionSupportLockScreenControls();
         currentVersionSupportBigNotification = UtilFunctions.currentVersionSupportBigNotification();
         audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+        getContentResolver().registerContentObserver(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, true, new SongsContentObserver(new Handler()));
         player = new MediaPlayer();
         initMusicPlayer();
     }
@@ -239,9 +244,8 @@ public class MusicService extends Service implements
         }
     }
     private void newNotification() {
-
         currentSong = PlayerConstants.SONGS_LIST.get(PlayerConstants.SONG_NUMBER);
-
+        updateWidget();
         RemoteViews smallView = new RemoteViews(getPackageName(), R.layout.notification);
         smallView.setTextViewText(R.id.notification_song_name, currentSong.getTitle());
         smallView.setTextViewText(R.id.notification_artist_name, currentSong.getArtist());
@@ -289,11 +293,24 @@ public class MusicService extends Service implements
         if(currentVersionSupportBigNotification)
             builder.setCustomBigContentView(expanedView);
 
+        Intent nIntent = new Intent(this, MainActivity.class);
+        nIntent.putExtra("notificationIntent", true);
+        nIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, nIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(pendingIntent);
+
         Notification notification = builder.build();
         NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        nm.notify(NOTIFY_ID, notification);
+        nm.notify(626272, notification);
 
         Log.d("showed", "notifications");
+    }
+    private void updateWidget() {
+        Intent intent = new Intent(this, NowPlayingWidget.class);
+        int[] ids = {R.id.widget_now_playing_album_art, R.id.widget_song_name, R.id.widget_artist_name, R.id.widget_play_pause_button, R.id.widget_fav_button};
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        sendBroadcast(intent);
     }
 
     @Override
