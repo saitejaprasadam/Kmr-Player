@@ -25,12 +25,12 @@ public class MusicPlayerExtensionMethods {
     public static void shufflePlay(Context mActivity, final ArrayList<Song> songsList){
 
         PlayerConstants.SONG_PAUSED = false;
-        PlayerConstants.HASH_ID_CURRENT_PLAYLIST.clear();
+        PlayerConstants.clear_hash_id_current_playlist();
         new Thread(new Runnable() {
             @Override
             public void run() {
                 for (Song song: songsList) {
-                    PlayerConstants.HASH_ID_CURRENT_PLAYLIST.add(song.getHashID());
+                    PlayerConstants.add_hash_id_current_playlist(song.getHashID());
                 }
             }
         }).start();
@@ -38,7 +38,7 @@ public class MusicPlayerExtensionMethods {
         long seed = System.nanoTime();
         ArrayList<Song> shuffledPlaylist = new ArrayList<>(songsList);
         Collections.shuffle(shuffledPlaylist, new Random(seed));
-        PlayerConstants.SONGS_LIST = shuffledPlaylist;
+        PlayerConstants.setPlayList(shuffledPlaylist);
         PlayerConstants.SONG_NUMBER = 0;
         boolean isServiceRunning = UtilFunctions.isServiceRunning(MusicService.class.getName(), mActivity);
         if (!isServiceRunning) {
@@ -49,7 +49,7 @@ public class MusicPlayerExtensionMethods {
             VerticalSlidingDrawerBaseActivity.updateAlbumAdapter();
         }
 
-        PlayerConstants.SHUFFLE = true;
+        PlayerConstants.setShuffleState(true);
         if(SharedVariables.globalActivityContext != null)
             VerticalSlidingDrawerBaseActivity.changeButton();
     }
@@ -58,31 +58,29 @@ public class MusicPlayerExtensionMethods {
 
         PlayerConstants.SONG_PAUSED = false;
 
-        if(PlayerConstants.SHUFFLE){
-            PlayerConstants.HASH_ID_CURRENT_PLAYLIST.clear();
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    for (Song song: songsList) {
-                        PlayerConstants.HASH_ID_CURRENT_PLAYLIST.add(song.getHashID());
-                    }
-                }
-            }).start();
+        if(PlayerConstants.getShuffleState()){
+            PlayerConstants.clear_hash_id_current_playlist();
+            for (Song s: songsList)
+                PlayerConstants.add_hash_id_current_playlist(s.getHashID());
 
             long seed = System.nanoTime();
             ArrayList<Song> shuffledPlaylist = new ArrayList<>(songsList);
             Collections.shuffle(shuffledPlaylist, new Random(seed));
-            PlayerConstants.SONGS_LIST.clear();
-            PlayerConstants.SONGS_LIST.add(songsList.get(position));
+            PlayerConstants.clearPlaylist();
+            PlayerConstants.addSongToPlaylist(songsList.get(position));
             PlayerConstants.SONG_NUMBER = 0;
-            for (Song song : shuffledPlaylist) {
-                if(!PlayerConstants.SONGS_LIST.contains(song))
-                    PlayerConstants.SONGS_LIST.add(song);
-            }
+            ArrayList<Song> tempList = new ArrayList<>();
+            for (Song song : shuffledPlaylist)
+                if(!PlayerConstants.getPlaylist().contains(song))
+                    tempList.add(song);
+            PlayerConstants.addSongToPlaylist(tempList);
         }
 
         else{
-            PlayerConstants.SONGS_LIST = songsList;
+            PlayerConstants.clear_hash_id_current_playlist();
+            for (Song song: songsList)
+                PlayerConstants.add_hash_id_current_playlist(song.getHashID());
+            PlayerConstants.setPlayList(songsList);
             PlayerConstants.SONG_NUMBER = position;
         }
 
@@ -97,72 +95,6 @@ public class MusicPlayerExtensionMethods {
             PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
             VerticalSlidingDrawerBaseActivity.updateAlbumAdapter();
         }
-
-        PlayerConstants.HASH_ID_CURRENT_PLAYLIST.clear();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (Song song: songsList) {
-                    PlayerConstants.HASH_ID_CURRENT_PLAYLIST.add(song.getHashID());
-                }
-            }
-        }).start();
-    }
-
-    public static void playSong(Context mActivity, final Song parsong, int position){
-
-        PlayerConstants.SONG_PAUSED = false;
-        final ArrayList<Song> songsList = new ArrayList<>();
-        songsList.add(parsong);
-        if(PlayerConstants.SHUFFLE){
-            PlayerConstants.HASH_ID_CURRENT_PLAYLIST.clear();
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    for (Song song: songsList) {
-                        PlayerConstants.HASH_ID_CURRENT_PLAYLIST.add(song.getHashID());
-                    }
-                }
-            }).start();
-
-            long seed = System.nanoTime();
-            ArrayList<Song> shuffledPlaylist = new ArrayList<>(songsList);
-            Collections.shuffle(shuffledPlaylist, new Random(seed));
-            PlayerConstants.SONGS_LIST.clear();
-            PlayerConstants.SONGS_LIST.add(songsList.get(position));
-            PlayerConstants.SONG_NUMBER = 0;
-            for (Song song : shuffledPlaylist) {
-                if(!PlayerConstants.SONGS_LIST.contains(song))
-                    PlayerConstants.SONGS_LIST.add(song);
-            }
-        }
-
-        else{
-            PlayerConstants.SONGS_LIST = songsList;
-            PlayerConstants.SONG_NUMBER = position;
-        }
-
-        boolean isServiceRunning = UtilFunctions.isServiceRunning(MusicService.class.getName(), mActivity);
-        if (!isServiceRunning) {
-            Intent i = new Intent(mActivity, MusicService.class);
-            mActivity.startService(i);
-        }
-
-        else{
-            GroupPlayHelper.notifyGroupPlayClientsIfExists();
-            PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
-            VerticalSlidingDrawerBaseActivity.updateAlbumAdapter();
-        }
-
-        PlayerConstants.HASH_ID_CURRENT_PLAYLIST.clear();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (Song song: songsList) {
-                    PlayerConstants.HASH_ID_CURRENT_PLAYLIST.add(song.getHashID());
-                }
-            }
-        }).start();
     }
 
     public static void startMusicService(Activity mActivity){
@@ -173,7 +105,7 @@ public class MusicPlayerExtensionMethods {
         }
     }
 
-    public static void changeSong(Activity mActivity, int position){
+    public static void changeSong(Context mActivity, int position){
 
         PlayerConstants.SONG_NUMBER = position;
         boolean isServiceRunning = UtilFunctions.isServiceRunning(MusicService.class.getName(), mActivity);
@@ -188,7 +120,7 @@ public class MusicPlayerExtensionMethods {
 
     public static void addToNowPlayingPlaylist(Context context, Song songToBeAdded) {
         boolean found = false;
-        for (Song song : PlayerConstants.SONGS_LIST) {
+        for (Song song : PlayerConstants.getPlaylist()) {
             if(song.getHashID().equals(songToBeAdded.getHashID())){
                 found = true;
                 break;
@@ -197,7 +129,7 @@ public class MusicPlayerExtensionMethods {
         if(found)
             Toast.makeText(context, "Song already present in now playing playlist", Toast.LENGTH_SHORT).show();
         else{
-            PlayerConstants.SONGS_LIST.add(songToBeAdded);
+            PlayerConstants.addSongToPlaylist(songToBeAdded);
             Toast.makeText(context, "Song added to now playing playlist", Toast.LENGTH_SHORT).show();
             VerticalSlidingDrawerBaseActivity.updateAlbumAdapter();
             VerticalSlidingDrawerBaseActivity.NowPlayingPlaylistRecyclerViewAdapter.notifyDataSetChanged();
@@ -219,7 +151,7 @@ public class MusicPlayerExtensionMethods {
 
             ArrayList<Song> temp = new ArrayList<>(songsToBeAdded);
             for (Song songToBeAdded : temp){
-                for (Song song : PlayerConstants.SONGS_LIST) {
+                for (Song song : PlayerConstants.getPlaylist()) {
                     if(song.getHashID().equals(songToBeAdded.getHashID())){
                         songsToBeAdded.remove(songToBeAdded);
                         break;
@@ -227,8 +159,7 @@ public class MusicPlayerExtensionMethods {
                 }
             }
 
-            for (Song song : songsToBeAdded)
-                PlayerConstants.SONGS_LIST.add(song);
+            PlayerConstants.addSongToPlaylist(songsToBeAdded);
             loading[0].dismiss();
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
             VerticalSlidingDrawerBaseActivity.updateAlbumAdapter();
@@ -251,16 +182,16 @@ public class MusicPlayerExtensionMethods {
             return;
         }
 
-        for (Song song : PlayerConstants.SONGS_LIST) {
+        for (Song song : PlayerConstants.getPlaylist()) {
             if(song.getHashID().equals(songToBeAdded.getHashID())){
-                PlayerConstants.SONGS_LIST.remove(song);
+                PlayerConstants.removeSongFromPlaylist(song);
                 break;
             }
         }
 
-        PlayerConstants.SONGS_LIST.add(PlayerConstants.SONG_NUMBER + 1, songToBeAdded);
-        if(PlayerConstants.SHUFFLE)
-            PlayerConstants.HASH_ID_CURRENT_PLAYLIST.add(songToBeAdded.getHashID());
+        PlayerConstants.getPlaylist().add(PlayerConstants.SONG_NUMBER + 1, songToBeAdded);
+        if(PlayerConstants.getShuffleState())
+            PlayerConstants.add_hash_id_current_playlist(songToBeAdded.getHashID());
 
         Toast.makeText(context, "Song will be played next", Toast.LENGTH_SHORT).show();
         VerticalSlidingDrawerBaseActivity.updateAlbumAdapter();
@@ -269,9 +200,9 @@ public class MusicPlayerExtensionMethods {
     public static void playNext(Context context, ArrayList<Song> songsToBeAdded, String message) {
 
         for (Song songToBeAdded : songsToBeAdded){
-            for (Song song : PlayerConstants.SONGS_LIST) {
+            for (Song song : PlayerConstants.getPlaylist()) {
                 if(song.getHashID().equals(songToBeAdded.getHashID()) && !songToBeAdded.getHashID().equals(MusicService.currentSong.getHashID())){
-                    PlayerConstants.SONGS_LIST.remove(song);
+                    PlayerConstants.removeSongFromPlaylist(song);
                     break;
                 }
             }
@@ -279,9 +210,9 @@ public class MusicPlayerExtensionMethods {
 
         int index = 1;
         for (Song songToBeAdded : songsToBeAdded){
-            PlayerConstants.SONGS_LIST.add(PlayerConstants.SONG_NUMBER + index, songToBeAdded);
-            if(PlayerConstants.SHUFFLE)
-                PlayerConstants.HASH_ID_CURRENT_PLAYLIST.add(songToBeAdded.getHashID());
+            PlayerConstants.getPlaylist().add(PlayerConstants.SONG_NUMBER + index, songToBeAdded);
+            if(PlayerConstants.getShuffleState())
+                PlayerConstants.add_hash_id_current_playlist(songToBeAdded.getHashID());
             index++;
         }
 

@@ -24,7 +24,7 @@ public class GroupPlaySenderHelper extends AsyncTask<Void, Void, Void>{
 
         for (String clientAddress : clients) {
             GroupPlaySender sender = new GroupPlaySender(clientAddress);
-            sender.sendFile(PlayerConstants.SONGS_LIST.get(PlayerConstants.SONG_NUMBER).getData());
+            sender.sendFile(PlayerConstants.getPlaylist().get(PlayerConstants.SONG_NUMBER).getData());
             sender.endConnection();
         }
 

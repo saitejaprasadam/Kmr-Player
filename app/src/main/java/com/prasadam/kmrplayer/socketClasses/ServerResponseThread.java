@@ -288,10 +288,10 @@ public class ServerResponseThread extends Thread {
 
     private void RequestCuurentSongName() {
 
-        if(PlayerConstants.SONGS_LIST.size() != 0 && PlayerConstants.SONGS_LIST.size() >= PlayerConstants.SONG_NUMBER){
-            String SongName = PlayerConstants.SONGS_LIST.get(PlayerConstants.SONG_NUMBER).getTitle();
-            if(PlayerConstants.SONGS_LIST.get(PlayerConstants.SONG_NUMBER).getArtist().length() > 0)
-                SongName = SongName + KeyConstants.SPACE +  SharedVariables.globalActivityContext.getResources().getString(R.string.by_text) + KeyConstants.SPACE + PlayerConstants.SONGS_LIST.get(PlayerConstants.SONG_NUMBER).getArtist();
+        if(PlayerConstants.getPlaylistSize() != 0 && PlayerConstants.getPlaylistSize() >= PlayerConstants.SONG_NUMBER){
+            String SongName = PlayerConstants.getPlaylist().get(PlayerConstants.SONG_NUMBER).getTitle();
+            if(PlayerConstants.getPlaylist().get(PlayerConstants.SONG_NUMBER).getArtist().length() > 0)
+                SongName = SongName + KeyConstants.SPACE +  SharedVariables.globalActivityContext.getResources().getString(R.string.by_text) + KeyConstants.SPACE + PlayerConstants.getPlaylist().get(PlayerConstants.SONG_NUMBER).getArtist();
             SongName = SongName.replaceAll(KeyConstants.SPACE, KeyConstants.SPECIAL_CHAR);
             String message = SocketExtensionMethods.GenerateSocketMessage(KeyConstants.SOCKET_CURRENT_SONG_NAME_RESULT, ExtensionMethods.getTimeStamp(), SongName);
             Client client = new Client(clientIPAddress, message);
@@ -308,9 +308,9 @@ public class ServerResponseThread extends Thread {
 
     private void RequestCurrentSong(final String clientName, final String MacAddress) {
 
-        if(PlayerConstants.SONGS_LIST.size() != 0 && PlayerConstants.SONGS_LIST.size() >= PlayerConstants.SONG_NUMBER) {
+        if(PlayerConstants.getPlaylistSize() != 0 && PlayerConstants.getPlaylistSize() >= PlayerConstants.SONG_NUMBER) {
 
-            final String currentSongFilePath = PlayerConstants.SONGS_LIST.get(PlayerConstants.SONG_NUMBER).getData();
+            final String currentSongFilePath = PlayerConstants.getPlaylist().get(PlayerConstants.SONG_NUMBER).getData();
 
             Handler handler = new Handler(Looper.getMainLooper());
             handler.post(new Runnable() {

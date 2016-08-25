@@ -1,16 +1,14 @@
 package com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses;
 
-import android.appwidget.AppWidgetManager;
 import android.content.Context;
-import android.content.Intent;
 
 import com.prasadam.kmrplayer.Fragments.SongsFragment;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.SocketClasses.GroupPlay.GroupPlayHelper;
 import com.prasadam.kmrplayer.VerticalSlidingDrawerBaseActivity;
-import com.prasadam.kmrplayer.Widgets.NowPlayingWidget;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
@@ -26,7 +24,6 @@ public class Controls {
         sendMessage(context.getResources().getString(R.string.play));
         PlayerConstants.SONG_PAUSED = false;
     }
-
     public static void pauseControl(Context context){
         sendMessage(context.getResources().getString(R.string.pause));
         PlayerConstants.SONG_PAUSED = true;
@@ -36,37 +33,42 @@ public class Controls {
         boolean isServiceRunning = UtilFunctions.isServiceRunning(MusicService.class.getName(), context);
         if (!isServiceRunning)
             return;
-        if(PlayerConstants.SONGS_LIST.size() > 0 ){
-            if(PlayerConstants.SONG_NUMBER < (PlayerConstants.SONGS_LIST.size() - 1)){
+        if(PlayerConstants.getPlaylistSize() > 0 ){
+            if(PlayerConstants.SONG_NUMBER < (PlayerConstants.getPlaylistSize() - 1)){
                 PlayerConstants.SONG_NUMBER++;
                 PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
                 PlayerConstants.SONG_PAUSED = false;
             }else {
-                if(PlayerConstants.PLAY_BACK_STATE == PlayerConstants.PLAYBACK_STATE_ENUM.LOOP || PlayerConstants.PLAY_BACK_STATE == PlayerConstants.PLAYBACK_STATE_ENUM.SINGLE_LOOP){
+                if(PlayerConstants.getPlayBackState() == PlayerConstants.PLAYBACK_STATE_ENUM.LOOP || PlayerConstants.getPlayBackState() == PlayerConstants.PLAYBACK_STATE_ENUM.SINGLE_LOOP){
                     PlayerConstants.SONG_NUMBER = 0;
                     PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
                     PlayerConstants.SONG_PAUSED = false;
                 }
                 else{
+                    MusicService.player.seekTo(0);
                     sendMessage(context.getResources().getString(R.string.pause));
-                    PlayerConstants.SONG_PAUSED = true;
                 }
 
             }
         }
     }
-
     public static void previousControl(Context context) {
         boolean isServiceRunning = UtilFunctions.isServiceRunning(MusicService.class.getName(), context);
         if (!isServiceRunning)
             return;
-        if(PlayerConstants.SONGS_LIST.size() > 0 ){
+        if(PlayerConstants.getPlaylistSize() > 0 ){
             if(PlayerConstants.SONG_NUMBER > 0){
                 PlayerConstants.SONG_NUMBER--;
                 PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
-            }else{
-                PlayerConstants.SONG_NUMBER = PlayerConstants.SONGS_LIST.size() - 1;
-                PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
+            } else{
+                if(PlayerConstants.getPlayBackState() == PlayerConstants.PLAYBACK_STATE_ENUM.LOOP || PlayerConstants.getPlayBackState() == PlayerConstants.PLAYBACK_STATE_ENUM.SINGLE_LOOP){
+                    PlayerConstants.SONG_NUMBER = PlayerConstants.getPlaylistSize() - 1;
+                    PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
+                }
+                else{
+                    MusicService.player.seekTo(0);
+                    pauseControl(context);
+                }
             }
         }
         PlayerConstants.SONG_PAUSED = false;
@@ -89,33 +91,34 @@ public class Controls {
     public static void setLoop(boolean loop){
         MusicService.player.setLooping(loop);
     }
-
     public static void shuffleMashUpMethod() {
 
-        if(PlayerConstants.SHUFFLE){
+        if(PlayerConstants.getShuffleState()){
             long seed = System.nanoTime();
-            ArrayList<Song> shuffledPlaylist = new ArrayList<>(PlayerConstants.SONGS_LIST);
+            ArrayList<Song> shuffledPlaylist = new ArrayList<>(PlayerConstants.getPlaylist());
             Collections.shuffle(shuffledPlaylist, new Random(seed));
-            PlayerConstants.SONGS_LIST.clear();
-            PlayerConstants.SONGS_LIST.add(MusicService.currentSong);
+            PlayerConstants.clearPlaylist();
+            PlayerConstants.addSongToPlaylist(MusicService.currentSong);
             PlayerConstants.SONG_NUMBER = 0;
-            for (Song song : shuffledPlaylist) {
-                if(!PlayerConstants.SONGS_LIST.contains(song))
-                    PlayerConstants.SONGS_LIST.add(song);
-            }
+            ArrayList<Song> tempList = new ArrayList<>();
+            for (Song song : shuffledPlaylist)
+                if(!PlayerConstants.getPlaylist().contains(song))
+                    tempList.add(song);
+            PlayerConstants.addSongToPlaylist(tempList);
         }
 
         else{
             ArrayList<Song> tempArrayList = new ArrayList<>();
-            for (String hashID : PlayerConstants.HASH_ID_CURRENT_PLAYLIST) {
-                for(Song song: PlayerConstants.SONGS_LIST){
+            for (String hashID : PlayerConstants.get_hash_id_current_playlist()) {
+                for(Song song: PlayerConstants.getPlaylist()){
                     if(hashID.equals(song.getHashID()))
                         tempArrayList.add(song);
                 }
             }
-            PlayerConstants.SONGS_LIST = tempArrayList;
+
+            PlayerConstants.setPlayList(tempArrayList);
             int index = 0;
-            for (Song song: PlayerConstants.SONGS_LIST){
+            for (Song song: PlayerConstants.getPlaylist()){
                 if(MusicService.currentSong.getHashID().equals(song.getHashID())){
                     PlayerConstants.SONG_NUMBER = index;
                     break;

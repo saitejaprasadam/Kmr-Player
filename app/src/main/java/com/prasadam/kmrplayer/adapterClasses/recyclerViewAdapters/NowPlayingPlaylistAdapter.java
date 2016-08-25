@@ -65,7 +65,7 @@ public class NowPlayingPlaylistAdapter extends RecyclerView.Adapter<NowPlayingPl
 
     public void onBindViewHolder(MyViewHolder holder, final int position) {
 
-        final Song song = PlayerConstants.SONGS_LIST.get(position);
+        final Song song = PlayerConstants.getPlaylist().get(position);
         holder.songTitleTextView.setText(song.getTitle());
         holder.songArtistTextView.setText(song.getArtist());
         holder.nowPlayingPlaylistLikeButton.setLiked(song.getIsLiked(context));
@@ -136,7 +136,7 @@ public class NowPlayingPlaylistAdapter extends RecyclerView.Adapter<NowPlayingPl
                                                                         if (position == PlayerConstants.SONG_NUMBER)
                                                                             Controls.nextControl(context);
 
-                                                                        PlayerConstants.SONGS_LIST.remove(position);
+                                                                        PlayerConstants.removeSongFromPlaylist(position);
                                                                         mActivity.runOnUiThread(new Runnable() {
                                                                             @Override
                                                                             public void run() {
@@ -219,7 +219,7 @@ public class NowPlayingPlaylistAdapter extends RecyclerView.Adapter<NowPlayingPl
     }
 
     public int getItemCount() {
-        return PlayerConstants.SONGS_LIST.size();
+        return PlayerConstants.getPlaylistSize();
     }
 
     public boolean onItemMove(int fromPosition, int toPosition, MyViewHolder sourceViewHolder, MyViewHolder targetViewHolder) {
@@ -240,12 +240,12 @@ public class NowPlayingPlaylistAdapter extends RecyclerView.Adapter<NowPlayingPl
                     }
 
                     else
-                        if(sourceViewHolder.songID == PlayerConstants.SONGS_LIST.get(PlayerConstants.SONG_NUMBER).getID()){
+                        if(sourceViewHolder.songID == PlayerConstants.getPlaylist().get(PlayerConstants.SONG_NUMBER).getID()){
                             PlayerConstants.SONG_NUMBER = i + 1;
                             targetViewHolder.cardviewRootLayout.setAlpha(0.5f);
                         }
 
-                Collections.swap(PlayerConstants.SONGS_LIST, i, i + 1);
+                Collections.swap(PlayerConstants.getPlaylist(), i, i + 1);
             }
         } else {
             for (int i = fromPosition; i > toPosition; i--) {
@@ -259,12 +259,12 @@ public class NowPlayingPlaylistAdapter extends RecyclerView.Adapter<NowPlayingPl
                     }
 
                     else
-                        if(sourceViewHolder.songID == PlayerConstants.SONGS_LIST.get(PlayerConstants.SONG_NUMBER).getID()){
+                        if(sourceViewHolder.songID == PlayerConstants.getPlaylist().get(PlayerConstants.SONG_NUMBER).getID()){
                             PlayerConstants.SONG_NUMBER = i - 1;
                             targetViewHolder.cardviewRootLayout.setAlpha(1f);
                         }
 
-                Collections.swap(PlayerConstants.SONGS_LIST, i, i - 1);
+                Collections.swap(PlayerConstants.getPlaylist(), i, i - 1);
             }
         }
         notifyItemMoved(fromPosition, toPosition);
@@ -273,7 +273,7 @@ public class NowPlayingPlaylistAdapter extends RecyclerView.Adapter<NowPlayingPl
     }
 
     public void onItemDismiss(int position) {
-        PlayerConstants.SONGS_LIST.remove(position);
+        PlayerConstants.removeSongFromPlaylist(position);
         if(position < PlayerConstants.SONG_NUMBER)
             PlayerConstants.SONG_NUMBER--;
         notifyItemRemoved(position);
@@ -303,7 +303,7 @@ public class NowPlayingPlaylistAdapter extends RecyclerView.Adapter<NowPlayingPl
         @Override
         public void onItemClear() {
             itemView.setBackgroundColor(Color.WHITE);
-            if(songID == PlayerConstants.SONGS_LIST.get(PlayerConstants.SONG_NUMBER).getID())
+            if(songID == PlayerConstants.getPlaylist().get(PlayerConstants.SONG_NUMBER).getID())
                 cardviewRootLayout.setAlpha(1f);
             else
                 cardviewRootLayout.setAlpha(0.5f);

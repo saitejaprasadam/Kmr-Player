@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.prasadam.kmrplayer.ActivityHelperClasses.DialogHelper;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.SongRecyclerViewAdapter;
@@ -65,6 +66,11 @@ public class SongsFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        final MaterialDialog loading = new MaterialDialog.Builder(mActivity)
+                .content(R.string.please_wait_while_we_populate_list_text)
+                .progress(true, 0)
+                .show();
+
         new Thread(){
             public void run(){
 
@@ -73,7 +79,7 @@ public class SongsFragment extends Fragment {
 
                 if(!SharedVariables.fullSongsList.isEmpty()) {
 
-                    //shuffleButton.show();
+                    shuffleButton.show();
                     recyclerViewAdapter = new SongRecyclerViewAdapter(mActivity, getContext());
 
                     mActivity.runOnUiThread(new Runnable() {
@@ -112,7 +118,7 @@ public class SongsFragment extends Fragment {
                     newFragment.setDescriptionTextView("You don't have any songs yet...");
                     shuffleButton.setVisibility(View.INVISIBLE);
                 }
-
+                loading.dismiss();
             }
         }.start();
     }
@@ -123,8 +129,11 @@ public class SongsFragment extends Fragment {
             public void onHide() {
                 try{
                     ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
-                    actionBar.hide();
-                    actionBar.getCustomView().animate().translationY(actionBar.getHeight()).setDuration(500);
+                    if (actionBar != null) {
+                        shuffleButton.hide();
+                        actionBar.hide();
+                        actionBar.getCustomView().animate().translationY(actionBar.getHeight()).setDuration(500);
+                    }
                 }
                 catch (NullPointerException ignored){}
 
@@ -133,8 +142,11 @@ public class SongsFragment extends Fragment {
             public void onShow() {
                 try{
                     ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
-                    actionBar.show();
-                    actionBar.getCustomView().animate().translationY(0).setDuration(500);
+                    if (actionBar != null) {
+                        shuffleButton.show();
+                        actionBar.show();
+                        actionBar.getCustomView().animate().translationY(0).setDuration(500);
+                    }
                 }
                 catch (NullPointerException ignored){}
             }
@@ -156,9 +168,7 @@ public class SongsFragment extends Fragment {
         shuffleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 MusicPlayerExtensionMethods.shufflePlay(mActivity, SharedVariables.fullSongsList);
-                shuffleButton.hide();
             }
         });
     }

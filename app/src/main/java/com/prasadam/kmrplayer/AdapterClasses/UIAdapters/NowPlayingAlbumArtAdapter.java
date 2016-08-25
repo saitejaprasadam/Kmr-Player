@@ -33,7 +33,7 @@ public class NowPlayingAlbumArtAdapter extends PagerAdapter {
 
     public NowPlayingAlbumArtAdapter(Activity activity) {
         this.activity = activity;
-        count = PlayerConstants.SONGS_LIST.size();
+        count = PlayerConstants.getPlaylistSize();
     }
     public Map<Integer, View> getImageViews() {
         return imageViews;
@@ -47,7 +47,7 @@ public class NowPlayingAlbumArtAdapter extends PagerAdapter {
         return count;
     }
     public void dataSetChange(){
-        count = PlayerConstants.SONGS_LIST.size();
+        count = PlayerConstants.getPlaylistSize();
         notifyDataSetChanged();
     }
     public boolean isViewFromObject(View view, Object object) {
@@ -60,10 +60,10 @@ public class NowPlayingAlbumArtAdapter extends PagerAdapter {
         imageView.setOnTouchListener(new OnDoubleTapListener(activity){
             @Override
             public void onDoubleTap(MotionEvent e) {
-                if(PlayerConstants.SONGS_LIST.get(PlayerConstants.SONG_NUMBER).getIsLiked(activity))
-                    PlayerConstants.SONGS_LIST.get(PlayerConstants.SONG_NUMBER).setIsLiked(activity, false);
+                if(PlayerConstants.getPlaylist().get(PlayerConstants.SONG_NUMBER).getIsLiked(activity))
+                    PlayerConstants.getPlaylist().get(PlayerConstants.SONG_NUMBER).setIsLiked(activity, false);
                 else
-                    PlayerConstants.SONGS_LIST.get(PlayerConstants.SONG_NUMBER).setIsLiked(activity, true);
+                    PlayerConstants.getPlaylist().get(PlayerConstants.SONG_NUMBER).setIsLiked(activity, true);
 
                 SongsFragment.recyclerViewAdapter.notifyDataSetChanged();
                 VerticalSlidingDrawerBaseActivity.updateSongLikeStatus(activity);
@@ -71,7 +71,7 @@ public class NowPlayingAlbumArtAdapter extends PagerAdapter {
             }
         });
 
-        String albumArtPath = PlayerConstants.SONGS_LIST.get(position).getAlbumArtLocation();
+        String albumArtPath = PlayerConstants.getPlaylist().get(position).getAlbumArtLocation();
 
         if(albumArtPath != null) {
             final File imgFile = new File(albumArtPath);

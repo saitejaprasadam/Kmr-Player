@@ -45,6 +45,7 @@ public class MostPlayedSongsActivity extends VerticalSlidingDrawerBaseActivity {
         setContentView(R.layout.activity_most_played_layout);
         ButterKnife.bind(this);
 
+        ActivityHelper.setCustomActionBar(MostPlayedSongsActivity.this);
         setStatusBarTranslucent(MostPlayedSongsActivity.this);
         ActivityHelper.setDisplayHome(this);
 
@@ -100,7 +101,7 @@ public class MostPlayedSongsActivity extends VerticalSlidingDrawerBaseActivity {
         super.onDestroy();
         mostPlayedRecylcerView.setAdapter(null);
         MostPlayedActivityrecyclerViewAdapter = null;
-        songsList.clear();
+        songsList = null;
     }
     public void onResume() {
         super.onResume();

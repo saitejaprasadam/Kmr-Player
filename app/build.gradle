@@ -23,6 +23,7 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile files('libs/jaudiotagger-2.0.2.jar')
+    compile files('libs/mint-5.1.0.jar')
     testCompile 'junit:junit:4.12'
 
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'

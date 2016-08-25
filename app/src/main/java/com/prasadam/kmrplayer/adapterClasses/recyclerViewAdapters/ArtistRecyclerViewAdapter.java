@@ -121,6 +121,7 @@ public class ArtistRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Ar
                         Bitmap bitmap = AudioExtensionMethods.getBitMap(context, artist.artistAlbumArt);
                         if(bitmap == null)
                             bitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.unkown_album_art);
+
                         Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
                             @Override
                             public void onGenerated(Palette palette) {

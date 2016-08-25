@@ -43,6 +43,7 @@ public class SongPlaybackHistoryActivity extends VerticalSlidingDrawerBaseActivi
         setContentView(R.layout.activity_song_playback_history_layout);
         ButterKnife.bind(this);
 
+        ActivityHelper.setCustomActionBar(SongPlaybackHistoryActivity.this);
         setStatusBarTranslucent(SongPlaybackHistoryActivity.this);
         ActivityHelper.setDisplayHome(this);
 
@@ -94,7 +95,7 @@ public class SongPlaybackHistoryActivity extends VerticalSlidingDrawerBaseActivi
         super.onDestroy();
         recyclerView.setAdapter(null);
         songHistoryActivityrecyclerViewAdapter = null;
-        songsList.clear();
+        songsList = null;
     }
     public void onResume() {
         super.onResume();

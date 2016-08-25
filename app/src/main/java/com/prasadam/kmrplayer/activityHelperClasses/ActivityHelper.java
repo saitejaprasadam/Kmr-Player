@@ -2,7 +2,12 @@ package com.prasadam.kmrplayer.ActivityHelperClasses;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.graphics.Color;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.prasadam.kmrplayer.R;
@@ -37,5 +42,11 @@ public class ActivityHelper {
         ft.add(fragmentContainer.getId(), newFragment).addToBackStack(KeyConstants.EMPTY_FRAGMENT_TAG).commit();
         newFragment.setDescriptionTextView(message);
         return newFragment;
+    }
+
+    public static void setCustomActionBar(AppCompatActivity mAcitivity) {
+        Toolbar toolbar = (Toolbar) mAcitivity.findViewById(R.id.toolbar);
+        toolbar.setOverflowIcon(mAcitivity.getResources().getDrawable(R.mipmap.ic_more_vert_white_24dp));
+        mAcitivity.setSupportActionBar(toolbar);
     }
 }

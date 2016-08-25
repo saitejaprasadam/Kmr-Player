@@ -23,13 +23,20 @@
         <item name="android:windowSharedElementEnterTransition">@transition/albums_image_transition</item>
         <item name="android:windowSharedElementExitTransition">@transition/albums_image_transition</item>
     </style>
+    <style name="MainActivityNoActionBar.BrandedLaunch" parent="MainActivityNoActionBar">
+        <item name="android:windowBackground">@drawable/branded_launch_logo</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
 
     <style name="AppTheme.ActionBar.TransparentContextTranscition" parent="AppTheme.NoActionBar">
         <item name="android:windowActivityTransitions">true</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowContentTransitions">true</item>
-        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">false</item>
+
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
 
         <item name="android:itemBackground">@android:color/white</item>
         <item name="android:textColor">@android:color/black</item>
@@ -38,6 +45,9 @@
     <style name="ColoredStatusBar.NoActionBar" parent="AppTheme.NoActionBar">
         <item name="android:statusBarColor">@color/colorPrimaryDark</item>
         <item name="android:titleTextColor">@color/white</item>
+    </style>
+    <style name="ColoredStatusBarNoActionBar" parent="MainActivityNoActionBar">
+        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
     </style>
 
     <style name="ColoredStatusBar" parent="AppTheme"/>

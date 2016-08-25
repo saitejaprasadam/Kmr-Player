@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.ActivityHelperClasses.DialogHelper;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ShareIntentHelper;
@@ -84,8 +85,14 @@ public class ArtistActivity extends VerticalSlidingDrawerBaseActivity {
 
         initalizer();
         setData();
+
+        final MaterialDialog loading = new MaterialDialog.Builder(this)
+                .content(R.string.please_wait_while_we_populate_list_text)
+                .progress(true, 0)
+                .show();
+
         setAlbumRecyclerView();
-        setSongRecyclerView();
+        setSongRecyclerView(loading);
     }
     public void onDestroy(){
         super.onDestroy();
@@ -101,20 +108,40 @@ public class ArtistActivity extends VerticalSlidingDrawerBaseActivity {
         SharedVariables.globalActivityContext = this;
     }
 
-    private void setSongRecyclerView() {
+    private void setSongRecyclerView(final MaterialDialog loading) {
 
-        songsList = AudioExtensionMethods.getSongListFromArtist(ArtistActivity.this, artist.getArtistTitle());
-        songRecyclerViewAdapter = new ArtistInnerLayoutSongRecyclerViewAdapter(ArtistActivity.this, songsList);
-        songRecyclerview.setLayoutManager(new LinearLayoutManager(ArtistActivity.this));
-        songRecyclerview.setAdapter(songRecyclerViewAdapter);
-        songRecyclerview.addItemDecoration(new DividerItemDecoration(ArtistActivity.this, LinearLayoutManager.VERTICAL));
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                songsList = AudioExtensionMethods.getSongListFromArtist(ArtistActivity.this, artist.getArtistTitle());
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        songRecyclerViewAdapter = new ArtistInnerLayoutSongRecyclerViewAdapter(ArtistActivity.this, songsList);
+                        songRecyclerview.setLayoutManager(new LinearLayoutManager(ArtistActivity.this));
+                        songRecyclerview.setAdapter(songRecyclerViewAdapter);
+                        songRecyclerview.addItemDecoration(new DividerItemDecoration(ArtistActivity.this, LinearLayoutManager.VERTICAL));
+                        loading.dismiss();
+                    }
+                });
+            }
+        }).start();
     }
     private void setAlbumRecyclerView() {
-
-        albumList = AudioExtensionMethods.getAlbumListFromArtist(ArtistActivity.this, artist.getArtistTitle());
-        albumRecyclerViewAdapter = new SmallAlbumRecyclerViewAdapter(ArtistActivity.this, this, albumList);
-        albumRecyclerview.setLayoutManager(new LinearLayoutManager(ArtistActivity.this, LinearLayoutManager.HORIZONTAL, false));
-        albumRecyclerview.setAdapter(albumRecyclerViewAdapter);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                albumList = AudioExtensionMethods.getAlbumListFromArtist(ArtistActivity.this, artist.getArtistTitle());
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        albumRecyclerViewAdapter = new SmallAlbumRecyclerViewAdapter(ArtistActivity.this, ArtistActivity.this, albumList);
+                        albumRecyclerview.setLayoutManager(new LinearLayoutManager(ArtistActivity.this, LinearLayoutManager.HORIZONTAL, false));
+                        albumRecyclerview.setAdapter(albumRecyclerViewAdapter);
+                    }
+                });
+            }
+        }).start();
     }
     private void setData() {
 

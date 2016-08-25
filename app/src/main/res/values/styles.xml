@@ -11,6 +11,19 @@
         <item name="md_content_color">@color/black</item>
     </style>
 
+    <style name="MainActivityNoActionBar" parent="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:elevation">0dp</item>
+
+        <item name="android:windowEnterTransition">@transition/albums_image_transition</item>
+        <item name="android:windowExitTransition">@transition/albums_image_transition</item>
+        <item name="android:windowSharedElementEnterTransition">@transition/albums_image_transition</item>
+        <item name="android:windowSharedElementExitTransition">@transition/albums_image_transition</item>
+    </style>
+
     <style name="MainActivityNoActionBar.BrandedLaunch" parent="MainActivityNoActionBar">
         <item name="android:windowBackground">@drawable/branded_launch_logo</item>
     </style>
@@ -37,6 +50,12 @@
         <item name="android:windowActivityTransitions">true</item>
         <item name="android:windowContentTransitions">true</item>
         <item name="android:windowLightStatusBar">true</item>
+
+        <item name="android:windowActionBarOverlay">true</item>
+    </style>
+    <style name="ColoredStatusBarNoActionBar" parent="MainActivityNoActionBar">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
     <style name="AppTheme.ActionBar.TransparentContextTranscition" parent="AppTheme.NoActionBar">
@@ -44,21 +63,10 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowContentTransitions">true</item>
         <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+
         <item name="android:itemBackground">@android:color/white</item>
         <item name="android:textColor">@android:color/black</item>
-    </style>
-
-    <style name="MainActivityNoActionBar" parent="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:elevation">0dp</item>
-
-        <item name="android:windowEnterTransition">@transition/albums_image_transition</item>
-        <item name="android:windowExitTransition">@transition/albums_image_transition</item>
-        <item name="android:windowSharedElementEnterTransition">@transition/albums_image_transition</item>
-        <item name="android:windowSharedElementExitTransition">@transition/albums_image_transition</item>
     </style>
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />

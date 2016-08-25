@@ -6,7 +6,8 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" />    <!-- Ringtone -->
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <!-- Ringtone -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
@@ -14,6 +15,9 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+    <action android:name="android.intent.action.MEDIA_BUTTON" />
 
     <application
         android:name=".ApplicationClass"
@@ -22,10 +26,8 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
 
-        <meta-data android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
-
-        <provider android:name="android.support.v4.content.FileProvider"
+        <provider
+            android:name="android.support.v4.content.FileProvider"
             android:authorities="com.prasadam.kmrplayer.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
@@ -34,99 +36,99 @@
                 android:resource="@xml/filepaths" />
         </provider>
 
-        <activity android:name=".MainActivity"
+        <activity
+            android:name=".MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:theme="@style/MainActivityNoActionBar.BrandedLaunch">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
             <intent-filter>
                 <action android:name="android.media.action.MEDIA_PLAY_FROM_SEARCH" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-
         </activity>
-
-        <activity android:name=".AppIntroActivity"
+        <activity
+            android:name=".AppIntroActivity"
             android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition" />
-
-        <activity android:name=".TagEditorActivity"
+        <activity
+            android:name=".TagEditorActivity"
             android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition" />
-
-        <activity android:name=".AlbumActivity"
+        <activity
+            android:name=".AlbumActivity"
             android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition" />
-
-        <activity android:name=".RecentlyAddedActivity"
+        <activity
+            android:name=".RecentlyAddedActivity"
             android:label="@string/recently_added_text"
-            android:theme="@style/ColoredStatusBar" />
-
-        <activity android:name=".FavoritesActivity"
+            android:theme="@style/ColoredStatusBarNoActionBar" />
+        <activity
+            android:name=".FavoritesActivity"
             android:label="@string/favorites_text"
             android:theme="@style/ColoredStatusBar" />
-
-        <activity android:name=".NowPlayingPlaylistActivity"
+        <activity
+            android:name=".NowPlayingPlaylistActivity"
             android:label="@string/favorites_text"
             android:theme="@style/ColoredStatusBar" />
-
-        <activity android:name=".SongPlaybackHistoryActivity"
+        <activity
+            android:name=".SongPlaybackHistoryActivity"
             android:label="@string/history_text"
-            android:theme="@style/ColoredStatusBar" />
-
-        <activity android:name=".QuickShareActivity"
+            android:theme="@style/ColoredStatusBarNoActionBar" />
+        <activity
+            android:name=".QuickShareActivity"
             android:label="@string/quick_share_text"
             android:theme="@style/ColoredStatusBar" />
-
-        <activity android:name=".MostPlayedSongsActivity"
+        <activity
+            android:name=".MostPlayedSongsActivity"
             android:label="@string/most_played_text"
-            android:theme="@style/ColoredStatusBar" />
-
-        <activity android:name=".CustomPlaylistActivity"
+            android:theme="@style/ColoredStatusBarNoActionBar" />
+        <activity
+            android:name=".CustomPlaylistActivity"
             android:label="@string/custom_playlist_text"
-            android:theme="@style/ColoredStatusBar" />
-
-        <activity android:name=".CustomPlaylistInnerActivity"
+            android:theme="@style/ColoredStatusBarNoActionBar" />
+        <activity
+            android:name=".CustomPlaylistInnerActivity"
             android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition" />
-
-        <activity android:name=".ExpandedAlbumartActivity"
+        <activity
+            android:name=".ExpandedAlbumartActivity"
             android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition" />
-
-        <activity android:name=".ArtistActivity"
-            android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition"  />
-
-        <activity android:name=".NearbyDevicesActivity"
+        <activity
+            android:name=".ArtistActivity"
+            android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition" />
+        <activity
+            android:name=".NearbyDevicesActivity"
             android:label="@string/available_devices_text"
             android:theme="@style/ColoredStatusBar" />
-
-        <activity android:name=".MostPlayedSongsPieChartActivity"
+        <activity
+            android:name=".MostPlayedSongsPieChartActivity"
             android:label="@string/most_played_text"
             android:theme="@style/ColoredStatusBar" />
-
-        <activity android:name=".SearchActivity"
+        <activity
+            android:name=".SearchActivity"
             android:label="@string/search_text"
-            android:theme="@style/ColoredStatusBar.NoActionBar">
-
+            android:theme="@style/ColoredStatusBarNoActionBar">
             <intent-filter>
-                <action android:name="com.google.android.gms.actions.SEARCH_ACTION"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
+                <action android:name="com.google.android.gms.actions.SEARCH_ACTION" />
 
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
 
-            <meta-data android:name="android.app.searchable" android:resource="@xml/searchable"/>
-
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
         </activity>
+        <activity android:name=".VerticalSlidingDrawerBaseActivity" />
 
-        <activity android:name=".VerticalSlidingDrawerBaseActivity"/>
-
-        <service android:name=".AudioPackages.MusicServiceClasses.MusicService"
+        <service
+            android:name=".AudioPackages.MusicServiceClasses.MusicService"
             android:enabled="true"
-            android:stopWithTask="false"/>
+            android:stopWithTask="false" />
 
         <receiver android:name=".AudioPackages.MusicServiceClasses.NotificationBroadcast">
             <intent-filter>
@@ -138,29 +140,51 @@
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </receiver>
+        <receiver
+            android:name=".Widgets.QuickShuffleWidget"
+            android:label="Quick shuffle">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
 
-        <receiver android:name=".Widgets.QuickShuffleWidget" android:label="Quick shuffle">
-            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
-            <meta-data android:name="android.appwidget.provider" android:resource="@xml/quick_shuffle_widget_info" />
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/quick_shuffle_widget_info" />
         </receiver>
+        <receiver
+            android:name=".Widgets.QuickMostPlayedWidget"
+            android:label="Play Most Played">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
 
-        <receiver android:name=".Widgets.QuickMostPlayedWidget" android:label="Play Most Played">
-            <intent-filter> <action android:name="android.appwidget.action.APPWIDGET_UPDATE" /> </intent-filter>
-            <meta-data android:name="android.appwidget.provider" android:resource="@xml/quick_most_played_widget_info" />
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/quick_most_played_widget_info" />
         </receiver>
+        <receiver
+            android:name=".Widgets.QuickFavoritePlayWidget"
+            android:label="Play Favorites">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
 
-        <receiver android:name=".Widgets.QuickFavoritePlayWidget" android:label="Play Favorites">
-            <intent-filter> <action android:name="android.appwidget.action.APPWIDGET_UPDATE" /> </intent-filter>
-            <meta-data android:name="android.appwidget.provider" android:resource="@xml/quick_favorites_widget_info" />
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/quick_favorites_widget_info" />
         </receiver>
+        <receiver
+            android:name=".Widgets.NowPlayingWidget"
+            android:label="Now Playing">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
 
-        <receiver android:name=".Widgets.NowPlayingWidget" android:label="Now Playing">
-            <intent-filter> <action android:name="android.appwidget.action.APPWIDGET_UPDATE" /> </intent-filter>
-            <meta-data android:name="android.appwidget.provider" android:resource="@xml/now_playing_widget_info" />
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/now_playing_widget_info" />
         </receiver>
 
     </application>
-
-    <action android:name="android.intent.action.MEDIA_BUTTON" />
 
 </manifest>

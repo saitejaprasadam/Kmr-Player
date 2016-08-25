@@ -68,7 +68,7 @@ public class CustomPlaylistInnerActivity extends VerticalSlidingDrawerBaseActivi
 
         long seed = System.nanoTime();
         Collections.shuffle(shuffledPlaylist, new Random(seed));
-        PlayerConstants.SONGS_LIST = shuffledPlaylist;
+        PlayerConstants.setPlayList(shuffledPlaylist);
         PlayerConstants.SONG_NUMBER = 0;
 
         boolean isServiceRunning = UtilFunctions.isServiceRunning(MusicService.class.getName(), this);

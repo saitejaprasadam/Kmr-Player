@@ -2,7 +2,6 @@ package com.prasadam.kmrplayer;
 
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,7 +30,7 @@ import static com.prasadam.kmrplayer.SharedClasses.ExtensionMethods.setStatusBar
  * Created by Prasadam Saiteja on 5/28/2016.
  */
 
-public class FavoritesActivity extends AppCompatActivity{
+public class FavoritesActivity extends VerticalSlidingDrawerBaseActivity{
 
     private ArrayList<Song> favoriteSongList;
     private UnifedRecyclerViewAdapter FavoritesActivityrecyclerViewAdapter;
@@ -96,7 +95,7 @@ public class FavoritesActivity extends AppCompatActivity{
         super.onDestroy();
         recyclerView.setAdapter(null);
         FavoritesActivityrecyclerViewAdapter = null;
-        favoriteSongList.clear();
+        favoriteSongList = null;
     }
     public void onResume() {
         super.onResume();

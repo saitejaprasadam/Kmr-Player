@@ -23,7 +23,7 @@ public class SharedVariables {
 
     public static Equalizer equalizer;
     public static Context globalActivityContext = null;
-    public static ArrayList<Song> fullSongsList = new ArrayList<>();
-    public static ArrayList<Artist> fullArtistList = new ArrayList<>();
-    public static ArrayList<Album> fullAlbumList = new ArrayList<>();
+    public static volatile ArrayList<Song> fullSongsList = new ArrayList<>();
+    public static volatile ArrayList<Artist> fullArtistList = new ArrayList<>();
+    public static volatile ArrayList<Album> fullAlbumList = new ArrayList<>();
 }

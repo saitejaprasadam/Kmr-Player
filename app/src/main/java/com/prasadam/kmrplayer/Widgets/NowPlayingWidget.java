@@ -33,9 +33,10 @@ public class NowPlayingWidget extends AppWidgetProvider {
 
         SharedPreferences getPrefs = PreferenceManager.getDefaultSharedPreferences(SharedVariables.globalActivityContext);
         if(getPrefs.getBoolean("widget_now_expanded", false))
-            remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_now_playing_expanded);
+            remoteViews = new RemoteViews(SharedVariables.globalActivityContext.getPackageName(), R.layout.widget_now_playing_expanded);
         else
-            remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_now_playing);
+            remoteViews = new RemoteViews(SharedVariables.globalActivityContext.getPackageName(), R.layout.widget_now_playing);
+
         ComponentName watchWidget = new ComponentName(context, NowPlayingWidget.class);
 
         setWidgetDetails(context, remoteViews);
@@ -104,7 +105,7 @@ public class NowPlayingWidget extends AppWidgetProvider {
         PendingIntent pPrevious = PendingIntent.getBroadcast(SharedVariables.globalActivityContext, 0, previous, PendingIntent.FLAG_UPDATE_CURRENT);
         remoteViews.setOnClickPendingIntent(R.id.widget_prev_button, pPrevious);
 
-        if(MusicService.player.isPlaying()){
+        if(MusicService.player != null && MusicService.player.isPlaying()){
             remoteViews.setImageViewBitmap(R.id.widget_play_pause_button, ((BitmapDrawable) SharedVariables.globalActivityContext.getResources().getDrawable(R.mipmap.ic_pause_black_24dp)).getBitmap());
             PendingIntent pPause = PendingIntent.getBroadcast(SharedVariables.globalActivityContext, 0, pause, PendingIntent.FLAG_UPDATE_CURRENT);
             remoteViews.setOnClickPendingIntent(R.id.widget_play_pause_button, pPause);

@@ -1,25 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:fitsSystemWindows="true">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/custom_playlist_recycler_view"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:background="@color/white">
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/add_new_custom_playlist"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:clickable="true"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:src="@mipmap/ic_playlist_add_white_24dp"
-        android:soundEffectsEnabled="true"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:titleTextColor="@color/white" />
 
-</RelativeLayout>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/custom_playlist_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/add_new_custom_playlist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="16dp"
+            android:clickable="true"
+            android:soundEffectsEnabled="true"
+            android:src="@mipmap/ic_playlist_add_white_24dp" />
+
+    </RelativeLayout>
+
+</FrameLayout>

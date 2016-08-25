@@ -8,28 +8,15 @@
             android:icon="@mipmap/ic_library_music_white_24dp"
             android:title="@string/songs_library_text" />
 
-        <item
-            android:checkable="false"
-            android:id="@+id/nav_google_signup"
-            android:icon="@mipmap/ic_sync_problem_black_24dp"
-            android:title="@string/Login_with_google" />
-
     </group>
 
     <item android:title="@string/others_text">
 
         <menu>
-
             <item
                 android:id="@+id/main_drawer_about"
                 android:icon="@mipmap/ic_info_outline_black_24dp"
                 android:title="@string/About_player_text" />
-
-            <item
-                android:visible="false"
-                android:id="@+id/google_login"
-                android:icon="@mipmap/ic_error_outline_black_24dp"
-                android:title="@string/Login_with_google" />
 
         </menu>
     </item>

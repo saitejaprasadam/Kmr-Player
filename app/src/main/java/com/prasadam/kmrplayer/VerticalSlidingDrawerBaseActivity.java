@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
@@ -28,6 +29,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewAnimationUtils;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -43,6 +45,7 @@ import com.like.OnLikeListener;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.ActivityHelperClasses.DialogHelper;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ShareIntentHelper;
+import com.prasadam.kmrplayer.ActivityHelperClasses.SharedPreferenceHelper;
 import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.NowPlayingPlaylistAdapter;
 import com.prasadam.kmrplayer.AdapterClasses.UIAdapters.NowPlayingAlbumArtAdapter;
 import com.prasadam.kmrplayer.AdapterClasses.Interfaces.NowPlayingPlaylistInterfaces;
@@ -58,6 +61,7 @@ import com.prasadam.kmrplayer.Fragments.ArtistFragment;
 import com.prasadam.kmrplayer.Fragments.SongsFragment;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
+import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.File;
@@ -88,7 +92,8 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
     private static SeekBar nowPlayingSeekBar;
     private TextView nowPlayingCurrentDuration;
     private static TextView nowPlayingMaxDuration;
-    private Handler progressHandler;
+    private static Handler progressHandler;
+    private static Animator animator;
 
     @Override
     public void setContentView(final int layoutResID) {
@@ -113,11 +118,13 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
             nowPlayingToolbar.setPadding(0, ExtensionMethods.getStatusBarHeight(this), 0, 0);
-
+        SharedVariables.globalActivityContext = this;
         initalize();
     }
+
     public void onResume() {
         super.onResume();
+        SharedVariables.globalActivityContext = this;
         if(mainLayoutRootLayout != null && mainLayoutRootLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED)
             nowPlayingMinimalRootLayout.setVisibility(View.INVISIBLE);
 
@@ -133,6 +140,18 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
     public void onDestroy(){
         super.onDestroy();
         progressHandler = null;
+        if(animator != null){
+            animator.removeAllListeners();
+            animator = null;
+        }
+    }
+    public void onPause(){
+        super.onPause();
+        progressHandler = null;
+        if(animator != null){
+            animator.removeAllListeners();
+            animator = null;
+        }
     }
     public void onBackPressed() {
         if (mainLayoutRootLayout != null && (mainLayoutRootLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED || mainLayoutRootLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED))
@@ -266,16 +285,20 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
             @Override
             public void onClick(View v) {
                 NowPlayingPlaylistRecyclerViewAdapter.notifyDataSetChanged();
-                if(PlayerConstants.SHUFFLE){
-                    PlayerConstants.SHUFFLE = false;
+                if(PlayerConstants.getShuffleState()){
+                    PlayerConstants.setShuffleState(false);
                     Controls.shuffleMashUpMethod();
                     nowPlayingShuffleButton.setAlpha(0.5f);
+                    if(nowPlayingPlaylistRecyclerView != null)
+                        nowPlayingPlaylistRecyclerView.scrollToPosition(PlayerConstants.SONG_NUMBER);
                 }
 
                 else{
-                    PlayerConstants.SHUFFLE = true;
+                    PlayerConstants.setShuffleState(true);
                     Controls.shuffleMashUpMethod();
                     nowPlayingShuffleButton.setAlpha(1f);
+                    if(nowPlayingPlaylistRecyclerView != null)
+                        nowPlayingPlaylistRecyclerView.scrollToPosition(PlayerConstants.SONG_NUMBER);
                 }
             }
         });
@@ -283,24 +306,24 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
         nowPlayingRepeatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(PlayerConstants.PLAY_BACK_STATE == PlayerConstants.PLAYBACK_STATE_ENUM.OFF){
-                    PlayerConstants.PLAY_BACK_STATE = PlayerConstants.PLAYBACK_STATE_ENUM.LOOP;
+                if(PlayerConstants.getPlayBackState() == PlayerConstants.PLAYBACK_STATE_ENUM.OFF){
+                    PlayerConstants.setPlayBackState(PlayerConstants.PLAYBACK_STATE_ENUM.LOOP);
                     nowPlayingRepeatButton.setImageResource(R.mipmap.ic_repeat_white_24dp);
                     Controls.setLoop(false);
                     nowPlayingRepeatButton.setAlpha(1f);
                 }
 
                 else
-                if(PlayerConstants.PLAY_BACK_STATE == PlayerConstants.PLAYBACK_STATE_ENUM.LOOP){
-                    PlayerConstants.PLAY_BACK_STATE = PlayerConstants.PLAYBACK_STATE_ENUM.SINGLE_LOOP;
+                if(PlayerConstants.getPlayBackState() == PlayerConstants.PLAYBACK_STATE_ENUM.LOOP){
+                    PlayerConstants.setPlayBackState(PlayerConstants.PLAYBACK_STATE_ENUM.SINGLE_LOOP);
                     nowPlayingRepeatButton.setImageResource(R.mipmap.ic_repeat_one_white_24dp);
                     Controls.setLoop(true);
                     nowPlayingRepeatButton.setAlpha(1f);
                 }
 
                 else
-                if(PlayerConstants.PLAY_BACK_STATE == PlayerConstants.PLAYBACK_STATE_ENUM.SINGLE_LOOP){
-                    PlayerConstants.PLAY_BACK_STATE = PlayerConstants.PLAYBACK_STATE_ENUM.OFF;
+                if(PlayerConstants.getPlayBackState() == PlayerConstants.PLAYBACK_STATE_ENUM.SINGLE_LOOP){
+                    PlayerConstants.setPlayBackState(PlayerConstants.PLAYBACK_STATE_ENUM.OFF);
                     nowPlayingRepeatButton.setImageResource(R.mipmap.ic_repeat_white_24dp);
                     Controls.setLoop(false);
                     nowPlayingRepeatButton.setAlpha(0.5f);
@@ -311,13 +334,16 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
             nowPlayingMinimalProgressBar.getProgressDrawable().setColorFilter(getResources().getColor(R.color.colorAccentGeneric), android.graphics.PorterDuff.Mode.SRC_IN);
 
+
         progressHandler = new Handler();
-        runOnUiThread(new Runnable() {
+
+        progressHandler.post(new Runnable() {
             @Override
             public void run() {
                 if(MusicService.player != null){
                     int mCurrentPosition = MusicService.player.getCurrentPosition();
                     if(MusicService.currentSong != null && mCurrentPosition <= MusicService.currentSong.getDuration()){
+                        SharedPreferenceHelper.setDuration(VerticalSlidingDrawerBaseActivity.this);
                         nowPlayingMinimalProgressBar.setProgress(mCurrentPosition);
                         nowPlayingCurrentDuration.setText(ExtensionMethods.formatIntoHHMMSS(mCurrentPosition));
                         if(!nowPlayingSeekBar.isInEditMode())
@@ -328,6 +354,13 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
                     progressHandler.postDelayed(this, 1000);
             }
         });
+        /*progressHandler = new Handler();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+            }
+        });*/
 
         nowPlayingSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
@@ -376,7 +409,7 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
                                                             File file = new File(MusicService.currentSong.getData());
                                                             if (file.delete()) {
                                                                 Controls.nextControl(VerticalSlidingDrawerBaseActivity.this);
-                                                                PlayerConstants.SONGS_LIST.remove(PlayerConstants.SONG_NUMBER - 1);
+                                                                PlayerConstants.getPlaylist().remove(PlayerConstants.SONG_NUMBER - 1);
                                                                 runOnUiThread(new Runnable() {
                                                                     @Override
                                                                     public void run() {
@@ -491,12 +524,14 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
         nowPlayingFavButton.setLiked(MusicService.currentSong.getIsLiked(context));
     }
     private static void setDefaultNowPlayingScreen(Context context) {
-        MusicService.currentSong = AudioExtensionMethods.getLastPlayedSong(context);
-        PlayerConstants.SONGS_LIST.add(MusicService.currentSong);
-        albumArtParallaxAdapter.dataSetChange();
-        viewPager.setAdapter(albumArtParallaxAdapter);
-        viewPager.setCurrentItem(PlayerConstants.SONG_NUMBER);
-        updateNowPlayingUI(context);
+        /*PlayerConstants.setPlayList(SharedPreferenceHelper.getSongsListSharedPreference(context));
+        int position = SharedPreferenceHelper.getLastPlayingSongPosition(context);
+        if(position < PlayerConstants.getPlaylistSize()){
+            PlayerConstants.SONG_NUMBER = position;
+            MusicService.currentSong = PlayerConstants.getPlaylist().get(position);
+        }
+
+        else*/
     }
     private static void setNowPlayingAlbumArt(Context context, Song currentPlayingSong) {
         String albumArtPath = currentPlayingSong.getAlbumArtLocation();
@@ -551,7 +586,7 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
                     nowPlayingColorPallatteView.post(new Runnable() {
                         @Override
                         public void run() {
-                            Animator animator = ViewAnimationUtils.createCircularReveal(nowPlayingColorPallatteView,
+                            animator = ViewAnimationUtils.createCircularReveal(nowPlayingColorPallatteView,
                                     nowPlayingColorPallatteView.getWidth() / 2,
                                     nowPlayingColorPallatteView.getHeight() / 2, 0,
                                     nowPlayingColorPallatteView.getWidth() / 2);
@@ -625,24 +660,24 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
             nowPlayingPlayButton.setImageResource(R.mipmap.ic_pause_black_36dp);
         }
 
-        if(PlayerConstants.SHUFFLE)
+        if(PlayerConstants.getShuffleState())
             nowPlayingShuffleButton.setAlpha(1f);
         else
             nowPlayingShuffleButton.setAlpha(0.5f);
 
-        if(PlayerConstants.PLAY_BACK_STATE == PlayerConstants.PLAYBACK_STATE_ENUM.OFF){
+        if(PlayerConstants.getPlayBackState() == PlayerConstants.PLAYBACK_STATE_ENUM.OFF){
             nowPlayingRepeatButton.setImageResource(R.mipmap.ic_repeat_white_24dp);
             nowPlayingRepeatButton.setAlpha(0.5f);
         }
 
         else
-        if(PlayerConstants.PLAY_BACK_STATE == PlayerConstants.PLAYBACK_STATE_ENUM.LOOP){
+        if(PlayerConstants.getPlayBackState() == PlayerConstants.PLAYBACK_STATE_ENUM.LOOP){
             nowPlayingRepeatButton.setImageResource(R.mipmap.ic_repeat_white_24dp);
             nowPlayingRepeatButton.setAlpha(1f);
         }
 
         else
-        if(PlayerConstants.PLAY_BACK_STATE == PlayerConstants.PLAYBACK_STATE_ENUM.LOOP){
+        if(PlayerConstants.getPlayBackState() == PlayerConstants.PLAYBACK_STATE_ENUM.SINGLE_LOOP){
             nowPlayingRepeatButton.setImageResource(R.mipmap.ic_repeat_one_white_24dp);
             nowPlayingRepeatButton.setAlpha(1f);
         }

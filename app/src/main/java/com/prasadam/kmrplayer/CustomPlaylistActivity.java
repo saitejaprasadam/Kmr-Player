@@ -60,6 +60,7 @@ public class CustomPlaylistActivity extends VerticalSlidingDrawerBaseActivity {
         setContentView(R.layout.activity_custom_playlist_layout);
         ButterKnife.bind(this);
 
+        ActivityHelper.setCustomActionBar(CustomPlaylistActivity.this);
         setStatusBarTranslucent(CustomPlaylistActivity.this);
         ActivityHelper.setDisplayHome(this);
 

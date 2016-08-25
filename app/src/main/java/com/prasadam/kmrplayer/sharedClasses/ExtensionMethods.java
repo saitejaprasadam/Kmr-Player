@@ -84,7 +84,7 @@ public class ExtensionMethods {
     }
 
     public static String deviceName(){
-        return BluetoothAdapter.getDefaultAdapter().getName().replaceAll(KeyConstants.SPACE, KeyConstants.SPECIAL_CHAR);
+        return "Testing";//BluetoothAdapter.getDefaultAdapter().getName().replaceAll(KeyConstants.SPACE, KeyConstants.SPECIAL_CHAR);
     }
 
     public static String getTimeStamp(){

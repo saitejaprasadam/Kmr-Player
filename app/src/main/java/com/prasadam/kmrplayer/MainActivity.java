@@ -17,12 +17,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.prasadam.kmrplayer.ListenerClasses.GoogleLoginListeners;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicPlayerExtensionMethods;
@@ -34,15 +30,9 @@ import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 import com.prasadam.kmrplayer.SocketClasses.SocketExtensionMethods;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
-import java.util.Calendar;
-
 import static com.prasadam.kmrplayer.SharedClasses.ExtensionMethods.setStatusBarTranslucent;
 
 public class MainActivity extends VerticalSlidingDrawerBaseActivity implements NavigationView.OnNavigationItemSelectedListener {
-
-    private static GoogleLoginListeners googleLoginListeners;
-    public static Toolbar toolbar;
-    public static TextView navHeaderProfileName;
 
     protected void onCreate(Bundle savedInstanceState) {
         checkInitalLaunch();
@@ -53,12 +43,11 @@ public class MainActivity extends VerticalSlidingDrawerBaseActivity implements N
         setContentView(R.layout.activity_main);
 
         Intent intent = getIntent();
-        if(MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH.equals(intent.getAction())) {
+        if(intent != null && MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
             Toast.makeText(this, query, Toast.LENGTH_SHORT).show();
         }
 
-        googleLoginListeners = new GoogleLoginListeners(MainActivity.this);
         initalizer();
     }
     private void checkInitalLaunch() {
@@ -140,10 +129,6 @@ public class MainActivity extends VerticalSlidingDrawerBaseActivity implements N
 
         switch (item.getItemId()){
 
-            case R.id.google_login:
-                googleLoginListeners.signInMethod();
-                break;
-
             case R.id.main_drawer_about:
                 ActivitySwitcher.launchAboutActivity(this);
                 break;
@@ -165,16 +150,18 @@ public class MainActivity extends VerticalSlidingDrawerBaseActivity implements N
         FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
         mFragmentTransaction.replace(R.id.containerView, new TabFragment()).commit();
     }
-    private void setNavigationDrawer() {
+    private void setNavigationDrawer()  {
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setOverflowIcon(getResources().getDrawable(R.mipmap.ic_more_vert_white_24dp));
         setSupportActionBar(toolbar);
         if(getSupportActionBar() != null)
             getSupportActionBar().setShowHideAnimationEnabled(true);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+
+        /*ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         if (drawer != null)
             drawer.setDrawerListener(toggle);
@@ -185,24 +172,9 @@ public class MainActivity extends VerticalSlidingDrawerBaseActivity implements N
         if (navigationView != null) {
             navigationView.setNavigationItemSelectedListener(this);
             navigationView.getMenu().getItem(0).setChecked(true);
-            navigationView.getMenu().removeItem(R.id.nav_google_signup);
+        }*/
+     }
 
-            Calendar c = Calendar.getInstance();
-            int timeOfDay = c.get(Calendar.HOUR_OF_DAY);
-            View header = navigationView.getHeaderView(0);
-            ImageView headerImageView = (ImageView) header.findViewById(R.id.nav_header_imageView);
-            //TextView albumTextView = (TextView) header.findViewById(R.id.nav_album_name_text_view);
-            navHeaderProfileName = (TextView) header.findViewById(R.id.nav_artist_name_text_view);
-            //navHeaderProfilePic = (ImageView) header.findViewById(R.id.nav_header_profile_pic);
-
-            if(timeOfDay < 6 || timeOfDay >= 19) {
-                headerImageView.setImageResource(R.mipmap.material_wallpaper_dark);
-                //albumTextView.setTextColor(getResources().getColor(R.color.white));
-                navHeaderProfileName.setTextColor(getResources().getColor(R.color.white));
-            }
-
-        }
-    }
     private void refreshList() {
         Handler handler = new Handler(Looper.getMainLooper());
         handler.post(new Runnable() {
@@ -219,10 +191,5 @@ public class MainActivity extends VerticalSlidingDrawerBaseActivity implements N
                     Toast.makeText(MainActivity.this, "Songs lists updated, no new songs found", Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        googleLoginListeners.onActivityResult(requestCode, resultCode, data);
     }
 }

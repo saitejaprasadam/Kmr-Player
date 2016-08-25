@@ -43,6 +43,7 @@ public class RecentlyAddedActivity extends VerticalSlidingDrawerBaseActivity {
         setContentView(R.layout.activity_recently_added_layout);
         ButterKnife.bind(this);
 
+        ActivityHelper.setCustomActionBar(RecentlyAddedActivity.this);
         setStatusBarTranslucent(RecentlyAddedActivity.this);
         ActivityHelper.setDisplayHome(this);
 
@@ -93,7 +94,7 @@ public class RecentlyAddedActivity extends VerticalSlidingDrawerBaseActivity {
         super.onDestroy();
         recentlyAddedRecyclerView.setAdapter(null);
         RecentlyAddedAcitivityrecyclerViewAdapter = null;
-        songsList.clear();
+        songsList = null;
     }
     public void onResume() {
         super.onResume();
