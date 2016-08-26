@@ -105,22 +105,16 @@ public class ArtistFragment extends Fragment {
         recyclerView.setOnScrollListener(new HidingScrollListener() {
             @Override
             public void onHide() {
-                try{
-                    ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+                ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+                if (actionBar != null)
                     actionBar.hide();
-                    actionBar.getCustomView().animate().translationY(actionBar.getHeight()).setDuration(500);
-                }
-                catch (NullPointerException ignored){}
 
             }
             @Override
             public void onShow() {
-                try{
-                    ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+                ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+                if (actionBar != null)
                     actionBar.show();
-                    actionBar.getCustomView().animate().translationY(0).setDuration(500);
-                }
-                catch (NullPointerException ignored){}
             }
         });
     }

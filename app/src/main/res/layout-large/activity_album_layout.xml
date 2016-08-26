@@ -85,8 +85,7 @@
                 android:layout_weight="0.10"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:orientation="vertical"
-                android:id="@+id/albumDetailsLayout">
+                android:orientation="vertical">
 
                 <RelativeLayout
                     android:id="@+id/album_info_colored_box"

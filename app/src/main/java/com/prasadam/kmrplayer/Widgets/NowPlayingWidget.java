@@ -15,7 +15,7 @@ import android.widget.RemoteViews;
 
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicService;
-import com.prasadam.kmrplayer.MainActivity;
+import com.prasadam.kmrplayer.Activities.MainActivity;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 

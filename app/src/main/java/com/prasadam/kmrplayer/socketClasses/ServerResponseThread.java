@@ -9,8 +9,8 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.prasadam.kmrplayer.ActivityHelperClasses.SharedPreferenceHelper;
-import com.prasadam.kmrplayer.NearbyDevicesActivity;
-import com.prasadam.kmrplayer.QuickShareActivity;
+import com.prasadam.kmrplayer.Activities.NetworkAcitivities.NearbyDevicesActivity;
+import com.prasadam.kmrplayer.Activities.NetworkAcitivities.QuickShareActivity;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.NearbyDevicesRecyclerViewAdapter;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.PlayerConstants;
@@ -30,8 +30,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
-
-import javax.crypto.Mac;
 
 /*
  * Created by Prasadam Saiteja on 7/3/2016.

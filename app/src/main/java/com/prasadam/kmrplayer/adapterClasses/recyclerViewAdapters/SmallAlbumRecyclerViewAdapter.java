@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
+import com.prasadam.kmrplayer.ActivityHelperClasses.ActivityHelper;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
@@ -101,32 +102,18 @@ public class SmallAlbumRecyclerViewAdapter extends ObservableRecyclerView.Adapte
                 Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
                     @Override
                     public void onGenerated(Palette palette) {
-                        Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
-                        if (vibrantSwatch != null) {
-                            holder.colorBoxLayout.setBackgroundColor(vibrantSwatch.getRgb());
-                            artist.colorBoxLayoutColor = vibrantSwatch.getRgb();
+                        final int[] colors = ActivityHelper.getAvailableColor(mActivity, palette);
+                        holder.colorBoxLayout.setBackgroundColor(colors[0]);
+                        artist.colorBoxLayoutColor = colors[0];
 
-                            holder.artistNameTextView.setTextColor(vibrantSwatch.getTitleTextColor());
-                            artist.artistNameTextViewColor = vibrantSwatch.getBodyTextColor();
-                        }
-
-                        else
-                        {
-                            vibrantSwatch = palette.getMutedSwatch();
-                            if (vibrantSwatch != null) {
-                                holder.colorBoxLayout.setBackgroundColor(vibrantSwatch.getRgb());
-                                artist.colorBoxLayoutColor = vibrantSwatch.getRgb();
-
-                                holder.artistNameTextView.setTextColor(vibrantSwatch.getTitleTextColor());
-                                artist.artistNameTextViewColor = vibrantSwatch.getBodyTextColor();
-                            }
-                        }
+                        holder.artistNameTextView.setTextColor(colors[1]);
+                        artist.artistNameTextViewColor = colors[1];
                     }
                 });
             }
         }
 
-        catch (Exception e){}
+        catch (Exception ignored){}
 
     }
 

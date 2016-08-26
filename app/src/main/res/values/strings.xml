@@ -1,9 +1,6 @@
 <resources>
     <string name="app_name">Smart cast</string>
 
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-
     <string name="songs_text">songs</string>
     <string name="albums_text">albums</string>
     <string name="artist_text">artists</string>
@@ -58,13 +55,11 @@
     <string name="pause">pause_text</string>
     <string name="play">play_text</string>
     <string name="songs_library_text">Songs Library</string>
-    <string name="Login_with_google">Login with google</string>
     <string name="others_text">Others</string>
     <string name="post_text">Post</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="share_all_songs_text">Share all songs</string>
-    <string name="Logged_in_as_text">"Logged in as "</string>
     <string name="song_year_text">Year</string>
     <string name="song_generic_text">Genre</string>
     <string name="action_equilzer">Equilzer</string>
@@ -130,7 +125,6 @@
     <string name="cluster_description_text">Seek nearby friends using nearby feature, and engage your music madness with your squad spontaneously</string>
     <string name="About_player_text">About</string>
     <string name="about_text">About</string>
-    <string name="change_log_text">Changelog</string>
     <string name="Quick_shuffle_widget_text">Quick shuffle!!</string>
     <string name="Favorites_widget_text">Playing Favorites!!</string>
     <string name="Most_played_widget_text">Playing Most played songs!!</string>

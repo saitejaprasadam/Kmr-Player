@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
+import com.prasadam.kmrplayer.ActivityHelperClasses.ActivityHelper;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
@@ -120,32 +121,15 @@ public class AlbumRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Alb
                     Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
                         @Override
                         public void onGenerated(Palette palette) {
-                            Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
-                            if (vibrantSwatch != null) {
-                                holder.colorBoxLayout.setBackgroundColor(vibrantSwatch.getRgb());
-                                currentAlbum.colorBoxLayoutColor = vibrantSwatch.getRgb();
+                            final int[] colors = ActivityHelper.getAvailableColor(mActivity, palette);
+                            holder.colorBoxLayout.setBackgroundColor(colors[0]);
+                            currentAlbum.colorBoxLayoutColor = colors[0];
 
-                                holder.albumNameTextView.setTextColor(vibrantSwatch.getBodyTextColor());
-                                currentAlbum.albumNameTextViewColor = vibrantSwatch.getBodyTextColor();
+                            holder.albumNameTextView.setTextColor(colors[1]);
+                            currentAlbum.albumNameTextViewColor = colors[1];
 
-                                holder.artistNameTextView.setTextColor(vibrantSwatch.getTitleTextColor());
-                                currentAlbum.artistNameTextViewColor = vibrantSwatch.getTitleTextColor();
-                            }
-
-                            else
-                            {
-                                vibrantSwatch = palette.getMutedSwatch();
-                                if (vibrantSwatch != null) {
-                                    holder.colorBoxLayout.setBackgroundColor(vibrantSwatch.getRgb());
-                                    currentAlbum.colorBoxLayoutColor = vibrantSwatch.getRgb();
-
-                                    holder.albumNameTextView.setTextColor(vibrantSwatch.getBodyTextColor());
-                                    currentAlbum.albumNameTextViewColor = vibrantSwatch.getBodyTextColor();
-
-                                    holder.artistNameTextView.setTextColor(vibrantSwatch.getTitleTextColor());
-                                    currentAlbum.artistNameTextViewColor = vibrantSwatch.getTitleTextColor();
-                                }
-                            }
+                            holder.artistNameTextView.setTextColor(colors[2]);
+                            currentAlbum.artistNameTextViewColor = colors[2];
                         }
                     });
                 }

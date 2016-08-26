@@ -9,7 +9,6 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@+id/vertical_sliding_drawer_root_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -187,7 +186,6 @@
                             android:src="@mipmap/ic_more_horiz_black_24dp"/>
 
                         <LinearLayout
-                            android:id="@+id/song_details_layout"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="center_vertical"
@@ -222,7 +220,6 @@
                 </android.support.v7.widget.CardView>
 
                 <RelativeLayout
-                    android:id="@+id/now_playing_control_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"

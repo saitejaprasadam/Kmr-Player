@@ -17,7 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.prasadam.kmrplayer.CustomPlaylistInnerActivity;
+import com.prasadam.kmrplayer.Activities.Playlist.PlaylistHelpers.CustomPlaylistInnerActivity;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.BlurBuilder;

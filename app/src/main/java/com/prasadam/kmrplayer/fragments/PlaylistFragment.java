@@ -11,12 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.prasadam.kmrplayer.CustomPlaylistActivity;
-import com.prasadam.kmrplayer.FavoritesActivity;
-import com.prasadam.kmrplayer.MostPlayedSongsActivity;
+import com.prasadam.kmrplayer.Activities.Playlist.CustomPlaylistActivity;
+import com.prasadam.kmrplayer.Activities.Playlist.FavoritesActivity;
+import com.prasadam.kmrplayer.Activities.Playlist.MostPlayedSongsActivity;
 import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.RecentlyAddedActivity;
-import com.prasadam.kmrplayer.SongPlaybackHistoryActivity;
+import com.prasadam.kmrplayer.Activities.Playlist.RecentlyAddedActivity;
+import com.prasadam.kmrplayer.Activities.Playlist.SongPlaybackHistoryActivity;
 
 /*
  * Created by Prasadam Saiteja on 5/18/2016.

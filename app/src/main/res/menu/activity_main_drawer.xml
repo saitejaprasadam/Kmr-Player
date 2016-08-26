@@ -4,7 +4,6 @@
     <group android:checkableBehavior="single">
 
         <item
-            android:id="@+id/song_library"
             android:icon="@mipmap/ic_library_music_white_24dp"
             android:title="@string/songs_library_text" />
 

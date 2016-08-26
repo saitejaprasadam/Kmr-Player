@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/View_Background"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.prasadam.kmrplayer.MainActivity"
+    tools:context=".Activities.MainActivity"
     tools:showIn="@layout/include_app_bar_main">
 
     <FrameLayout

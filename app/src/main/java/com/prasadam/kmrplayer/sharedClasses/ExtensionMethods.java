@@ -49,7 +49,6 @@ public class ExtensionMethods {
         boolean large = ((context.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_LARGE);
         return (xlarge || large);
     }
-
     public static boolean isLandScape(Context context){
         return (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
     }
@@ -66,7 +65,6 @@ public class ExtensionMethods {
             tintManager.setStatusBarTintEnabled(true);
         }
     }
-
     public static int getStatusBarHeight(Context context) {
         int result = 0;
         int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
@@ -84,9 +82,8 @@ public class ExtensionMethods {
     }
 
     public static String deviceName(){
-        return "Testing";//BluetoothAdapter.getDefaultAdapter().getName().replaceAll(KeyConstants.SPACE, KeyConstants.SPECIAL_CHAR);
+        return BluetoothAdapter.getDefaultAdapter().getName().replaceAll(KeyConstants.SPACE, KeyConstants.SPECIAL_CHAR);
     }
-
     public static String getTimeStamp(){
         UUID uuid = UUID.randomUUID();
         return uuid.toString();

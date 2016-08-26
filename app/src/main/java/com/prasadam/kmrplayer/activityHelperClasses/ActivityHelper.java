@@ -2,17 +2,27 @@ package com.prasadam.kmrplayer.ActivityHelperClasses;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
-import android.graphics.Color;
-import android.os.Build;
+import android.content.Context;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.graphics.Palette;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Window;
-import android.view.WindowManager;
+import android.view.Gravity;
+import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 
+import com.prasadam.kmrplayer.AdapterClasses.UIAdapters.HidingScrollListener;
+import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicPlayerExtensionMethods;
+import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.Fragments.NoItemsFragment;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
+
+import java.util.ArrayList;
 
 /*
  * Created by Prasadam Saiteja on 7/14/2016.
@@ -48,5 +58,65 @@ public class ActivityHelper {
         Toolbar toolbar = (Toolbar) mAcitivity.findViewById(R.id.toolbar);
         toolbar.setOverflowIcon(mAcitivity.getResources().getDrawable(R.mipmap.ic_more_vert_white_24dp));
         mAcitivity.setSupportActionBar(toolbar);
+    }
+
+    public static int[] getAvailableColor(Context context, Palette palette) {
+        int[] temp = new int[3];
+        if (palette.getVibrantSwatch() != null) {
+            temp[0] = palette.getVibrantSwatch().getRgb();
+            temp[1] = palette.getVibrantSwatch().getBodyTextColor();
+            temp[2] = palette.getVibrantSwatch().getTitleTextColor();
+        } else if (palette.getLightVibrantSwatch() != null) {
+            temp[0] = palette.getLightVibrantSwatch().getRgb();
+            temp[1] = palette.getLightVibrantSwatch().getBodyTextColor();
+            temp[2] = palette.getLightVibrantSwatch().getTitleTextColor();
+        } else if (palette.getMutedSwatch() != null) {
+            temp[0] = palette.getMutedSwatch().getRgb();
+            temp[1] = palette.getMutedSwatch().getBodyTextColor();
+            temp[2] = palette.getMutedSwatch().getTitleTextColor();
+        } else if (palette.getLightMutedSwatch() != null) {
+            temp[0] = palette.getLightMutedSwatch().getRgb();
+            temp[1] = palette.getLightMutedSwatch().getBodyTextColor();
+            temp[2] = palette.getLightMutedSwatch().getTitleTextColor();
+        } else if (palette.getDarkVibrantSwatch() != null) {
+            temp[0] = palette.getDarkVibrantSwatch().getRgb();
+            temp[1] = palette.getDarkVibrantSwatch().getBodyTextColor();
+            temp[2] = palette.getDarkVibrantSwatch().getTitleTextColor();
+        } else if (palette.getDarkMutedSwatch() != null) {
+            temp[0] = palette.getDarkMutedSwatch().getRgb();
+            temp[1] = palette.getDarkMutedSwatch().getBodyTextColor();
+            temp[2] = palette.getDarkMutedSwatch().getTitleTextColor();
+        } else {
+            temp[0] = ContextCompat.getColor(context, R.color.colorPrimary);
+            temp[1] = ContextCompat.getColor(context, android.R.color.white);
+            temp[2] = 0xffe5e5e5;
+        }
+        return temp;
+    }
+
+    public static void setShuffleFAB(final Activity mActivity, final FrameLayout rootLayout, final RecyclerView recyclerView, final ArrayList<Song> songsList) {
+        final FloatingActionButton fab = new FloatingActionButton(mActivity);
+        fab.setImageResource(R.mipmap.ic_shuffle_white_24dp);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MusicPlayerExtensionMethods.shufflePlay(mActivity, songsList);
+            }
+        });
+        FrameLayout.LayoutParams lp =  new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        lp.gravity = Gravity.BOTTOM | Gravity.END;
+        lp.setMargins(0, 0 , 32, 32);
+
+        recyclerView.setOnScrollListener(new HidingScrollListener() {
+            @Override
+            public void onHide() {
+                fab.animate().translationY(fab.getHeight() + 60).setInterpolator(new AccelerateInterpolator(2)).start();
+            }
+            @Override
+            public void onShow() {
+                fab.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+            }
+        });
+        rootLayout.addView(fab, lp);
     }
 }

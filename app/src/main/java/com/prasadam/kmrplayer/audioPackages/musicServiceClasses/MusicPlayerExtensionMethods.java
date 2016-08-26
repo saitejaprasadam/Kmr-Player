@@ -10,7 +10,7 @@ import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 import com.prasadam.kmrplayer.SocketClasses.GroupPlay.GroupPlayHelper;
-import com.prasadam.kmrplayer.VerticalSlidingDrawerBaseActivity;
+import com.prasadam.kmrplayer.Activities.VerticalSlidingDrawerBaseActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;

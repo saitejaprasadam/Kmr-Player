@@ -18,7 +18,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
-import com.prasadam.kmrplayer.ArtistActivity;
+import com.prasadam.kmrplayer.ActivityHelperClasses.ActivityHelper;
+import com.prasadam.kmrplayer.Activities.ArtistActivity;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Artist;
@@ -125,26 +126,12 @@ public class ArtistRecyclerViewAdapter extends ObservableRecyclerView.Adapter<Ar
                         Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
                             @Override
                             public void onGenerated(Palette palette) {
-                                Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
-                                if (vibrantSwatch != null) {
-                                    holder.colorBoxLayout.setBackgroundColor(vibrantSwatch.getRgb());
-                                    artist.colorBoxLayoutColor = vibrantSwatch.getRgb();
+                                final int[] colors = ActivityHelper.getAvailableColor(mActivity, palette);
+                                holder.colorBoxLayout.setBackgroundColor(colors[0]);
+                                artist.colorBoxLayoutColor = colors[0];
 
-                                    holder.artistNameTextView.setTextColor(vibrantSwatch.getTitleTextColor());
-                                    artist.artistNameTextViewColor = vibrantSwatch.getTitleTextColor();
-                                }
-
-                                else
-                                {
-                                    vibrantSwatch = palette.getMutedSwatch();
-                                    if (vibrantSwatch != null) {
-                                        holder.colorBoxLayout.setBackgroundColor(vibrantSwatch.getRgb());
-                                        artist.colorBoxLayoutColor = vibrantSwatch.getRgb();
-
-                                        holder.artistNameTextView.setTextColor(vibrantSwatch.getTitleTextColor());
-                                        artist.artistNameTextViewColor = vibrantSwatch.getTitleTextColor();
-                                    }
-                                }
+                                holder.artistNameTextView.setTextColor(colors[1]);
+                                artist.artistNameTextViewColor = colors[1];
                             }
                         });
                     }

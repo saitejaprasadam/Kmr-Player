@@ -15,6 +15,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -127,28 +129,17 @@ public class SongsFragment extends Fragment {
         recyclerView.setOnScrollListener(new HidingScrollListener() {
             @Override
             public void onHide() {
-                try{
-                    ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
-                    if (actionBar != null) {
-                        shuffleButton.hide();
-                        actionBar.hide();
-                        actionBar.getCustomView().animate().translationY(actionBar.getHeight()).setDuration(500);
-                    }
-                }
-                catch (NullPointerException ignored){}
-
+                ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+                hideShuffleFab();
+                if (actionBar != null)
+                    actionBar.hide();
             }
             @Override
             public void onShow() {
-                try{
-                    ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
-                    if (actionBar != null) {
-                        shuffleButton.show();
-                        actionBar.show();
-                        actionBar.getCustomView().animate().translationY(0).setDuration(500);
-                    }
-                }
-                catch (NullPointerException ignored){}
+                ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+                showShuffleFab();
+                if (actionBar != null)
+                    actionBar.show();
             }
         });
     }
@@ -195,5 +186,12 @@ public class SongsFragment extends Fragment {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void hideShuffleFab(){
+        shuffleButton.animate().translationY(shuffleButton.getHeight() + 60).setInterpolator(new AccelerateInterpolator(2)).start();
+    }
+    private void showShuffleFab(){
+        shuffleButton.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
     }
 }

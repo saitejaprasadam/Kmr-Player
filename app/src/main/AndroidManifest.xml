@@ -37,7 +37,7 @@
         </provider>
 
         <activity
-            android:name=".MainActivity"
+            android:name=".Activities.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:theme="@style/MainActivityNoActionBar.BrandedLaunch">
@@ -53,61 +53,57 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AppIntroActivity"
+            android:name=".Activities.HelperActivities.AppIntroActivity"
             android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition" />
         <activity
-            android:name=".TagEditorActivity"
+            android:name=".Activities.HelperActivities.TagEditorActivity"
             android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition" />
         <activity
-            android:name=".AlbumActivity"
+            android:name=".Activities.AlbumActivity"
             android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition" />
         <activity
-            android:name=".RecentlyAddedActivity"
+            android:name=".Activities.Playlist.RecentlyAddedActivity"
             android:label="@string/recently_added_text"
             android:theme="@style/ColoredStatusBarNoActionBar" />
         <activity
-            android:name=".FavoritesActivity"
+            android:name=".Activities.Playlist.FavoritesActivity"
             android:label="@string/favorites_text"
-            android:theme="@style/ColoredStatusBar" />
+            android:theme="@style/ColoredStatusBarNoActionBar" />
         <activity
-            android:name=".NowPlayingPlaylistActivity"
-            android:label="@string/favorites_text"
-            android:theme="@style/ColoredStatusBar" />
-        <activity
-            android:name=".SongPlaybackHistoryActivity"
+            android:name=".Activities.Playlist.SongPlaybackHistoryActivity"
             android:label="@string/history_text"
             android:theme="@style/ColoredStatusBarNoActionBar" />
         <activity
-            android:name=".QuickShareActivity"
+            android:name=".Activities.NetworkAcitivities.QuickShareActivity"
             android:label="@string/quick_share_text"
             android:theme="@style/ColoredStatusBar" />
         <activity
-            android:name=".MostPlayedSongsActivity"
+            android:name=".Activities.Playlist.MostPlayedSongsActivity"
             android:label="@string/most_played_text"
             android:theme="@style/ColoredStatusBarNoActionBar" />
         <activity
-            android:name=".CustomPlaylistActivity"
+            android:name=".Activities.Playlist.CustomPlaylistActivity"
             android:label="@string/custom_playlist_text"
             android:theme="@style/ColoredStatusBarNoActionBar" />
         <activity
-            android:name=".CustomPlaylistInnerActivity"
+            android:name=".Activities.Playlist.PlaylistHelpers.CustomPlaylistInnerActivity"
             android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition" />
         <activity
-            android:name=".ExpandedAlbumartActivity"
+            android:name=".Activities.HelperActivities.ExpandedAlbumartActivity"
             android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition" />
         <activity
-            android:name=".ArtistActivity"
+            android:name=".Activities.ArtistActivity"
             android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition" />
         <activity
-            android:name=".NearbyDevicesActivity"
+            android:name=".Activities.NetworkAcitivities.NearbyDevicesActivity"
             android:label="@string/available_devices_text"
             android:theme="@style/ColoredStatusBar" />
         <activity
-            android:name=".MostPlayedSongsPieChartActivity"
+            android:name=".Activities.Playlist.PlaylistHelpers.MostPlayedSongsPieChartActivity"
             android:label="@string/most_played_text"
             android:theme="@style/ColoredStatusBar" />
         <activity
-            android:name=".SearchActivity"
+            android:name=".Activities.HelperActivities.SearchActivity"
             android:label="@string/search_text"
             android:theme="@style/ColoredStatusBarNoActionBar">
             <intent-filter>
@@ -123,7 +119,7 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
-        <activity android:name=".VerticalSlidingDrawerBaseActivity" />
+        <activity android:name=".Activities.VerticalSlidingDrawerBaseActivity" />
 
         <service
             android:name=".AudioPackages.MusicServiceClasses.MusicService"

@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.KeyEvent;
 
-import com.prasadam.kmrplayer.MainActivity;
-
 /*
  * Created by Prasadam Saiteja on 5/31/2016.
  */

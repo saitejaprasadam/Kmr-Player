@@ -59,7 +59,6 @@
             android:baselineAligned="false">
 
             <TableLayout
-                android:id="@+id/imagelayout"
                 android:layout_width="0dp"
                 android:layout_weight="35"
                 android:layout_height="match_parent">

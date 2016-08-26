@@ -139,12 +139,11 @@ public class SharedPreferenceHelper {
     public static void setDuration(Context context) {
         SharedPreferences sharedpreferences = context.getSharedPreferences(SharedPreferenceKeyConstants.DEFAULT_SONGS_PLAYLIST_KEY, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedpreferences.edit();
-        editor.putLong(SharedPreferenceKeyConstants.CURRENT_PLAYING_SONG_DURATION_KEY, MusicService.player.getDuration());
+        editor.putLong(SharedPreferenceKeyConstants.CURRENT_PLAYING_SONG_DURATION_KEY, MusicService.player.getCurrentPosition());
         editor.apply();
     }
     public static void getDuration(Context context) {
         SharedPreferences sharedpreferences = context.getSharedPreferences(SharedPreferenceKeyConstants.DEFAULT_SONGS_PLAYLIST_KEY, Context.MODE_PRIVATE);
         MusicService.player.seekTo((int) sharedpreferences.getLong(SharedPreferenceKeyConstants.CURRENT_PLAYING_SONG_DURATION_KEY, 0));
-        Log.d("duration", (int) sharedpreferences.getLong(SharedPreferenceKeyConstants.CURRENT_PLAYING_SONG_DURATION_KEY, 0) + " " + String.valueOf(MusicService.player.getCurrentPosition()));
     }
 }

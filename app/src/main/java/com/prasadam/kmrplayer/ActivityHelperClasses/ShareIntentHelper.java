@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
-import com.prasadam.kmrplayer.CustomPlaylistInnerActivity;
+import com.prasadam.kmrplayer.Activities.Playlist.PlaylistHelpers.CustomPlaylistInnerActivity;
 
 import java.util.ArrayList;
 

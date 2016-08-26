@@ -15,7 +15,7 @@ import com.prasadam.kmrplayer.AdapterClasses.Interfaces.OnDoubleTapListener;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.PlayerConstants;
 import com.prasadam.kmrplayer.Fragments.SongsFragment;
 import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.VerticalSlidingDrawerBaseActivity;
+import com.prasadam.kmrplayer.Activities.VerticalSlidingDrawerBaseActivity;
 
 import java.io.File;
 import java.util.HashMap;

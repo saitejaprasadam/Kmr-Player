@@ -2,8 +2,6 @@ package com.prasadam.kmrplayer.SocketClasses;
 
 import android.content.Context;
 import android.net.nsd.NsdServiceInfo;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.os.StrictMode;
 
 import com.prasadam.kmrplayer.R;

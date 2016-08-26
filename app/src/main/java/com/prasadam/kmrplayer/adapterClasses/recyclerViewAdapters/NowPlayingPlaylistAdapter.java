@@ -33,7 +33,7 @@ import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicPlayerExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.PlayerConstants;
 import com.prasadam.kmrplayer.Fragments.SongsFragment;
-import com.prasadam.kmrplayer.VerticalSlidingDrawerBaseActivity;
+import com.prasadam.kmrplayer.Activities.VerticalSlidingDrawerBaseActivity;
 
 import java.io.File;
 import java.util.Collections;

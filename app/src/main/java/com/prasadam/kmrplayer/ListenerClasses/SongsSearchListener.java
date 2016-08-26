@@ -11,7 +11,7 @@ import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.CustomPlaylist
 import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.FavoritesRecyclerViewAdapter;
 import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.UnifedRecyclerViewAdapter;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
-import com.prasadam.kmrplayer.CustomPlaylistInnerActivity;
+import com.prasadam.kmrplayer.Activities.Playlist.PlaylistHelpers.CustomPlaylistInnerActivity;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 
 import java.util.ArrayList;

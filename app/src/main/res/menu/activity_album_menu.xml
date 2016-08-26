@@ -29,9 +29,7 @@
         android:id="@+id/album_context_menu_jump_to_artist"
         android:title="@string/jump_to_artist_text" />
 
-    <item
-        android:id="@+id/album_context_menu_tagEditor"
-        android:title="@string/tag_editor_text" />
+    <item android:title="@string/tag_editor_text" />
 
     <item
         android:id="@+id/album_context_menu_delete_album"
