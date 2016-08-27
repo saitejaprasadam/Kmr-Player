@@ -13,6 +13,7 @@ import android.widget.FrameLayout;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.prasadam.kmrplayer.Activities.VerticalSlidingDrawerBaseActivity;
 import com.prasadam.kmrplayer.ActivityHelperClasses.DialogHelper;
+import com.prasadam.kmrplayer.ActivityHelperClasses.ShareIntentHelper;
 import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.UnifedRecyclerViewAdapter;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicPlayerExtensionMethods;
 import com.prasadam.kmrplayer.ListenerClasses.SongsSearchListener;
@@ -139,6 +140,14 @@ public class MostPlayedSongsActivity extends VerticalSlidingDrawerBaseActivity {
 
             case R.id.action_equilzer:
                 ActivitySwitcher.initEqualizer(MostPlayedSongsActivity.this);
+                break;
+
+            case R.id.action_quick_share:
+                ActivitySwitcher.jumpToQuickShareActivity(MostPlayedSongsActivity.this, songsList);
+                break;
+
+            case R.id.action_share_playlist:
+                ShareIntentHelper.sharePlaylist(MostPlayedSongsActivity.this, songsList, "Most Played");
                 break;
 
             case R.id.action_add_to:

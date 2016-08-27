@@ -20,7 +20,7 @@ public class ApplicationClass extends Application{
     @Override
     public void onCreate() {
         super.onCreate();
-        LeakCanary.install(this);
+        //LeakCanary.install(this);
         //Mint.initAndStartSession(this, "2e54b9a6");
         SharedVariables.globalActivityContext = this;
         SharedPreferenceHelper.getShuffle(this);

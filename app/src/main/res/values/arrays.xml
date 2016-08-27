@@ -4,8 +4,6 @@
     <string-array name="change_album_art_materail_dialog_options">
         <item>Pick from local storage</item>
         <item>Search Web</item>
-        <item>Download from </item>
-        <item>Remove album art</item>
     </string-array>
 
     <string-array name="add_to_dialog_items">

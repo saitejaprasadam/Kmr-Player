@@ -939,4 +939,39 @@ public class AudioExtensionMethods {
         return result;
     }
 
+    public static Song getSongFromPath(Context context, String fileName) {
+
+        ContentResolver musicResolver = context.getContentResolver();
+        Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        Cursor musicCursor = musicResolver.query(musicUri, null, MediaStore.Audio.Media.IS_MUSIC + " and " + MediaStore.Audio.Media.DATA + "=\"" + fileName + "\"", null, null);
+
+        if(musicCursor!=null && musicCursor.moveToFirst()){
+            long thisId = musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Media._ID));
+            String thisTitle = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
+            String thisArtistID = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID));
+            String thisArtist = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+            String thisAlbum = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
+            String thisAlbumID = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
+            long thisDuration = musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
+            String thisdata = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+            String albumID = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
+            String albumArtPath = null;
+
+            musicUri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
+            Cursor cursor = musicResolver
+                    .query(musicUri, new String[]{MediaStore.Audio.Albums.ALBUM_ART}, MediaStore.Audio.Albums._ID + "=?", new String[]{ albumID}, null);
+
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+                    albumArtPath = cursor.getString(0);
+                }
+                cursor.close();
+            }
+
+            musicCursor.close();
+            return new Song(thisId, thisTitle, thisArtist, thisArtistID, thisAlbum, thisAlbumID, thisDuration, thisdata, albumArtPath, generateHashID(context, thisId));
+        }
+
+        return null;
+    }
 }

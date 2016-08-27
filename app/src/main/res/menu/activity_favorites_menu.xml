@@ -17,6 +17,14 @@
         app:showAsAction="always|collapseActionView"/>
 
     <item
+        android:id="@+id/action_quick_share"
+        android:title="@string/quick_share_text" />
+
+    <item
+        android:id="@+id/action_share_playlist"
+        android:title="@string/share_playlist_text" />
+
+    <item
         android:id="@+id/action_play_next"
         android:title="@string/play_next" />
 

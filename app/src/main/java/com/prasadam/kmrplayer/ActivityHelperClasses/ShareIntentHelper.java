@@ -1,11 +1,11 @@
 package com.prasadam.kmrplayer.ActivityHelperClasses;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
-import com.prasadam.kmrplayer.Activities.Playlist.PlaylistHelpers.CustomPlaylistInnerActivity;
 
 import java.util.ArrayList;
 
@@ -55,7 +55,7 @@ public class ShareIntentHelper {
         context.startActivity(Intent.createChooser(share, "Share all songs of " + "\'" + artistTitle  + "\'" +  " artist using"));
     }
 
-    public static void sharePlaylist(CustomPlaylistInnerActivity customPlaylistInnerActivity, ArrayList<Song> songsList, String playlistName) {
+    public static void sharePlaylist(Activity customPlaylistInnerActivity, ArrayList<Song> songsList, String playlistName) {
         Intent share = new Intent();
         share.setAction(Intent.ACTION_SEND_MULTIPLE);
         share.setType("audio/*");

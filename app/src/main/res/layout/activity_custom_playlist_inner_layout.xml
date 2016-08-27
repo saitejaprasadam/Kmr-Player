@@ -1,153 +1,153 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:layout_width="match_parent">
 
-    <RelativeLayout
-        android:id="@+id/test"
-        android:gravity="start"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.4">
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical">
 
-        <android.support.design.widget.CoordinatorLayout
+        <RelativeLayout
+            android:id="@+id/test"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="0dp"
+            android:layout_weight="0.4"
+            android:gravity="start">
 
-        <ImageView
-            android:id="@+id/background_image_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@mipmap/ic_launcher"
-            android:contentDescription="@string/background_image_view_text" />
+            <ImageView
+                android:id="@+id/background_image_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/background_image_view_text"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/ic_launcher" />
 
             <include
                 layout="@layout/include_action_bar_gradient"
                 android:layout_width="match_parent"
                 android:layout_height="120dp" />
 
-            <android.support.design.widget.FloatingActionButton
-                android:layout_width="wrap_content"
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:clickable="true"
-                android:id="@+id/shuffle_fab_button"
-                android:src="@mipmap/ic_shuffle_white_24dp"
-                app:layout_anchor="@id/background_image_view"
-                app:layout_anchorGravity="bottom|right|end" />
-
-        </android.support.design.widget.CoordinatorLayout>
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:theme="@style/TransperantToolbar">
-        </android.support.v7.widget.Toolbar>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/toolbar"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
-            android:layout_marginStart="20dp"
-            android:baselineAligned="false">
-
-            <TableLayout
-                android:layout_width="0dp"
-                android:layout_weight="35"
-                android:layout_height="match_parent">
-
-                <TableRow
-                    android:layout_height="0dp"
-                    android:layout_width="0dp"
-                    android:layout_weight="50">
-
-                    <com.prasadam.kmrplayer.SubClasses.SquareImageviewInverted
-                        android:id="@+id/album_art_image_view3"
-                        android:layout_height="match_parent"
-                        android:layout_width="fill_parent"
-                        android:scaleType="centerCrop"
-                        android:adjustViewBounds="true"
-                        android:contentDescription="@string/album_art_image_view_text"/>
-
-                    <com.prasadam.kmrplayer.SubClasses.SquareImageviewInverted
-                        android:id="@+id/album_art_image_view4"
-                        android:layout_height="match_parent"
-                        android:layout_width="fill_parent"
-                        android:scaleType="centerCrop"
-                        android:adjustViewBounds="true"
-                        android:contentDescription="@string/album_art_image_view_text"/>
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_height="0dp"
-                    android:layout_width="0dp"
-                    android:layout_weight="50">
-
-                    <com.prasadam.kmrplayer.SubClasses.SquareImageviewInverted
-                        android:id="@+id/album_art_image_view1"
-                        android:layout_height="match_parent"
-                        android:layout_width="fill_parent"
-                        android:scaleType="centerCrop"
-                        android:adjustViewBounds="true"
-                        android:contentDescription="@string/album_art_image_view_text"/>
-
-                    <com.prasadam.kmrplayer.SubClasses.SquareImageviewInverted
-                        android:id="@+id/album_art_image_view2"
-                        android:layout_height="match_parent"
-                        android:layout_width="fill_parent"
-                        android:scaleType="centerCrop"
-                        android:adjustViewBounds="true"
-                        android:contentDescription="@string/album_art_image_view_text"/>
-
-
-                </TableRow>
-
-            </TableLayout>
+                app:theme="@style/TransperantToolbar" />
 
             <LinearLayout
-                android:layout_weight="65"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_margin="10dp"
-                android:padding="10dp">
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/toolbar"
+                android:layout_marginBottom="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:baselineAligned="false">
 
-                <TextView
-                    android:id="@+id/playlist_name_text_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:textSize="40sp"
-                    style="@style/shadowTextView"
-                    android:marqueeRepeatLimit="marquee_forever"
-                    android:textColor="@color/white"/>
+                <TableLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="35">
 
-                <TextView
-                    android:id="@+id/playlist_song_count_textview"
-                    android:layout_width="wrap_content"
+                    <TableRow
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="50">
+
+                        <com.prasadam.kmrplayer.SubClasses.SquareImageviewInverted
+                            android:id="@+id/album_art_image_view3"
+                            android:layout_width="fill_parent"
+                            android:layout_height="match_parent"
+                            android:adjustViewBounds="true"
+                            android:contentDescription="@string/album_art_image_view_text"
+                            android:scaleType="centerCrop" />
+
+                        <com.prasadam.kmrplayer.SubClasses.SquareImageviewInverted
+                            android:id="@+id/album_art_image_view4"
+                            android:layout_width="fill_parent"
+                            android:layout_height="match_parent"
+                            android:adjustViewBounds="true"
+                            android:contentDescription="@string/album_art_image_view_text"
+                            android:scaleType="centerCrop" />
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="50">
+
+                        <com.prasadam.kmrplayer.SubClasses.SquareImageviewInverted
+                            android:id="@+id/album_art_image_view1"
+                            android:layout_width="fill_parent"
+                            android:layout_height="match_parent"
+                            android:adjustViewBounds="true"
+                            android:contentDescription="@string/album_art_image_view_text"
+                            android:scaleType="centerCrop" />
+
+                        <com.prasadam.kmrplayer.SubClasses.SquareImageviewInverted
+                            android:id="@+id/album_art_image_view2"
+                            android:layout_width="fill_parent"
+                            android:layout_height="match_parent"
+                            android:adjustViewBounds="true"
+                            android:contentDescription="@string/album_art_image_view_text"
+                            android:scaleType="centerCrop" />
+
+
+                    </TableRow>
+
+                </TableLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    style="@style/shadowTextView"
-                    android:textColor="@color/white"/>
+                    android:layout_margin="10dp"
+                    android:layout_weight="65"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:id="@+id/playlist_name_text_view"
+                        style="@style/shadowTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:marqueeRepeatLimit="marquee_forever"
+                        android:textColor="@color/white"
+                        android:textSize="40sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/playlist_song_count_textview"
+                        style="@style/shadowTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:textSize="16sp" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
-        </LinearLayout>
+        </RelativeLayout>
 
-    </RelativeLayout>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/custom_playlist_inner_recyler_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.6" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/custom_playlist_inner_recyler_view"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.6"/>
+    </LinearLayout>
 
-</LinearLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/shuffle_fab_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:clickable="true"
+        android:src="@mipmap/ic_shuffle_white_24dp"
+        app:layout_anchor="@id/background_image_view"
+        app:layout_anchorGravity="bottom|right|end" />
+
+</android.support.design.widget.CoordinatorLayout>

@@ -1,9 +1,11 @@
 package com.prasadam.kmrplayer.Activities.HelperActivities;
 
 import android.app.Activity;
+import android.app.SearchManager;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
@@ -35,9 +37,12 @@ import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.TagException;
 import org.jaudiotagger.tag.TagOptionSingleton;
+import org.jaudiotagger.tag.datatype.Artwork;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -56,8 +61,11 @@ public class TagEditorActivity extends AppCompatActivity {
     @Bind (R.id.blurred_album_art) ImageView blurredAlbumArt;
     @Bind (R.id.actual_album_art) ImageView actualAlbumArt;
     @Bind (R.id.apply_fab_button) ImageView applyFabButton;
+
+    private static int Choose_Image = 3121;
     private static String currentSongID, songLocation;
     private static int songPosition;
+    private static File imageFile = null;
 
     @OnClick ({R.id.actual_album_art, R.id.edit_fab_button})
     public void changeAlbumArt(View view) {
@@ -68,6 +76,18 @@ public class TagEditorActivity extends AppCompatActivity {
                     @Override
                     public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
 
+                        switch (which){
+
+                            case 0:
+                                pickImage();
+                                break;
+
+                            case 1:
+                                Intent intent = new Intent(Intent.ACTION_WEB_SEARCH );
+                                intent.putExtra(SearchManager.QUERY, songAlbum.getText() + " by " + songArtist.getText());
+                                startActivity(intent);
+                                break;
+                        }
                     }
                 })
                 .show();
@@ -85,6 +105,14 @@ public class TagEditorActivity extends AppCompatActivity {
             tag.setField(FieldKey.TITLE, String.valueOf(songTitle.getText()));
             tag.setField(FieldKey.YEAR, String.valueOf(songYear.getText()));
             tag.setField(FieldKey.GENRE, String.valueOf(songGenre.getText()));
+            if(imageFile != null){
+                Artwork artwork = Artwork.createArtworkFromFile(imageFile);
+                tag.deleteArtworkField();
+                tag.addField(artwork);
+                tag.createField(artwork);
+                tag.setField(artwork);
+            }
+
             audioFile.commit();
             ExtensionMethods.scanMedia(TagEditorActivity.this, songLocation);
             Toast.makeText(TagEditorActivity.this, "Successfully changed", Toast.LENGTH_SHORT).show();
@@ -177,11 +205,11 @@ public class TagEditorActivity extends AppCompatActivity {
 
         songTitle.addTextChangedListener(textWatcher);
         songAlbum.addTextChangedListener(textWatcher);
+        songArtist.addTextChangedListener(textWatcher);
         songTitle.addTextChangedListener(textWatcher);
         songYear.addTextChangedListener(textWatcher);
         songGenre.addTextChangedListener(textWatcher);
     }
-
     private TextWatcher textWatcher = new TextWatcher() {
         public void afterTextChanged(Editable s) {}
 
@@ -195,6 +223,33 @@ public class TagEditorActivity extends AppCompatActivity {
     private void pickImage(){
         Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         intent.setType("image/*");
-        startActivity(intent);
+        startActivityForResult(intent, Choose_Image);
+    }
+    private String getRealPathFromURI(Uri contentURI) {
+        String result;
+        Cursor cursor = getContentResolver().query(contentURI, null, null, null, null);
+        if (cursor == null) { // Source is Dropbox or other similar local file path
+            result = contentURI.getPath();
+        } else {
+            cursor.moveToFirst();
+            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+            result = cursor.getString(idx);
+            cursor.close();
+        }
+        return result;
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == Choose_Image && resultCode == Activity.RESULT_OK){
+            try {
+                InputStream stream = getContentResolver().openInputStream(data.getData());
+                imageFile = new File(getRealPathFromURI(data.getData()));
+                actualAlbumArt.setImageBitmap(BitmapFactory.decodeStream(stream));
+                blurredAlbumArt.setImageBitmap(BlurBuilder.blur(this, ((BitmapDrawable) actualAlbumArt.getDrawable()).getBitmap()));
+                applyFabButton.setVisibility(View.VISIBLE);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

@@ -17,7 +17,7 @@ public class PlayerConstants {
     private static ArrayList<Song> SONGS_LIST = new ArrayList<>();
     private static ArrayList<String> HASH_ID_CURRENT_PLAYLIST = new ArrayList<>();
     private static boolean SHUFFLE = false;
-    private static PLAYBACK_STATE_ENUM PLAY_BACK_STATE = PLAYBACK_STATE_ENUM.OFF;
+    private static PLAYBACK_STATE_ENUM PLAY_BACK_STATE = PLAYBACK_STATE_ENUM.LOOP;
     public static int SONG_NUMBER = 0;
     public static boolean SHOWING_PLAYLIST = false;
     public static boolean SONG_PAUSED = true;

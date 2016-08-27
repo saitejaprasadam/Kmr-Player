@@ -43,12 +43,15 @@
             android:theme="@style/MainActivityNoActionBar.BrandedLaunch">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MUSIC_PLAYER" />
+                <action android:name="android.intent.action.VIEW" />
 
+                <data android:scheme="file" />
+                <data android:mimeType="audio/*" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.media.action.MEDIA_PLAY_FROM_SEARCH" />
+                <category android:name="android.intent.category.APP_MUSIC" />
 
+                <action android:name="android.media.action.MEDIA_PLAY_FROM_SEARCH" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -57,6 +60,7 @@
             android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition" />
         <activity
             android:name=".Activities.HelperActivities.TagEditorActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize"
             android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition" />
         <activity
             android:name=".Activities.AlbumActivity"
@@ -105,6 +109,7 @@
         <activity
             android:name=".Activities.HelperActivities.SearchActivity"
             android:label="@string/search_text"
+            android:windowSoftInputMode="stateVisible|adjustResize"
             android:theme="@style/ColoredStatusBarNoActionBar">
             <intent-filter>
                 <action android:name="com.google.android.gms.actions.SEARCH_ACTION" />

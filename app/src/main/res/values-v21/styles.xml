@@ -3,7 +3,6 @@
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:elevation">0dp</item>
 
@@ -14,7 +13,6 @@
     <style name="MainActivityNoActionBar" parent="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:elevation">0dp</item>
 
@@ -31,12 +29,9 @@
     <style name="AppTheme.ActionBar.TransparentContextTranscition" parent="AppTheme.NoActionBar">
         <item name="android:windowActivityTransitions">true</item>
         <item name="android:windowContentTransitions">true</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">false</item>
 
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">true</item>
 
         <item name="android:itemBackground">@android:color/white</item>
         <item name="android:textColor">@android:color/black</item>

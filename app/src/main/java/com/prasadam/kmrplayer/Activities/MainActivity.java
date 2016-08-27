@@ -3,6 +3,7 @@ package com.prasadam.kmrplayer.Activities;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -21,7 +22,9 @@ import android.widget.Toast;
 import com.prasadam.kmrplayer.Activities.HelperActivities.AppIntroActivity;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
+import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.Controls;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicPlayerExtensionMethods;
+import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.Fragments.AlbumsFragment;
 import com.prasadam.kmrplayer.Fragments.ArtistFragment;
 import com.prasadam.kmrplayer.Fragments.SongsFragment;
@@ -77,6 +80,25 @@ public class MainActivity extends VerticalSlidingDrawerBaseActivity implements N
         super.onNewIntent(intent);
         if(intent.getBooleanExtra("notificationIntent", false))
             mainLayoutRootLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+        else {
+            Uri uri = intent.getData();
+            if (uri != null && uri.toString().length() > 0) {
+
+                String scheme = uri.getScheme();
+                String fileName;
+                if ("file".equals(scheme))
+                    fileName = uri.getPath();
+                else
+                    fileName = uri.toString();
+
+                Song song = AudioExtensionMethods.getSongFromPath(MainActivity.this, fileName);
+                if(song != null){
+                    MusicPlayerExtensionMethods.playNext(MainActivity.this, song);
+                    Controls.nextControl(MainActivity.this);
+                }
+                mainLayoutRootLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+            }
+        }
     }
     public void onBackPressed() {
 

@@ -13,6 +13,7 @@ import android.widget.FrameLayout;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.prasadam.kmrplayer.Activities.VerticalSlidingDrawerBaseActivity;
 import com.prasadam.kmrplayer.ActivityHelperClasses.DialogHelper;
+import com.prasadam.kmrplayer.ActivityHelperClasses.ShareIntentHelper;
 import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.UnifedRecyclerViewAdapter;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicPlayerExtensionMethods;
 import com.prasadam.kmrplayer.ListenerClasses.SongsSearchListener;
@@ -135,6 +136,14 @@ public class FavoritesActivity extends VerticalSlidingDrawerBaseActivity {
 
             case android.R.id.home:
                 finish();
+                break;
+
+            case R.id.action_quick_share:
+                ActivitySwitcher.jumpToQuickShareActivity(FavoritesActivity.this, favoriteSongList);
+                break;
+
+            case R.id.action_share_playlist:
+                ShareIntentHelper.sharePlaylist(FavoritesActivity.this, favoriteSongList, "Favorites");
                 break;
 
             case R.id.action_equilzer:
