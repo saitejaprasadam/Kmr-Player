@@ -16,35 +16,36 @@ public class NotificationBroadcast extends BroadcastReceiver {
         try{
             if (intent.getAction().equals(Intent.ACTION_MEDIA_BUTTON)) {
                 KeyEvent keyEvent = (KeyEvent) intent.getExtras().get(Intent.EXTRA_KEY_EVENT);
-                if (keyEvent.getAction() != KeyEvent.ACTION_DOWN)
-                    return;
+                if (keyEvent != null && keyEvent.getAction() != KeyEvent.ACTION_DOWN) return;
 
-                switch (keyEvent.getKeyCode()) {
-                    case KeyEvent.KEYCODE_HEADSETHOOK:
-                    case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
-                        if(!PlayerConstants.SONG_PAUSED){
-                            Controls.pauseControl(context);
-                        }else{
+                if (keyEvent != null) {
+                    switch (keyEvent.getKeyCode()) {
+                        case KeyEvent.KEYCODE_HEADSETHOOK:
+                        case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
+                            if(!PlayerConstants.SONG_PAUSED)
+                                Controls.pauseControl(context);
+                            else
+                                Controls.playControl(context);
+                            break;
+                        case KeyEvent.KEYCODE_MEDIA_PLAY:
                             Controls.playControl(context);
-                        }
-                        break;
-                    case KeyEvent.KEYCODE_MEDIA_PLAY:
-                        Controls.playControl(context);
-                        break;
-                    case KeyEvent.KEYCODE_MEDIA_PAUSE:
-                        Controls.pauseControl(context);
-                        break;
-                    case KeyEvent.KEYCODE_MEDIA_STOP:
-                        break;
-                    case KeyEvent.KEYCODE_MEDIA_NEXT:
-                        Controls.nextControl(context);
-                        break;
-                    case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-                        Controls.previousControl(context);
-                        break;
+                            break;
+                        case KeyEvent.KEYCODE_MEDIA_PAUSE:
+                            Controls.pauseControl(context);
+                            break;
+                        case KeyEvent.KEYCODE_MEDIA_STOP:
+                            break;
+                        case KeyEvent.KEYCODE_MEDIA_NEXT:
+                            Controls.nextControl(context);
+                            break;
+                        case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
+                            Controls.previousControl(context);
+                            break;
+                    }
                 }
-            }  else{
+            }
 
+            else{
                 if (intent.getAction().equals(Intent.ACTION_HEADSET_PLUG)) {
                     int state = intent.getIntExtra("state", -1);
                     switch (state) {
@@ -53,17 +54,17 @@ public class NotificationBroadcast extends BroadcastReceiver {
                             break;
                     }
                 }
-                if (intent.getAction().equals(MusicService.NOTIFY_PLAY)) {
+                if (intent.getAction().equals(MusicService.NOTIFY_PLAY))
                     Controls.playControl(context);
-                } else if (intent.getAction().equals(MusicService.NOTIFY_PAUSE)) {
+                else if (intent.getAction().equals(MusicService.NOTIFY_PAUSE))
                     Controls.pauseControl(context);
-                } else if (intent.getAction().equals(MusicService.NOTIFY_NEXT)) {
+                else if (intent.getAction().equals(MusicService.NOTIFY_NEXT))
                     Controls.nextControl(context);
-                } else if (intent.getAction().equals(MusicService.NOTIFY_FAV)) {
+                else if (intent.getAction().equals(MusicService.NOTIFY_FAV))
                     Controls.favControl(context);
-                }else if (intent.getAction().equals(MusicService.NOTIFY_PREVIOUS)) {
+                else if (intent.getAction().equals(MusicService.NOTIFY_PREVIOUS))
                     Controls.previousControl(context);
-                }
+
             }
         }
 

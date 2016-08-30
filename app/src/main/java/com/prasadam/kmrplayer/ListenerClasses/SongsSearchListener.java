@@ -7,12 +7,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 
-import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.CustomPlaylistSongsRecylcerViewAdapter;
-import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.FavoritesRecyclerViewAdapter;
-import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.UnifedRecyclerViewAdapter;
+import com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.SongsAdapter.CustomPlaylistSongsRecylcerViewAdapter;
+import com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.SongsAdapter.FavoritesRecyclerViewAdapter;
+import com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.SongsAdapter.UnifedSongAdapter;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
-import com.prasadam.kmrplayer.Activities.Playlist.PlaylistHelpers.CustomPlaylistInnerActivity;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
+import com.prasadam.kmrplayer.UI.Activities.Playlist.PlaylistHelpers.CustomPlaylistInnerActivity;
 
 import java.util.ArrayList;
 
@@ -26,12 +26,12 @@ public class SongsSearchListener implements SearchView.OnQueryTextListener {
     private Context context;
     private ArrayList<Song> songsList;
     private RecyclerView recyclerView;
-    private UnifedRecyclerViewAdapter recRecyclerViewAdapter;
+    private UnifedSongAdapter recRecyclerViewAdapter;
     private FavoritesRecyclerViewAdapter favRecyclerViewAdapter;
     private CustomPlaylistSongsRecylcerViewAdapter customPlaylistSongsRecylcerViewAdapter;
     private int adapterValue;
 
-    public SongsSearchListener(Context context, ArrayList<Song> songsList, RecyclerView recyclerView, UnifedRecyclerViewAdapter recyclerViewAdapter) {
+    public SongsSearchListener(Context context, ArrayList<Song> songsList, RecyclerView recyclerView, UnifedSongAdapter recyclerViewAdapter) {
 
         this.context = context;
         this.songsList = songsList;
@@ -79,7 +79,7 @@ public class SongsSearchListener implements SearchView.OnQueryTextListener {
         switch (adapterValue)
         {
             case 1:
-                recRecyclerViewAdapter = new UnifedRecyclerViewAdapter(applicationContext, filteredList);
+                recRecyclerViewAdapter = new UnifedSongAdapter(applicationContext, filteredList);
                 recyclerView.setAdapter(recRecyclerViewAdapter);
                 break;
 

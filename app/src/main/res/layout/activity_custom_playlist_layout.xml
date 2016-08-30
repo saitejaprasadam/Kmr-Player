@@ -22,10 +22,17 @@
                 android:background="?attr/colorPrimary"
                 app:titleTextColor="@color/white" />
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/custom_playlist_recycler_view"
+            <FrameLayout
+                android:id="@+id/fragment_container"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/custom_playlist_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </FrameLayout>
 
         </LinearLayout>
 

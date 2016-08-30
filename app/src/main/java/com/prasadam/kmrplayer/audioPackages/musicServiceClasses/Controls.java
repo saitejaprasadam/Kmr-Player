@@ -2,11 +2,11 @@ package com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses;
 
 import android.content.Context;
 
-import com.prasadam.kmrplayer.Fragments.SongsFragment;
-import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SocketClasses.GroupPlay.GroupPlayHelper;
-import com.prasadam.kmrplayer.Activities.VerticalSlidingDrawerBaseActivity;
+import com.prasadam.kmrplayer.UI.Activities.VerticalSlidingDrawerBaseActivity;
+import com.prasadam.kmrplayer.UI.Fragments.SongsFragment;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,12 +20,12 @@ public class Controls {
 
     public static void playControl(Context context) {
         GroupPlayHelper.notifyGroupPlayClientsIfExists();
-        sendMessage(context.getResources().getString(R.string.play));
         PlayerConstants.SONG_PAUSED = false;
+        sendMessage(context.getResources().getString(R.string.play));
     }
     public static void pauseControl(Context context){
-        sendMessage(context.getResources().getString(R.string.pause));
         PlayerConstants.SONG_PAUSED = true;
+        sendMessage(context.getResources().getString(R.string.pause));
     }
 
     public static void nextControl(Context context) {
@@ -80,6 +80,9 @@ public class Controls {
         SongsFragment.recyclerViewAdapter.notifyDataSetChanged();
         VerticalSlidingDrawerBaseActivity.NowPlayingPlaylistRecyclerViewAdapter.notifyDataSetChanged();
     }
+    public static void updateNowPlayingUI(){
+        PlayerConstants.UPDATE_NOW_PLAYING_UI.sendEmptyMessage(0);
+    }
 
     private static void sendMessage(String message) {
         try{
@@ -90,20 +93,20 @@ public class Controls {
     public static void setLoop(boolean loop){
         MusicService.player.setLooping(loop);
     }
-    public static void shuffleMashUpMethod() {
+    public static void shuffleMashUpMethod(Context context) {
 
         if(PlayerConstants.getShuffleState()){
             long seed = System.nanoTime();
             ArrayList<Song> shuffledPlaylist = new ArrayList<>(PlayerConstants.getPlaylist());
             Collections.shuffle(shuffledPlaylist, new Random(seed));
             PlayerConstants.clearPlaylist();
-            PlayerConstants.addSongToPlaylist(MusicService.currentSong);
+            PlayerConstants.addSongToPlaylist(context, MusicService.currentSong);
             PlayerConstants.SONG_NUMBER = 0;
             ArrayList<Song> tempList = new ArrayList<>();
             for (Song song : shuffledPlaylist)
                 if(!PlayerConstants.getPlaylist().contains(song))
                     tempList.add(song);
-            PlayerConstants.addSongToPlaylist(tempList);
+            PlayerConstants.addSongToPlaylist(context, tempList);
         }
 
         else{
@@ -115,7 +118,7 @@ public class Controls {
                 }
             }
 
-            PlayerConstants.setPlayList(tempArrayList);
+            PlayerConstants.setPlayList(context, tempArrayList);
             int index = 0;
             for (Song song: PlayerConstants.getPlaylist()){
                 if(MusicService.currentSong.getHashID().equals(song.getHashID())){

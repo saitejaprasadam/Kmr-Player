@@ -1,5 +1,6 @@
 package com.prasadam.kmrplayer.SocketClasses;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
@@ -13,11 +14,13 @@ import java.net.Socket;
 
 public class ServerThread extends Thread {
 
-    private static ServerSocket serverSocket;
+    private ServerSocket serverSocket;
+    private Context context;
 
-    public ServerThread(){
+    public ServerThread(Context context){
         try{
             serverSocket = new ServerSocket(KeyConstants.MAIN_SERVER_SOCKET_PORT_ADDRESS);
+            this.context = context;
         }
         catch (java.io.IOException ignored){}
     }
@@ -26,7 +29,7 @@ public class ServerThread extends Thread {
             while (true) {
                 try{
                     Socket clientSocket = serverSocket.accept();
-                    ServerResponseThread socketServerReplyThread = new ServerResponseThread(clientSocket);
+                    ServerResponseThread socketServerReplyThread = new ServerResponseThread(context, clientSocket);
                     socketServerReplyThread.run();
                 }
 

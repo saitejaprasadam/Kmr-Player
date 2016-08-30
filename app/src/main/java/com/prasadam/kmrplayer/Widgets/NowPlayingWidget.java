@@ -15,9 +15,8 @@ import android.widget.RemoteViews;
 
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicService;
-import com.prasadam.kmrplayer.Activities.MainActivity;
 import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
+import com.prasadam.kmrplayer.UI.Activities.MainActivity;
 
 /*
  * Created by Prasadam Saiteja on 8/17/2016.
@@ -31,11 +30,11 @@ public class NowPlayingWidget extends AppWidgetProvider {
 
         RemoteViews remoteViews;
 
-        SharedPreferences getPrefs = PreferenceManager.getDefaultSharedPreferences(SharedVariables.globalActivityContext);
+        SharedPreferences getPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         if(getPrefs.getBoolean("widget_now_expanded", false))
-            remoteViews = new RemoteViews(SharedVariables.globalActivityContext.getPackageName(), R.layout.widget_now_playing_expanded);
+            remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_now_playing_expanded);
         else
-            remoteViews = new RemoteViews(SharedVariables.globalActivityContext.getPackageName(), R.layout.widget_now_playing);
+            remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_now_playing);
 
         ComponentName watchWidget = new ComponentName(context, NowPlayingWidget.class);
 
@@ -55,7 +54,7 @@ public class NowPlayingWidget extends AppWidgetProvider {
         RemoteViews remoteViews;
 
         if (rows == 1){
-            SharedPreferences getPrefs = PreferenceManager.getDefaultSharedPreferences(SharedVariables.globalActivityContext);
+            SharedPreferences getPrefs = PreferenceManager.getDefaultSharedPreferences(context);
             SharedPreferences.Editor e = getPrefs.edit();
             e.putBoolean("widget_now_expanded", false);
             e.apply();
@@ -63,7 +62,7 @@ public class NowPlayingWidget extends AppWidgetProvider {
         }
 
         else{
-            SharedPreferences getPrefs = PreferenceManager.getDefaultSharedPreferences(SharedVariables.globalActivityContext);
+            SharedPreferences getPrefs = PreferenceManager.getDefaultSharedPreferences(context);
             SharedPreferences.Editor e = getPrefs.edit();
             e.putBoolean("widget_now_expanded", true);
             e.apply();
@@ -77,7 +76,7 @@ public class NowPlayingWidget extends AppWidgetProvider {
     }
 
     private void openPlayerOnWidgetClick(Context context, RemoteViews remoteViews) {
-        Intent nIntent = new Intent(SharedVariables.globalActivityContext, MainActivity.class);
+        Intent nIntent = new Intent(context, MainActivity.class);
         nIntent.putExtra("notificationIntent", true);
         nIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, nIntent, 0);
@@ -88,8 +87,8 @@ public class NowPlayingWidget extends AppWidgetProvider {
         Bitmap albumArt = AudioExtensionMethods.getBitMap(MusicService.currentSong.getAlbumArtLocation());
         if(albumArt != null)
             remoteViews.setImageViewBitmap(R.id.widget_now_playing_album_art, albumArt);
-        else if(SharedVariables.globalActivityContext != null)
-            remoteViews.setImageViewBitmap(R.id.widget_now_playing_album_art, AudioExtensionMethods.getBitMap(SharedVariables.globalActivityContext ,MusicService.currentSong.getAlbumArtLocation()));
+        else if(context != null)
+            remoteViews.setImageViewBitmap(R.id.widget_now_playing_album_art, AudioExtensionMethods.getBitMap(context ,MusicService.currentSong.getAlbumArtLocation()));
 
         remoteViews.setTextViewText(R.id.widget_song_name, MusicService.currentSong.getTitle());
         remoteViews.setTextViewText(R.id.widget_artist_name, MusicService.currentSong.getArtist());
@@ -102,32 +101,32 @@ public class NowPlayingWidget extends AppWidgetProvider {
         Intent next = new Intent(MusicService.NOTIFY_NEXT);
         Intent play = new Intent(MusicService.NOTIFY_PLAY);
 
-        PendingIntent pPrevious = PendingIntent.getBroadcast(SharedVariables.globalActivityContext, 0, previous, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pPrevious = PendingIntent.getBroadcast(context, 0, previous, PendingIntent.FLAG_UPDATE_CURRENT);
         remoteViews.setOnClickPendingIntent(R.id.widget_prev_button, pPrevious);
 
         if(MusicService.player != null && MusicService.player.isPlaying()){
-            remoteViews.setImageViewBitmap(R.id.widget_play_pause_button, ((BitmapDrawable) SharedVariables.globalActivityContext.getResources().getDrawable(R.mipmap.ic_pause_black_24dp)).getBitmap());
-            PendingIntent pPause = PendingIntent.getBroadcast(SharedVariables.globalActivityContext, 0, pause, PendingIntent.FLAG_UPDATE_CURRENT);
+            remoteViews.setImageViewBitmap(R.id.widget_play_pause_button, ((BitmapDrawable) context.getResources().getDrawable(R.mipmap.ic_pause_black_24dp)).getBitmap());
+            PendingIntent pPause = PendingIntent.getBroadcast(context, 0, pause, PendingIntent.FLAG_UPDATE_CURRENT);
             remoteViews.setOnClickPendingIntent(R.id.widget_play_pause_button, pPause);
         }
         else{
-            remoteViews.setImageViewBitmap(R.id.widget_play_pause_button, ((BitmapDrawable) SharedVariables.globalActivityContext.getResources().getDrawable(R.mipmap.ic_play_arrow_black_24dp)).getBitmap());
-            PendingIntent pPlay = PendingIntent.getBroadcast(SharedVariables.globalActivityContext, 0, play, PendingIntent.FLAG_UPDATE_CURRENT);
+            remoteViews.setImageViewBitmap(R.id.widget_play_pause_button, ((BitmapDrawable) context.getResources().getDrawable(R.mipmap.ic_play_arrow_black_24dp)).getBitmap());
+            PendingIntent pPlay = PendingIntent.getBroadcast(context, 0, play, PendingIntent.FLAG_UPDATE_CURRENT);
             remoteViews.setOnClickPendingIntent(R.id.widget_play_pause_button, pPlay);
         }
 
-        if(MusicService.currentSong.getIsLiked(SharedVariables.globalActivityContext)){
-            remoteViews.setImageViewBitmap(R.id.widget_fav_button, ((BitmapDrawable) SharedVariables.globalActivityContext.getResources().getDrawable(R.drawable.ic_favorite_red_24dp)).getBitmap());
+        if(MusicService.currentSong.getIsLiked(context)){
+            remoteViews.setImageViewBitmap(R.id.widget_fav_button, ((BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_favorite_red_24dp)).getBitmap());
         }
 
         else{
-            remoteViews.setImageViewBitmap(R.id.widget_fav_button, ((BitmapDrawable) SharedVariables.globalActivityContext.getResources().getDrawable(R.mipmap.ic_favorite_border_black_24dp)).getBitmap());
+            remoteViews.setImageViewBitmap(R.id.widget_fav_button, ((BitmapDrawable) context.getResources().getDrawable(R.mipmap.ic_favorite_border_black_24dp)).getBitmap());
         }
 
-        PendingIntent pFav = PendingIntent.getBroadcast(SharedVariables.globalActivityContext, 0, fav, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pFav = PendingIntent.getBroadcast(context, 0, fav, PendingIntent.FLAG_UPDATE_CURRENT);
         remoteViews.setOnClickPendingIntent(R.id.widget_fav_button, pFav);
 
-        PendingIntent pNext = PendingIntent.getBroadcast(SharedVariables.globalActivityContext, 0, next, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pNext = PendingIntent.getBroadcast(context, 0, next, PendingIntent.FLAG_UPDATE_CURRENT);
         remoteViews.setOnClickPendingIntent(R.id.widget_next_button, pNext);
     }
     private static int getCellsForSize(int size) {

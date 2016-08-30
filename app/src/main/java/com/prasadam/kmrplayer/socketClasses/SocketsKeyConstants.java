@@ -2,9 +2,6 @@ package com.prasadam.kmrplayer.SocketClasses;
 
 import android.os.Environment;
 
-import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
-
 import java.io.File;
 
 /*
@@ -28,7 +25,7 @@ public class SocketsKeyConstants {
     public static final int TRANSFER_BUFFER_SIZE = 1024 * 50;
     public static final String PLAYER_DIRECTORY_PATH = Environment.getExternalStorageDirectory().getAbsolutePath()
             + File.separator
-            + SharedVariables.globalActivityContext.getResources().getString(R.string.app_name);
+            + "Smart cast";
 
     public static final String SOCKET_RESULT_OK = "SOCKET_RESULT_OK";
     public static final String SOCKET_RESULT_CANCEL = "SOCKET_RESULT_CANCEL";

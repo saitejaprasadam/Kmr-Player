@@ -20,4 +20,3 @@ public class LastFmImage {
         mHeight = height;
     }
 }
-

@@ -12,7 +12,7 @@
         android:layout_gravity="center_horizontal"
         android:clipToPadding="false">
 
-        <com.prasadam.kmrplayer.AdapterClasses.UIAdapters.SquaredView
+        <com.prasadam.kmrplayer.Adapters.UIAdapters.SquaredView
             android:id="@id/achievement_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

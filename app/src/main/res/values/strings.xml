@@ -130,4 +130,9 @@
     <string name="Most_played_widget_text">Playing Most played songs!!</string>
     <string name="please_wait_quick_shuffle">please wait while we populate quick shuffle list</string>
     <string name="widget_no_songs_text">You don\'t have songs on your device</string>
+    <string name="settings_text">Settings</string>
+    <string name="Show_Floating_notification">Show floating notifications</string>
+    <string name="shows_a_floating_information_on_screen_when_song_changes">Floating information on screen when song changes</string>
+    <string name="no_songs_in_this_playlist_text">No songs in this playlist</string>
+    <string name="remove_song_text">Remove song</string>
 </resources>

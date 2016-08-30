@@ -15,12 +15,12 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 
-import com.prasadam.kmrplayer.AdapterClasses.UIAdapters.HidingScrollListener;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicPlayerExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.ListenerClasses.HidingScrollListener;
 import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.Fragments.NoItemsFragment;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
+import com.prasadam.kmrplayer.UI.Fragments.NoItemsFragment;
 
 import java.util.ArrayList;
 
@@ -45,7 +45,6 @@ public class ActivityHelper {
         newFragment.setDescriptionTextView(message);
         return newFragment;
     }
-
     public static NoItemsFragment showEmptyFragment(Activity activtiy, String message, FrameLayout fragmentContainer){
         NoItemsFragment newFragment = new NoItemsFragment();
         FragmentTransaction ft = activtiy.getFragmentManager().beginTransaction();

@@ -2,12 +2,12 @@ package com.prasadam.kmrplayer.AudioPackages;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
 import android.view.View;
-import android.graphics.Canvas;
 
 public class BlurBuilder {
     private static final float BITMAP_SCALE = 0.4f;

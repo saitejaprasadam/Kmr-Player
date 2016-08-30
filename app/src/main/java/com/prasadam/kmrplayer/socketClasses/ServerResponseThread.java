@@ -1,5 +1,6 @@
 package com.prasadam.kmrplayer.SocketClasses;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -8,15 +9,12 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.prasadam.kmrplayer.ActivityHelperClasses.SharedPreferenceHelper;
-import com.prasadam.kmrplayer.Activities.NetworkAcitivities.NearbyDevicesActivity;
-import com.prasadam.kmrplayer.Activities.NetworkAcitivities.QuickShareActivity;
-import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.AdapterClasses.RecyclerViewAdapters.NearbyDevicesRecyclerViewAdapter;
+import com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.NearbyDevicesAdapter;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.PlayerConstants;
+import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
-import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
+import com.prasadam.kmrplayer.SharedPreferences.SharedPreferenceHelper;
 import com.prasadam.kmrplayer.SocketClasses.FileTransfer.FileReceiver;
 import com.prasadam.kmrplayer.SocketClasses.FileTransfer.FileSender;
 import com.prasadam.kmrplayer.SocketClasses.GroupPlay.GroupPlayHelper;
@@ -24,6 +22,8 @@ import com.prasadam.kmrplayer.SocketClasses.NetworkServiceDiscovery.NSD;
 import com.prasadam.kmrplayer.SocketClasses.NetworkServiceDiscovery.NSDClient;
 import com.prasadam.kmrplayer.SocketClasses.QuickShare.InitiateQuickShare;
 import com.prasadam.kmrplayer.SocketClasses.QuickShare.QuickShareHelper;
+import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.NearbyDevicesActivity;
+import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.QuickShareActivity;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -39,8 +39,10 @@ public class ServerResponseThread extends Thread {
 
     private Socket clientSocket;
     private final String clientIPAddress;
+    private final Context context;
 
-    public ServerResponseThread(Socket socket){
+    public ServerResponseThread(Context context, Socket socket){
+        this.context = context;
         clientSocket = socket;
         clientIPAddress = clientSocket.getInetAddress().toString().replace("/", "");
     }
@@ -82,7 +84,7 @@ public class ServerResponseThread extends Thread {
                     break;
 
                 case KeyConstants.SOCKET_REQUEST_DEVICE_TYPE:
-                    RequestDeviceType();
+                    RequestDeviceType(context);
                     break;
 
                 case KeyConstants.SOCKET_DEVICE_TYPE_RESULT:
@@ -133,18 +135,18 @@ public class ServerResponseThread extends Thread {
             @Override
             public void run() {
 
-                if(SharedPreferenceHelper.getClientTransferRequestAlwaysAccept(SharedVariables.globalActivityContext, macAddress)){
+                if(SharedPreferenceHelper.getClientTransferRequestAlwaysAccept(context, macAddress)){
                     SocketExtensionMethods.requestStrictModePermit();
                     String result = SocketExtensionMethods.GenerateSocketMessage(KeyConstants.SOCKET_QUICK_SHARE_TRANSFER_RESULT, timeStamp, KeyConstants.SOCKET_RESULT_OK);
                     Client quickShareResponse = new Client(clientIPAddress, result);
                     quickShareResponse.execute();
-                    FileReceiver nioServer = new FileReceiver(Integer.valueOf(songsCount));
+                    FileReceiver nioServer = new FileReceiver(context, Integer.valueOf(songsCount));
                     nioServer.execute();
                 }
 
                 else
-                new MaterialDialog.Builder(SharedVariables.globalActivityContext)
-                        .title(SharedVariables.globalActivityContext.getString(R.string.quick_share_request_text))
+                new MaterialDialog.Builder(context)
+                        .title(context.getString(R.string.quick_share_request_text))
                         .content("Receive " + songsCount + " songs from " + clientName)
                         .positiveText(R.string.agree)
                         .onPositive(new MaterialDialog.SingleButtonCallback() {
@@ -154,7 +156,7 @@ public class ServerResponseThread extends Thread {
                                 String result = SocketExtensionMethods.GenerateSocketMessage(KeyConstants.SOCKET_QUICK_SHARE_TRANSFER_RESULT, timeStamp, KeyConstants.SOCKET_RESULT_OK);
                                 Client quickShareResponse = new Client(clientIPAddress, result);
                                 quickShareResponse.execute();
-                                FileReceiver nioServer = new FileReceiver(Integer.valueOf(songsCount));
+                                FileReceiver nioServer = new FileReceiver(context, Integer.valueOf(songsCount));
                                 nioServer.execute();
                             }
                         })
@@ -179,12 +181,12 @@ public class ServerResponseThread extends Thread {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    if(NearbyDevicesRecyclerViewAdapter.waitingDialog != null){
-                        NearbyDevicesRecyclerViewAdapter.waitingDialog.dismiss();
-                        NearbyDevicesRecyclerViewAdapter.waitingDialog = null;
+                    if(NearbyDevicesAdapter.waitingDialog != null){
+                        NearbyDevicesAdapter.waitingDialog.dismiss();
+                        NearbyDevicesAdapter.waitingDialog = null;
                     }
                     QuickShareHelper.removeQuickShareRequest(timeStamp);
-                    Toast.makeText(SharedVariables.globalActivityContext, clientName + KeyConstants.SPACE + SharedVariables.globalActivityContext.getString(R.string.quick_share_rejected), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, clientName + KeyConstants.SPACE + context.getString(R.string.quick_share_rejected), Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -194,14 +196,14 @@ public class ServerResponseThread extends Thread {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    if(NearbyDevicesRecyclerViewAdapter.waitingDialog != null){
-                        NearbyDevicesRecyclerViewAdapter.waitingDialog.dismiss();
-                        NearbyDevicesRecyclerViewAdapter.waitingDialog = null;
+                    if(NearbyDevicesAdapter.waitingDialog != null){
+                        NearbyDevicesAdapter.waitingDialog.dismiss();
+                        NearbyDevicesAdapter.waitingDialog = null;
                     }
 
                     InitiateQuickShare initiateQuickShare = new InitiateQuickShare(clientIPAddress, QuickShareHelper.getSongsList(timeStamp));
                     initiateQuickShare.execute();
-                    Toast.makeText(SharedVariables.globalActivityContext, SharedVariables.globalActivityContext.getString(R.string.initating_quick_share) + KeyConstants.SPACE + clientName, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, context.getString(R.string.initating_quick_share) + KeyConstants.SPACE + clientName, Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -214,9 +216,9 @@ public class ServerResponseThread extends Thread {
             @Override
             public void run() {
 
-                new MaterialDialog.Builder(SharedVariables.globalActivityContext)
-                        .title(SharedVariables.globalActivityContext.getResources().getString(R.string.group_play_request_text))
-                        .content(clientName + KeyConstants.SPACE +SharedVariables.globalActivityContext.getResources().getString(R.string.group_play_request))
+                new MaterialDialog.Builder(context)
+                        .title(context.getResources().getString(R.string.group_play_request_text))
+                        .content(clientName + KeyConstants.SPACE + context.getResources().getString(R.string.group_play_request))
                         .positiveText(R.string.agree)
                         .onPositive(new MaterialDialog.SingleButtonCallback() {
                             @Override
@@ -251,7 +253,7 @@ public class ServerResponseThread extends Thread {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(SharedVariables.globalActivityContext, clientName + KeyConstants.SPACE + SharedVariables.globalActivityContext.getResources().getString(R.string.group_play_rejected), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, clientName + KeyConstants.SPACE + context.getResources().getString(R.string.group_play_rejected), Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -261,7 +263,7 @@ public class ServerResponseThread extends Thread {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(SharedVariables.globalActivityContext, clientName + KeyConstants.SPACE + SharedVariables.globalActivityContext.getResources().getString(R.string.group_play_accepted), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, clientName + KeyConstants.SPACE + context.getResources().getString(R.string.group_play_accepted), Toast.LENGTH_SHORT).show();
                     GroupPlayHelper.AddNewClientInGroupPlay(clientIPAddress);
                     NearbyDevicesActivity.updateAdapater();
                 }
@@ -269,8 +271,8 @@ public class ServerResponseThread extends Thread {
         }
     }
 
-    private void RequestDeviceType() {
-        String message = SocketExtensionMethods.GenerateSocketMessage(KeyConstants.SOCKET_DEVICE_TYPE_RESULT, ExtensionMethods.getTimeStamp(), SocketExtensionMethods.getDeviceType());
+    private void RequestDeviceType(Context context) {
+        String message = SocketExtensionMethods.GenerateSocketMessage(KeyConstants.SOCKET_DEVICE_TYPE_RESULT, ExtensionMethods.getTimeStamp(), SocketExtensionMethods.getDeviceType(context));
         Client client = new Client(clientIPAddress, message);
         client.execute();
     }
@@ -289,7 +291,7 @@ public class ServerResponseThread extends Thread {
         if(PlayerConstants.getPlaylistSize() != 0 && PlayerConstants.getPlaylistSize() >= PlayerConstants.SONG_NUMBER){
             String SongName = PlayerConstants.getPlaylist().get(PlayerConstants.SONG_NUMBER).getTitle();
             if(PlayerConstants.getPlaylist().get(PlayerConstants.SONG_NUMBER).getArtist().length() > 0)
-                SongName = SongName + KeyConstants.SPACE +  SharedVariables.globalActivityContext.getResources().getString(R.string.by_text) + KeyConstants.SPACE + PlayerConstants.getPlaylist().get(PlayerConstants.SONG_NUMBER).getArtist();
+                SongName = SongName + KeyConstants.SPACE + context.getResources().getString(R.string.by_text) + KeyConstants.SPACE + PlayerConstants.getPlaylist().get(PlayerConstants.SONG_NUMBER).getArtist();
             SongName = SongName.replaceAll(KeyConstants.SPACE, KeyConstants.SPECIAL_CHAR);
             String message = SocketExtensionMethods.GenerateSocketMessage(KeyConstants.SOCKET_CURRENT_SONG_NAME_RESULT, ExtensionMethods.getTimeStamp(), SongName);
             Client client = new Client(clientIPAddress, message);
@@ -315,7 +317,7 @@ public class ServerResponseThread extends Thread {
                 @Override
                 public void run() {
 
-                    if(SharedPreferenceHelper.getClientTransferRequestAlwaysAccept(SharedVariables.globalActivityContext, MacAddress)) {
+                    if(SharedPreferenceHelper.getClientTransferRequestAlwaysAccept(context, MacAddress)) {
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
@@ -336,9 +338,9 @@ public class ServerResponseThread extends Thread {
                     }
 
                     else
-                    new MaterialDialog.Builder(SharedVariables.globalActivityContext)
-                            .title(SharedVariables.globalActivityContext.getString(R.string.request_for_current_playing_song_text))
-                            .content(clientName + KeyConstants.SPACE + SharedVariables.globalActivityContext.getResources().getString(R.string.request_for_current_playing_song))
+                    new MaterialDialog.Builder(context)
+                            .title(context.getString(R.string.request_for_current_playing_song_text))
+                            .content(clientName + KeyConstants.SPACE + context.getResources().getString(R.string.request_for_current_playing_song))
                             .positiveText(R.string.agree)
                             .onPositive(new MaterialDialog.SingleButtonCallback() {
                                 @Override
@@ -384,7 +386,7 @@ public class ServerResponseThread extends Thread {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(SharedVariables.globalActivityContext, clientName + KeyConstants.SPACE + SharedVariables.globalActivityContext.getString(R.string.current_song_request_rejected), Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, clientName + KeyConstants.SPACE + context.getString(R.string.current_song_request_rejected), Toast.LENGTH_LONG).show();
                 }
             });
         }
@@ -394,9 +396,9 @@ public class ServerResponseThread extends Thread {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    FileReceiver fileReceiver = new FileReceiver(1);
+                    FileReceiver fileReceiver = new FileReceiver(context, 1);
                     fileReceiver.execute();
-                    Toast.makeText(SharedVariables.globalActivityContext, SharedVariables.globalActivityContext.getString(R.string.current_song_request_accepted) + KeyConstants.SPACE + clientName, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, context.getString(R.string.current_song_request_accepted) + KeyConstants.SPACE + clientName, Toast.LENGTH_SHORT).show();
                 }
             });
         }

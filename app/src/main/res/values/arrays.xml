@@ -16,28 +16,4 @@
         <item>@string/name_desc_text</item>
     </string-array>
 
-    <string-array name="song_item_menu_album_inner_layout">
-        <item>@string/quick_share_text</item>
-        <item>@string/share_text</item>
-        <item>@string/play_next</item>
-        <item>@string/add_to_text</item>
-        <item>@string/jump_to_artist_text</item>
-        <item>@string/tag_editor_text</item>
-        <item>@string/set_as_rigntone_text</item>
-        <item>@string/details_text</item>
-        <item>@string/delete_text</item>
-    </string-array>
-
-    <string-array name="song_item_menu_artist_inner_layout">
-        <item>@string/quick_share_text</item>
-        <item>@string/share_text</item>
-        <item>@string/play_next</item>
-        <item>@string/add_to_text</item>
-        <item>@string/jump_to_album_text</item>
-        <item>@string/tag_editor_text</item>
-        <item>@string/set_as_rigntone_text</item>
-        <item>@string/details_text</item>
-        <item>@string/delete_text</item>
-    </string-array>
-
 </resources>

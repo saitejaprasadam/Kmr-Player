@@ -1,6 +1,7 @@
 package com.prasadam.kmrplayer.SocketClasses.GroupPlay;
 
 import android.os.AsyncTask;
+
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
 
 import java.io.IOException;
@@ -34,7 +35,7 @@ public class GroupPlayReceiver extends AsyncTask<Void, Void, Void>{
             try {
                 SocketChannel clientSocketChannel = serverSocketChannel.accept();
 
-                File cachePath = new File(SharedVariables.globalActivityContext.getCacheDir(), "GroupPlay");
+                File cachePath = new File(SharedVariables.getGlobalActivityContext().getCacheDir(), "GroupPlay");
                 cachePath.mkdirs();
                 new File(cachePath + "/GroupPlayCurrentSong.mp3").delete();
 

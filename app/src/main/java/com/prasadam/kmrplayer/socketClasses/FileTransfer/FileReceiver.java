@@ -1,13 +1,11 @@
 package com.prasadam.kmrplayer.SocketClasses.FileTransfer;
 
-import android.content.Intent;
-import android.net.Uri;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
+import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
-import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,21 +18,25 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.security.SecureRandom;
 
+;
+
 /*
  * Created by Prasadam Saiteja on 7/16/2016.
  */
 
 public class FileReceiver extends AsyncTask<Void, Void, Void>{
 
-    private static ServerSocketChannel serverSocketChannel;
+    private ServerSocketChannel serverSocketChannel;
     private SecureRandom random = new SecureRandom();
+    private Context context;
     public int countToBeRecevied;
 
-    public FileReceiver(int countToBeRecevied){
+    public FileReceiver(Context context, int countToBeRecevied){
 
         try {
             if(serverSocketChannel == null){
                 this.countToBeRecevied = countToBeRecevied;
+                this.context = context;
                 serverSocketChannel = ServerSocketChannel.open();
                 serverSocketChannel.socket().bind(new InetSocketAddress(KeyConstants.FILE_TRANSFER_SOCKET_PORT_ADDRESS));
                 System.out.println("Started server");
@@ -72,7 +74,7 @@ public class FileReceiver extends AsyncTask<Void, Void, Void>{
                     buffer.clear();
                 }
 
-                SharedVariables.globalActivityContext.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + PlayerDirectory + File.separator + fileName)));
+                ExtensionMethods.scanMedia(context, PlayerDirectory + File.separator + fileName);
                 Thread.sleep(100);
                 fileChannel.close();
                 clientSocketChannel.close();
@@ -80,7 +82,6 @@ public class FileReceiver extends AsyncTask<Void, Void, Void>{
                 countToBeRecevied--;
             } catch (IOException | InterruptedException e) {
                 countToBeRecevied--;
-                Toast.makeText(SharedVariables.globalActivityContext, "Bull shit", Toast.LENGTH_SHORT).show();
                 Log.d("Exception", e.toString());
             }
 

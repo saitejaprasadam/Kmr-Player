@@ -8,9 +8,8 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 import com.prasadam.kmrplayer.SocketClasses.GroupPlay.GroupPlayHelper;
-import com.prasadam.kmrplayer.Activities.VerticalSlidingDrawerBaseActivity;
+import com.prasadam.kmrplayer.UI.Activities.VerticalSlidingDrawerBaseActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,7 +21,7 @@ import java.util.Random;
 
 public class MusicPlayerExtensionMethods {
 
-    public static void shufflePlay(Context mActivity, final ArrayList<Song> songsList){
+    public static void shufflePlay(Context context, final ArrayList<Song> songsList){
 
         PlayerConstants.SONG_PAUSED = false;
         PlayerConstants.clear_hash_id_current_playlist();
@@ -38,23 +37,21 @@ public class MusicPlayerExtensionMethods {
         long seed = System.nanoTime();
         ArrayList<Song> shuffledPlaylist = new ArrayList<>(songsList);
         Collections.shuffle(shuffledPlaylist, new Random(seed));
-        PlayerConstants.setPlayList(shuffledPlaylist);
+        PlayerConstants.setPlayList(context, shuffledPlaylist);
         PlayerConstants.SONG_NUMBER = 0;
-        boolean isServiceRunning = UtilFunctions.isServiceRunning(MusicService.class.getName(), mActivity);
+        boolean isServiceRunning = UtilFunctions.isServiceRunning(MusicService.class.getName(), context);
         if (!isServiceRunning) {
-            Intent i = new Intent(mActivity, MusicService.class);
-            mActivity.startService(i);
+            Intent i = new Intent(context, MusicService.class);
+            context.startService(i);
         } else{
             PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
             VerticalSlidingDrawerBaseActivity.updateAlbumAdapter();
         }
 
-        PlayerConstants.setShuffleState(true);
-        if(SharedVariables.globalActivityContext != null)
-            VerticalSlidingDrawerBaseActivity.changeButton();
+        PlayerConstants.setShuffleState(context, true);
+        VerticalSlidingDrawerBaseActivity.changeButton();
     }
-
-    public static void playSong(Context mActivity, final ArrayList<Song> songsList, int position){
+    public static void playSong(Context context, final ArrayList<Song> songsList, int position){
 
         PlayerConstants.SONG_PAUSED = false;
 
@@ -67,27 +64,27 @@ public class MusicPlayerExtensionMethods {
             ArrayList<Song> shuffledPlaylist = new ArrayList<>(songsList);
             Collections.shuffle(shuffledPlaylist, new Random(seed));
             PlayerConstants.clearPlaylist();
-            PlayerConstants.addSongToPlaylist(songsList.get(position));
+            PlayerConstants.addSongToPlaylist(context, songsList.get(position));
             PlayerConstants.SONG_NUMBER = 0;
             ArrayList<Song> tempList = new ArrayList<>();
             for (Song song : shuffledPlaylist)
                 if(!PlayerConstants.getPlaylist().contains(song))
                     tempList.add(song);
-            PlayerConstants.addSongToPlaylist(tempList);
+            PlayerConstants.addSongToPlaylist(context, tempList);
         }
 
         else{
             PlayerConstants.clear_hash_id_current_playlist();
             for (Song song: songsList)
                 PlayerConstants.add_hash_id_current_playlist(song.getHashID());
-            PlayerConstants.setPlayList(songsList);
+            PlayerConstants.setPlayList(context, songsList);
             PlayerConstants.SONG_NUMBER = position;
         }
 
-        boolean isServiceRunning = UtilFunctions.isServiceRunning(MusicService.class.getName(), mActivity);
+        boolean isServiceRunning = UtilFunctions.isServiceRunning(MusicService.class.getName(), context);
         if (!isServiceRunning) {
-            Intent i = new Intent(mActivity, MusicService.class);
-            mActivity.startService(i);
+            Intent i = new Intent(context, MusicService.class);
+            context.startService(i);
         }
 
         else{
@@ -129,20 +126,19 @@ public class MusicPlayerExtensionMethods {
         if(found)
             Toast.makeText(context, "Song already present in now playing playlist", Toast.LENGTH_SHORT).show();
         else{
-            PlayerConstants.addSongToPlaylist(songToBeAdded);
+            PlayerConstants.addSongToPlaylist(context, songToBeAdded);
             Toast.makeText(context, "Song added to now playing playlist", Toast.LENGTH_SHORT).show();
             VerticalSlidingDrawerBaseActivity.updateAlbumAdapter();
             VerticalSlidingDrawerBaseActivity.NowPlayingPlaylistRecyclerViewAdapter.notifyDataSetChanged();
         }
     }
-
     public static void addToNowPlayingPlaylist(Context context, ArrayList<Song> songsToBeAdded, String message) {
 
         final MaterialDialog[] loading = new MaterialDialog[1];
 
         try{
 
-            loading[0] = new MaterialDialog.Builder(SharedVariables.globalActivityContext)
+            loading[0] = new MaterialDialog.Builder(context)
                     .title(R.string.adding_songs_to_playlist)
                     .content(R.string.please_wait)
                     .cancelable(false)
@@ -159,7 +155,7 @@ public class MusicPlayerExtensionMethods {
                 }
             }
 
-            PlayerConstants.addSongToPlaylist(songsToBeAdded);
+            PlayerConstants.addSongToPlaylist(context, songsToBeAdded);
             loading[0].dismiss();
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
             VerticalSlidingDrawerBaseActivity.updateAlbumAdapter();
@@ -184,7 +180,7 @@ public class MusicPlayerExtensionMethods {
 
         for (Song song : PlayerConstants.getPlaylist()) {
             if(song.getHashID().equals(songToBeAdded.getHashID())){
-                PlayerConstants.removeSongFromPlaylist(song);
+                PlayerConstants.removeSongFromPlaylist(context, song);
                 break;
             }
         }
@@ -196,13 +192,12 @@ public class MusicPlayerExtensionMethods {
         Toast.makeText(context, "Song will be played next", Toast.LENGTH_SHORT).show();
         VerticalSlidingDrawerBaseActivity.updateAlbumAdapter();
     }
-
     public static void playNext(Context context, ArrayList<Song> songsToBeAdded, String message) {
 
         for (Song songToBeAdded : songsToBeAdded){
             for (Song song : PlayerConstants.getPlaylist()) {
                 if(song.getHashID().equals(songToBeAdded.getHashID()) && !songToBeAdded.getHashID().equals(MusicService.currentSong.getHashID())){
-                    PlayerConstants.removeSongFromPlaylist(song);
+                    PlayerConstants.removeSongFromPlaylist(context, song);
                     break;
                 }
             }

@@ -1,12 +1,13 @@
 package com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses;
 
-import java.util.ArrayList;
-
+import android.content.Context;
 import android.os.Handler;
 
-import com.prasadam.kmrplayer.ActivityHelperClasses.SharedPreferenceHelper;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
-import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
+import com.prasadam.kmrplayer.SharedPreferences.SharedPreferenceHelper;
+import com.prasadam.kmrplayer.UI.Activities.VerticalSlidingDrawerBaseActivity;
+
+import java.util.ArrayList;
 
 /*
  * Created by Prasadam Saiteja on 5/31/2016.
@@ -24,10 +25,7 @@ public class PlayerConstants {
     public static Handler SONG_CHANGE_HANDLER;
     public static Handler NOTIFICATION_HANDLER;
     public static Handler PLAY_PAUSE_HANDLER;
-
-    public static boolean getIsPlayingState() {
-        return MusicService.player != null && MusicService.player.isPlaying();
-    }
+    public static Handler UPDATE_NOW_PLAYING_UI;
 
     public enum PLAYBACK_STATE_ENUM {
         LOOP, SINGLE_LOOP, OFF;
@@ -41,26 +39,28 @@ public class PlayerConstants {
         }
     }
 
+
     public static ArrayList<Song> getPlaylist() {return SONGS_LIST;}
-    public static void setPlayList(ArrayList<Song> songsList) {
+    public static void setPlayList(Context context, ArrayList<Song> songsList) {
         SONGS_LIST = new ArrayList<>(songsList);
-        SharedPreferenceHelper.setSongsListSharedPreference(SharedVariables.globalActivityContext);
+        SharedPreferenceHelper.setSongsListSharedPreference(context);
     }
-    public static void addSongToPlaylist(Song song) {
+    public static void addSongToPlaylist(Context context, Song song) {
         SONGS_LIST.add(song);
-        SharedPreferenceHelper.setSongsListSharedPreference(SharedVariables.globalActivityContext);
+        SharedPreferenceHelper.setSongsListSharedPreference(context);
     }
-    public static void addSongToPlaylist(ArrayList<Song> songsList) {
+    public static void addSongToPlaylist(Context context, ArrayList<Song> songsList) {
         SONGS_LIST.addAll(songsList);
-        SharedPreferenceHelper.setSongsListSharedPreference(SharedVariables.globalActivityContext);
+        SharedPreferenceHelper.setSongsListSharedPreference(context);
     }
-    public static void removeSongFromPlaylist(Song song) {
+    public static void removeSongFromPlaylist(Context context, Song song) {
         SONGS_LIST.remove(song);
-        SharedPreferenceHelper.setSongsListSharedPreference(SharedVariables.globalActivityContext);
+        SharedPreferenceHelper.setSongsListSharedPreference(context);
     }
-    public static void removeSongFromPlaylist(int position) {
+    public static void removeSongFromPlaylist(Context context, int position) {
         SONGS_LIST.remove(position);
-        SharedPreferenceHelper.setSongsListSharedPreference(SharedVariables.globalActivityContext);
+        VerticalSlidingDrawerBaseActivity.NowPlayingPlaylistRecyclerViewAdapter.notifyItemRemoved(position);
+        SharedPreferenceHelper.setSongsListSharedPreference(context);
     }
     public static void clearPlaylist() {
         SONGS_LIST.clear();
@@ -80,16 +80,16 @@ public class PlayerConstants {
     public static boolean getShuffleState() {
         return SHUFFLE;
     }
-    public static void setShuffleState(Boolean state) {
+    public static void setShuffleState(Context context, Boolean state) {
         SHUFFLE = state;
-        SharedPreferenceHelper.setShuffle(SharedVariables.globalActivityContext);
+        SharedPreferenceHelper.setShuffle(context);
     }
 
     public static PLAYBACK_STATE_ENUM getPlayBackState() {
         return PLAY_BACK_STATE;
     }
-    public static void setPlayBackState(PLAYBACK_STATE_ENUM state) {
+    public static void setPlayBackState(Context context, PLAYBACK_STATE_ENUM state) {
         PLAY_BACK_STATE = state;
-        SharedPreferenceHelper.setLoop(SharedVariables.globalActivityContext);
+        SharedPreferenceHelper.setLoop(context);
     }
 }

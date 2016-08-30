@@ -3,8 +3,12 @@ package com.prasadam.kmrplayer.ActivityHelperClasses;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.media.MediaExtractor;
+import android.media.MediaFormat;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -14,10 +18,13 @@ import android.view.View;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
-import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicPlayerExtensionMethods;
+import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.R;
+import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -55,7 +62,6 @@ public class DialogHelper {
                 })
                 .show();
     }
-
     public static void AddToDialogAlbum(final Context context, final ArrayList<Song> songsList){
 
         new MaterialDialog.Builder(context)
@@ -77,7 +83,6 @@ public class DialogHelper {
                 })
                 .show();
     }
-
     public static void AddToDialogArtist(final Context context, final ArrayList<Song> songsList){
 
         new MaterialDialog.Builder(context)
@@ -99,7 +104,6 @@ public class DialogHelper {
                 })
                 .show();
     }
-
     public static void AddToDialogPlaylist(final Context context, final ArrayList<Song> songsList){
 
         new MaterialDialog.Builder(context)
@@ -191,5 +195,98 @@ public class DialogHelper {
 
         else
             fab.setVisibility(View.INVISIBLE);
+    }
+
+    public static void songDetails(Context context, Song currentSongDetails, String albumPath) {
+
+        StringBuilder content = new StringBuilder();
+        File songFile = new File(currentSongDetails.getData());
+        content.append(context.getString(R.string.song_location_text) + " : " + currentSongDetails.getData() + "\n\n");
+        try
+        {
+            content.append(context.getString(R.string.file_size_text) + " : " + ExtensionMethods.readableFileSize(songFile.length()) + "\n\n");
+            content.append(context.getString(R.string.duration_text) + " : " + ExtensionMethods.formatIntoHHMMSS((int)currentSongDetails.getDuration()) + "\n\n");
+        }
+        catch (Exception ignored){}
+
+
+        MediaExtractor mex = new MediaExtractor();
+        try {
+
+            mex.setDataSource(currentSongDetails.getData());// the adresss location of the sound on sdcard.
+            MediaFormat mf = mex.getTrackFormat(0);
+            int bitRate = mf.getInteger(MediaFormat.KEY_BIT_RATE);
+            if(bitRate/1000 > 0)
+                content.append(context.getString(R.string.bit_rate_text) + " : " + bitRate/1000 + " kb/s" + "\n\n");
+            int sampleRate = mf.getInteger(MediaFormat.KEY_SAMPLE_RATE);
+            content.append(context.getString(R.string.sampling_rate_text) + " : " + sampleRate + " Hz");
+
+        } catch (IOException ignored) {}
+
+        if(albumPath != null)
+            new MaterialDialog.Builder(context)
+                    .icon(Drawable.createFromPath(albumPath))
+                    .title(currentSongDetails.getTitle())
+                    .positiveText(context.getString(R.string.ok_text))
+                    .content(content.toString())
+                    .show();
+
+        else
+            new MaterialDialog.Builder(context)
+                    .title(context.getString(R.string.song_details_text))
+                    .positiveText(context.getString(R.string.ok_text))
+                    .content(content.toString())
+                    .show();
+    }
+    public static void songDetails(Context context, Song currentSongDetails) {
+
+        StringBuilder content = new StringBuilder();
+        File songFile = new File(currentSongDetails.getData());
+        content.append(context.getString(R.string.song_location_text) + " : " + currentSongDetails.getData() + "\n\n");
+        try
+        {
+            content.append(context.getString(R.string.file_size_text) + " : " + ExtensionMethods.readableFileSize(songFile.length()) + "\n\n");
+            content.append(context.getString(R.string.duration_text) + " : " + ExtensionMethods.formatIntoHHMMSS((int)currentSongDetails.getDuration()) + "\n\n");
+        }
+        catch (Exception ignored){}
+
+
+        MediaExtractor mex = new MediaExtractor();
+        try {
+
+            mex.setDataSource(currentSongDetails.getData());// the adresss location of the sound on sdcard.
+            MediaFormat mf = mex.getTrackFormat(0);
+            int bitRate = mf.getInteger(MediaFormat.KEY_BIT_RATE);
+            if(bitRate/1000 > 0)
+                content.append(context.getString(R.string.bit_rate_text) + " : " + bitRate/1000 + " kb/s" + "\n\n");
+            int sampleRate = mf.getInteger(MediaFormat.KEY_SAMPLE_RATE);
+            content.append(context.getString(R.string.sampling_rate_text) + " : " + sampleRate + " Hz");
+
+        } catch (IOException ignored) {}
+
+
+        String albumArtPath = currentSongDetails.getAlbumArtLocation();
+        String albumPath = null;
+        if(albumArtPath != null) {
+            File imgFile = new File(albumArtPath);
+            if (imgFile.exists()) {
+                albumPath = imgFile.getAbsolutePath();
+            }
+        }
+
+        if(albumPath != null)
+            new MaterialDialog.Builder(context)
+                    .icon(Drawable.createFromPath(albumPath))
+                    .title(currentSongDetails.getTitle())
+                    .positiveText(context.getString(R.string.ok_text))
+                    .content(content.toString())
+                    .show();
+
+        else
+            new MaterialDialog.Builder(context)
+                    .title(context.getString(R.string.song_details_text))
+                    .positiveText(context.getString(R.string.ok_text))
+                    .content(content.toString())
+                    .show();
     }
 }

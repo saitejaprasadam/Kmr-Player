@@ -7,7 +7,6 @@ import android.os.StrictMode;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
-import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 import com.prasadam.kmrplayer.SocketClasses.NetworkServiceDiscovery.NSDClient;
 import com.prasadam.kmrplayer.SocketClasses.NetworkServiceDiscovery.NSDServer;
 
@@ -26,11 +25,10 @@ public class SocketExtensionMethods {
         NSDClient.mNsdManager.stopServiceDiscovery(NSDClient.mDiscoveryListener);
         NSDClient.devicesList = null;
     }
-
     public static void startNSDServices(Context context){
         NSDServer.startService(context);
         NSDClient.startSearch(context);
-        Thread socketServerThread = new Thread(new ServerThread());
+        Thread socketServerThread = new Thread(new ServerThread(context));
         socketServerThread.start();
     }
 
@@ -42,7 +40,6 @@ public class SocketExtensionMethods {
     public static String GenerateSocketMessage(String command, String timeStamp, String result){
         return getMACAddress() + KeyConstants.DIVIDER + ExtensionMethods.deviceName() + KeyConstants.DIVIDER + command + KeyConstants.DIVIDER + timeStamp + KeyConstants.DIVIDER + result;
     }
-
     public static String GenerateSocketMessage(String command, String timeStamp){
         return getMACAddress() + KeyConstants.DIVIDER + ExtensionMethods.deviceName() + KeyConstants.DIVIDER + command + KeyConstants.DIVIDER + timeStamp;
     }
@@ -52,14 +49,12 @@ public class SocketExtensionMethods {
         Client client = new Client(nsdClient.getHost(), message);
         client.execute();
     }
-
-    public static String getDeviceType(){
-        if(ExtensionMethods.isTablet(SharedVariables.globalActivityContext))
+    public static String getDeviceType(Context context){
+        if(ExtensionMethods.isTablet(context))
             return KeyConstants.TABLET;
         else
             return KeyConstants.MOBILE;
     }
-
     public static int getDeviceImage(String DEVICE_TYPE){
 
         if(DEVICE_TYPE == null)
@@ -98,6 +93,11 @@ public class SocketExtensionMethods {
         client.execute();
     }
 
+    public static void requestForMacAddress(NsdServiceInfo nsdClient) {
+        String message = GenerateSocketMessage(KeyConstants.SOCKET_REQUEST_MAC_ADDRESS, ExtensionMethods.getTimeStamp());
+        Client client = new Client(nsdClient.getHost(), message);
+        client.execute();
+    }
     public static String getMACAddress(){
 
         try {
@@ -128,11 +128,5 @@ public class SocketExtensionMethods {
         /*WifiManager manager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         WifiInfo info = manager.getConnectionInfo();
         return info.getMacAddress();*/
-    }
-
-    public static void requestForMacAddress(NsdServiceInfo nsdClient) {
-        String message = GenerateSocketMessage(KeyConstants.SOCKET_REQUEST_MAC_ADDRESS, ExtensionMethods.getTimeStamp());
-        Client client = new Client(nsdClient.getHost(), message);
-        client.execute();
     }
 }

@@ -7,22 +7,23 @@ public class Album {
 
     private String title, artist, albumArtLocation;
     public int colorBoxLayoutColor, albumNameTextViewColor, artistNameTextViewColor;
+    private Long ID;
 
-    public Album(String title, String artist, String albumArtLocation) {
+    public Album(String title, String artist, String albumArtLocation, Long ID) {
         this.title = title;
         this.artist = artist;
         this.albumArtLocation = albumArtLocation;
+        this.ID = ID;
     }
 
     public String getTitle(){return title;}
     public String getArtist(){return artist;}
+    public Long getID(){
+        return ID;
+    }
     public String getAlbumArtLocation(){return albumArtLocation;}
 
     public Boolean isColorSet(){
-
-        if(colorBoxLayoutColor != 0 && albumNameTextViewColor != 0 && artistNameTextViewColor != 0)
-            return true;
-
-        return  false;
+        return colorBoxLayoutColor != 0 && albumNameTextViewColor != 0 && artistNameTextViewColor != 0;
     }
 }

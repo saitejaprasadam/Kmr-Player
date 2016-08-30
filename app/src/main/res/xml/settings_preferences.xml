@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <EditTextPreference
+        android:title="Display Name"
+        android:key="username" />
+
+    <SwitchPreference
+        android:title="@string/Show_Floating_notification"
+        android:key="Floating_Notifications"
+        android:summary="@string/shows_a_floating_information_on_screen_when_song_changes"/>
+
+</PreferenceScreen>

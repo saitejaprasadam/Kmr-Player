@@ -14,28 +14,27 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.AudioManager;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.media.RemoteControlClient;
 import android.os.Binder;
 import android.os.Handler;
+import android.os.Handler.Callback;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.PowerManager;
-import android.os.Handler.Callback;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.media.MediaMetadataRetriever;
 import android.widget.RemoteViews;
 
-import com.prasadam.kmrplayer.ActivityHelperClasses.SharedPreferenceHelper;
-import com.prasadam.kmrplayer.AdapterClasses.UIAdapters.AchievementUnlocked;
-import com.prasadam.kmrplayer.Activities.MainActivity;
-import com.prasadam.kmrplayer.R;
+import com.prasadam.kmrplayer.Adapters.UIAdapters.AchievementUnlocked;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
-import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
+import com.prasadam.kmrplayer.R;
+import com.prasadam.kmrplayer.SharedPreferences.SharedPreferenceHelper;
 import com.prasadam.kmrplayer.SocketClasses.SocketExtensionMethods;
-import com.prasadam.kmrplayer.Activities.VerticalSlidingDrawerBaseActivity;
+import com.prasadam.kmrplayer.UI.Activities.MainActivity;
+import com.prasadam.kmrplayer.UI.Activities.VerticalSlidingDrawerBaseActivity;
 import com.prasadam.kmrplayer.Widgets.NowPlayingWidget;
 
 import java.io.IOException;
@@ -43,7 +42,7 @@ import java.io.IOException;
 public class MusicService extends Service implements
         MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener,
         MediaPlayer.OnCompletionListener,
-        AudioManager.OnAudioFocusChangeListener{
+        AudioManager.OnAudioFocusChangeListener {
 
     public static final String NOTIFY_PREVIOUS = "com.prasadam.kmrplayer.previous";
     public static final String NOTIFY_FAV = "com.prasadam.kmrplayer.favorite";
@@ -52,6 +51,7 @@ public class MusicService extends Service implements
     public static final String NOTIFY_NEXT = "com.prasadam.kmrplayer.next";
     public boolean isFocusSnatched = false;
 
+    private static int lastKnownAudioFocusState;
     private boolean currentVersionSupportLockScreenControls = false;
     private boolean currentVersionSupportBigNotification = false;
     private final IBinder musicBind = new MusicBinder();
@@ -128,6 +128,8 @@ public class MusicService extends Service implements
             if(currentVersionSupportLockScreenControls)
                 RegisterRemoteClient();
 
+
+            Log.d("Service started", "service");
             PlayerConstants.SONG_CHANGE_HANDLER = new Handler(new Callback() {
                 @Override
                 public boolean handleMessage(Message msg) {
@@ -139,10 +141,8 @@ public class MusicService extends Service implements
                             currentSong = song;
                             playSong(songPath, song);
                             PlayerConstants.SONG_PAUSED = false;
-                            if(SharedVariables.globalActivityContext != null){
-                                VerticalSlidingDrawerBaseActivity.changeButton();
-                                VerticalSlidingDrawerBaseActivity.updateNowPlayingUI(getBaseContext());
-                            }
+                            VerticalSlidingDrawerBaseActivity.changeButton();
+                            Controls.updateNowPlayingUI();
                         }catch(Exception e){
                             e.printStackTrace();
                         }
@@ -226,8 +226,8 @@ public class MusicService extends Service implements
 
         currentSong = song;
         if(currentSong != null){
-            if(SharedVariables.globalActivityContext != null)
-                VerticalSlidingDrawerBaseActivity.updateNowPlayingUI(getBaseContext());
+
+            Controls.updateNowPlayingUI();
             if (remoteControlClient == null)
                 return;
 
@@ -322,8 +322,6 @@ public class MusicService extends Service implements
         Notification notification = builder.build();
         NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         nm.notify(626272, notification);
-
-        Log.d("showed", "notifications");
     }
     private void updateWidget() {
         Intent intent = new Intent(this, NowPlayingWidget.class);
@@ -355,19 +353,19 @@ public class MusicService extends Service implements
                 if(albumArt != null)
                     new AchievementUnlocked(getApplicationContext())
                             .setTitle(nextSong.getTitle())
-                            .setTitleColor(SharedVariables.globalActivityContext.getResources().getColor(R.color.white))
-                            .setBackgroundColor(SharedVariables.globalActivityContext.getResources().getColor(R.color.launcher_background_color))
+                            .setTitleColor(getContext().getResources().getColor(R.color.white))
+                            .setBackgroundColor(getContext().getResources().getColor(R.color.launcher_background_color))
                             .setIcon(new BitmapDrawable(albumArt))
                             .setSubTitle(nextSong.getArtist())
-                            .setSubtitleColor(SharedVariables.globalActivityContext.getResources().getColor(R.color.layout_Background)).isLarge(false).build().show();
+                            .setSubtitleColor(getContext().getResources().getColor(R.color.layout_Background)).isLarge(false).build().show();
                 else
                     new AchievementUnlocked(getApplicationContext())
                             .setTitle(nextSong.getTitle())
-                            .setTitleColor(SharedVariables.globalActivityContext.getResources().getColor(R.color.white))
-                            .setBackgroundColor(SharedVariables.globalActivityContext.getResources().getColor(R.color.launcher_background_color))
+                            .setTitleColor(getContext().getResources().getColor(R.color.white))
+                            .setBackgroundColor(getContext().getResources().getColor(R.color.launcher_background_color))
                             .setIcon(getDrawable(R.mipmap.launcher_icon))
                             .setSubTitle(nextSong.getArtist())
-                            .setSubtitleColor(SharedVariables.globalActivityContext.getColor(R.color.layout_Background)).isLarge(false).build().show();
+                            .setSubtitleColor(getContext().getColor(R.color.layout_Background)).isLarge(false).build().show();
             }
         }
     }
@@ -378,7 +376,7 @@ public class MusicService extends Service implements
         return true;
     }
     public void onPrepared(MediaPlayer mp) {
-        Log.d("PReapred", currentSong.getTitle());
+
     }
     public void onDestroy() {
         if(player != null){
@@ -388,38 +386,42 @@ public class MusicService extends Service implements
         super.onDestroy();
     }
     public void onAudioFocusChange(int focusChange) {
-
         try{
             switch (focusChange) {
 
+                case AudioManager.AUDIOFOCUS_GAIN:{
+
+                    switch (lastKnownAudioFocusState){
+                        case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                            player.setVolume(1.0f, 1.0f);
+                            break;
+
+                        case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+                            if(isFocusSnatched)
+                                Controls.playControl(getContext());
+                            break;
+                    }
+                }
+                break;
+
                 case AudioManager.AUDIOFOCUS_LOSS:
-                    if(PlayerConstants.getIsPlayingState())
-                        isFocusSnatched = true;
-                    Controls.pauseControl(getContext());
+                    if(!PlayerConstants.SONG_PAUSED)
+                        Controls.pauseControl(getContext());
                     break;
 
                 case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
-                    if(PlayerConstants.getIsPlayingState())
+                    if(!PlayerConstants.SONG_PAUSED){
                         isFocusSnatched = true;
-                    Controls.pauseControl(getContext());
+                        Controls.pauseControl(getContext());
+                    }
                     break;
 
                 case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
                     player.setVolume(0.5f, 0.5f);
                     break;
-
-                case AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK:
-                    player.setVolume(1.0f, 1.0f);
-                    break;
-
-                case AudioManager.AUDIOFOCUS_REQUEST_GRANTED:
-                    if(isFocusSnatched)
-                        Controls.playControl(getContext());
-                    isFocusSnatched = false;
-                    break;
             }
+            lastKnownAudioFocusState = focusChange;
         }
-
         catch (Exception e){ Log.d("Exception", e.toString());}
 
     }

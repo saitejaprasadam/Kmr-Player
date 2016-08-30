@@ -5,9 +5,9 @@ import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
 import android.util.Log;
 
-import com.prasadam.kmrplayer.Activities.NetworkAcitivities.NearbyDevicesActivity;
-import com.prasadam.kmrplayer.Activities.NetworkAcitivities.QuickShareActivity;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
+import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.NearbyDevicesActivity;
+import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.QuickShareActivity;
 
 import java.util.ArrayList;
 

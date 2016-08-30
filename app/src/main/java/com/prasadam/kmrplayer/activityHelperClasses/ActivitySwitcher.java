@@ -9,19 +9,21 @@ import android.widget.ImageView;
 
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
-import com.prasadam.kmrplayer.Activities.AlbumActivity;
-import com.prasadam.kmrplayer.Activities.ArtistActivity;
-import com.prasadam.kmrplayer.Activities.Playlist.MostPlayedSongsActivity;
-import com.prasadam.kmrplayer.Activities.Playlist.PlaylistHelpers.MostPlayedSongsPieChartActivity;
-import com.prasadam.kmrplayer.Activities.NetworkAcitivities.NearbyDevicesActivity;
-import com.prasadam.kmrplayer.Activities.HelperActivities.ExpandedAlbumartActivity;
-import com.prasadam.kmrplayer.Activities.NetworkAcitivities.QuickShareActivity;
-import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.Activities.HelperActivities.SearchActivity;
-import com.prasadam.kmrplayer.Activities.HelperActivities.TagEditorActivity;
-import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicService;
+import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
+import com.prasadam.kmrplayer.UI.Activities.AlbumActivity;
+import com.prasadam.kmrplayer.UI.Activities.ArtistActivity;
+import com.prasadam.kmrplayer.UI.Activities.HelperActivities.ExpandedAlbumartActivity;
+import com.prasadam.kmrplayer.UI.Activities.HelperActivities.SearchActivity;
+import com.prasadam.kmrplayer.UI.Activities.HelperActivities.TagEditorActivity;
+import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.NearbyDevicesActivity;
+import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.QuickShareActivity;
+import com.prasadam.kmrplayer.UI.Activities.Playlist.MostPlayedSongsActivity;
+import com.prasadam.kmrplayer.UI.Activities.Playlist.PlaylistHelpers.MostPlayedSongsPieChartActivity;
+import com.prasadam.kmrplayer.UI.Activities.SettingsActivity;
 
 import java.util.ArrayList;
 
@@ -31,11 +33,20 @@ import java.util.ArrayList;
 
 public class ActivitySwitcher {
 
-    public static void jumpToAlbum(final Activity context, final String albumTitle) {
+    public static void jumpToAlbum(final Context context, final Long songID) {
+
         Intent albumActivityIntent = new Intent(context, AlbumActivity.class);
         albumActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        albumActivityIntent.putExtra("albumTitle", albumTitle);
+        albumActivityIntent.putExtra("albumID", AudioExtensionMethods.getAlubmID(context, songID));
         context.startActivity(albumActivityIntent);
+    }
+    public static void jumpToAlbumWithTranscition(final Activity mActivity, final ImageView imageView, final Long albumID){
+
+        Intent albumActivityIntent = new Intent(mActivity, AlbumActivity.class);
+        albumActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(mActivity, imageView, "AlbumArtImageTranscition");
+        albumActivityIntent.putExtra("albumID", albumID);
+        mActivity.startActivity(albumActivityIntent, options.toBundle());
     }
 
     public static void jumpToArtist(final Context context, final String artistTitle){
@@ -43,15 +54,6 @@ public class ActivitySwitcher {
         albumActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         albumActivityIntent.putExtra("artist", artistTitle);
         context.startActivity(albumActivityIntent);
-    }
-
-    public static void jumpToAlbumWithTranscition(final Activity mActivity, final ImageView imageView, final String albumTitle){
-
-        Intent albumActivityIntent = new Intent(mActivity, AlbumActivity.class);
-        albumActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(mActivity, imageView, "AlbumArtImageTranscition");
-        albumActivityIntent.putExtra("albumTitle", albumTitle);
-        mActivity.startActivity(albumActivityIntent, options.toBundle());
     }
 
     public static void ExpandedAlbumArtWithTranscition(final Activity mActivity, final ImageView imageView, final String albumArtLocation){
@@ -79,7 +81,6 @@ public class ActivitySwitcher {
         Intent avaiableDevices = new Intent(context, NearbyDevicesActivity.class);
         context.startActivity(avaiableDevices);
     }
-
     public static void jumpToQuickShareActivity(final Context context, final ArrayList<Song> songsList){
         Intent quickShareIntent = new Intent(context, QuickShareActivity.class);
         ArrayList<String> songsPath = new ArrayList<>();
@@ -89,7 +90,6 @@ public class ActivitySwitcher {
         quickShareIntent.putStringArrayListExtra(KeyConstants.INTENT_SONGS_PATH_LIST, songsPath);
         context.startActivity(quickShareIntent);
     }
-
     public static void jumpToQuickShareActivity(final Context context, final Song song){
         Intent quickShareIntent = new Intent(context, QuickShareActivity.class);
         ArrayList<String> songsPath = new ArrayList<>();
@@ -98,17 +98,16 @@ public class ActivitySwitcher {
         context.startActivity(quickShareIntent);
     }
 
-    public static void launchSearchActivity(final Context context){
-        Intent searchAcrivityIntent = new Intent(context, SearchActivity.class);
-        searchAcrivityIntent.setAction(Intent.ACTION_SEARCH);
-        context.startActivity(searchAcrivityIntent);
-    }
-
     public static void launchMostPlayedActivity(MostPlayedSongsActivity mostPlayedSongsActivity) {
         Intent mostPlayedSongsPieChartIntent = new Intent(mostPlayedSongsActivity, MostPlayedSongsPieChartActivity.class);
         mostPlayedSongsActivity.startActivity(mostPlayedSongsPieChartIntent);
     }
 
+    public static void launchSearchActivity(final Context context){
+        Intent searchAcrivityIntent = new Intent(context, SearchActivity.class);
+        searchAcrivityIntent.setAction(Intent.ACTION_SEARCH);
+        context.startActivity(searchAcrivityIntent);
+    }
     public static void launchAboutActivity(Context context){
 
         new LibsBuilder()
@@ -122,5 +121,10 @@ public class ActivitySwitcher {
                 .withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR)
                 .withAboutDescription(context.getResources().getString(R.string.app_description_text))
                 .start(context);
+    }
+
+    public static void launchSettings(Context context) {
+        Intent settingsIntent = new Intent(context, SettingsActivity.class);
+        context.startActivity(settingsIntent);
     }
 }
