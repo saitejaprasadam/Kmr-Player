@@ -27,6 +27,7 @@ import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicPlayerExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.R;
+import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -77,7 +78,7 @@ public class ArtistInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapt
             });
             holder.rootLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {MusicPlayerExtensionMethods.playSong(context, songsList, position);}
+                public void onClick(View view) { MusicPlayerExtensionMethods.playSong(context, songsList, songsList.indexOf(currentSongDetails));}
             });
             setContextMenu(holder, position, currentSongDetails);
             setAlbumArt(holder, currentSongDetails);
@@ -86,7 +87,7 @@ public class ArtistInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapt
         catch (Exception ignored){}
     }
 
-    private void setContextMenu(final songsViewHolder holder, final int position, final Song currentSongDetails) {
+    private void setContextMenu(final songsViewHolder holder, final int position, final Song currentSong) {
         holder.contextMenuView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,31 +105,19 @@ public class ArtistInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapt
                             {
                                 case R.id.song_context_menu_delete:
                                     new MaterialDialog.Builder(context)
-                                            .content("Delete this song \'" +  currentSongDetails.getTitle() + "\' ?")
+                                            .content("Delete this song \'" +  currentSong.getTitle() + "\' ?")
                                             .positiveText(R.string.delete_text)
                                             .onPositive(new MaterialDialog.SingleButtonCallback() {
                                                 @Override
                                                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                                    new Thread(new Runnable() {
-                                                        @Override
-                                                        public void run() {
-                                                            File file = new File(currentSongDetails.getData());
-                                                            if (file.delete()) {
-                                                                songsList.remove(position);
-                                                                context.runOnUiThread(new Runnable() {
-                                                                    @Override
-                                                                    public void run() {
-                                                                        notifyItemRemoved(position);
-                                                                        Toast.makeText(context, "Song Deleted : \'" + currentSongDetails.getTitle() + "\'", Toast.LENGTH_SHORT).show();
-                                                                        context.getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.MediaColumns._ID + "='" + currentSongDetails.getID() + "'", null);
-                                                                    }
-                                                                });
-
-                                                                AudioExtensionMethods.updateLists(context);
-                                                            } else
-                                                                Toast.makeText(context, context.getResources().getString(R.string.problem_deleting_song), Toast.LENGTH_SHORT).show();
-                                                        }
-                                                    }).start();
+                                                    File file = new File(currentSong.getData());
+                                                    if (file.delete()) {
+                                                        songsList.remove(position);
+                                                        SharedVariables.fullSongsList.remove(currentSong);
+                                                        Toast.makeText(context, "Song Deleted : \'" + currentSong.getTitle() + "\'", Toast.LENGTH_SHORT).show();
+                                                        context.getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.MediaColumns._ID + "='" + currentSong.getID() + "'", null);
+                                                    } else
+                                                        Toast.makeText(context, context.getResources().getString(R.string.problem_deleting_song), Toast.LENGTH_SHORT).show();
                                                 }
                                             })
                                             .negativeText(R.string.cancel_text)
@@ -136,35 +125,35 @@ public class ArtistInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapt
                                     break;
 
                                 case R.id.song_context_menu_quick_share:
-                                    ActivitySwitcher.jumpToQuickShareActivity(context, currentSongDetails);
+                                    ActivitySwitcher.jumpToQuickShareActivity(context, currentSong);
                                     break;
 
                                 case R.id.song_context_menu_add_to_dialog:
-                                    DialogHelper.AddToDialog(context, currentSongDetails);
+                                    DialogHelper.AddToDialog(context, currentSong);
                                     break;
 
                                 case R.id.song_context_menu_share:
-                                    ShareIntentHelper.sendSong(context, currentSongDetails.getTitle(), Uri.parse(currentSongDetails.getData()));
+                                    ShareIntentHelper.sendSong(context, currentSong.getTitle(), Uri.parse(currentSong.getData()));
                                     break;
 
                                 case R.id.song_context_menu_details:
-                                    DialogHelper.songDetails(context, currentSongDetails, holder.albumPath);
+                                    DialogHelper.songDetails(context, currentSong, holder.albumPath);
                                     break;
 
                                 case R.id.song_context_menu_ringtone:
-                                    AudioExtensionMethods.setSongAsRingtone(context, currentSongDetails);
+                                    AudioExtensionMethods.setSongAsRingtone(context, currentSong);
                                     break;
 
                                 case R.id.song_context_menu_tagEditor:
-                                    ActivitySwitcher.launchTagEditor(context, currentSongDetails.getID(), position);
+                                    ActivitySwitcher.launchTagEditor(context, currentSong.getID(), currentSong.getHashID());
                                     break;
 
                                 case R.id.song_context_menu_play_next:
-                                    MusicPlayerExtensionMethods.playNext(context, currentSongDetails);
+                                    MusicPlayerExtensionMethods.playNext(context, currentSong);
                                     break;
 
                                 case R.id.song_context_menu_jump_to_album:
-                                    ActivitySwitcher.jumpToAlbum(context, currentSongDetails.getID());
+                                    ActivitySwitcher.jumpToAlbum(context, currentSong.getID());
                                     break;
                             }
                         }

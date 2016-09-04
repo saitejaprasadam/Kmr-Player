@@ -1,130 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.design.widget.CoordinatorLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-            <LinearLayout
-                android:orientation="vertical"
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:id="@+id/album_image_view_anchor"
+            android:layout_height="0dp"
+            android:layout_weight="0.45">
+
+            <ImageView
+                android:id="@+id/blurred_album_art"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@mipmap/unkown_album_art"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"/>
+
+            <include
+                layout="@layout/include_action_bar_gradient"
+                android:layout_width="match_parent"
+                android:layout_height="120dp" />
+
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <FrameLayout
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar"
                     android:layout_width="match_parent"
-                    android:id="@+id/album_image_view_anchor"
-                    android:layout_height="0dp"
-                    android:layout_weight="0.45">
+                    android:layout_height="wrap_content">
 
-                    <ImageView
-                        android:id="@+id/blurred_album_art"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:src="@mipmap/unkown_album_art"
-                        android:adjustViewBounds="true"
-                        android:scaleType="centerCrop"/>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_gravity="end"
+                        android:layout_marginEnd="5dp">
 
-                    <include
-                        layout="@layout/include_action_bar_gradient"
-                        android:layout_width="match_parent"
-                        android:layout_height="120dp" />
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <android.support.v7.widget.Toolbar
-                            android:id="@+id/toolbar"
-                            android:layout_width="match_parent"
+                        <ImageView
+                            android:visibility="invisible"
+                            android:clickable="true"
+                            android:id="@+id/apply_fab_button"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            app:theme="@style/TransperantToolbar">
+                            android:padding="10dp"
+                            android:src="@mipmap/ic_done_white_24dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="@string/applyText"/>
 
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:layout_gravity="end"
-                                android:layout_marginEnd="15dp">
+                    </LinearLayout>
 
-                                <ImageView
-                                    android:visibility="invisible"
-                                    android:clickable="true"
-                                    android:id="@+id/apply_fab_button"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:src="@mipmap/ic_done_white_24dp"
-                                    android:background="?attr/selectableItemBackgroundBorderless"
-                                    android:contentDescription="@string/applyText"/>
+                </android.support.v7.widget.Toolbar>
 
-                            </LinearLayout>
-
-                        </android.support.v7.widget.Toolbar>
-
-                        <LinearLayout
-                            android:layout_below="@+id/toolbar"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:weightSum="1">
-
-                            <View
-                                android:layout_width="match_parent"
-                                android:layout_weight=".20"
-                                android:layout_height="0dp" />
-
-                            <android.support.v7.widget.CardView
-                                android:layout_width="wrap_content"
-                                android:layout_gravity="center"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="0.60"
-                                card_view:cardPreventCornerOverlap="false" card_view:cardUseCompatPadding="false"
-                                card_view:cardBackgroundColor="@android:color/white">
-
-                                <ImageView
-                                    android:transitionName="AlbumArtImageTranscition"
-                                    android:id="@+id/actual_album_art"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:src="@mipmap/unkown_album_art"
-                                    android:adjustViewBounds="true"
-                                    android:clickable="true"
-                                    android:foreground="?android:attr/selectableItemBackground"/>
-
-                            </android.support.v7.widget.CardView>
-
-                            <View
-                                android:layout_width="match_parent"
-                                android:layout_weight=".20"
-                                android:layout_height="0dp" />
-
-                        </LinearLayout>
-
-                    </RelativeLayout>
-
-                </FrameLayout>
-
-                <include
+                <LinearLayout
+                    android:layout_below="@+id/toolbar"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="0.55"
-                    layout="@layout/include_tag_editor_text_fields_layout"/>
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
-            </LinearLayout>
+                    <android.support.v7.widget.CardView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="0.80"
+                        card_view:cardPreventCornerOverlap="false"
+                        card_view:cardUseCompatPadding="false"
+                        card_view:cardBackgroundColor="@android:color/white">
 
-            <android.support.design.widget.FloatingActionButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:clickable="true"
-                android:id="@+id/edit_fab_button"
-                android:src="@mipmap/ic_mode_edit_white_24dp"
-                app:layout_anchor="@id/album_image_view_anchor"
-                app:layout_anchorGravity="bottom|right|end" />
+                        <com.prasadam.kmrplayer.SubClasses.SquareImageviewInverted
+                            android:id="@+id/actual_album_art"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:src="@mipmap/unkown_album_art"
+                            android:adjustViewBounds="true"
+                            android:scaleType="centerCrop"
+                            android:clickable="true"
+                            android:foreground="?android:attr/selectableItemBackground"/>
 
-        </android.support.design.widget.CoordinatorLayout>
+                    </android.support.v7.widget.CardView>
 
-</ScrollView>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_weight=".20"
+                        android:layout_height="0dp" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </FrameLayout>
+
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.55"
+            layout="@layout/include_tag_editor_text_fields_layout"/>
+
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:clickable="true"
+        android:id="@+id/edit_fab_button"
+        android:src="@mipmap/ic_mode_edit_white_24dp"
+        app:layout_anchor="@id/album_image_view_anchor"
+        app:layout_anchorGravity="bottom|right|end" />
+
+</android.support.design.widget.CoordinatorLayout>

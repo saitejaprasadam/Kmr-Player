@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.prasadam.kmrplayer.SubClasses.SquareImageviewInverted
+    <com.prasadam.kmrplayer.SubClasses.SquareImageview
         android:id="@+id/vertical_slide_drawer_actual_image_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

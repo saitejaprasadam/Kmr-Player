@@ -48,8 +48,8 @@
 
                     <android.support.v7.widget.CardView
                         android:layout_width="wrap_content"
-                        android:layout_gravity="center"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:layout_weight="0.56"
                         card_view:cardPreventCornerOverlap="false"
                         card_view:cardUseCompatPadding="false"
@@ -154,7 +154,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:theme="@style/TransperantToolbar">
+        android:theme="@style/TransperantToolbar">
 
     </android.support.v7.widget.Toolbar>
 

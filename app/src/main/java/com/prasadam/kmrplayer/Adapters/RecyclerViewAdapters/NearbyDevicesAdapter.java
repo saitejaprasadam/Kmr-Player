@@ -1,6 +1,5 @@
 package com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
@@ -40,11 +39,11 @@ public class NearbyDevicesAdapter extends RecyclerView.Adapter<NearbyDevicesAdap
 
     private ArrayList<String> QuickSharePathList;
     private LayoutInflater inflater;
-    private Activity mActivity;
+    private Context context;
     public static MaterialDialog waitingDialog;
 
-    public NearbyDevicesAdapter(Activity mActivity, Context context){
-        this.mActivity = mActivity;
+    public NearbyDevicesAdapter(Context context){
+        this.context = context;
         inflater = LayoutInflater.from(context);
 
         if (android.os.Build.VERSION.SDK_INT > 9) {
@@ -54,7 +53,7 @@ public class NearbyDevicesAdapter extends RecyclerView.Adapter<NearbyDevicesAdap
     }
     public NearbyDevicesAdapter.ViewAdapter onCreateViewHolder(ViewGroup parent, int viewType) {
         View view;
-        if(mActivity.getClass().getSimpleName().equals(KeyConstants.ACTIVITY_NEARBY_DEVICES))
+        if(context.getClass().getSimpleName().equals(KeyConstants.ACTIVITY_NEARBY_DEVICES))
             view = inflater.inflate(R.layout.recycler_view_near_by_devices, parent, false);
         else
             view = inflater.inflate(R.layout.recycler_view_quick_share, parent, false);
@@ -65,12 +64,12 @@ public class NearbyDevicesAdapter extends RecyclerView.Adapter<NearbyDevicesAdap
         final NSD serverObject = NSDClient.devicesList.get(position);
 
         if(serverObject.GetDeviceType() == null)
-            SocketExtensionMethods.requestForDeviceType(serverObject.GetClientNSD());
+            SocketExtensionMethods.requestForDeviceType(context, serverObject.GetClientNSD());
 
-        SocketExtensionMethods.requestForCurrentSongPlaying(serverObject.GetClientNSD());
+        SocketExtensionMethods.requestForCurrentSongPlaying(context, serverObject.GetClientNSD());
 
         holder.nearbyDeviceNameTextView.setText(serverObject.GetClientNSD().getServiceName());
-        if(mActivity.getClass().getSimpleName().equals(KeyConstants.ACTIVITY_QUICK_SHARE))
+        if(context.getClass().getSimpleName().equals(KeyConstants.ACTIVITY_QUICK_SHARE))
             setHolderQuickShareActivity(holder, serverObject);
         else
             setHolderNearByActivity(holder, serverObject);
@@ -80,11 +79,10 @@ public class NearbyDevicesAdapter extends RecyclerView.Adapter<NearbyDevicesAdap
 
         holder.nearbyDevicesImageView.setImageResource(holder.imageID);
     }
-
     public int getItemCount() {
         int count = NSDClient.devicesList.size();
         if(count == 0){
-            if(mActivity.getClass().getSimpleName().equals(KeyConstants.ACTIVITY_QUICK_SHARE) && QuickShareActivity.NoDevicesTextView != null)
+            if(context.getClass().getSimpleName().equals(KeyConstants.ACTIVITY_QUICK_SHARE) && QuickShareActivity.NoDevicesTextView != null)
                 QuickShareActivity.NoDevicesTextView.setVisibility(View.VISIBLE);
             else
                 if(NearbyDevicesActivity.NoDevicesTextView != null)
@@ -92,7 +90,7 @@ public class NearbyDevicesAdapter extends RecyclerView.Adapter<NearbyDevicesAdap
         }
 
         else{
-            if(mActivity.getClass().getSimpleName().equals(KeyConstants.ACTIVITY_QUICK_SHARE) && QuickShareActivity.NoDevicesTextView != null)
+            if(context.getClass().getSimpleName().equals(KeyConstants.ACTIVITY_QUICK_SHARE) && QuickShareActivity.NoDevicesTextView != null)
                 QuickShareActivity.NoDevicesTextView.setVisibility(View.INVISIBLE);
             else
             if(NearbyDevicesActivity.NoDevicesTextView != null)
@@ -104,7 +102,6 @@ public class NearbyDevicesAdapter extends RecyclerView.Adapter<NearbyDevicesAdap
     public void setQuickShareSongPathList(ArrayList<String> songPathList){
         this.QuickSharePathList = songPathList;
     }
-
     private void setHolderQuickShareActivity(ViewAdapter holder, final NSD serverObject) {
         holder.nearbyDevicesContextMenu.setImageResource(R.mipmap.ic_chevron_right_black_24dp);
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
@@ -113,7 +110,7 @@ public class NearbyDevicesAdapter extends RecyclerView.Adapter<NearbyDevicesAdap
 
                 final String timeStamp = ExtensionMethods.getTimeStamp();
 
-                waitingDialog = new MaterialDialog.Builder(mActivity)
+                waitingDialog = new MaterialDialog.Builder(context)
                         .content(R.string.waiting_for_approval)
                         .progress(true, 0)
                         .cancelable(false)
@@ -129,11 +126,10 @@ public class NearbyDevicesAdapter extends RecyclerView.Adapter<NearbyDevicesAdap
                         .show();
 
                 QuickShareHelper.addQuickShareRequest(timeStamp, QuickSharePathList);
-                ClientHelper.requstForQuickShare(serverObject, timeStamp, QuickSharePathList);
+                ClientHelper.requstForQuickShare(context, serverObject, timeStamp, QuickSharePathList);
             }
         });
     }
-
     private void setHolderNearByActivity(ViewAdapter holder, final NSD serverObject) {
 
         if(GroupPlayHelper.IsClientConntectedToGroupPlay(serverObject.getHostAddress()))
@@ -143,56 +139,55 @@ public class NearbyDevicesAdapter extends RecyclerView.Adapter<NearbyDevicesAdap
             holder.nearbyDevicesContextMenu.setImageResource(R.mipmap.ic_hearing_black_24dp);
 
         if(serverObject.getCurrentSongPlaying() != null)
-            holder.currentSongTextView.setText(mActivity.getResources().getString(R.string.now_playing_text) + KeyConstants.SPACE + serverObject.getCurrentSongPlaying());
+            holder.currentSongTextView.setText(context.getResources().getString(R.string.now_playing_text) + KeyConstants.SPACE + serverObject.getCurrentSongPlaying());
         else
-            holder.currentSongTextView.setText(mActivity.getResources().getString(R.string.problem_fetching_current_playing_song));
+            holder.currentSongTextView.setText(context.getResources().getString(R.string.problem_fetching_current_playing_song));
 
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 ArrayList<String> dialogOptions = PopulateDialogItems(serverObject);
-                new MaterialDialog.Builder(mActivity)
+                new MaterialDialog.Builder(context)
                         .items(dialogOptions)
                         .itemsCallback(new MaterialDialog.ListCallback() {
                             @Override
                             public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
 
-                               if(text.equals(mActivity.getResources().getString(R.string.request_for_group_play_text)))
-                                   ClientHelper.requestForGroupPlay(serverObject);
+                               if(text.equals(context.getResources().getString(R.string.request_for_group_play_text)))
+                                   ClientHelper.requestForGroupPlay(context, serverObject);
 
-                                else if(text.equals(mActivity.getResources().getString(R.string.get_current_playing_song)))
-                                   ClientHelper.requestForCurrentSong(serverObject);
+                                else if(text.equals(context.getResources().getString(R.string.get_current_playing_song)))
+                                   ClientHelper.requestForCurrentSong(context, serverObject);
 
-                                   else if(text.equals(mActivity.getResources().getString(R.string.accept_all_transfers_without_confirmation)))
-                                       SharedPreferenceHelper.setClientTransferRequestAlwaysAccept(mActivity, serverObject.getMacAddress(), true);
+                                   else if(text.equals(context.getResources().getString(R.string.accept_all_transfers_without_confirmation)))
+                                       SharedPreferenceHelper.setClientTransferRequestAlwaysAccept(context, serverObject.getMacAddress(), true);
 
-                                        else if(text.equals(mActivity.getResources().getString(R.string.prompt_confirmation_before_initating_transfers)))
-                                            SharedPreferenceHelper.setClientTransferRequestAlwaysAccept(mActivity, serverObject.getMacAddress(), false);
+                                        else if(text.equals(context.getResources().getString(R.string.prompt_confirmation_before_initating_transfers)))
+                                            SharedPreferenceHelper.setClientTransferRequestAlwaysAccept(context, serverObject.getMacAddress(), false);
                             }
                         })
                         .show();
             }
         });
     }
-
     private ArrayList<String> PopulateDialogItems(NSD serverObject) {
 
         ArrayList<String> dialogOptions = new ArrayList<>();
 
-        if(GroupPlayHelper.IsClientGroupPlayMaster(serverObject.getHostAddress()) || GroupPlayHelper.IsClientConntectedToGroupPlay(serverObject.getHostAddress()))
-            dialogOptions.add(mActivity.getResources().getString(R.string.disconnect_from_group_play_text));
+        /*if(GroupPlayHelper.IsClientGroupPlayMaster(serverObject.getHostAddress()) || GroupPlayHelper.IsClientConntectedToGroupPlay(serverObject.getHostAddress()))
+            dialogOptions.add(context.getResources().getString(R.string.disconnect_from_group_play_text));
         else
-            dialogOptions.add(mActivity.getResources().getString(R.string.request_for_group_play_text));
+            dialogOptions.add(context.getResources().getString(R.string.request_for_group_play_text));*/
 
         if(serverObject.getCurrentSongPlaying() != null)
-            dialogOptions.add(mActivity.getResources().getString(R.string.get_current_playing_song));
+            dialogOptions.add(context.getResources().getString(R.string.get_current_playing_song));
 
         if(serverObject.getMacAddress() != null){
-            if(!SharedPreferenceHelper.getClientTransferRequestAlwaysAccept(mActivity, serverObject.getMacAddress()))
-                dialogOptions.add(mActivity.getResources().getString(R.string.accept_all_transfers_without_confirmation));
+            if(!SharedPreferenceHelper.getClientTransferRequestAlwaysAccept(context, serverObject.getMacAddress()))
+                dialogOptions.add(context.getResources().getString(R.string.accept_all_transfers_without_confirmation));
             else
-                dialogOptions.add(mActivity.getResources().getString(R.string.prompt_confirmation_before_initating_transfers));
+                dialogOptions.add(context.getResources().getString(R.string.prompt_confirmation_before_initating_transfers));
         }
 
 

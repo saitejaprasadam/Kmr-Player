@@ -73,11 +73,11 @@ public class QuickShareActivity extends AppCompatActivity{
     }
 
     private void InitActionBarAndToolBar() {
-        ExtensionMethods.setStatusBarTranslucent(QuickShareActivity.this);
+        ExtensionMethods.setStatusBarTranslucent_PreLollipop(QuickShareActivity.this);
         ActivityHelper.setDisplayHome(this);
     }
     private void setRecyclerView(ArrayList<String> songsPathList) {
-        QuickShareRecyclerviewAdapter = new NearbyDevicesAdapter(QuickShareActivity.this, this);
+        QuickShareRecyclerviewAdapter = new NearbyDevicesAdapter(this);
         QuickShareRecyclerviewAdapter.setQuickShareSongPathList(songsPathList);
         quickShareRecyclerView = (RecyclerView) findViewById(R.id.quick_share_recycler_view);
         quickShareRecyclerView.setAdapter(QuickShareRecyclerviewAdapter);

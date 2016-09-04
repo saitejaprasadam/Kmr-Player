@@ -10,7 +10,9 @@ import android.support.v7.widget.GridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
+import com.prasadam.kmrplayer.ActivityHelperClasses.ActivityHelper;
 import com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.AlbumAdapter.AlbumAdapter;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.ListenerClasses.HidingScrollListener;
@@ -27,6 +29,7 @@ public class AlbumsFragment extends Fragment {
     private FastScrollRecyclerView recyclerView;
     public static AlbumAdapter recyclerViewAdapter;
     private Activity mActivity;
+    private FrameLayout fragmentContainer;
 
     @Override
     public void onAttach(Activity activity) {
@@ -36,18 +39,9 @@ public class AlbumsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_album_list, container, false);
         recyclerView = (FastScrollRecyclerView) rootView.findViewById(R.id.album_recylcer_view_layout);
+        fragmentContainer = (FrameLayout) rootView.findViewById(R.id.ab_fragment_container);
         setScrollListener();
         return rootView;
-    }
-    public void onResume(){
-        super.onResume();
-        new Thread() {
-            public void run() {
-                if (recyclerViewAdapter != null) {
-                    recyclerViewAdapter.notifyDataSetChanged();
-                }
-            }
-        }.run();
     }
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -87,14 +81,7 @@ public class AlbumsFragment extends Fragment {
                 }
 
                 else
-                {
-                    NoItemsFragment newFragment = new NoItemsFragment();
-                    FragmentTransaction ft = getActivity().getFragmentManager().beginTransaction();
-                    ft.add(android.R.id.content, newFragment).commit();
-                    newFragment.setDescriptionTextView("You don't have any albums yet...");
-                }
-
-
+                    ActivityHelper.showEmptyFragment(getActivity(), getResources().getString(R.string.no_albums_text), fragmentContainer);
             }
         }.start();
     }

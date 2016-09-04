@@ -32,6 +32,7 @@ import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.PlayerConstants;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.Interfaces.NowPlayingPlaylistInterfaces;
 import com.prasadam.kmrplayer.R;
+import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 import com.prasadam.kmrplayer.UI.Activities.VerticalSlidingDrawerBaseActivity;
 import com.prasadam.kmrplayer.UI.Fragments.SongsFragment;
 
@@ -62,10 +63,9 @@ public class NowPlayingPlaylistAdapter extends RecyclerView.Adapter<NowPlayingPl
         View view = inflater.inflate(R.layout.recycler_view_now_playing_playlist_layout, parent, false);
         return new MyViewHolder(view);
     }
-
     public void onBindViewHolder(MyViewHolder holder, final int position) {
 
-        final Song song = PlayerConstants.getPlaylist().get(position);
+        final Song song = PlayerConstants.getPlayList().get(position);
         holder.songTitleTextView.setText(song.getTitle());
         holder.songArtistTextView.setText(song.getArtist());
         holder.nowPlayingPlaylistLikeButton.setLiked(song.getIsLiked(context));
@@ -105,7 +105,7 @@ public class NowPlayingPlaylistAdapter extends RecyclerView.Adapter<NowPlayingPl
         });
     }
 
-    private void setContextMenu(final MyViewHolder holder, final int position, final Song currentSongDetails) {
+    private void setContextMenu(final MyViewHolder holder, final int position, final Song currentSong) {
 
         holder.nowPlayingPlaylistContextMenu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,7 +123,7 @@ public class NowPlayingPlaylistAdapter extends RecyclerView.Adapter<NowPlayingPl
                             {
                                 case R.id.song_context_menu_delete:
                                     new MaterialDialog.Builder(context)
-                                            .content("Delete this song \'" +  currentSongDetails.getTitle() + "\' ?")
+                                            .content("Delete this song \'" +  currentSong.getTitle() + "\' ?")
                                             .positiveText(R.string.delete_text)
                                             .onPositive(new MaterialDialog.SingleButtonCallback() {
                                                 @Override
@@ -131,22 +131,20 @@ public class NowPlayingPlaylistAdapter extends RecyclerView.Adapter<NowPlayingPl
                                                     new Thread(new Runnable() {
                                                         @Override
                                                         public void run() {
-                                                                    File file = new File(currentSongDetails.getData());
+                                                                    File file = new File(currentSong.getData());
                                                                     if (file.delete()) {
                                                                         if (position == PlayerConstants.SONG_NUMBER)
                                                                             Controls.nextControl(context);
 
-                                                                        PlayerConstants.removeSongFromPlaylist(context, position);
                                                                         mActivity.runOnUiThread(new Runnable() {
                                                                             @Override
                                                                             public void run() {
-                                                                                notifyItemRemoved(position);
-                                                                                Toast.makeText(context, "Song Deleted : \'" + currentSongDetails.getTitle() + "\'", Toast.LENGTH_SHORT).show();
-                                                                                context.getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.MediaColumns._ID + "='" + currentSongDetails.getID() + "'", null);
+                                                                                SharedVariables.fullSongsList.remove(currentSong);
+                                                                                PlayerConstants.removeSongFromPlaylist(context, position);
+                                                                                Toast.makeText(context, "Song Deleted : \'" + currentSong.getTitle() + "\'", Toast.LENGTH_SHORT).show();
+                                                                                context.getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.MediaColumns._ID + "='" + currentSong.getID() + "'", null);
                                                                             }
                                                                         });
-
-                                                                        AudioExtensionMethods.updateLists(context);
                                                                     } else
                                                                         Toast.makeText(context, context.getResources().getString(R.string.problem_deleting_song), Toast.LENGTH_SHORT).show();
                                                                 }
@@ -162,39 +160,39 @@ public class NowPlayingPlaylistAdapter extends RecyclerView.Adapter<NowPlayingPl
                                     break;
 
                                 case R.id.song_context_menu_quick_share:
-                                    ActivitySwitcher.jumpToQuickShareActivity(context, currentSongDetails);
+                                    ActivitySwitcher.jumpToQuickShareActivity(context, currentSong);
                                     break;
 
                                 case R.id.song_context_menu_share:
-                                    ShareIntentHelper.sendSong(context, currentSongDetails.getTitle(), Uri.parse(currentSongDetails.getData()));
+                                    ShareIntentHelper.sendSong(context, currentSong.getTitle(), Uri.parse(currentSong.getData()));
                                     break;
 
                                 case R.id.song_context_menu_play_next:
-                                    MusicPlayerExtensionMethods.playNext(context, currentSongDetails);
+                                    MusicPlayerExtensionMethods.playNext(context, currentSong);
                                     break;
 
                                 case R.id.song_context_menu_add_to_dialog:
-                                    DialogHelper.AddToDialog(context, currentSongDetails);
+                                    DialogHelper.AddToDialog(context, currentSong);
                                     break;
 
                                 case R.id.song_context_menu_details:
-                                    DialogHelper.songDetails(context, currentSongDetails);
+                                    DialogHelper.songDetails(context, currentSong);
                                     break;
 
                                 case R.id.song_context_menu_ringtone:
-                                    AudioExtensionMethods.setSongAsRingtone(context, currentSongDetails);
+                                    AudioExtensionMethods.setSongAsRingtone(context, currentSong);
                                     break;
 
                                 case R.id.song_context_menu_tagEditor:
-                                    ActivitySwitcher.launchTagEditor((Activity) context, currentSongDetails.getID(), position);
+                                    ActivitySwitcher.launchTagEditor((Activity) context, currentSong.getID(), currentSong.getHashID());
                                     break;
 
                                 case R.id.song_context_menu_jump_to_album:
-                                    ActivitySwitcher.jumpToAlbum(context, currentSongDetails.getID());
+                                    ActivitySwitcher.jumpToAlbum(mActivity, currentSong.getID());
                                     break;
 
                                 case R.id.song_context_menu_jump_to_artist:
-                                    ActivitySwitcher.jumpToArtist(context, currentSongDetails.getArtist());
+                                    ActivitySwitcher.jumpToArtist(context, currentSong.getArtist());
                                     break;
                             }
                         }
@@ -243,12 +241,12 @@ public class NowPlayingPlaylistAdapter extends RecyclerView.Adapter<NowPlayingPl
                     }
 
                     else
-                        if(sourceViewHolder.songID == PlayerConstants.getPlaylist().get(PlayerConstants.SONG_NUMBER).getID()){
+                        if(sourceViewHolder.songID == PlayerConstants.getPlayList().get(PlayerConstants.SONG_NUMBER).getID()){
                             PlayerConstants.SONG_NUMBER = i + 1;
                             targetViewHolder.cardviewRootLayout.setAlpha(0.5f);
                         }
 
-                Collections.swap(PlayerConstants.getPlaylist(), i, i + 1);
+                Collections.swap(PlayerConstants.getPlayList(), i, i + 1);
             }
         } else {
             for (int i = fromPosition; i > toPosition; i--) {
@@ -262,12 +260,12 @@ public class NowPlayingPlaylistAdapter extends RecyclerView.Adapter<NowPlayingPl
                     }
 
                     else
-                        if(sourceViewHolder.songID == PlayerConstants.getPlaylist().get(PlayerConstants.SONG_NUMBER).getID()){
+                        if(sourceViewHolder.songID == PlayerConstants.getPlayList().get(PlayerConstants.SONG_NUMBER).getID()){
                             PlayerConstants.SONG_NUMBER = i - 1;
                             targetViewHolder.cardviewRootLayout.setAlpha(1f);
                         }
 
-                Collections.swap(PlayerConstants.getPlaylist(), i, i - 1);
+                Collections.swap(PlayerConstants.getPlayList(), i, i - 1);
             }
         }
         notifyItemMoved(fromPosition, toPosition);
@@ -305,7 +303,7 @@ public class NowPlayingPlaylistAdapter extends RecyclerView.Adapter<NowPlayingPl
         @Override
         public void onItemClear() {
             itemView.setBackgroundColor(Color.WHITE);
-            if(songID == PlayerConstants.getPlaylist().get(PlayerConstants.SONG_NUMBER).getID())
+            if(songID == PlayerConstants.getPlayList().get(PlayerConstants.SONG_NUMBER).getID())
                 cardviewRootLayout.setAlpha(1f);
             else
                 cardviewRootLayout.setAlpha(0.5f);

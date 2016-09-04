@@ -26,7 +26,7 @@ public class AppIntroActivity extends AppIntro2 {
         addSlide(AppIntro2Fragment.newInstance(getString(R.string.alpha_version_title_text), getString(R.string.alpha_version_description_text), R.mipmap.launch_screen_alpha, getResources().getColor(R.color.launch_screen_green_palette_color)));
         addSlide(AppIntro2Fragment.newInstance(getString(R.string.all_set_text), getString(R.string.get_started_text), R.mipmap.launch_screen_completed, getResources().getColor(R.color.launch_screen_blue_palette_color)));
 
-        askForPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Settings.ACTION_MANAGE_OVERLAY_PERMISSION}, 2);
+        askForPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.SYSTEM_ALERT_WINDOW}, 2);
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT)
             showStatusBar(true);

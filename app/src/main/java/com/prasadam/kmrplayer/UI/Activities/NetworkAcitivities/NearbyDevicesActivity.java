@@ -37,7 +37,7 @@ public class NearbyDevicesActivity extends AppCompatActivity{
 
         NoDevicesTextView = (TextView) findViewById(R.id.no_devices_available_text_view);
         ActivityHelper.setDisplayHome(this);
-        ExtensionMethods.setStatusBarTranslucent(NearbyDevicesActivity.this);
+        ExtensionMethods.setStatusBarTranslucent_PreLollipop(NearbyDevicesActivity.this);
         DialogHelper.checkForNetworkState(this, (FloatingActionButton) findViewById(R.id.wifi_fab));
         wifiBroadCastReceiver();
         setRecyclerView();
@@ -55,7 +55,7 @@ public class NearbyDevicesActivity extends AppCompatActivity{
 
     private void setRecyclerView() {
 
-        nearbyDevicesRecyclerviewAdapter = new NearbyDevicesAdapter(NearbyDevicesActivity.this, this);
+        nearbyDevicesRecyclerviewAdapter = new NearbyDevicesAdapter(this);
         NearbyRecyclerView = (RecyclerView) findViewById(R.id.available_devices_recycler_view);
         NearbyRecyclerView.setAdapter(nearbyDevicesRecyclerviewAdapter);
         NearbyRecyclerView.addItemDecoration(new DividerItemDecoration(NearbyDevicesActivity.this, LinearLayoutManager.VERTICAL));

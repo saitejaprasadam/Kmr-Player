@@ -5,6 +5,7 @@ import android.os.Handler;
 
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.SharedPreferences.SharedPreferenceHelper;
+import com.prasadam.kmrplayer.SubClasses.CustomArrayList.SongsArrayList;
 import com.prasadam.kmrplayer.UI.Activities.VerticalSlidingDrawerBaseActivity;
 
 import java.util.ArrayList;
@@ -15,7 +16,31 @@ import java.util.ArrayList;
 
 public class PlayerConstants {
 
-    private static ArrayList<Song> SONGS_LIST = new ArrayList<>();
+    private static SongsArrayList SONGS_LIST = new SongsArrayList() {
+        @Override
+        public void notifyDataSetChanged() {
+            if(VerticalSlidingDrawerBaseActivity.NowPlayingPlaylistRecyclerViewAdapter != null)
+                VerticalSlidingDrawerBaseActivity.NowPlayingPlaylistRecyclerViewAdapter.notifyDataSetChanged();
+        }
+
+        @Override
+        public void notifyItemRemoved(int index) {
+            if(VerticalSlidingDrawerBaseActivity.NowPlayingPlaylistRecyclerViewAdapter != null)
+                VerticalSlidingDrawerBaseActivity.NowPlayingPlaylistRecyclerViewAdapter.notifyItemRemoved(index);
+        }
+
+        @Override
+        public void notifyItemInserted(int index) {
+            if(VerticalSlidingDrawerBaseActivity.NowPlayingPlaylistRecyclerViewAdapter != null)
+                VerticalSlidingDrawerBaseActivity.NowPlayingPlaylistRecyclerViewAdapter.notifyItemInserted(index);
+        }
+
+        @Override
+        public void notifyItemChanged(int index) {
+            if(VerticalSlidingDrawerBaseActivity.NowPlayingPlaylistRecyclerViewAdapter != null)
+                VerticalSlidingDrawerBaseActivity.NowPlayingPlaylistRecyclerViewAdapter.notifyItemChanged(index);
+        }
+    };
     private static ArrayList<String> HASH_ID_CURRENT_PLAYLIST = new ArrayList<>();
     private static boolean SHUFFLE = false;
     private static PLAYBACK_STATE_ENUM PLAY_BACK_STATE = PLAYBACK_STATE_ENUM.LOOP;
@@ -39,14 +64,17 @@ public class PlayerConstants {
         }
     }
 
-
-    public static ArrayList<Song> getPlaylist() {return SONGS_LIST;}
+    public static SongsArrayList getPlayList(){ return SONGS_LIST; }
     public static void setPlayList(Context context, ArrayList<Song> songsList) {
-        SONGS_LIST = new ArrayList<>(songsList);
+        SONGS_LIST.setArrayList(songsList);
         SharedPreferenceHelper.setSongsListSharedPreference(context);
     }
     public static void addSongToPlaylist(Context context, Song song) {
         SONGS_LIST.add(song);
+        SharedPreferenceHelper.setSongsListSharedPreference(context);
+    }
+    public static void setSongToPlaylist(Context context, int index, Song song){
+        SONGS_LIST.set(index, song);
         SharedPreferenceHelper.setSongsListSharedPreference(context);
     }
     public static void addSongToPlaylist(Context context, ArrayList<Song> songsList) {
@@ -59,7 +87,6 @@ public class PlayerConstants {
     }
     public static void removeSongFromPlaylist(Context context, int position) {
         SONGS_LIST.remove(position);
-        VerticalSlidingDrawerBaseActivity.NowPlayingPlaylistRecyclerViewAdapter.notifyItemRemoved(position);
         SharedPreferenceHelper.setSongsListSharedPreference(context);
     }
     public static void clearPlaylist() {

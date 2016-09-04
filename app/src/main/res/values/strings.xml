@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Smart cast</string>
+    <string name="app_name">kmr player</string>
 
     <string name="songs_text">songs</string>
     <string name="albums_text">albums</string>
@@ -16,14 +16,12 @@
     <string name="sampling_rate_text">Sampling rate</string>
     <string name="set_text">Set</string>
     <string name="action_refresh">Refresh</string>
-    <string name="sort_text">Sort</string>
-    <string name="share_with_text">Share with</string>
     <string name="jump_to_artist_text">Jump to artist</string>
     <string name="jump_to_album_text">Jump to album</string>
     <string name="song_title_text">Song Title</string>
     <string name="song_album_text">Album</string>
     <string name="song_artist_text">Artist</string>
-    <string name="no_songs_text">There are no song in your device</string>
+    <string name="no_songs_text">You don\'t have any songs yet...</string>
     <string name="no_songs_logo">No Songs Logo</string>
     <string name="applyText">Apply</string>
     <string name="more_options_text">More Options</string>
@@ -39,7 +37,7 @@
     <string name="most_played_text">Most played</string>
     <string name="history_text">History</string>
     <string name="recently_added_text">Recently added</string>
-    <string name="made_with_love_text">made with love</string>
+    <string name="made_with_love_text">beautifully handcrafted with love</string>
     <string name="no_play_history">You don\'t have any history</string>
     <string name="no_records_most_played">Keep listening to increase analysis..</string>
     <string name="enter_playlist_name_text">Enter playlist name</string>
@@ -56,7 +54,6 @@
     <string name="play">play_text</string>
     <string name="songs_library_text">Songs Library</string>
     <string name="others_text">Others</string>
-    <string name="post_text">Post</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="share_all_songs_text">Share all songs</string>
@@ -80,7 +77,6 @@
     <string name="initating_quick_share">Initiating transfer to</string>
     <string name="group_play_accepted">accpeted group play request</string>
     <string name="request_for_group_play_text">Request for Group play</string>
-    <string name="disconnect_from_group_play_text">Disconnect from Grop play</string>
     <string name="search_for_songs_albums_artist_text">Search for songs, albums, artist..</string>
     <string name="by_text">by</string>
     <string name="problem_fetching_current_playing_song">Problem fetching current playing song</string>
@@ -97,14 +93,10 @@
     <string name="play_next">Play next</string>
     <string name="please_wait">please wait</string>
     <string name="lyrics_text">Lyrics</string>
-    <string name="pie_chart_text">Pie chart</string>
     <string name="share_playlist_text">Share playlist</string>
     <string name="delete_playlist_text">Delete playlist</string>
     <string name="please_wait_while_we_populate_list_text">please wait, while we populate list</string>
     <string name="no_fav_songs_text">You don\'t have any favorite songs yet..</string>
-    <string name="sort_by_text">Sort by</string>
-    <string name="name_asc_text">Name asc</string>
-    <string name="name_desc_text">Name desc</string>
     <string name="adding_songs_to_playlist">Adding songs to playlist</string>
     <string name="add_to_now_playing_queue">Add to now playing queue</string>
     <string name="Connect_to_a_network_text">Connect to a network</string>
@@ -114,16 +106,16 @@
     <string name="prompt_confirmation_before_initating_transfers">Prompt confirmation before initating transfers</string>
     <string name="_0_00">0:00</string>
     <string name="problem_deleting_song">Problem deleting song</string>
-    <string name="app_description_text">A new way of listening music, beautifully handcrafted with love</string>
+    <string name="app_description_text">A new way of listening music, beautifully handcrafted with love (Missing credits/license will be added soon)</string>
     <string name="permissions_title_text">We just need some permissios to get started</string>
     <string name="permissions_description_text">We need permission to read and write songs data from your device.</string>
-    <string name="all_set_text">You\'re all set! Enjoy Smart cast</string>
+    <string name="all_set_text">You\'re all set! Happy listening</string>
     <string name="get_started_text">Get started..</string>
     <string name="alpha_version_title_text">Smart cast is still in alpha version</string>
     <string name="alpha_version_description_text">There might be still some bugs around there, we are striving hard to fix them.</string>
     <string name="cluster_title_text">Share songs and engage with friends with built in social networking</string>
     <string name="cluster_description_text">Seek nearby friends using nearby feature, and engage your music madness with your squad spontaneously</string>
-    <string name="About_player_text">About</string>
+    <string name="About_text">About</string>
     <string name="about_text">About</string>
     <string name="Quick_shuffle_widget_text">Quick shuffle!!</string>
     <string name="Favorites_widget_text">Playing Favorites!!</string>
@@ -135,4 +127,40 @@
     <string name="shows_a_floating_information_on_screen_when_song_changes">Floating information on screen when song changes</string>
     <string name="no_songs_in_this_playlist_text">No songs in this playlist</string>
     <string name="remove_song_text">Remove song</string>
+    <string name="please_wait_finalising_tag_edit">Please wait, finalizing tag edit</string>
+    <string name="remove_from_playlist_text">Remove from playlist</string>
+    <string name="error_removing_song_from_playlist_text">Error removing song from playlist</string>
+    <string name="song_removed_from_playlist_text">Song removed from playlist</string>
+    <string name="general_settings">General</string>
+    <string name="Blur_album_art">Blur album art</string>
+    <string name="Blurs_the_album_art_on_the_lockscreen_text">Blurs the album art on the lockscreen text</string>
+    <string name="Show_album_art">Show album art</string>
+    <string name="Shows_current_song_album_art_as_lock_screen_wallpaper">Shows current song album art as lock screen wallpaper</string>
+    <string name="Lockscreen_preferences">Lockscreen preferences</string>
+    <string name="Display_Name">Display name</string>
+    <string name="This_name_will_be_visible_to_your_friends">This name will be visible to yout friends</string>
+    <string name="Theme">Theme</string>
+    <string name="Colored_Navigation_bar">Colored Navigation bar</string>
+    <string name="Adds_color_to_soft_navigation_bar">Adds color to soft navigation bar</string>
+    <string name="no_available_on_your_device">(Not available on your device)</string>
+    <string name="contact_developer_uri">mailto:leonius.developers@gmail.com</string>
+    <string name="Audio_preferences">Audio preferences</string>
+    <string name="Equalizer">Equalizer</string>
+    <string name="Show_player_equalizer">Show player equalizer</string>
+    <string name="Rate_our_app_text">Rate our app</string>
+    <string name="rate_our_app_summary">Take a moment to rate and review kmr player, Your review can make our day!!!</string>
+    <string name="Contact_developer">Contact developer</string>
+    <string name="Contact_developer_desc">Suggestion? Bug? Mail Developer!! We read all your mails.</string>
+    <string name="Enter_name_desc">This name will be visible to your friends. Use a recognizable name</string>
+    <string name="name_text">your name...</string>
+    <string name="empty" />
+    <string name="please_wait_while_we_populate_full_songs_list_text">Relax while we populate songs list (May take more time for the first launch)</string>
+    <string name="no_albums_text">You don\'t have any albums yet...</string>
+    <string name="no_artist_text">You don\'t have any artist yet...</string>
+    <string name="Report_bug">Report bug</string>
+    <string name="report_bug_desc">Report bug or request a feature (We read all your request)</string>
+    <string name="report_bug_text">Report bug</string>
+    <string name="suggestion_text">Suggestion</string>
+    <string name="describe_bug">Describe bug (Provide email for reply)</string>
+    <string name="describe_your_suggestion">Describe suggestion (Provide email for reply)</string>
 </resources>

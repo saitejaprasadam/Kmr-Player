@@ -3,6 +3,8 @@ package com.prasadam.kmrplayer.ActivityHelperClasses;
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.Intent;
+import android.content.res.Resources;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -15,11 +17,17 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 
+import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
+import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.Controls;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicPlayerExtensionMethods;
+import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicService;
+import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.PlayerConstants;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.ListenerClasses.HidingScrollListener;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
+import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
+import com.prasadam.kmrplayer.SubClasses.CustomArrayList.SongsArrayList;
 import com.prasadam.kmrplayer.UI.Fragments.NoItemsFragment;
 
 import java.util.ArrayList;
@@ -117,5 +125,58 @@ public class ActivityHelper {
             }
         });
         rootLayout.addView(fab, lp);
+    }
+
+    public static void onActivityResultMethod(Context context, int requestCode, int resultCode, Intent data, SongsArrayList songsList) {
+        updateViewOnTagEditorSuccess(context, requestCode, resultCode, data, songsList);
+        removeAlbumIfDeleted(requestCode, resultCode, data);
+    }
+    private static void removeAlbumIfDeleted(int requestCode, int resultCode, Intent data) {
+        if (requestCode == KeyConstants.REQUEST_CODE_DELETE_ALBUM && resultCode == Activity.RESULT_OK){
+            long albumID = data.getExtras().getLong("albumID", 0);
+            if(albumID != 0){
+                for (int index = 0; index < SharedVariables.fullAlbumList.size(); index++)
+                    if(SharedVariables.fullAlbumList.get(index).getID().equals(albumID))
+                        SharedVariables.fullAlbumList.remove(index);
+            }
+        }
+    }
+    private static void updateViewOnTagEditorSuccess(Context context, int requestCode, int resultCode, Intent data, SongsArrayList songsList) {
+
+        if (requestCode == KeyConstants.REQUEST_CODE_TAG_EDITOR && resultCode == Activity.RESULT_OK) {
+                String songID = data.getExtras().getString("songID", null);
+                String songHashID = data.getExtras().getString("songHashID", null);
+                if(songID != null || songHashID != null){
+
+                    Song updatedSong = AudioExtensionMethods.getSongFromID(context, Long.parseLong(songID));
+                    if(updatedSong == null)
+                        return;
+
+                    if(songsList != null)
+                    for(int index = 0; index < songsList.size(); index++)
+                        if(songsList.get(index).getHashID().equals(songHashID))
+                            songsList.set(index, updatedSong);
+
+                    for (int index = 0; index < SharedVariables.fullSongsList.size(); index++)
+                        if(SharedVariables.fullSongsList.get(index).getHashID().equals(songHashID))
+                            SharedVariables.fullSongsList.set(index, updatedSong);
+
+                    for(int index = 0; index < PlayerConstants.getPlaylistSize(); index++)
+                        if(PlayerConstants.getPlayList().get(index).getHashID().equals(songHashID))
+                            PlayerConstants.setSongToPlaylist(context, index, updatedSong);
+
+                    if(MusicService.currentSong.getHashID().equals(songHashID)){
+                        MusicService.currentSong = updatedSong;
+                        Controls.updateNowPlayingUI();
+                        Controls.updateNotification();
+                    }
+                }
+        }
+    }
+
+    public static boolean hasSoftNavBar(Resources resources)
+    {
+        int id = resources.getIdentifier("config_showNavigationBar", "bool", "android");
+        return id > 0 && resources.getBoolean(id);
     }
 }

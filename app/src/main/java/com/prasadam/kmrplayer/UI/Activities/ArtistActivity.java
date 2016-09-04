@@ -7,6 +7,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,7 +19,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.prasadam.kmrplayer.ActivityHelperClasses.ActivityHelper;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.ActivityHelperClasses.DialogHelper;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ShareIntentHelper;
@@ -33,6 +36,8 @@ import com.prasadam.kmrplayer.AudioPackages.modelClasses.Artist;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
+import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
+import com.prasadam.kmrplayer.SubClasses.CustomArrayList.SongsArrayList;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -49,7 +54,7 @@ public class ArtistActivity extends VerticalSlidingDrawerBaseActivity {
 
     public static String ARTIST_EXTRA = "artist";
     private Artist artist;
-    private ArrayList<Song> songsList;
+    private SongsArrayList songsList;
     private ArrayList<Album> albumList;
     private FrameLayout colorPaletteView;
     private String artistAlbumArt = null;
@@ -108,7 +113,31 @@ public class ArtistActivity extends VerticalSlidingDrawerBaseActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                songsList = AudioExtensionMethods.getSongListFromArtist(ArtistActivity.this, artist.getArtistTitle());
+                songsList = new SongsArrayList(AudioExtensionMethods.getSongListFromArtist(ArtistActivity.this, artist.getArtistTitle())) {
+                    @Override
+                    public void notifyDataSetChanged() {
+                        if(songRecyclerViewAdapter != null)
+                            songRecyclerViewAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void notifyItemRemoved(int index) {
+                        if(songRecyclerViewAdapter != null)
+                            songRecyclerViewAdapter.notifyItemRemoved(index);
+                    }
+
+                    @Override
+                    public void notifyItemInserted(int index) {
+                        if(songRecyclerViewAdapter != null)
+                            songRecyclerViewAdapter.notifyItemInserted(index);
+                    }
+
+                    @Override
+                    public void notifyItemChanged(int index) {
+                        if(songRecyclerViewAdapter != null)
+                            songRecyclerViewAdapter.notifyItemChanged(index);
+                    }
+                };
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -252,12 +281,12 @@ public class ArtistActivity extends VerticalSlidingDrawerBaseActivity {
                     int id = item.getItemId();
                     switch (id) {
 
-                        case R.id.action_share_all_songs_from_artist:
-                            ShareIntentHelper.shareAllSongsFromCurrentArtist(ArtistActivity.this, songsList, artist.getArtistTitle());
+                        case R.id.action_quick_share:
+                            ActivitySwitcher.jumpToQuickShareActivity(ArtistActivity.this, songsList);
                             break;
 
-                        case R.id.action_search:
-                            ActivitySwitcher.launchSearchActivity(ArtistActivity.this);
+                        case R.id.action_share_all_songs_from_artist:
+                            ShareIntentHelper.shareAllSongsFromCurrentArtist(ArtistActivity.this, songsList, artist.getArtistTitle());
                             break;
 
                         case R.id.action_play_next:
@@ -268,6 +297,10 @@ public class ArtistActivity extends VerticalSlidingDrawerBaseActivity {
                             DialogHelper.AddToDialogArtist(ArtistActivity.this, songsList);
                             break;
 
+                        case R.id.action_delete_artist:
+                            deleteArtist();
+                            break;
+
                         case R.id.action_equilzer:
                             ActivitySwitcher.initEqualizer(ArtistActivity.this);
                             break;
@@ -276,8 +309,8 @@ public class ArtistActivity extends VerticalSlidingDrawerBaseActivity {
                             ActivitySwitcher.jumpToAvaiableDevies(ArtistActivity.this);
                             break;
 
-                        case R.id.action_quick_share:
-                            ActivitySwitcher.jumpToQuickShareActivity(ArtistActivity.this, songsList);
+                        case R.id.action_search:
+                            ActivitySwitcher.launchSearchActivity(ArtistActivity.this);
                             break;
 
                         default:
@@ -287,10 +320,34 @@ public class ArtistActivity extends VerticalSlidingDrawerBaseActivity {
                 } catch (Exception ignored) {}
                 return true;
             }
+
+            private void deleteArtist() {
+                new MaterialDialog.Builder(ArtistActivity.this)
+                        .content("Delete all song from this artist : \'" +  artistTitle.getText() + "\' ?")
+                        .positiveText(R.string.delete_text)
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                for (final Song song : songsList) {
+                                    File file = new File(song.getData());
+                                    if (file.delete()){
+                                        songsList.remove(song);
+                                        SharedVariables.fullSongsList.remove(song);
+                                        AudioExtensionMethods.RemoveSongFromContentResolver(ArtistActivity.this, song.getID());
+                                    }
+
+                                }
+
+                                Toast.makeText(ArtistActivity.this, "Artist Deleted : \'" + artistTitle.getText() + "\'", Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+                        })
+                        .negativeText(R.string.cancel_text)
+                        .show();
+            }
         });
     }
-
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
+        ActivityHelper.onActivityResultMethod(this, requestCode, resultCode, data, songsList);
     }
 }

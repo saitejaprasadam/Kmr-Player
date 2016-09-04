@@ -39,7 +39,7 @@ public class ServerResponseThread extends Thread {
 
     private Socket clientSocket;
     private final String clientIPAddress;
-    private final Context context;
+    private Context context;
 
     public ServerResponseThread(Context context, Socket socket){
         this.context = context;
@@ -137,7 +137,7 @@ public class ServerResponseThread extends Thread {
 
                 if(SharedPreferenceHelper.getClientTransferRequestAlwaysAccept(context, macAddress)){
                     SocketExtensionMethods.requestStrictModePermit();
-                    String result = SocketExtensionMethods.GenerateSocketMessage(KeyConstants.SOCKET_QUICK_SHARE_TRANSFER_RESULT, timeStamp, KeyConstants.SOCKET_RESULT_OK);
+                    String result = SocketExtensionMethods.GenerateSocketMessage(context, KeyConstants.SOCKET_QUICK_SHARE_TRANSFER_RESULT, timeStamp, KeyConstants.SOCKET_RESULT_OK);
                     Client quickShareResponse = new Client(clientIPAddress, result);
                     quickShareResponse.execute();
                     FileReceiver nioServer = new FileReceiver(context, Integer.valueOf(songsCount));
@@ -153,7 +153,7 @@ public class ServerResponseThread extends Thread {
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                 SocketExtensionMethods.requestStrictModePermit();
-                                String result = SocketExtensionMethods.GenerateSocketMessage(KeyConstants.SOCKET_QUICK_SHARE_TRANSFER_RESULT, timeStamp, KeyConstants.SOCKET_RESULT_OK);
+                                String result = SocketExtensionMethods.GenerateSocketMessage(context, KeyConstants.SOCKET_QUICK_SHARE_TRANSFER_RESULT, timeStamp, KeyConstants.SOCKET_RESULT_OK);
                                 Client quickShareResponse = new Client(clientIPAddress, result);
                                 quickShareResponse.execute();
                                 FileReceiver nioServer = new FileReceiver(context, Integer.valueOf(songsCount));
@@ -165,7 +165,7 @@ public class ServerResponseThread extends Thread {
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                 SocketExtensionMethods.requestStrictModePermit();
-                                String result = SocketExtensionMethods.GenerateSocketMessage(KeyConstants.SOCKET_QUICK_SHARE_TRANSFER_RESULT, timeStamp, KeyConstants.SOCKET_RESULT_CANCEL);
+                                String result = SocketExtensionMethods.GenerateSocketMessage(context, KeyConstants.SOCKET_QUICK_SHARE_TRANSFER_RESULT, timeStamp, KeyConstants.SOCKET_RESULT_CANCEL);
                                 Client quickShareResponse = new Client(clientIPAddress, result);
                                 quickShareResponse.execute();
                             }
@@ -224,7 +224,7 @@ public class ServerResponseThread extends Thread {
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                     SocketExtensionMethods.requestStrictModePermit();
-                                    String reply = SocketExtensionMethods.GenerateSocketMessage(KeyConstants.SOCKET_GROUP_PLAY_RESULT, timeStamp, KeyConstants.SOCKET_RESULT_OK);
+                                    String reply = SocketExtensionMethods.GenerateSocketMessage(context, KeyConstants.SOCKET_GROUP_PLAY_RESULT, timeStamp, KeyConstants.SOCKET_RESULT_OK);
                                     Client client = new Client(clientIPAddress, reply);
                                     client.execute();
                                     GroupPlayHelper.setGroupPlayMaster(clientIPAddress);
@@ -236,7 +236,7 @@ public class ServerResponseThread extends Thread {
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                 SocketExtensionMethods.requestStrictModePermit();
-                                String reply = SocketExtensionMethods.GenerateSocketMessage(KeyConstants.SOCKET_GROUP_PLAY_RESULT, timeStamp, KeyConstants.SOCKET_RESULT_CANCEL);
+                                String reply = SocketExtensionMethods.GenerateSocketMessage(context, KeyConstants.SOCKET_GROUP_PLAY_RESULT, timeStamp, KeyConstants.SOCKET_RESULT_CANCEL);
                                 Client client = new Client(clientIPAddress, reply);
                                 client.execute();
                             }
@@ -272,7 +272,7 @@ public class ServerResponseThread extends Thread {
     }
 
     private void RequestDeviceType(Context context) {
-        String message = SocketExtensionMethods.GenerateSocketMessage(KeyConstants.SOCKET_DEVICE_TYPE_RESULT, ExtensionMethods.getTimeStamp(), SocketExtensionMethods.getDeviceType(context));
+        String message = SocketExtensionMethods.GenerateSocketMessage(context, KeyConstants.SOCKET_DEVICE_TYPE_RESULT, ExtensionMethods.getTimeStamp(), SocketExtensionMethods.getDeviceType(context));
         Client client = new Client(clientIPAddress, message);
         client.execute();
     }
@@ -289,11 +289,11 @@ public class ServerResponseThread extends Thread {
     private void RequestCuurentSongName() {
 
         if(PlayerConstants.getPlaylistSize() != 0 && PlayerConstants.getPlaylistSize() >= PlayerConstants.SONG_NUMBER){
-            String SongName = PlayerConstants.getPlaylist().get(PlayerConstants.SONG_NUMBER).getTitle();
-            if(PlayerConstants.getPlaylist().get(PlayerConstants.SONG_NUMBER).getArtist().length() > 0)
-                SongName = SongName + KeyConstants.SPACE + context.getResources().getString(R.string.by_text) + KeyConstants.SPACE + PlayerConstants.getPlaylist().get(PlayerConstants.SONG_NUMBER).getArtist();
+            String SongName = PlayerConstants.getPlayList().get(PlayerConstants.SONG_NUMBER).getTitle();
+            if(PlayerConstants.getPlayList().get(PlayerConstants.SONG_NUMBER).getArtist().length() > 0)
+                SongName = SongName + KeyConstants.SPACE + context.getResources().getString(R.string.by_text) + KeyConstants.SPACE + PlayerConstants.getPlayList().get(PlayerConstants.SONG_NUMBER).getArtist();
             SongName = SongName.replaceAll(KeyConstants.SPACE, KeyConstants.SPECIAL_CHAR);
-            String message = SocketExtensionMethods.GenerateSocketMessage(KeyConstants.SOCKET_CURRENT_SONG_NAME_RESULT, ExtensionMethods.getTimeStamp(), SongName);
+            String message = SocketExtensionMethods.GenerateSocketMessage(context, KeyConstants.SOCKET_CURRENT_SONG_NAME_RESULT, ExtensionMethods.getTimeStamp(), SongName);
             Client client = new Client(clientIPAddress, message);
             client.execute();
         }
@@ -310,7 +310,7 @@ public class ServerResponseThread extends Thread {
 
         if(PlayerConstants.getPlaylistSize() != 0 && PlayerConstants.getPlaylistSize() >= PlayerConstants.SONG_NUMBER) {
 
-            final String currentSongFilePath = PlayerConstants.getPlaylist().get(PlayerConstants.SONG_NUMBER).getData();
+            final String currentSongFilePath = PlayerConstants.getPlayList().get(PlayerConstants.SONG_NUMBER).getData();
 
             Handler handler = new Handler(Looper.getMainLooper());
             handler.post(new Runnable() {
@@ -322,7 +322,7 @@ public class ServerResponseThread extends Thread {
                             @Override
                             public void run() {
                                 SocketExtensionMethods.requestStrictModePermit();
-                                String result = SocketExtensionMethods.GenerateSocketMessage(KeyConstants.SOCKET_CURRENT_SONG_RESULT, ExtensionMethods.getTimeStamp(), KeyConstants.SOCKET_RESULT_OK);
+                                String result = SocketExtensionMethods.GenerateSocketMessage(context, KeyConstants.SOCKET_CURRENT_SONG_RESULT, ExtensionMethods.getTimeStamp(), KeyConstants.SOCKET_RESULT_OK);
                                 Client quickShareResponse = new Client(clientIPAddress, result);
                                 quickShareResponse.execute();
                                 try {
@@ -349,7 +349,7 @@ public class ServerResponseThread extends Thread {
                                         @Override
                                         public void run() {
                                             SocketExtensionMethods.requestStrictModePermit();
-                                            String result = SocketExtensionMethods.GenerateSocketMessage(KeyConstants.SOCKET_CURRENT_SONG_RESULT, ExtensionMethods.getTimeStamp(), KeyConstants.SOCKET_RESULT_OK);
+                                            String result = SocketExtensionMethods.GenerateSocketMessage(context, KeyConstants.SOCKET_CURRENT_SONG_RESULT, ExtensionMethods.getTimeStamp(), KeyConstants.SOCKET_RESULT_OK);
                                             Client quickShareResponse = new Client(clientIPAddress, result);
                                             quickShareResponse.execute();
                                             try {
@@ -369,7 +369,7 @@ public class ServerResponseThread extends Thread {
                                 @Override
                                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                     SocketExtensionMethods.requestStrictModePermit();
-                                    String result = SocketExtensionMethods.GenerateSocketMessage(KeyConstants.SOCKET_CURRENT_SONG_RESULT, ExtensionMethods.getTimeStamp(), KeyConstants.SOCKET_RESULT_CANCEL);
+                                    String result = SocketExtensionMethods.GenerateSocketMessage(context, KeyConstants.SOCKET_CURRENT_SONG_RESULT, ExtensionMethods.getTimeStamp(), KeyConstants.SOCKET_RESULT_CANCEL);
                                     Client quickShareResponse = new Client(clientIPAddress, result);
                                     quickShareResponse.execute();
                                 }
@@ -405,7 +405,7 @@ public class ServerResponseThread extends Thread {
     }
 
     private void InvalidCommand(final String receivedCommand) {
-        String message = SocketExtensionMethods.GenerateSocketMessage(KeyConstants.SOCKET_FEATURE_NOT_AVAILABLE, ExtensionMethods.getTimeStamp(), receivedCommand);
+        String message = SocketExtensionMethods.GenerateSocketMessage(context, KeyConstants.SOCKET_FEATURE_NOT_AVAILABLE, ExtensionMethods.getTimeStamp(), receivedCommand);
         Client invalidCommand = new Client(clientIPAddress, message);
         invalidCommand.execute();
     }
@@ -414,7 +414,7 @@ public class ServerResponseThread extends Thread {
     }
 
     private void RequestMacAddress() {
-        String message = SocketExtensionMethods.GenerateSocketMessage(KeyConstants.SOCKET_MAC_ADDRESS_RESULT, ExtensionMethods.getTimeStamp(), SocketExtensionMethods.getMACAddress());
+        String message = SocketExtensionMethods.GenerateSocketMessage(context, KeyConstants.SOCKET_MAC_ADDRESS_RESULT, ExtensionMethods.getTimeStamp(), SocketExtensionMethods.getMACAddress());
         Client macAddressResponse = new Client(clientIPAddress, message);
         macAddressResponse.execute();
     }

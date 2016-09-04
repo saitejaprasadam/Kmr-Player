@@ -1,5 +1,6 @@
 package com.prasadam.kmrplayer.UI.Activities.Playlist;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.GridLayoutManager;
@@ -19,18 +20,14 @@ import com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.SongsAdapter.UnifedS
 import com.prasadam.kmrplayer.Adapters.UIAdapters.DividerItemDecoration;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicPlayerExtensionMethods;
-import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.ListenerClasses.SongsSearchListener;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
+import com.prasadam.kmrplayer.SubClasses.CustomArrayList.SongsArrayList;
 import com.prasadam.kmrplayer.UI.Activities.VerticalSlidingDrawerBaseActivity;
-
-import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-
-import static com.prasadam.kmrplayer.SharedClasses.ExtensionMethods.setStatusBarTranslucent;
 
 /*
  * Created by Prasadam Saiteja on 5/29/2016.
@@ -42,7 +39,7 @@ public class MostPlayedSongsActivity extends VerticalSlidingDrawerBaseActivity {
     @Bind (R.id.root_layout) FrameLayout rootLayout;
     @Bind(R.id.fragment_container) FrameLayout fragmentContainer;
 
-    private ArrayList<Song> songsList;
+    private SongsArrayList songsList;
     private UnifedSongAdapter MostPlayedActivityrecyclerViewAdapter;
     private Menu mOptionsMenu;
 
@@ -52,7 +49,7 @@ public class MostPlayedSongsActivity extends VerticalSlidingDrawerBaseActivity {
         ButterKnife.bind(this);
 
         ActivityHelper.setCustomActionBar(MostPlayedSongsActivity.this);
-        setStatusBarTranslucent(MostPlayedSongsActivity.this);
+        ExtensionMethods.setStatusBarTranslucent(this, findViewById(R.id.colored_status_bar));
         ActivityHelper.setDisplayHome(this);
 
         final MaterialDialog loading = new MaterialDialog.Builder(this)
@@ -65,9 +62,30 @@ public class MostPlayedSongsActivity extends VerticalSlidingDrawerBaseActivity {
             @Override
             public void run() {
 
-                songsList = AudioExtensionMethods.getMostPlayedSongsList(MostPlayedSongsActivity.this);
-                if(songsList.size() == 0)
+                songsList = new SongsArrayList(AudioExtensionMethods.getMostPlayedSongsList(MostPlayedSongsActivity.this)) {
+                    @Override
+                    public void notifyDataSetChanged() {
+                        if(MostPlayedActivityrecyclerViewAdapter != null)
+                            MostPlayedActivityrecyclerViewAdapter.notifyDataSetChanged();
+                    }
+                    public void notifyItemRemoved(int index) {
+                        if(MostPlayedActivityrecyclerViewAdapter != null)
+                            MostPlayedActivityrecyclerViewAdapter.notifyItemRemoved(index);
+                    }
+                    public void notifyItemInserted(int index) {
+                        if(MostPlayedActivityrecyclerViewAdapter != null)
+                            MostPlayedActivityrecyclerViewAdapter.notifyItemInserted(index);
+                    }
+                    public void notifyItemChanged(int index) {
+                        if(MostPlayedActivityrecyclerViewAdapter != null)
+                            MostPlayedActivityrecyclerViewAdapter.notifyItemChanged(index);
+                    }
+                };
+                if(songsList.size() == 0){
                     ActivityHelper.showEmptyFragment(MostPlayedSongsActivity.this, getResources().getString(R.string.no_records_most_played), fragmentContainer);
+                    loading.dismiss();
+                }
+
 
                 else{
                     runOnUiThread(new Runnable() {
@@ -157,11 +175,10 @@ public class MostPlayedSongsActivity extends VerticalSlidingDrawerBaseActivity {
             case R.id.action_devices_button:
                 ActivitySwitcher.jumpToAvaiableDevies(MostPlayedSongsActivity.this);
                 break;
-
-            case R.id.action_pie_chart:
-                ActivitySwitcher.launchMostPlayedActivity(this);
-                break;
         }
         return true;
+    }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        ActivityHelper.onActivityResultMethod(this, requestCode, resultCode, data, songsList);
     }
 }

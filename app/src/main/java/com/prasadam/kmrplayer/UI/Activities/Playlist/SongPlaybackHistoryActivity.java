@@ -1,5 +1,6 @@
 package com.prasadam.kmrplayer.UI.Activities.Playlist;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.GridLayoutManager;
@@ -16,18 +17,14 @@ import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.SongsAdapter.UnifedSongAdapter;
 import com.prasadam.kmrplayer.Adapters.UIAdapters.DividerItemDecoration;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
-import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.ListenerClasses.SongsSearchListener;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
+import com.prasadam.kmrplayer.SubClasses.CustomArrayList.SongsArrayList;
 import com.prasadam.kmrplayer.UI.Activities.VerticalSlidingDrawerBaseActivity;
-
-import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-
-import static com.prasadam.kmrplayer.SharedClasses.ExtensionMethods.setStatusBarTranslucent;
 
 /*
  * Created by Prasadam Saiteja on 5/29/2016.
@@ -40,7 +37,7 @@ public class SongPlaybackHistoryActivity extends VerticalSlidingDrawerBaseActivi
     @Bind(R.id.fragment_container) FrameLayout fragmentContainer;
 
     private Menu mOptionsMenu;
-    private ArrayList<Song> songsList;
+    private SongsArrayList songsList;
     private UnifedSongAdapter songHistoryActivityrecyclerViewAdapter;
 
     public void onCreate(Bundle b){
@@ -49,7 +46,7 @@ public class SongPlaybackHistoryActivity extends VerticalSlidingDrawerBaseActivi
         ButterKnife.bind(this);
 
         ActivityHelper.setCustomActionBar(SongPlaybackHistoryActivity.this);
-        setStatusBarTranslucent(SongPlaybackHistoryActivity.this);
+        ExtensionMethods.setStatusBarTranslucent(this, findViewById(R.id.colored_status_bar));
         ActivityHelper.setDisplayHome(this);
 
         final MaterialDialog loading = new MaterialDialog.Builder(this)
@@ -61,10 +58,30 @@ public class SongPlaybackHistoryActivity extends VerticalSlidingDrawerBaseActivi
             @Override
             public void run() {
 
-                songsList = AudioExtensionMethods.getSongPlayBackHistory(SongPlaybackHistoryActivity.this);
+                songsList = new SongsArrayList(AudioExtensionMethods.getSongPlayBackHistory(SongPlaybackHistoryActivity.this)) {
+                    @Override
+                    public void notifyDataSetChanged() {
+                        if(songHistoryActivityrecyclerViewAdapter != null)
+                            songHistoryActivityrecyclerViewAdapter.notifyDataSetChanged();
+                    }
+                    public void notifyItemRemoved(int index) {
+                        if(songHistoryActivityrecyclerViewAdapter != null)
+                        songHistoryActivityrecyclerViewAdapter.notifyItemRemoved(index);
+                    }
+                    public void notifyItemInserted(int index) {
+                        if(songHistoryActivityrecyclerViewAdapter != null)
+                            songHistoryActivityrecyclerViewAdapter.notifyItemInserted(index);
+                    }
+                    public void notifyItemChanged(int index) {
+                        if(songHistoryActivityrecyclerViewAdapter != null)
+                            songHistoryActivityrecyclerViewAdapter.notifyItemChanged(index);
+                    }
+                };
 
-                if(songsList.size() == 0)
+                if(songsList.size() == 0){
                     ActivityHelper.showEmptyFragment(SongPlaybackHistoryActivity.this, getResources().getString(R.string.no_play_history), fragmentContainer);
+                    loading.dismiss();
+                }
 
                 else {
 
@@ -137,5 +154,8 @@ public class SongPlaybackHistoryActivity extends VerticalSlidingDrawerBaseActivi
                 break;
         }
         return true;
+    }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        ActivityHelper.onActivityResultMethod(this, requestCode, resultCode, data, songsList);
     }
 }

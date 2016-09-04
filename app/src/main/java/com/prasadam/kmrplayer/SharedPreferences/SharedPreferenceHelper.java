@@ -2,6 +2,7 @@ package com.prasadam.kmrplayer.SharedPreferences;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicService;
@@ -17,11 +18,6 @@ import java.util.Set;
  */
 
 public class SharedPreferenceHelper {
-
-    public static String getSongsListSortMethod(Context context) {
-        SharedPreferences sharedpreferences = context.getSharedPreferences(SharedPreferenceKeyConstants.SETTINGS_SHARED_PREFERENCE, Context.MODE_PRIVATE);
-        return sharedpreferences.getString(SharedPreferenceKeyConstants.SONGS_SORT_METHOD, SharedPreferenceKeyConstants.SONGS_SORT_METHOD_ENUM.SONGS_SORT_BY_NAME_ASC.toString());
-    }
 
     public static void setClientTransferRequestAlwaysAccept(Context context, String MacAddress, boolean state) {
 
@@ -69,7 +65,7 @@ public class SharedPreferenceHelper {
                 hashIDPlaylist = hashIDPlaylist + string + ",";
 
             String playlist = "";
-            for (Song song : PlayerConstants.getPlaylist())
+            for (Song song : PlayerConstants.getPlayList())
                 playlist = playlist + String.valueOf(song.getID()) + ",";
 
             editor.putString(SharedPreferenceKeyConstants.DEFAULT_SONGS_PLAYLIST_KEY, playlist);
@@ -149,5 +145,39 @@ public class SharedPreferenceHelper {
     public static void getDuration(Context context) {
         SharedPreferences sharedpreferences = context.getSharedPreferences(SharedPreferenceKeyConstants.DEFAULT_SONGS_PLAYLIST_KEY, Context.MODE_PRIVATE);
         MusicService.player.seekTo((int) sharedpreferences.getLong(SharedPreferenceKeyConstants.CURRENT_PLAYING_SONG_DURATION_KEY, 0));
+    }
+
+    public static boolean getBlurAlbumArtState(Context context){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getBoolean(SharedPreferenceKeyConstants.KEY_BLUR_ALBUM_ART, false);
+    }
+    public static boolean getLockScreenAlbumArtState(Context context){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getBoolean(SharedPreferenceKeyConstants.KEY_ALBUM_ART, true);
+    }
+    public static boolean getLockScreenMetaDataState(Context context){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getBoolean(SharedPreferenceKeyConstants.KEY_LOCKSCREEN_META_DATA, true);
+    }
+
+    public static boolean getFlaotingNotificationsState(Context context){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getBoolean(SharedPreferenceKeyConstants.KEY_FLOATING_NOTIFICATIONS, true);
+    }
+
+    public static String getUserName(Context context){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getString(SharedPreferenceKeyConstants.KEY_USERNAME, null);
+    }
+    public static void setUsername(Context context, String username){
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(SharedPreferenceKeyConstants.KEY_USERNAME, username);
+        editor.apply();
+    }
+
+    public static boolean getColoredNavBarState(Context context){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getBoolean(SharedPreferenceKeyConstants.KEY_COLORED_NAV_BAR, true);
     }
 }

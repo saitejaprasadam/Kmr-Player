@@ -12,20 +12,19 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.prasadam.kmrplayer.ActivityHelperClasses.DialogHelper;
+import com.prasadam.kmrplayer.ActivityHelperClasses.ActivityHelper;
 import com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.SongsAdapter.SongsAdapter;
 import com.prasadam.kmrplayer.Adapters.UIAdapters.DividerItemDecoration;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicPlayerExtensionMethods;
-import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.ListenerClasses.HidingScrollListener;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
@@ -42,6 +41,7 @@ public class SongsFragment extends Fragment {
     private FastScrollRecyclerView recyclerView;
     private Activity mActivity;
     private FloatingActionButton shuffleButton;
+    private FrameLayout fragmentContainer;
 
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -51,25 +51,16 @@ public class SongsFragment extends Fragment {
         //setHasOptionsMenu(true);
         View rootView = inflater.inflate(R.layout.fragment_song_list, container, false);
         recyclerView = (FastScrollRecyclerView) rootView.findViewById(R.id.songs_recylcer_view_layout);
+        fragmentContainer = (FrameLayout) rootView.findViewById(R.id.sg_fragment_container);
         setScrollListener();
         shuffleButton = (FloatingActionButton) rootView.findViewById(R.id.shuffle_fab_button);
         return rootView;
-    }
-    public void onResume(){
-        super.onResume();
-        new Thread() {
-            public void run() {
-                if (recyclerViewAdapter != null) {
-                    recyclerViewAdapter.notifyDataSetChanged();
-                }
-            }
-        }.run();
     }
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
         final MaterialDialog loading = new MaterialDialog.Builder(mActivity)
-                .content(R.string.please_wait_while_we_populate_list_text)
+                .content(R.string.please_wait_while_we_populate_full_songs_list_text)
                 .progress(true, 0)
                 .show();
 
@@ -113,13 +104,9 @@ public class SongsFragment extends Fragment {
                     setShuffleButtonListener();
                 }
 
-                else{
-                    NoItemsFragment newFragment = new NoItemsFragment();
-                    FragmentTransaction ft = getActivity().getFragmentManager().beginTransaction();
-                    ft.add(android.R.id.content, newFragment).commit();
-                    newFragment.setDescriptionTextView("You don't have any songs yet...");
-                    shuffleButton.setVisibility(View.INVISIBLE);
-                }
+                else
+                    ActivityHelper.showEmptyFragment(getActivity(), getResources().getString(R.string.no_songs_text), fragmentContainer);
+
                 loading.dismiss();
             }
         }.start();
@@ -184,22 +171,15 @@ public class SongsFragment extends Fragment {
         }
         catch (Exception ignored){}
     }
+    public static void onItemChanged(int index){
+        if(recyclerViewAdapter != null)
+            recyclerViewAdapter.notifyItemChanged(index);
+    }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
         inflater.inflate(R.menu.main_in_songs_fragment, menu);
         super.onCreateOptionsMenu(menu, inflater);
-    }
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()){
-
-            case R.id.action_sort:
-                DialogHelper.songsSortDialog(getContext());
-                break;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     private void hideShuffleFab(){

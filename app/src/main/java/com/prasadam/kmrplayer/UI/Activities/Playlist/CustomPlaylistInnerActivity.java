@@ -1,4 +1,4 @@
-package com.prasadam.kmrplayer.UI.Activities.Playlist.PlaylistHelpers;
+package com.prasadam.kmrplayer.UI.Activities.Playlist;
 
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
@@ -19,7 +19,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivityHelper;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ShareIntentHelper;
-import com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.SongsAdapter.CustomPlaylistSongsRecylcerViewAdapter;
+import com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.SongsAdapter.UnifedSongAdapter;
 import com.prasadam.kmrplayer.Adapters.UIAdapters.DividerItemDecoration;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.BlurBuilder;
@@ -30,6 +30,7 @@ import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.UtilFunctions;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
+import com.prasadam.kmrplayer.SubClasses.CustomArrayList.SongsArrayList;
 import com.prasadam.kmrplayer.UI.Activities.VerticalSlidingDrawerBaseActivity;
 
 import java.io.File;
@@ -50,8 +51,8 @@ import static com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods.getAlbu
 public class CustomPlaylistInnerActivity extends VerticalSlidingDrawerBaseActivity {
 
     private String playlistName;
-    private CustomPlaylistSongsRecylcerViewAdapter customPlaylistSongsRecylcerViewAdapter;
-    private ArrayList<Song> songsList;
+    private UnifedSongAdapter customPlaylistSongsRecylcerViewAdapter;
+    private SongsArrayList songsList;
 
     @Bind (R.id.fragment_container) FrameLayout FragmentContainer;
     @Bind (R.id.custom_playlist_inner_recyler_view) RecyclerView customPlaylistInnerRecyclerView;
@@ -109,12 +110,37 @@ public class CustomPlaylistInnerActivity extends VerticalSlidingDrawerBaseActivi
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    songsList = AudioExtensionMethods.getSongsListFromCustomPlaylist(CustomPlaylistInnerActivity.this, playlistName);
+
+                    songsList = new SongsArrayList(AudioExtensionMethods.getSongsListFromCustomPlaylist(CustomPlaylistInnerActivity.this, playlistName)) {
+                        @Override
+                        public void notifyDataSetChanged() {
+                            if(customPlaylistSongsRecylcerViewAdapter != null)
+                                customPlaylistSongsRecylcerViewAdapter.notifyDataSetChanged();
+                        }
+
+                        @Override
+                        public void notifyItemRemoved(int index) {
+                            if(customPlaylistSongsRecylcerViewAdapter != null)
+                                customPlaylistSongsRecylcerViewAdapter.notifyItemRemoved(index);
+                        }
+
+                        @Override
+                        public void notifyItemInserted(int index) {
+                            if(customPlaylistSongsRecylcerViewAdapter != null)
+                                customPlaylistSongsRecylcerViewAdapter.notifyItemInserted(index);
+                        }
+
+                        @Override
+                        public void notifyItemChanged(int index) {
+                            if(customPlaylistSongsRecylcerViewAdapter != null)
+                                customPlaylistSongsRecylcerViewAdapter.notifyItemChanged(index);
+                        }
+                    };
 
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            customPlaylistSongsRecylcerViewAdapter = new CustomPlaylistSongsRecylcerViewAdapter(CustomPlaylistInnerActivity.this, songsList);
+                            customPlaylistSongsRecylcerViewAdapter = new UnifedSongAdapter(CustomPlaylistInnerActivity.this, playlistName, songsList);
 
                             customPlaylistInnerRecyclerView.setAdapter(customPlaylistSongsRecylcerViewAdapter);
                             customPlaylistInnerRecyclerView.addItemDecoration(new DividerItemDecoration(CustomPlaylistInnerActivity.this, LinearLayoutManager.VERTICAL));
@@ -250,5 +276,8 @@ public class CustomPlaylistInnerActivity extends VerticalSlidingDrawerBaseActivi
                     albumartImageView4.setImageURI(Uri.parse("file://" + imgFile.getAbsolutePath()));
             }
         }
+    }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        ActivityHelper.onActivityResultMethod(this, requestCode, resultCode, data, songsList);
     }
 }

@@ -160,7 +160,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:theme="@style/TransperantToolbar">
+        android:theme="@style/TransperantToolbar">
 
     </android.support.v7.widget.Toolbar>
 

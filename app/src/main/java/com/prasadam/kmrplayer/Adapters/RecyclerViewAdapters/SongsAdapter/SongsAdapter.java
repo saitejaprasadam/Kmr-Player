@@ -57,7 +57,6 @@ public class SongsAdapter extends ObservableRecyclerView.Adapter<SongsAdapter.so
         View view = inflater.inflate(R.layout.recylcer_view_songs_layout, parent, false);
         return new songsViewHolder(view);
     }
-
     public void onBindViewHolder(final songsViewHolder holder, final int position) {
         try
         {
@@ -81,7 +80,7 @@ public class SongsAdapter extends ObservableRecyclerView.Adapter<SongsAdapter.so
 
             holder.rootLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {MusicPlayerExtensionMethods.playSong(activity, SharedVariables.fullSongsList, position);}
+                public void onClick(View view) {MusicPlayerExtensionMethods.playSong(activity, SharedVariables.fullSongsList, SharedVariables.fullSongsList.indexOf(currentSongDetails));}
             });
             setContextMenu(holder, currentSongDetails, position);
             setAlbumArt(holder, currentSongDetails);
@@ -89,8 +88,11 @@ public class SongsAdapter extends ObservableRecyclerView.Adapter<SongsAdapter.so
 
         catch (Exception ignored){}
     }
+    public int getItemCount() {
+        return SharedVariables.fullSongsList.size();
+    }
 
-    private void setContextMenu(final songsViewHolder holder, final Song currentSongDetails, final int position) {
+    private void setContextMenu(final songsViewHolder holder, final Song currentSong, final int position) {
 
         holder.contextMenuView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,34 +110,20 @@ public class SongsAdapter extends ObservableRecyclerView.Adapter<SongsAdapter.so
                             {
                                 case R.id.song_context_menu_delete:
                                     new MaterialDialog.Builder(context)
-                                            .content("Delete this song \'" +  currentSongDetails.getTitle() + "\' ?")
+                                            .content("Delete this song \'" +  currentSong.getTitle() + "\' ?")
                                             .positiveText(R.string.delete_text)
                                             .onPositive(new MaterialDialog.SingleButtonCallback() {
                                                 @Override
                                                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                                    new Thread(new Runnable() {
-                                                        @Override
-                                                        public void run() {
-                                                            File file = new File(currentSongDetails.getData());
-                                                            if(file.delete())
-                                                            {
-                                                                SharedVariables.fullSongsList.remove(position);
-                                                                activity.runOnUiThread(new Runnable() {
-                                                                    @Override
-                                                                    public void run() {
-                                                                        notifyItemRemoved(position);
-                                                                        Toast.makeText(context, "Song Deleted : \'" + currentSongDetails.getTitle() + "\'", Toast.LENGTH_SHORT).show();
-                                                                        context.getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.MediaColumns._ID + "='" + currentSongDetails.getID() + "'", null);}
-                                                                });
+                                                    File file = new File(currentSong.getData());
+                                                    if(file.delete()) {
+                                                        SharedVariables.fullSongsList.remove(position);
+                                                        Toast.makeText(context, "Song Deleted : \'" + currentSong.getTitle() + "\'", Toast.LENGTH_SHORT).show();
+                                                        context.getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.MediaColumns._ID + "='" + currentSong.getID() + "'", null);
+                                                    }
 
-                                                                AudioExtensionMethods.updateAlbumList(context);
-                                                                AudioExtensionMethods.updateArtistList(context);
-                                                            }
-
-                                                            else
-                                                                Toast.makeText(context, context.getResources().getString(R.string.problem_deleting_song), Toast.LENGTH_SHORT).show();
-                                                        }
-                                                    }).start();
+                                                    else
+                                                        Toast.makeText(context, context.getResources().getString(R.string.problem_deleting_song), Toast.LENGTH_SHORT).show();
                                                 }
                                             })
                                             .negativeText(R.string.cancel_text)
@@ -143,39 +131,39 @@ public class SongsAdapter extends ObservableRecyclerView.Adapter<SongsAdapter.so
                                     break;
 
                                 case R.id.song_context_menu_quick_share:
-                                    ActivitySwitcher.jumpToQuickShareActivity(context, currentSongDetails);
+                                    ActivitySwitcher.jumpToQuickShareActivity(context, currentSong);
                                     break;
 
                                 case R.id.song_context_menu_add_to_dialog:
-                                    DialogHelper.AddToDialog(context, currentSongDetails);
+                                    DialogHelper.AddToDialog(context, currentSong);
                                     break;
 
                                 case R.id.song_context_menu_share:
-                                    ShareIntentHelper.sendSong(context, currentSongDetails.getTitle(), Uri.parse(currentSongDetails.getData()));
+                                    ShareIntentHelper.sendSong(context, currentSong.getTitle(), Uri.parse(currentSong.getData()));
                                     break;
 
                                 case R.id.song_context_menu_details:
-                                    DialogHelper.songDetails(context, currentSongDetails, holder.albumPath);
+                                    DialogHelper.songDetails(context, currentSong, holder.albumPath);
                                     break;
 
                                 case R.id.song_context_menu_ringtone:
-                                    AudioExtensionMethods.setSongAsRingtone(context, currentSongDetails);
+                                    AudioExtensionMethods.setSongAsRingtone(context, currentSong);
                                     break;
 
                                 case R.id.song_context_menu_tagEditor:
-                                    ActivitySwitcher.launchTagEditor((Activity) context, currentSongDetails.getID(), position);
+                                    ActivitySwitcher.launchTagEditor((Activity) context, currentSong.getID(), currentSong.getHashID());
                                     break;
 
                                 case R.id.song_context_menu_play_next:
-                                    MusicPlayerExtensionMethods.playNext(context, currentSongDetails);
+                                    MusicPlayerExtensionMethods.playNext(context, currentSong);
                                     break;
 
                                 case R.id.song_context_menu_jump_to_album:
-                                    ActivitySwitcher.jumpToAlbum(activity, currentSongDetails.getID());
+                                    ActivitySwitcher.jumpToAlbum(activity, currentSong.getID());
                                     break;
 
                                 case R.id.song_context_menu_jump_to_artist:
-                                    ActivitySwitcher.jumpToArtist(context, currentSongDetails.getArtist());
+                                    ActivitySwitcher.jumpToArtist(context, currentSong.getArtist());
                                     break;
                             }
                         }
@@ -190,7 +178,6 @@ public class SongsAdapter extends ObservableRecyclerView.Adapter<SongsAdapter.so
             }
         });
     }
-
     private void setAlbumArt(songsViewHolder holder, Song currentSongDetails) {
         String albumArtPath = currentSongDetails.getAlbumArtLocation();
         if(albumArtPath != null)
@@ -211,10 +198,6 @@ public class SongsAdapter extends ObservableRecyclerView.Adapter<SongsAdapter.so
             holder.AlbumArtImageView.setImageResource(R.mipmap.unkown_album_art);
     }
 
-    public int getItemCount() {
-        return SharedVariables.fullSongsList.size();
-    }
-
     @NonNull
     public String getSectionName(int position) {
         Character c = SharedVariables.fullSongsList.get(position).getTitle().charAt(0);
@@ -224,7 +207,6 @@ public class SongsAdapter extends ObservableRecyclerView.Adapter<SongsAdapter.so
 
         return String.valueOf(Character.toUpperCase(c));
     }
-
     class songsViewHolder extends RecyclerView.ViewHolder{
 
         @Bind (R.id.songTitle_RecyclerView) TextView titleTextView;

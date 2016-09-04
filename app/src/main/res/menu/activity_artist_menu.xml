@@ -32,7 +32,9 @@
         android:id="@+id/action_add_to"
         android:title="@string/add_to_text" />
 
-    <item android:title="@string/delete_artist_text" />
+    <item
+        android:id="@+id/action_delete_artist"
+        android:title="@string/delete_artist_text" />
 
     <item
         android:id="@+id/action_equilzer"

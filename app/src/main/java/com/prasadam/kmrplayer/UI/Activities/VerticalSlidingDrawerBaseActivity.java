@@ -2,9 +2,7 @@ package com.prasadam.kmrplayer.UI.Activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
@@ -57,7 +55,7 @@ import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.Interfaces.NowPlayingPlaylistInterfaces;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
-import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
+import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 import com.prasadam.kmrplayer.SharedPreferences.SharedPreferenceHelper;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
@@ -73,19 +71,16 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
     protected SlidingUpPanelLayout mainLayoutRootLayout;
     private ImageView nowPlayingMinimalAlbumArt, nowPlayingBlurredAlbumArt;
     private RelativeLayout nowPlayingColorPallatteView, nowPlayingColorPallatteViewBackground;
-    private ImageView nowPlayingNextButton;
-    private ImageView nowPlayingPreviousButton;
+    private ImageView nowPlayingNextButton, nowPlayingPreviousButton, nowPlayingMinimalNextButton;
     private ImageView nowPlayingSongContextMenu;
     private TextView nowPlayingSongArtistTextView, nowPlayingSongMinimalArtistTextView, nowPlayingSongMinimalTitleTextView, nowPlayingSongTitleTextView;
-    private ImageView nowPlayingMinimalNextButton;
     private ProgressBar nowPlayingMinimalProgressBar;
     private ItemTouchHelper mItemTouchHelper;
     private RelativeLayout nowPlayingsongInfoCardView;
     private CardView nowPlayingAlbumArtContainer;
     private RelativeLayout nowPlayingMinimalRootLayout;
     private SeekBar nowPlayingSeekBar;
-    private TextView nowPlayingCurrentDuration;
-    private TextView nowPlayingMaxDuration;
+    private TextView nowPlayingCurrentDuration, nowPlayingMaxDuration;
     private Handler progressHandler;
     private Animator animator;
     private static ImageView nowPlayingPlayButton, nowPlayingMinimalPlayButton, nowPlayingShuffleButton, nowPlayingRepeatButton;
@@ -126,6 +121,7 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
 
     public void onResume() {
         super.onResume();
+        setHandlers();
         initalize();
         Controls.updateNowPlayingUI();
         if(mainLayoutRootLayout != null && mainLayoutRootLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED)
@@ -162,7 +158,7 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
         initalizePlaylistRecyclerView();
         Controls.updateNowPlayingUI();
     }
-    private void initalizeNowPlayingUI() {
+    private void initalizeNowPlayingUI()    {
         nowPlayingMinimalRootLayout = (RelativeLayout) findViewById(R.id.now_playing_minimal_root_layout);
         mainLayoutRootLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
         nowPlayingMinimalAlbumArt = (ImageView) findViewById(R.id.now_playing_minimal_album_art);
@@ -189,6 +185,9 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
         nowPlayingSeekBar = (SeekBar) findViewById(R.id.window_song_seekbar);
         nowPlayingMaxDuration = (TextView) findViewById(R.id.now_playing_max_duration);
         nowPlayingCurrentDuration = (TextView) findViewById(R.id.now_playing_current_duration);
+
+        if(ExtensionMethods.isTablet(this) && ExtensionMethods.isLandScape(this))
+            nowPlayingPlaylistRecyclerView.setPadding(0, ExtensionMethods.getStatusBarHeight(this), 0, 0);
 
         nowPlayingSeekBar.getProgressDrawable().setColorFilter(getResources().getColor(R.color.colorAccentGeneric), PorterDuff.Mode.MULTIPLY);
         if(!(ExtensionMethods.isLandScape(this) && !ExtensionMethods.isTablet(this)))
@@ -250,8 +249,8 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
                 if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
                     if(newState == SlidingUpPanelLayout.PanelState.COLLAPSED)
                         getWindow().setNavigationBarColor(getResources().getColor(R.color.black));
-                    else
-                        getWindow().setNavigationBarColor(((ColorDrawable) nowPlayingColorPallatteView.getBackground()).getColor());
+                    else if(SharedPreferenceHelper.getColoredNavBarState(VerticalSlidingDrawerBaseActivity.this))
+                            getWindow().setNavigationBarColor(((ColorDrawable) nowPlayingColorPallatteView.getBackground()).getColor());
                 }
 
                 if(newState == SlidingUpPanelLayout.PanelState.EXPANDED)
@@ -273,8 +272,6 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
         nowPlayingsongInfoCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NowPlayingPlaylistRecyclerViewAdapter.notifyDataSetChanged();
-
                 if(!PlayerConstants.SHOWING_PLAYLIST && !(ExtensionMethods.isTablet(VerticalSlidingDrawerBaseActivity.this) && ExtensionMethods.isLandScape(VerticalSlidingDrawerBaseActivity.this)))
                     showPlaylist();
 
@@ -286,7 +283,6 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
         nowPlayingShuffleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NowPlayingPlaylistRecyclerViewAdapter.notifyDataSetChanged();
                 if(PlayerConstants.getShuffleState()){
                     PlayerConstants.setShuffleState(VerticalSlidingDrawerBaseActivity.this, false);
                     Controls.shuffleMashUpMethod(VerticalSlidingDrawerBaseActivity.this);
@@ -336,6 +332,18 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
             nowPlayingMinimalProgressBar.getProgressDrawable().setColorFilter(getResources().getColor(R.color.colorAccentGeneric), android.graphics.PorterDuff.Mode.SRC_IN);
 
+        nowPlayingFavButton.setOnLikeListener(new OnLikeListener() {
+            @Override
+            public void liked(LikeButton likeButton) {
+                Controls.favControl(VerticalSlidingDrawerBaseActivity.this);
+            }
+
+            @Override
+            public void unLiked(LikeButton likeButton) {
+                Controls.favControl(VerticalSlidingDrawerBaseActivity.this);
+            }
+        });
+
         nowPlayingSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
             @Override
@@ -360,7 +368,7 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
             @Override
             public void onClick(View v) {
                 final PopupMenu popup = new PopupMenu(v.getContext(), v);
-                popup.inflate(R.menu.song_item_menu);
+                popup.inflate(R.menu.song_item_menu_currently_playing);
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
@@ -377,24 +385,14 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
                                             .onPositive(new MaterialDialog.SingleButtonCallback() {
                                                 @Override
                                                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                                    new Thread(new Runnable() {
-                                                        @Override
-                                                        public void run() {
-                                                            File file = new File(MusicService.currentSong.getData());
-                                                            if (file.delete()) {
-                                                                Controls.nextControl(VerticalSlidingDrawerBaseActivity.this);
-                                                                PlayerConstants.getPlaylist().remove(PlayerConstants.SONG_NUMBER - 1);
-                                                                runOnUiThread(new Runnable() {
-                                                                    @Override
-                                                                    public void run() {
-                                                                        Toast.makeText(VerticalSlidingDrawerBaseActivity.this, "Song Deleted : \'" + MusicService.currentSong.getTitle() + "\'", Toast.LENGTH_SHORT).show();
-                                                                        VerticalSlidingDrawerBaseActivity.this.getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.MediaColumns._ID + "='" + MusicService.currentSong.getID() + "'", null);
-                                                                    }
-                                                                });
-                                                                AudioExtensionMethods.updateLists(VerticalSlidingDrawerBaseActivity.this);
-                                                            }
-                                                        }
-                                                    });
+                                                    File file = new File(MusicService.currentSong.getData());
+                                                    if (file.delete()) {
+                                                        SharedVariables.fullSongsList.remove(MusicService.currentSong);
+                                                        PlayerConstants.removeSongFromPlaylist(VerticalSlidingDrawerBaseActivity.this, PlayerConstants.SONG_NUMBER - 1);
+                                                        Controls.nextControl(VerticalSlidingDrawerBaseActivity.this);
+                                                        Toast.makeText(VerticalSlidingDrawerBaseActivity.this, "Song Deleted : \'" + MusicService.currentSong.getTitle() + "\'", Toast.LENGTH_SHORT).show();
+                                                        VerticalSlidingDrawerBaseActivity.this.getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.MediaColumns._ID + "='" + MusicService.currentSong.getID() + "'", null);
+                                                    }
                                                 }
                                             })
                                             .negativeText(R.string.cancel_text)
@@ -409,6 +407,10 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
                                     ShareIntentHelper.sendSong(VerticalSlidingDrawerBaseActivity.this, MusicService.currentSong.getTitle(), Uri.parse(MusicService.currentSong.getData()));
                                     break;
 
+                                case R.id.song_context_menu_quick_share:
+                                    ActivitySwitcher.jumpToQuickShareActivity(VerticalSlidingDrawerBaseActivity.this, MusicService.currentSong);
+                                    break;
+
                                 case R.id.song_context_menu_details:
                                     DialogHelper.songDetails(VerticalSlidingDrawerBaseActivity.this, MusicService.currentSong, MusicService.currentSong.getAlbumArtLocation());
                                     break;
@@ -418,7 +420,7 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
                                     break;
 
                                 case R.id.song_context_menu_tagEditor:
-                                    ActivitySwitcher.launchTagEditor(VerticalSlidingDrawerBaseActivity.this, MusicService.currentSong.getID(), PlayerConstants.SONG_NUMBER);
+                                    ActivitySwitcher.launchTagEditor(VerticalSlidingDrawerBaseActivity.this, MusicService.currentSong.getID(), MusicService.currentSong.getHashID());
                                     break;
 
                                 case R.id.song_context_menu_jump_to_album:
@@ -460,7 +462,6 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
                     if(currentPlayingSong != null){
                         if(mainLayoutRootLayout != null && mainLayoutRootLayout.getPanelState() == SlidingUpPanelLayout.PanelState.HIDDEN)
                             mainLayoutRootLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-                        setImagesInAlbumArtParallaxAdapater();
                         setNowPlayingAlbumArt(currentPlayingSong);
                         nowPlayingSongArtistTextView.setText(currentPlayingSong.getArtist());
                         nowPlayingSongMinimalArtistTextView.setText(currentPlayingSong.getArtist());
@@ -473,27 +474,13 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
                         nowPlayingSeekBar.setMax((int) currentPlayingSong.getDuration());
                         nowPlayingMaxDuration.setText(ExtensionMethods.formatIntoHHMMSS((int) currentPlayingSong.getDuration()));
 
-                        nowPlayingFavButton.setOnLikeListener(new OnLikeListener() {
-                            @Override
-                            public void liked(LikeButton likeButton) {
-                                Controls.favControl(VerticalSlidingDrawerBaseActivity.this);
-                            }
-
-                            @Override
-                            public void unLiked(LikeButton likeButton) {
-                                Controls.favControl(VerticalSlidingDrawerBaseActivity.this);
-                            }
-                        });
-                        if(NowPlayingPlaylistRecyclerViewAdapter != null)
-                            NowPlayingPlaylistRecyclerViewAdapter.notifyDataSetChanged();
-
+                        NowPlayingPlaylistRecyclerViewAdapter.notifyDataSetChanged();
                         nowPlayingPlaylistRecyclerView.scrollToPosition(PlayerConstants.SONG_NUMBER);
+                        changeButton();
                     }
 
                     else
-                        setEmptyNowPlayingScreen();
-
-                    changeButton();
+                        mainLayoutRootLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
                 }
 
                 catch (Exception ignored) {}
@@ -522,9 +509,6 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
     }
     public static void updateSongLikeStatus(Context context) {
         nowPlayingFavButton.setLiked(MusicService.currentSong.getIsLiked(context));
-    }
-    private void setEmptyNowPlayingScreen() {
-        mainLayoutRootLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
     }
     private void setNowPlayingAlbumArt(Song currentPlayingSong) {
 
@@ -661,7 +645,7 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
                     }
                 });
 
-                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && mainLayoutRootLayout.getPanelState() != SlidingUpPanelLayout.PanelState.COLLAPSED)
+                if (SharedPreferenceHelper.getColoredNavBarState(this) && android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && mainLayoutRootLayout.getPanelState() != SlidingUpPanelLayout.PanelState.COLLAPSED)
                     getWindow().setNavigationBarColor(toRGB);
 
                 animator.setStartDelay(0);
@@ -673,9 +657,6 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
                 nowPlayingColorPallatteView.setBackgroundColor(toRGB);
         }
         catch(Exception ignored){}
-
-    }
-    private void setImagesInAlbumArtParallaxAdapater(){
 
     }
     private void parallaxImages(int position, int positionOffsetPixels) {
@@ -721,15 +702,4 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
 
     }
     public void onPageScrollStateChanged(int state) {}
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        if(resultCode == Activity.RESULT_OK && requestCode == KeyConstants.REQUEST_CODE_DELETE_ALBUM){
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    AudioExtensionMethods.updateLists(VerticalSlidingDrawerBaseActivity.this);
-                }
-            });
-        }
-    }
 }

@@ -51,8 +51,6 @@ public class SmallAlbumAdapter extends ObservableRecyclerView.Adapter<SmallAlbum
         View view = inflater.inflate(R.layout.recycler_view_small_album_layout, parent, false);
         return new ArtistViewHolder(view);
     }
-
-    @Override
     public void onBindViewHolder(final ArtistViewHolder holder, int position) {
 
         final Album album = albumArrayList.get(position);
@@ -60,6 +58,9 @@ public class SmallAlbumAdapter extends ObservableRecyclerView.Adapter<SmallAlbum
         setAlbumArt(holder, album);
         setColor(holder, album);
         setOnclickListener(holder, album);
+    }
+    public int getItemCount() {
+        return albumArrayList.size();
     }
 
     private void setOnclickListener(final ArtistViewHolder holder, final Album album) {
@@ -115,11 +116,6 @@ public class SmallAlbumAdapter extends ObservableRecyclerView.Adapter<SmallAlbum
 
         catch (Exception ignored){}
 
-    }
-
-    @Override
-    public int getItemCount() {
-        return albumArrayList.size();
     }
 
     public class ArtistViewHolder extends RecyclerView.ViewHolder {

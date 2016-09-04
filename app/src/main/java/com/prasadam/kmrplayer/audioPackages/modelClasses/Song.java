@@ -2,6 +2,8 @@ package com.prasadam.kmrplayer.AudioPackages.modelClasses;
 
 import android.content.Context;
 
+import com.prasadam.kmrplayer.SubClasses.CustomArrayList.SongsArrayList;
+
 import static com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods.isSongFavorite;
 import static com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods.setSongFavorite;
 
@@ -15,7 +17,7 @@ public class Song{
     private String title, artist, album, data, albumArtLocation, hashID;
     public int repeatCount;
 
-    public Song(long songID, String songTitle, String songArtist, String artistID, String songAlbum, String albumID, long songDuration, String songData, String albumArtLocation, String hashID) {
+    public Song(long songID, String songTitle, String songArtist, String songAlbum, long songDuration, String songData, String albumArtLocation, String hashID) {
 
         this.id = songID;
         this.title = songTitle;
@@ -38,5 +40,5 @@ public class Song{
     public void setIsLiked(Context context, boolean value) {
         setSongFavorite(context, hashID, value);
     }
-    public String getHashID(){return hashID;};
+    public String getHashID(){return hashID;}
 }

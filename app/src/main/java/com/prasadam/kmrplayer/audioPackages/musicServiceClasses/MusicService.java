@@ -26,9 +26,11 @@ import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 import com.prasadam.kmrplayer.Adapters.UIAdapters.AchievementUnlocked;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
+import com.prasadam.kmrplayer.AudioPackages.BlurBuilder;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedPreferences.SharedPreferenceHelper;
@@ -82,7 +84,7 @@ public class MusicService extends Service implements
 
         if(PlayerConstants.SONG_NUMBER < PlayerConstants.getPlaylistSize()){
             try {
-                currentSong = PlayerConstants.getPlaylist().get(PlayerConstants.SONG_NUMBER);
+                currentSong = PlayerConstants.getPlayList().get(PlayerConstants.SONG_NUMBER);
                 player.reset();
                 player.setDataSource(currentSong.getData());
                 player.prepare();
@@ -128,18 +130,16 @@ public class MusicService extends Service implements
             if(currentVersionSupportLockScreenControls)
                 RegisterRemoteClient();
 
-
-            Log.d("Service started", "service");
             PlayerConstants.SONG_CHANGE_HANDLER = new Handler(new Callback() {
                 @Override
                 public boolean handleMessage(Message msg) {
                     try{
-                        Song song = PlayerConstants.getPlaylist().get(PlayerConstants.SONG_NUMBER);
+                        Song song = PlayerConstants.getPlayList().get(PlayerConstants.SONG_NUMBER);
                         String songPath = song.getData();
                         newNotification();
                         try{
                             currentSong = song;
-                            playSong(songPath, song);
+                            playCurrentSong(songPath);
                             PlayerConstants.SONG_PAUSED = false;
                             VerticalSlidingDrawerBaseActivity.changeButton();
                             Controls.updateNowPlayingUI();
@@ -161,18 +161,15 @@ public class MusicService extends Service implements
                         return false;
                     if(message.equalsIgnoreCase(getResources().getString(R.string.play))){
                         PlayerConstants.SONG_PAUSED = false;
-                        if(currentVersionSupportLockScreenControls){
-                            UpdateMetadata(currentSong);
+                        if(currentVersionSupportLockScreenControls && remoteControlClient != null)
                             remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PLAYING);
-                        }
+
                         player.start();
                     }else if(message.equalsIgnoreCase(getResources().getString(R.string.pause))){
-                        PlayerConstants.SONG_PAUSED = true;
-                        if(currentVersionSupportLockScreenControls){
-                            UpdateMetadata(currentSong);
-                            remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PAUSED);
-                        }
                         player.pause();
+                        PlayerConstants.SONG_PAUSED = true;
+                        if(currentVersionSupportLockScreenControls && remoteControlClient != null)
+                            remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PAUSED);
                     }
                     try{
                         newNotification();
@@ -201,10 +198,16 @@ public class MusicService extends Service implements
         try{
             if(remoteControlClient == null) {
                 audioManager.registerMediaButtonEventReceiver(remoteComponentName);
+
                 Intent mediaButtonIntent = new Intent(Intent.ACTION_MEDIA_BUTTON);
                 mediaButtonIntent.setComponent(remoteComponentName);
+
                 IntentFilter filter = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
                 registerReceiver(notificationBroadcast, filter);
+
+                IntentFilter intentFilter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
+                registerReceiver(notificationBroadcast, intentFilter);
+
                 PendingIntent mediaPendingIntent = PendingIntent.getBroadcast(this, 0, mediaButtonIntent, 0);
                 remoteControlClient = new RemoteControlClient(mediaPendingIntent);
                 audioManager.registerRemoteControlClient(remoteControlClient);
@@ -222,34 +225,38 @@ public class MusicService extends Service implements
         catch (Exception ignored){}
 
     }
-    private void UpdateMetadata(Song song){
+    private void UpdateMetadata(){
 
-        currentSong = song;
-        if(currentSong != null){
+        if(currentVersionSupportLockScreenControls){
 
-            Controls.updateNowPlayingUI();
-            if (remoteControlClient == null)
-                return;
+            if(currentSong != null){
+                if (remoteControlClient == null)
+                    return;
 
-            RemoteControlClient.MetadataEditor metadataEditor = remoteControlClient.editMetadata(true);
-            metadataEditor.putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, song.getAlbum());
-            metadataEditor.putLong(MediaMetadataRetriever.METADATA_KEY_DURATION, song.getDuration());
-            metadataEditor.putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, song.getArtist());
-            metadataEditor.putString(MediaMetadataRetriever.METADATA_KEY_TITLE, song.getTitle());
-            Bitmap mDummyAlbumArt = AudioExtensionMethods.getBitMap(getBaseContext(), song.getAlbumArtLocation());
-            if(mDummyAlbumArt == null)
-                mDummyAlbumArt = BitmapFactory.decodeResource(getResources(), R.mipmap.unkown_album_art);
-            metadataEditor.putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, mDummyAlbumArt);
-            metadataEditor.apply();
-            audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+                RemoteControlClient.MetadataEditor metadataEditor = remoteControlClient.editMetadata(true);
+                metadataEditor.putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, currentSong.getAlbum());
+                metadataEditor.putLong(MediaMetadataRetriever.METADATA_KEY_DURATION, currentSong.getDuration());
+                metadataEditor.putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, currentSong.getArtist());
+                metadataEditor.putString(MediaMetadataRetriever.METADATA_KEY_TITLE, currentSong.getTitle());
+                if(SharedPreferenceHelper.getLockScreenAlbumArtState(getContext())){
+                    Bitmap mDummyAlbumArt = AudioExtensionMethods.getBitMap(getBaseContext(), currentSong.getAlbumArtLocation());
+                    if(mDummyAlbumArt == null)
+                        mDummyAlbumArt = BitmapFactory.decodeResource(getResources(), R.mipmap.unkown_album_art);
+
+                    if(SharedPreferenceHelper.getBlurAlbumArtState(getContext()))
+                        mDummyAlbumArt = BlurBuilder.blur(getContext(), mDummyAlbumArt);
+                    metadataEditor.putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, mDummyAlbumArt);
+                }
+                metadataEditor.apply();
+                audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+            }
         }
     }
-    private void playSong(String songPath, Song song) {
+    private void playCurrentSong(String songPath) {
         try {
-            if(currentVersionSupportLockScreenControls){
-                UpdateMetadata(song);
+            if(currentVersionSupportLockScreenControls && remoteControlClient != null)
                 remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PLAYING);
-            }
+
             player.reset();
             player.setDataSource(songPath);
             player.prepare();
@@ -260,11 +267,13 @@ public class MusicService extends Service implements
             historyHandler = new Handler();
             historyHandler.postDelayed(historyRunnable, 10000);
         } catch (IOException e) {
-            e.printStackTrace();
+            Toast.makeText(MusicService.this, "Error playing song", Toast.LENGTH_SHORT).show();
         }
     }
     private void newNotification() {
-        currentSong = PlayerConstants.getPlaylist().get(PlayerConstants.SONG_NUMBER);
+
+        currentSong = PlayerConstants.getPlayList().get(PlayerConstants.SONG_NUMBER);
+        UpdateMetadata();
         updateWidget();
         RemoteViews smallView = new RemoteViews(getPackageName(), R.layout.notification);
         smallView.setTextViewText(R.id.notification_song_name, currentSong.getTitle());
@@ -346,28 +355,30 @@ public class MusicService extends Service implements
     }
 
     private void showAchivementUnlocked() {
-        if(PlayerConstants.SONG_NUMBER + 1 < PlayerConstants.getPlaylistSize()){
-            Song nextSong = PlayerConstants.getPlaylist().get(PlayerConstants.SONG_NUMBER + 1);
-            if(nextSong != null){
-                Bitmap albumArt = AudioExtensionMethods.getBitMap(nextSong.getAlbumArtLocation());
-                if(albumArt != null)
-                    new AchievementUnlocked(getApplicationContext())
-                            .setTitle(nextSong.getTitle())
-                            .setTitleColor(getContext().getResources().getColor(R.color.white))
-                            .setBackgroundColor(getContext().getResources().getColor(R.color.launcher_background_color))
-                            .setIcon(new BitmapDrawable(albumArt))
-                            .setSubTitle(nextSong.getArtist())
-                            .setSubtitleColor(getContext().getResources().getColor(R.color.layout_Background)).isLarge(false).build().show();
-                else
-                    new AchievementUnlocked(getApplicationContext())
-                            .setTitle(nextSong.getTitle())
-                            .setTitleColor(getContext().getResources().getColor(R.color.white))
-                            .setBackgroundColor(getContext().getResources().getColor(R.color.launcher_background_color))
-                            .setIcon(getDrawable(R.mipmap.launcher_icon))
-                            .setSubTitle(nextSong.getArtist())
-                            .setSubtitleColor(getContext().getColor(R.color.layout_Background)).isLarge(false).build().show();
+
+        if(SharedPreferenceHelper.getFlaotingNotificationsState(getContext()))
+            if(PlayerConstants.SONG_NUMBER + 1 < PlayerConstants.getPlaylistSize()){
+                Song nextSong = PlayerConstants.getPlayList().get(PlayerConstants.SONG_NUMBER + 1);
+                if(nextSong != null){
+                    Bitmap albumArt = AudioExtensionMethods.getBitMap(nextSong.getAlbumArtLocation());
+                    if(albumArt != null)
+                        new AchievementUnlocked(getApplicationContext())
+                                .setTitle(nextSong.getTitle())
+                                .setTitleColor(getContext().getResources().getColor(R.color.white))
+                                .setBackgroundColor(getContext().getResources().getColor(R.color.launcher_background_color))
+                                .setIcon(new BitmapDrawable(albumArt))
+                                .setSubTitle(nextSong.getArtist())
+                                .setSubtitleColor(getContext().getResources().getColor(R.color.layout_Background)).isLarge(false).build().show();
+                    else
+                        new AchievementUnlocked(getApplicationContext())
+                                .setTitle(nextSong.getTitle())
+                                .setTitleColor(getContext().getResources().getColor(R.color.white))
+                                .setBackgroundColor(getContext().getResources().getColor(R.color.launcher_background_color))
+                                .setIcon(getDrawable(R.mipmap.launcher_icon))
+                                .setSubTitle(nextSong.getArtist())
+                                .setSubtitleColor(getContext().getColor(R.color.layout_Background)).isLarge(false).build().show();
+                }
             }
-        }
     }
 
     public boolean onError(MediaPlayer mp, int what, int extra) {
@@ -405,8 +416,9 @@ public class MusicService extends Service implements
                 break;
 
                 case AudioManager.AUDIOFOCUS_LOSS:
-                    if(!PlayerConstants.SONG_PAUSED)
+                    if(!PlayerConstants.SONG_PAUSED){
                         Controls.pauseControl(getContext());
+                    }
                     break;
 
                 case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
@@ -447,7 +459,6 @@ public class MusicService extends Service implements
                 try {
                     SocketExtensionMethods.stopNSDServies();
                     Thread.sleep(5000);
-                    Log.d("testing", "closed nsd services");
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

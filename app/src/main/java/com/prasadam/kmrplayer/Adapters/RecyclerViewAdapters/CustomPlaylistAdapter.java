@@ -21,7 +21,7 @@ import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.BlurBuilder;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.DBHelper;
-import com.prasadam.kmrplayer.UI.Activities.Playlist.PlaylistHelpers.CustomPlaylistInnerActivity;
+import com.prasadam.kmrplayer.UI.Activities.Playlist.CustomPlaylistInnerActivity;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ public class CustomPlaylistAdapter extends RecyclerView.Adapter<CustomPlaylistAd
 
     private LayoutInflater inflater;
     private Context context;
-    ArrayList<String> playlistNamesList;
+    private ArrayList<String> playlistNamesList;
 
     public CustomPlaylistAdapter(Context context, ArrayList<String> playlistNames){
         this.context = context;
@@ -52,8 +52,6 @@ public class CustomPlaylistAdapter extends RecyclerView.Adapter<CustomPlaylistAd
         View view = inflater.inflate(R.layout.recycler_view_custom_playlist_layout, parent, false);
         return new songsViewHolder(view);
     }
-
-    @Override
     public void onBindViewHolder(final songsViewHolder holder, final int position) {
         try{
             final String playlistName = playlistNamesList.get(position);
@@ -79,12 +77,13 @@ public class CustomPlaylistAdapter extends RecyclerView.Adapter<CustomPlaylistAd
             else{
                 ArrayList<String> albumArtPathList = getAlbumArtsForPlaylistCover(context, playlistName);
                 setAlbumArt(holder, albumArtPathList);
-            } //else
-
-
+            }
         }
 
         catch (Exception ignored){}
+    }
+    public int getItemCount() {
+        return playlistNamesList.size();
     }
 
     private void setAlbumArt(songsViewHolder holder, ArrayList<String> albumArtPathList) {
@@ -137,7 +136,6 @@ public class CustomPlaylistAdapter extends RecyclerView.Adapter<CustomPlaylistAd
             }
         }
     }
-
     private void addContextMenu(songsViewHolder holder, final String playlistName) {
         holder.contextMenu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,13 +159,12 @@ public class CustomPlaylistAdapter extends RecyclerView.Adapter<CustomPlaylistAd
                                                 public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
 
                                                     String newName = String.valueOf(input);
-                                                    String oldName = playlistName;
-                                                    if(newName.equals(oldName))
+                                                    if(newName.equals(playlistName))
                                                         Toast.makeText(context , "Provide a different name!!!", Toast.LENGTH_SHORT).show();
 
                                                     else{
                                                         DBHelper dbHelper = new DBHelper(context);
-                                                        if(dbHelper.renamePlaylist(oldName, newName)){
+                                                        if(dbHelper.renamePlaylist(playlistName, newName)){
                                                             Toast.makeText(context, "Name changed successfully", Toast.LENGTH_SHORT).show();
                                                             playlistNamesList = AudioExtensionMethods.getCustomPlaylistNames(context);
                                                             notifyDataSetChanged();
@@ -193,14 +190,6 @@ public class CustomPlaylistAdapter extends RecyclerView.Adapter<CustomPlaylistAd
         });
     }
 
-    @Override
-    public int getItemCount() {
-        return playlistNamesList.size();
-    }
-
-    /// <summary>RecyclerView view holder (Inner class)
-    /// <para>creates a view holder for individual song</para>
-    /// </summary>
     class songsViewHolder extends RecyclerView.ViewHolder{
 
         @Bind (R.id.background_image_view) ImageView blurredBckgorundImageView;

@@ -35,7 +35,7 @@
                 android:id="@+id/now_playing_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
-                app:theme="@style/TransperantToolbar"
+                android:theme="@style/TransperantToolbar"
                 app:popupTheme="@style/AppTheme.PopupOverlay">
 
             </android.support.v7.widget.Toolbar>

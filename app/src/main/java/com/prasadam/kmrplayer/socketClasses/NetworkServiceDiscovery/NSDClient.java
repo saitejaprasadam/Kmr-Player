@@ -17,12 +17,15 @@ import java.util.ArrayList;
 
 public class NSDClient {
 
-    private static String SERVICE_NAME = ExtensionMethods.deviceName();
+    private static String SERVICE_NAME;
     private static String SERVICE_TYPE = "_kmr._tcp.";
     public static NsdManager mNsdManager;
     public static ArrayList<NSD> devicesList = new ArrayList<>();
+    private static Context context;
 
-    public static void startSearch(Context context){
+    public static void startSearch(Context c){
+        context = c;
+        SERVICE_NAME = ExtensionMethods.deviceName(context);
         mNsdManager = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
         mNsdManager.discoverServices(SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, mDiscoveryListener);
     }
@@ -117,7 +120,7 @@ public class NSDClient {
             }
 
             if(!found){
-                devicesList.add(new NSD(serviceInfo));
+                devicesList.add(new NSD(context, serviceInfo));
                 NearbyDevicesActivity.updateAdapater();
                 QuickShareActivity.updateAdapater();
             }

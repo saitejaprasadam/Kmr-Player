@@ -25,7 +25,7 @@ public class SocketsKeyConstants {
     public static final int TRANSFER_BUFFER_SIZE = 1024 * 50;
     public static final String PLAYER_DIRECTORY_PATH = Environment.getExternalStorageDirectory().getAbsolutePath()
             + File.separator
-            + "Smart cast";
+            + "kmr player";
 
     public static final String SOCKET_RESULT_OK = "SOCKET_RESULT_OK";
     public static final String SOCKET_RESULT_CANCEL = "SOCKET_RESULT_CANCEL";

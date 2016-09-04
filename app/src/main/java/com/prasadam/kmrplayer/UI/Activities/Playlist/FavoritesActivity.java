@@ -1,5 +1,6 @@
 package com.prasadam.kmrplayer.UI.Activities.Playlist;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.GridLayoutManager;
@@ -19,18 +20,14 @@ import com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.SongsAdapter.UnifedS
 import com.prasadam.kmrplayer.Adapters.UIAdapters.DividerItemDecoration;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicPlayerExtensionMethods;
-import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.ListenerClasses.SongsSearchListener;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
+import com.prasadam.kmrplayer.SubClasses.CustomArrayList.SongsArrayList;
 import com.prasadam.kmrplayer.UI.Activities.VerticalSlidingDrawerBaseActivity;
-
-import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-
-import static com.prasadam.kmrplayer.SharedClasses.ExtensionMethods.setStatusBarTranslucent;
 
 /*
  * Created by Prasadam Saiteja on 5/28/2016.
@@ -42,7 +39,7 @@ public class FavoritesActivity extends VerticalSlidingDrawerBaseActivity {
     @Bind(R.id.favorites_recycler_view) RecyclerView recyclerView;
     @Bind(R.id.fragment_container) FrameLayout fragmentContainer;
 
-    private ArrayList<Song> favoriteSongList;
+    private SongsArrayList favoriteSongList;
     private UnifedSongAdapter FavoritesActivityrecyclerViewAdapter;
     private Menu mOptionsMenu;
 
@@ -53,7 +50,7 @@ public class FavoritesActivity extends VerticalSlidingDrawerBaseActivity {
         recyclerView = (RecyclerView) findViewById(R.id.favorites_recycler_view);
 
         ActivityHelper.setCustomActionBar(FavoritesActivity.this);
-        setStatusBarTranslucent(FavoritesActivity.this);
+        ExtensionMethods.setStatusBarTranslucent(this, findViewById(R.id.colored_status_bar));
         ActivityHelper.setDisplayHome(this);
 
         final MaterialDialog loading = new MaterialDialog.Builder(this)
@@ -64,10 +61,37 @@ public class FavoritesActivity extends VerticalSlidingDrawerBaseActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                favoriteSongList = AudioExtensionMethods.getFavoriteSongsList(FavoritesActivity.this);
 
-                if(favoriteSongList.size() == 0)
+                favoriteSongList = new SongsArrayList(AudioExtensionMethods.getFavoriteSongsList(FavoritesActivity.this)) {
+                    @Override
+                    public void notifyDataSetChanged() {
+                        if(FavoritesActivityrecyclerViewAdapter != null)
+                            FavoritesActivityrecyclerViewAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void notifyItemRemoved(int index) {
+                        if(FavoritesActivityrecyclerViewAdapter != null)
+                            FavoritesActivityrecyclerViewAdapter.notifyItemRemoved(index);
+                    }
+
+                    @Override
+                    public void notifyItemInserted(int index) {
+                        if(FavoritesActivityrecyclerViewAdapter != null)
+                            FavoritesActivityrecyclerViewAdapter.notifyItemInserted(index);
+                    }
+
+                    @Override
+                    public void notifyItemChanged(int index) {
+                        if(FavoritesActivityrecyclerViewAdapter != null)
+                            FavoritesActivityrecyclerViewAdapter.notifyItemChanged(index);
+                    }
+                } ;
+
+                if(favoriteSongList.size() == 0){
                     ActivityHelper.showEmptyFragment(FavoritesActivity.this, getResources().getString(R.string.no_fav_songs_text), fragmentContainer);
+                    loading.dismiss();
+                }
 
                 else{
                     runOnUiThread(new Runnable() {
@@ -159,5 +183,8 @@ public class FavoritesActivity extends VerticalSlidingDrawerBaseActivity {
                 break;
         }
         return true;
+    }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        ActivityHelper.onActivityResultMethod(this, requestCode, resultCode, data, favoriteSongList);
     }
 }

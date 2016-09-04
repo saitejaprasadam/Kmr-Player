@@ -1,5 +1,6 @@
 package com.prasadam.kmrplayer.SocketClasses.NetworkServiceDiscovery;
 
+import android.content.Context;
 import android.net.nsd.NsdServiceInfo;
 
 import com.prasadam.kmrplayer.SocketClasses.SocketExtensionMethods;
@@ -15,11 +16,11 @@ public class NSD {
     private String DEVICE_MAC_ADDRESS = null;
     private String currentSongPlaying = null;
 
-    public NSD(NsdServiceInfo NSDClient){
+    public NSD(Context context, NsdServiceInfo NSDClient){
         this.NSDClient = NSDClient;
-        SocketExtensionMethods.requestForDeviceType(NSDClient);
-        SocketExtensionMethods.requestForCurrentSongPlaying(NSDClient);
-        SocketExtensionMethods.requestForMacAddress(NSDClient);
+        SocketExtensionMethods.requestForDeviceType(context, NSDClient);
+        SocketExtensionMethods.requestForCurrentSongPlaying(context, NSDClient);
+        SocketExtensionMethods.requestForMacAddress(context, NSDClient);
     }
     public String GetDeviceType(){ return DEVICE_TYPE; }
 
@@ -30,7 +31,6 @@ public class NSD {
     public String getHostAddress(){
         return NSDClient.getHost().toString().replace("/", "");
     }
-
     public void setCurrentSongPlaying(String currentSongPlaying){
         this.currentSongPlaying = currentSongPlaying;
     }
@@ -38,7 +38,6 @@ public class NSD {
     public void setMacAddress(String MacAddress){
         DEVICE_MAC_ADDRESS = MacAddress;
     }
-
     public String getMacAddress(){
         return DEVICE_MAC_ADDRESS;
     }

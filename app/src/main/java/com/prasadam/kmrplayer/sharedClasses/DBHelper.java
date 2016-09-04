@@ -164,7 +164,6 @@ public class DBHelper extends SQLiteOpenHelper {
         cur.close();
         rdb.close();
         wdb.close();
-        return;
     }
 
     public boolean isFavorite(String songHashID){
@@ -260,10 +259,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 if(musicCursor!=null && musicCursor.moveToFirst()){
 
                     String thisTitle = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
-                    String thisArtistID = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID));
                     String thisArtist = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
                     String thisAlbum = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
-                    String thisAlbumID = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
                     long thisDuration = musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
                     String thisdata = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.DATA));
                     String albumID = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
@@ -279,7 +276,7 @@ public class DBHelper extends SQLiteOpenHelper {
                         albumArtCursor.close();
                     }
 
-                    Song song = new Song(songID, thisTitle, thisArtist, thisArtistID, thisAlbum, thisAlbumID, thisDuration, thisdata, albumArtPath, songHashID);
+                    Song song = new Song(songID, thisTitle, thisArtist, thisAlbum, thisDuration, thisdata, albumArtPath, songHashID);
                     song.repeatCount = cursor.getInt(0);
                     mostPlayedSongs.add(song);
 
@@ -322,7 +319,6 @@ public class DBHelper extends SQLiteOpenHelper {
         rdb.close();
         return false;
     }
-
     public ArrayList<String> getCustomPlaylistNames() {
 
         ArrayList<String> customPlaylistNames = new ArrayList<>();
@@ -339,7 +335,6 @@ public class DBHelper extends SQLiteOpenHelper {
         rdb.close();
         return customPlaylistNames;
     }
-
     public int getSongCountInPlaylist(String playlistName) {
 
         SQLiteDatabase rdb = this.getReadableDatabase();
@@ -361,12 +356,23 @@ public class DBHelper extends SQLiteOpenHelper {
         rdb.close();
         return 0;
     }
-
     public boolean addSongToPlaylist(String playlistName, String songHashID) {
 
         try{
             SQLiteDatabase wdb = this.getWritableDatabase();
             wdb.execSQL("insert into '" + playlistName + "' values('" + songHashID + "')");
+            wdb.close();
+            return true;
+        }
+
+        catch (Exception e){
+            return false;
+        }
+    }
+    public boolean removeSongFromPlaylist(String playlist, String hashID) {
+        try{
+            SQLiteDatabase wdb = this.getWritableDatabase();
+            wdb.execSQL("delete from '"+ playlist + "' where " + ID_COLUMN_NAME + " = '" + hashID + "'");
             wdb.close();
             return true;
         }
@@ -469,22 +475,5 @@ public class DBHelper extends SQLiteOpenHelper {
 
         db.close();
         return songsHashID;
-    }
-
-    public long getLastPlayedSong() {
-        SQLiteDatabase rdb = this.getReadableDatabase();
-        Cursor cursor =  rdb.rawQuery( "select hashID from " + HISTORY_TABLE_NAME, null );
-
-        if(cursor != null && cursor.moveToLast()) {
-            String songHashID = cursor.getString(cursor.getColumnIndex(ID_COLUMN_NAME));
-            long songID = getSongID(songHashID);
-            cursor.close();
-            rdb.close();
-            return songID;
-        }
-
-        rdb.close();
-        return 0;
-
     }
 }

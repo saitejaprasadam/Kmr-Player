@@ -7,12 +7,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 
-import com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.SongsAdapter.CustomPlaylistSongsRecylcerViewAdapter;
-import com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.SongsAdapter.FavoritesRecyclerViewAdapter;
 import com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.SongsAdapter.UnifedSongAdapter;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
-import com.prasadam.kmrplayer.UI.Activities.Playlist.PlaylistHelpers.CustomPlaylistInnerActivity;
+import com.prasadam.kmrplayer.SubClasses.CustomArrayList.SongsArrayList;
 
 import java.util.ArrayList;
 
@@ -22,52 +20,45 @@ import java.util.ArrayList;
 
 public class SongsSearchListener implements SearchView.OnQueryTextListener {
 
-
     private Context context;
     private ArrayList<Song> songsList;
     private RecyclerView recyclerView;
     private UnifedSongAdapter recRecyclerViewAdapter;
-    private FavoritesRecyclerViewAdapter favRecyclerViewAdapter;
-    private CustomPlaylistSongsRecylcerViewAdapter customPlaylistSongsRecylcerViewAdapter;
-    private int adapterValue;
 
     public SongsSearchListener(Context context, ArrayList<Song> songsList, RecyclerView recyclerView, UnifedSongAdapter recyclerViewAdapter) {
-
         this.context = context;
         this.songsList = songsList;
         this.recyclerView = recyclerView;
         this.recRecyclerViewAdapter = recyclerViewAdapter;
-        adapterValue = 1;
     }
-
-    public SongsSearchListener(Context context, ArrayList<Song> songsList, RecyclerView recyclerView, FavoritesRecyclerViewAdapter recyclerViewAdapter) {
-
-        this.context = context;
-        this.songsList = songsList;
-        this.recyclerView = recyclerView;
-        this.favRecyclerViewAdapter = recyclerViewAdapter;
-        adapterValue = 2;
-    }
-
-    public SongsSearchListener(CustomPlaylistInnerActivity customPlaylistInnerActivity, ArrayList<Song> songsList, RecyclerView customPlaylistInnerRecyclerView, CustomPlaylistSongsRecylcerViewAdapter customPlaylistSongsRecylcerViewAdapter) {
-
-        this.context = customPlaylistInnerActivity;
-        this.songsList = songsList;
-        this.recyclerView = customPlaylistInnerRecyclerView;
-        this.customPlaylistSongsRecylcerViewAdapter = customPlaylistSongsRecylcerViewAdapter;
-        adapterValue = 3;
-    }
-
 
     @Override
     public boolean onQueryTextSubmit(String query) {
         return true;
     }
-
-    @Override
     public boolean onQueryTextChange(String searchString) {
         searchString = searchString.toLowerCase();
-        final ArrayList<Song> filteredList = new ArrayList<>();
+        final SongsArrayList filteredList = new SongsArrayList() {
+            @Override
+            public void notifyDataSetChanged() {
+
+            }
+
+            @Override
+            public void notifyItemRemoved(int index) {
+
+            }
+
+            @Override
+            public void notifyItemInserted(int index) {
+
+            }
+
+            @Override
+            public void notifyItemChanged(int index) {
+
+            }
+        };
 
         for (Song song : songsList) {
             if(song.getTitle().toLowerCase().contains(searchString))
@@ -75,24 +66,8 @@ public class SongsSearchListener implements SearchView.OnQueryTextListener {
         }
 
         Activity applicationContext = (Activity) context;
-
-        switch (adapterValue)
-        {
-            case 1:
-                recRecyclerViewAdapter = new UnifedSongAdapter(applicationContext, filteredList);
-                recyclerView.setAdapter(recRecyclerViewAdapter);
-                break;
-
-            case 2:
-                favRecyclerViewAdapter = new FavoritesRecyclerViewAdapter(applicationContext, filteredList);
-                recyclerView.setAdapter(favRecyclerViewAdapter);
-                break;
-
-            case 3:
-                customPlaylistSongsRecylcerViewAdapter = new CustomPlaylistSongsRecylcerViewAdapter(applicationContext, filteredList);
-                recyclerView.setAdapter(customPlaylistSongsRecylcerViewAdapter);
-                break;
-        }
+        recRecyclerViewAdapter = new UnifedSongAdapter(applicationContext, filteredList);
+        recyclerView.setAdapter(recRecyclerViewAdapter);
 
         if (!ExtensionMethods.isTablet(applicationContext))
         {

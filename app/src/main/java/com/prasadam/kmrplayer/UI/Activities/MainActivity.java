@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -19,6 +20,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.prasadam.kmrplayer.ActivityHelperClasses.ActivityHelper;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.Controls;
@@ -27,11 +30,9 @@ import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
+import com.prasadam.kmrplayer.SharedPreferences.SharedPreferenceHelper;
 import com.prasadam.kmrplayer.SocketClasses.SocketExtensionMethods;
 import com.prasadam.kmrplayer.UI.Activities.HelperActivities.AppIntroActivity;
-import com.prasadam.kmrplayer.UI.Fragments.AlbumsFragment;
-import com.prasadam.kmrplayer.UI.Fragments.ArtistFragment;
-import com.prasadam.kmrplayer.UI.Fragments.SongsFragment;
 import com.prasadam.kmrplayer.UI.Fragments.TabFragment;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
@@ -41,10 +42,10 @@ public class MainActivity extends VerticalSlidingDrawerBaseActivity implements N
         checkInitalLaunch();
         setTheme(R.style.MainActivityNoActionBar);
         super.onCreate(savedInstanceState);
-
         SharedVariables.Initializers(this);
         setContentView(R.layout.activity_main);
 
+        SocketExtensionMethods.startNSDServices(this);
         Intent intent = getIntent();
         if (intent != null && MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
@@ -57,14 +58,15 @@ public class MainActivity extends VerticalSlidingDrawerBaseActivity implements N
         new Thread(new Runnable() {
             @Override
             public void run() {
+
                 SharedPreferences getPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-                boolean isFirstStart = getPrefs.getBoolean("testFirstStart2", true);
+                boolean isFirstStart = getPrefs.getBoolean("FirstStart", true);
 
                 if (isFirstStart) {
                     Intent i = new Intent(MainActivity.this, AppIntroActivity.class);
                     startActivity(i);
                     SharedPreferences.Editor e = getPrefs.edit();
-                    e.putBoolean("testFirstStart2", false);
+                    e.putBoolean("FirstStart", false);
                     e.apply();
                 }
             }
@@ -137,10 +139,6 @@ public class MainActivity extends VerticalSlidingDrawerBaseActivity implements N
                 ActivitySwitcher.jumpToAvaiableDevies(MainActivity.this);
                 break;
 
-            case R.id.action_sort:
-                super.onOptionsItemSelected(item);
-                break;
-
             default:
                 Toast.makeText(MainActivity.this, "Pending", Toast.LENGTH_SHORT).show();
         }
@@ -159,12 +157,24 @@ public class MainActivity extends VerticalSlidingDrawerBaseActivity implements N
     }
 
     private void initalizer() {
+        if(SharedPreferenceHelper.getUserName(this) == null)
+            new MaterialDialog.Builder(this)
+                    .title(R.string.Display_Name)
+                    .content(R.string.Enter_name_desc)
+                    .cancelable(false)
+                    .inputRange(4, 25)
+                    .input(R.string.name_text, R.string.empty, new MaterialDialog.InputCallback() {
+                        @Override
+                        public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
+                            SharedPreferenceHelper.setUsername(getBaseContext(), String.valueOf(input));
+                            Toast.makeText(getBaseContext(), "Reboot application to apply changes", Toast.LENGTH_LONG).show();
+                        }
+                    }).show();
 
         createTabFragment();
         setNavigationDrawer();
-        ExtensionMethods.setStatusBarTranslucent(MainActivity.this);
+        ExtensionMethods.setStatusBarTranslucent_PreLollipop(MainActivity.this);
         MusicPlayerExtensionMethods.startMusicService(MainActivity.this);
-        SocketExtensionMethods.startNSDServices(this);
     }
     private void createTabFragment() {
         FragmentManager mFragmentManager = getSupportFragmentManager();
@@ -208,5 +218,8 @@ public class MainActivity extends VerticalSlidingDrawerBaseActivity implements N
                     Toast.makeText(MainActivity.this, "Songs lists updated, no new songs found", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        ActivityHelper.onActivityResultMethod(this, requestCode, resultCode, data, null);
     }
 }

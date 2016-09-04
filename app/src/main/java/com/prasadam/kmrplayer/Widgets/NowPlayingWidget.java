@@ -84,50 +84,52 @@ public class NowPlayingWidget extends AppWidgetProvider {
     }
     private void setWidgetDetails(Context context, RemoteViews remoteViews) {
 
-        Bitmap albumArt = AudioExtensionMethods.getBitMap(MusicService.currentSong.getAlbumArtLocation());
-        if(albumArt != null)
-            remoteViews.setImageViewBitmap(R.id.widget_now_playing_album_art, albumArt);
-        else if(context != null)
-            remoteViews.setImageViewBitmap(R.id.widget_now_playing_album_art, AudioExtensionMethods.getBitMap(context ,MusicService.currentSong.getAlbumArtLocation()));
+        if(MusicService.currentSong != null){
+            Bitmap albumArt = AudioExtensionMethods.getBitMap(MusicService.currentSong.getAlbumArtLocation());
+            if(albumArt != null)
+                remoteViews.setImageViewBitmap(R.id.widget_now_playing_album_art, albumArt);
+            else if(context != null)
+                remoteViews.setImageViewBitmap(R.id.widget_now_playing_album_art, AudioExtensionMethods.getBitMap(context ,MusicService.currentSong.getAlbumArtLocation()));
 
-        remoteViews.setTextViewText(R.id.widget_song_name, MusicService.currentSong.getTitle());
-        remoteViews.setTextViewText(R.id.widget_artist_name, MusicService.currentSong.getArtist());
+            remoteViews.setTextViewText(R.id.widget_song_name, MusicService.currentSong.getTitle());
+            remoteViews.setTextViewText(R.id.widget_artist_name, MusicService.currentSong.getArtist());
 
-        remoteViews.setOnClickPendingIntent(R.id.widget_now_playing_album_art, getPendingSelfIntent(context, NOW_PLAYING_WIDGET_INTENT_LAUNCH));
+            remoteViews.setOnClickPendingIntent(R.id.widget_now_playing_album_art, getPendingSelfIntent(context, NOW_PLAYING_WIDGET_INTENT_LAUNCH));
 
-        Intent previous = new Intent(MusicService.NOTIFY_PREVIOUS);
-        Intent fav = new Intent(MusicService.NOTIFY_FAV);
-        Intent pause = new Intent(MusicService.NOTIFY_PAUSE);
-        Intent next = new Intent(MusicService.NOTIFY_NEXT);
-        Intent play = new Intent(MusicService.NOTIFY_PLAY);
+            Intent previous = new Intent(MusicService.NOTIFY_PREVIOUS);
+            Intent fav = new Intent(MusicService.NOTIFY_FAV);
+            Intent pause = new Intent(MusicService.NOTIFY_PAUSE);
+            Intent next = new Intent(MusicService.NOTIFY_NEXT);
+            Intent play = new Intent(MusicService.NOTIFY_PLAY);
 
-        PendingIntent pPrevious = PendingIntent.getBroadcast(context, 0, previous, PendingIntent.FLAG_UPDATE_CURRENT);
-        remoteViews.setOnClickPendingIntent(R.id.widget_prev_button, pPrevious);
+            PendingIntent pPrevious = PendingIntent.getBroadcast(context, 0, previous, PendingIntent.FLAG_UPDATE_CURRENT);
+            remoteViews.setOnClickPendingIntent(R.id.widget_prev_button, pPrevious);
 
-        if(MusicService.player != null && MusicService.player.isPlaying()){
-            remoteViews.setImageViewBitmap(R.id.widget_play_pause_button, ((BitmapDrawable) context.getResources().getDrawable(R.mipmap.ic_pause_black_24dp)).getBitmap());
-            PendingIntent pPause = PendingIntent.getBroadcast(context, 0, pause, PendingIntent.FLAG_UPDATE_CURRENT);
-            remoteViews.setOnClickPendingIntent(R.id.widget_play_pause_button, pPause);
+            if(MusicService.player != null && MusicService.player.isPlaying()){
+                remoteViews.setImageViewBitmap(R.id.widget_play_pause_button, ((BitmapDrawable) context.getResources().getDrawable(R.mipmap.ic_pause_black_24dp)).getBitmap());
+                PendingIntent pPause = PendingIntent.getBroadcast(context, 0, pause, PendingIntent.FLAG_UPDATE_CURRENT);
+                remoteViews.setOnClickPendingIntent(R.id.widget_play_pause_button, pPause);
+            }
+            else{
+                remoteViews.setImageViewBitmap(R.id.widget_play_pause_button, ((BitmapDrawable) context.getResources().getDrawable(R.mipmap.ic_play_arrow_black_24dp)).getBitmap());
+                PendingIntent pPlay = PendingIntent.getBroadcast(context, 0, play, PendingIntent.FLAG_UPDATE_CURRENT);
+                remoteViews.setOnClickPendingIntent(R.id.widget_play_pause_button, pPlay);
+            }
+
+            if(MusicService.currentSong.getIsLiked(context)){
+                remoteViews.setImageViewBitmap(R.id.widget_fav_button, ((BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_favorite_red_24dp)).getBitmap());
+            }
+
+            else{
+                remoteViews.setImageViewBitmap(R.id.widget_fav_button, ((BitmapDrawable) context.getResources().getDrawable(R.mipmap.ic_favorite_border_black_24dp)).getBitmap());
+            }
+
+            PendingIntent pFav = PendingIntent.getBroadcast(context, 0, fav, PendingIntent.FLAG_UPDATE_CURRENT);
+            remoteViews.setOnClickPendingIntent(R.id.widget_fav_button, pFav);
+
+            PendingIntent pNext = PendingIntent.getBroadcast(context, 0, next, PendingIntent.FLAG_UPDATE_CURRENT);
+            remoteViews.setOnClickPendingIntent(R.id.widget_next_button, pNext);
         }
-        else{
-            remoteViews.setImageViewBitmap(R.id.widget_play_pause_button, ((BitmapDrawable) context.getResources().getDrawable(R.mipmap.ic_play_arrow_black_24dp)).getBitmap());
-            PendingIntent pPlay = PendingIntent.getBroadcast(context, 0, play, PendingIntent.FLAG_UPDATE_CURRENT);
-            remoteViews.setOnClickPendingIntent(R.id.widget_play_pause_button, pPlay);
-        }
-
-        if(MusicService.currentSong.getIsLiked(context)){
-            remoteViews.setImageViewBitmap(R.id.widget_fav_button, ((BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_favorite_red_24dp)).getBitmap());
-        }
-
-        else{
-            remoteViews.setImageViewBitmap(R.id.widget_fav_button, ((BitmapDrawable) context.getResources().getDrawable(R.mipmap.ic_favorite_border_black_24dp)).getBitmap());
-        }
-
-        PendingIntent pFav = PendingIntent.getBroadcast(context, 0, fav, PendingIntent.FLAG_UPDATE_CURRENT);
-        remoteViews.setOnClickPendingIntent(R.id.widget_fav_button, pFav);
-
-        PendingIntent pNext = PendingIntent.getBroadcast(context, 0, next, PendingIntent.FLAG_UPDATE_CURRENT);
-        remoteViews.setOnClickPendingIntent(R.id.widget_next_button, pNext);
     }
     private static int getCellsForSize(int size) {
         int n = 2;

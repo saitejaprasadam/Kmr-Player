@@ -10,6 +10,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -63,7 +64,7 @@ public class TagEditorActivity extends AppCompatActivity {
 
     private int Choose_Image = 3121;
     private String currentSongID, songLocation;
-    private int songPosition;
+    private String songHashID;
     private File imageFile = null;
 
     @OnClick ({R.id.actual_album_art, R.id.edit_fab_button})
@@ -94,6 +95,12 @@ public class TagEditorActivity extends AppCompatActivity {
 
     @OnClick (R.id.apply_fab_button)
     public void applyChanges(View view){
+
+        final MaterialDialog loading = new MaterialDialog.Builder(TagEditorActivity.this)
+                .content(R.string.please_wait_finalising_tag_edit)
+                .progress(true, 0)
+                .show();
+
         try {
             TagOptionSingleton.getInstance().setAndroid(true);
             final File songFile = new File(songLocation);
@@ -113,22 +120,27 @@ public class TagEditorActivity extends AppCompatActivity {
             }
 
             audioFile.commit();
-            ExtensionMethods.scanMedia(TagEditorActivity.this, songLocation);
-            Toast.makeText(TagEditorActivity.this, "Successfully changed", Toast.LENGTH_SHORT).show();
-            Intent returnIntent = new Intent();
-            returnIntent.putExtra("songPosition", songPosition);
-            returnIntent.putExtra("songID", currentSongID);
-            setResult(Activity.RESULT_OK,returnIntent);
-            finish();
+            ExtensionMethods.scanMedia(this, songLocation);
+            new Handler().postDelayed(new Runnable() {
+                public void run() {
+                    loading.dismiss();
+                    Toast.makeText(TagEditorActivity.this, "Successfully changed", Toast.LENGTH_SHORT).show();
+                    Intent returnIntent = new Intent();
+                    returnIntent.putExtra("songHashID", songHashID);
+                    returnIntent.putExtra("songID", currentSongID);
+                    setResult(Activity.RESULT_OK, returnIntent);
+                    finish();
+                }
+            }, 800);
         }
 
         catch (CannotReadException | IOException | InvalidAudioFrameException | TagException | ReadOnlyFileException | CannotWriteException e) {
             Toast.makeText(TagEditorActivity.this, "Error changing tag", Toast.LENGTH_SHORT).show();
             Intent returnIntent = new Intent();
             setResult(Activity.RESULT_CANCELED, returnIntent);
+            loading.dismiss();
             finish();
         }
-
     }
 
     public void onCreate(Bundle b){
@@ -138,7 +150,7 @@ public class TagEditorActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
         currentSongID = getIntent().getExtras().getString("songID");
-        songPosition = getIntent().getExtras().getInt("position");
+        songHashID = getIntent().getExtras().getString("songHashID");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.mipmap.ic_clear_white_24dp);
 

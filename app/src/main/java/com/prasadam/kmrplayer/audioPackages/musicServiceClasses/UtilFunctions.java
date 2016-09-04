@@ -38,11 +38,8 @@ public class UtilFunctions {
             if (pfd != null){
                 FileDescriptor fd = pfd.getFileDescriptor();
                 bm = BitmapFactory.decodeFileDescriptor(fd, null, options);
-                pfd = null;
-                fd = null;
             }
-        } catch(Error ee){}
-        catch (Exception e) {}
+        } catch(Error | Exception ignored){}
         return bm;
     }
 
@@ -51,8 +48,7 @@ public class UtilFunctions {
         BitmapFactory.Options options = new BitmapFactory.Options();
         try{
             bm = BitmapFactory.decodeResource(context.getResources(), R.mipmap.unkown_album_art, options);
-        } catch(Error ee){}
-        catch (Exception e) {}
+        } catch(Error | Exception ignored){}
         return bm;
     }
 

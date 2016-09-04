@@ -30,9 +30,9 @@ import com.prasadam.kmrplayer.Adapters.UIAdapters.DividerItemDecoration;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Album;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Artist;
-import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
+import com.prasadam.kmrplayer.SubClasses.CustomArrayList.SongsArrayList;
 import com.prasadam.kmrplayer.UI.Activities.VerticalSlidingDrawerBaseActivity;
 import com.prasadam.kmrplayer.UI.Fragments.NoItemsFragment;
 
@@ -80,7 +80,7 @@ public class SearchActivity extends VerticalSlidingDrawerBaseActivity {
         super.onCreate(bundle);
         setContentView(R.layout.activity_search_layout);
         ButterKnife.bind(this);
-        ExtensionMethods.setStatusBarTranslucent(this);
+        ExtensionMethods.setStatusBarTranslucent(this, findViewById(R.id.colored_status_bar));
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.mipmap.ic_chevron_left_white_24dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -194,19 +194,40 @@ public class SearchActivity extends VerticalSlidingDrawerBaseActivity {
 
     private class setRecyclerViews extends AsyncTask<Void, Void, Void>{
 
-        private ArrayList<Song> songsResult = new ArrayList<>();
+        private SongsArrayList songsResult;
         private ArrayList<Album> albumResult = new ArrayList<>();
         private ArrayList<Artist> artistResult = new ArrayList<>();
         private String searchQuery;
 
         public setRecyclerViews(String searchQuery){
             this.searchQuery = searchQuery;
+            songsResult = new SongsArrayList() {
+                @Override
+                public void notifyDataSetChanged() {
+
+                }
+
+                @Override
+                public void notifyItemRemoved(int index) {
+
+                }
+
+                @Override
+                public void notifyItemInserted(int index) {
+
+                }
+
+                @Override
+                public void notifyItemChanged(int index) {
+
+                }
+            };
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
 
-            songsResult = AudioExtensionMethods.getSongListForSearch(searchQuery);
+            songsResult.addAll(AudioExtensionMethods.getSongListForSearch(searchQuery));
             albumResult = AudioExtensionMethods.getAlbumListForSearch(searchQuery);
             artistResult = AudioExtensionMethods.getArtistListForSearch(searchQuery);
             return null;

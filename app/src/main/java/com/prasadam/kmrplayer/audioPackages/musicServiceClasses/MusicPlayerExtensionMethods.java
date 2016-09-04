@@ -68,7 +68,7 @@ public class MusicPlayerExtensionMethods {
             PlayerConstants.SONG_NUMBER = 0;
             ArrayList<Song> tempList = new ArrayList<>();
             for (Song song : shuffledPlaylist)
-                if(!PlayerConstants.getPlaylist().contains(song))
+                if(!PlayerConstants.getPlayList().contains(song))
                     tempList.add(song);
             PlayerConstants.addSongToPlaylist(context, tempList);
         }
@@ -117,7 +117,7 @@ public class MusicPlayerExtensionMethods {
 
     public static void addToNowPlayingPlaylist(Context context, Song songToBeAdded) {
         boolean found = false;
-        for (Song song : PlayerConstants.getPlaylist()) {
+        for (Song song : PlayerConstants.getPlayList()) {
             if(song.getHashID().equals(songToBeAdded.getHashID())){
                 found = true;
                 break;
@@ -129,7 +129,6 @@ public class MusicPlayerExtensionMethods {
             PlayerConstants.addSongToPlaylist(context, songToBeAdded);
             Toast.makeText(context, "Song added to now playing playlist", Toast.LENGTH_SHORT).show();
             VerticalSlidingDrawerBaseActivity.updateAlbumAdapter();
-            VerticalSlidingDrawerBaseActivity.NowPlayingPlaylistRecyclerViewAdapter.notifyDataSetChanged();
         }
     }
     public static void addToNowPlayingPlaylist(Context context, ArrayList<Song> songsToBeAdded, String message) {
@@ -147,7 +146,7 @@ public class MusicPlayerExtensionMethods {
 
             ArrayList<Song> temp = new ArrayList<>(songsToBeAdded);
             for (Song songToBeAdded : temp){
-                for (Song song : PlayerConstants.getPlaylist()) {
+                for (Song song : PlayerConstants.getPlayList()) {
                     if(song.getHashID().equals(songToBeAdded.getHashID())){
                         songsToBeAdded.remove(songToBeAdded);
                         break;
@@ -159,7 +158,6 @@ public class MusicPlayerExtensionMethods {
             loading[0].dismiss();
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
             VerticalSlidingDrawerBaseActivity.updateAlbumAdapter();
-            VerticalSlidingDrawerBaseActivity.NowPlayingPlaylistRecyclerViewAdapter.notifyDataSetChanged();
         }
 
         catch (Exception ignored){}
@@ -178,14 +176,14 @@ public class MusicPlayerExtensionMethods {
             return;
         }
 
-        for (Song song : PlayerConstants.getPlaylist()) {
+        for (Song song : PlayerConstants.getPlayList()) {
             if(song.getHashID().equals(songToBeAdded.getHashID())){
                 PlayerConstants.removeSongFromPlaylist(context, song);
                 break;
             }
         }
 
-        PlayerConstants.getPlaylist().add(PlayerConstants.SONG_NUMBER + 1, songToBeAdded);
+        PlayerConstants.getPlayList().add(PlayerConstants.SONG_NUMBER + 1, songToBeAdded);
         if(PlayerConstants.getShuffleState())
             PlayerConstants.add_hash_id_current_playlist(songToBeAdded.getHashID());
 
@@ -195,7 +193,7 @@ public class MusicPlayerExtensionMethods {
     public static void playNext(Context context, ArrayList<Song> songsToBeAdded, String message) {
 
         for (Song songToBeAdded : songsToBeAdded){
-            for (Song song : PlayerConstants.getPlaylist()) {
+            for (Song song : PlayerConstants.getPlayList()) {
                 if(song.getHashID().equals(songToBeAdded.getHashID()) && !songToBeAdded.getHashID().equals(MusicService.currentSong.getHashID())){
                     PlayerConstants.removeSongFromPlaylist(context, song);
                     break;
@@ -205,7 +203,7 @@ public class MusicPlayerExtensionMethods {
 
         int index = 1;
         for (Song songToBeAdded : songsToBeAdded){
-            PlayerConstants.getPlaylist().add(PlayerConstants.SONG_NUMBER + index, songToBeAdded);
+            PlayerConstants.getPlayList().add(PlayerConstants.SONG_NUMBER + index, songToBeAdded);
             if(PlayerConstants.getShuffleState())
                 PlayerConstants.add_hash_id_current_playlist(songToBeAdded.getHashID());
             index++;

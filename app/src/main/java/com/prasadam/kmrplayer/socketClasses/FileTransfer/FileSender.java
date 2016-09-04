@@ -1,5 +1,6 @@
 package com.prasadam.kmrplayer.SocketClasses.FileTransfer;
 
+import com.prasadam.kmrplayer.FabricHelpers.CustomEventHelpers;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
 
 import java.io.File;
@@ -47,12 +48,12 @@ public class FileSender {
 
             Thread.sleep(1000);
             aFile.close();
+            CustomEventHelpers.quickShareEventRegister(file.getName());
             System.out.println("File Sent" + filePath);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }
-
     public void endConnection(){
         try {
             socketChannel.close();

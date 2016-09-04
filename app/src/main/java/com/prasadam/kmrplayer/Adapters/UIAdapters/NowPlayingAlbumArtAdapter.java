@@ -60,10 +60,10 @@ public class NowPlayingAlbumArtAdapter extends PagerAdapter {
         imageView.setOnTouchListener(new OnDoubleTapListener(activity){
             @Override
             public void onDoubleTap(MotionEvent e) {
-                if(PlayerConstants.getPlaylist().get(PlayerConstants.SONG_NUMBER).getIsLiked(activity))
-                    PlayerConstants.getPlaylist().get(PlayerConstants.SONG_NUMBER).setIsLiked(activity, false);
+                if(PlayerConstants.getPlayList().get(PlayerConstants.SONG_NUMBER).getIsLiked(activity))
+                    PlayerConstants.getPlayList().get(PlayerConstants.SONG_NUMBER).setIsLiked(activity, false);
                 else
-                    PlayerConstants.getPlaylist().get(PlayerConstants.SONG_NUMBER).setIsLiked(activity, true);
+                    PlayerConstants.getPlayList().get(PlayerConstants.SONG_NUMBER).setIsLiked(activity, true);
 
                 SongsFragment.recyclerViewAdapter.notifyDataSetChanged();
                 VerticalSlidingDrawerBaseActivity.updateSongLikeStatus(activity);
@@ -71,7 +71,7 @@ public class NowPlayingAlbumArtAdapter extends PagerAdapter {
             }
         });
 
-        String albumArtPath = PlayerConstants.getPlaylist().get(position).getAlbumArtLocation();
+        String albumArtPath = PlayerConstants.getPlayList().get(position).getAlbumArtLocation();
 
         if(albumArtPath != null) {
             final File imgFile = new File(albumArtPath);

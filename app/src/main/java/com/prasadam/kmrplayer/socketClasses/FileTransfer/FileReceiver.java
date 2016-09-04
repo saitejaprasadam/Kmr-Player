@@ -4,8 +4,11 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
+import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
+import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,8 +20,6 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.security.SecureRandom;
-
-;
 
 /*
  * Created by Prasadam Saiteja on 7/16/2016.
@@ -39,13 +40,11 @@ public class FileReceiver extends AsyncTask<Void, Void, Void>{
                 this.context = context;
                 serverSocketChannel = ServerSocketChannel.open();
                 serverSocketChannel.socket().bind(new InetSocketAddress(KeyConstants.FILE_TRANSFER_SOCKET_PORT_ADDRESS));
-                System.out.println("Started server");
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
     public String nextSessionId() {
         return new BigInteger(130, random).toString(32);
     }
@@ -78,6 +77,10 @@ public class FileReceiver extends AsyncTask<Void, Void, Void>{
                 Thread.sleep(100);
                 fileChannel.close();
                 clientSocketChannel.close();
+                Song song = AudioExtensionMethods.getSongFromPath(context, PlayerDirectory + File.separator + fileName);
+                if(song != null)
+                    SharedVariables.fullSongsList.add(song);
+
                 System.out.println("File Received " + countToBeRecevied);
                 countToBeRecevied--;
             } catch (IOException | InterruptedException e) {

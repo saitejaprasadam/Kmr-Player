@@ -1,17 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:layout_height="match_parent">
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <RelativeLayout
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/white">
+
+            <include
+                android:id="@+id/colored_status_bar"
+                layout="@layout/include_colored_status_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp" />
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -44,108 +50,113 @@
                         android:imeOptions="actionDone"
                         android:singleLine="true"
                         android:textColor="@color/white"
-                        android:textColorHint="@color/common_plus_signin_btn_text_dark_disabled" />
+                        android:textColorHint="@android:color/darker_gray" />
 
                 </RelativeLayout>
 
             </android.support.v7.widget.Toolbar>
 
-            <android.support.v4.widget.NestedScrollView
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@+id/toolbar">
+                android:layout_height="match_parent">
 
-                <LinearLayout
+                <android.support.v4.widget.NestedScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:id="@+id/albums_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:visibility="invisible">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="20dp"
+                                android:background="@color/cardview_dark_background"
+                                android:paddingEnd="5dp"
+                                android:paddingStart="5dp"
+                                android:text="@string/albums_text"
+                                android:textColor="@color/white"
+                                android:textSize="15sp" />
+
+                            <android.support.v7.widget.RecyclerView
+                                android:id="@+id/albums_recycler_view"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:nestedScrollingEnabled="false" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/artist_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:visibility="invisible">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="20dp"
+                                android:background="@color/cardview_dark_background"
+                                android:paddingEnd="5dp"
+                                android:paddingStart="5dp"
+                                android:text="@string/artist_text"
+                                android:textColor="@color/white"
+                                android:textSize="15sp" />
+
+                            <android.support.v7.widget.RecyclerView
+                                android:id="@+id/artist_recycler_view"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:nestedScrollingEnabled="false" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/songs_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:visibility="invisible">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="20dp"
+                                android:background="@color/cardview_dark_background"
+                                android:paddingEnd="5dp"
+                                android:paddingStart="5dp"
+                                android:text="@string/songs_text"
+                                android:textColor="@color/white"
+                                android:textSize="15sp" />
+
+                            <android.support.v7.widget.RecyclerView
+                                android:id="@+id/songs_recycler_view"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:nestedScrollingEnabled="false" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </android.support.v4.widget.NestedScrollView>
+
+                <FrameLayout
+                    android:id="@+id/fragment_container"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_below="@+id/toolbar" />
 
-                    <LinearLayout
-                        android:id="@+id/albums_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:visibility="invisible">
+            </FrameLayout>
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="20dp"
-                            android:background="@color/cardview_dark_background"
-                            android:paddingEnd="5dp"
-                            android:paddingStart="5dp"
-                            android:text="@string/albums_text"
-                            android:textColor="@color/white"
-                            android:textSize="15sp" />
-
-                        <android.support.v7.widget.RecyclerView
-                            android:id="@+id/albums_recycler_view"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:nestedScrollingEnabled="false" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/artist_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:visibility="invisible">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="20dp"
-                            android:background="@color/cardview_dark_background"
-                            android:paddingEnd="5dp"
-                            android:paddingStart="5dp"
-                            android:text="@string/artist_text"
-                            android:textColor="@color/white"
-                            android:textSize="15sp" />
-
-                        <android.support.v7.widget.RecyclerView
-                            android:id="@+id/artist_recycler_view"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:nestedScrollingEnabled="false" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/songs_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:visibility="invisible">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="20dp"
-                            android:background="@color/cardview_dark_background"
-                            android:paddingEnd="5dp"
-                            android:paddingStart="5dp"
-                            android:text="@string/songs_text"
-                            android:textColor="@color/white"
-                            android:textSize="15sp" />
-
-                        <android.support.v7.widget.RecyclerView
-                            android:id="@+id/songs_recycler_view"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:nestedScrollingEnabled="false" />
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </android.support.v4.widget.NestedScrollView>
-
-            <FrameLayout
-                android:id="@+id/fragment_container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@+id/toolbar" />
-
-        </RelativeLayout>
+        </LinearLayout>
 
     </android.support.design.widget.CoordinatorLayout>
 

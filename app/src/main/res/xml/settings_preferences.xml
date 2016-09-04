@@ -1,14 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <EditTextPreference
-        android:title="Display Name"
-        android:key="username" />
+    <PreferenceCategory android:title="@string/general_settings">
 
-    <SwitchPreference
-        android:title="@string/Show_Floating_notification"
-        android:key="Floating_Notifications"
-        android:summary="@string/shows_a_floating_information_on_screen_when_song_changes"/>
+        <EditTextPreference
+            android:key="KEY_USERNAME"
+            android:title="@string/Display_Name"
+            android:summary="@string/This_name_will_be_visible_to_your_friends" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="KEY_FLOATING_NOTIFICATIONS"
+            android:title="@string/Show_Floating_notification"
+            android:summary="@string/shows_a_floating_information_on_screen_when_song_changes" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/Theme">
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="KEY_COLORED_NAV_BAR"
+            android:title="@string/Colored_Navigation_bar"
+            android:summary="@string/Adds_color_to_soft_navigation_bar"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/Lockscreen_preferences">
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="KEY_ALBUM_ART"
+            android:title="@string/Show_album_art"
+            android:summary="@string/Shows_current_song_album_art_as_lock_screen_wallpaper" />
+
+        <SwitchPreference
+            android:key="KEY_BLUR_ALBUM_ART"
+            android:title="@string/Blur_album_art"
+            android:summary="@string/Blurs_the_album_art_on_the_lockscreen_text"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/Audio_preferences">
+
+        <Preference
+            android:key="KEY_EQUALIZER"
+            android:title="@string/Equalizer"
+            android:summary="@string/Show_player_equalizer">
+        </Preference>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/About_text">
+
+        <Preference
+            android:key="KEY_VERSION"
+            android:title="Version"
+            android:summary="1.0.0">
+        </Preference>
+
+        <Preference
+            android:key="KEY_RATE"
+            android:title="@string/Rate_our_app_text"
+            android:summary="@string/rate_our_app_summary">
+        </Preference>
+
+        <Preference
+            android:key="KEY_REPORT_BUG"
+            android:title="@string/Report_bug"
+            android:summary="@string/report_bug_desc">
+        </Preference>
+
+        <Preference
+            android:key="contactDevKey"
+            android:title="@string/Contact_developer"
+            android:summary="@string/Contact_developer_desc">
+            <intent android:action="android.intent.action.VIEW"
+                android:data="@string/contact_developer_uri"/>
+        </Preference>
+
+    </PreferenceCategory>
 
 </PreferenceScreen>

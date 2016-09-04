@@ -11,9 +11,9 @@
         <item>@string/add_to_now_playing_queue</item>
     </string-array>
 
-    <string-array name="songs_sort_by">
-        <item>@string/name_asc_text</item>
-        <item>@string/name_desc_text</item>
+    <string-array name="report_bug">
+        <item>@string/report_bug_text</item>
+        <item>@string/suggestion_text</item>
     </string-array>
 
 </resources>

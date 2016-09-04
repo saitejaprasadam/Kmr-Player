@@ -36,7 +36,8 @@ import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicPlayerExten
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
-import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
+import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
+import com.prasadam.kmrplayer.SubClasses.CustomArrayList.SongsArrayList;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -54,7 +55,7 @@ public class AlbumActivity extends VerticalSlidingDrawerBaseActivity {
     private AlbumInnerLayoutSongRecyclerViewAdapter recyclerViewAdapter;
     private String albumTitle, albumArtist, albumartPath = null;
     private Long albumID;
-    private ArrayList<Song> songsList;
+    private SongsArrayList songsList;
 
     @Bind (R.id.actual_album_art) ImageView actualAlbumArt;
     @Bind (R.id.blurred_album_art) ImageView blurredAlbumArt;
@@ -87,7 +88,7 @@ public class AlbumActivity extends VerticalSlidingDrawerBaseActivity {
         super.onDestroy();
         recyclerView.setAdapter(null);
         recyclerViewAdapter = null;
-        songsList.clear();
+        songsList = null;
     }
 
     private void initalize() {
@@ -159,9 +160,33 @@ public class AlbumActivity extends VerticalSlidingDrawerBaseActivity {
     }
     private void getSongsList() {
 
-        songsList = AudioExtensionMethods.getSongList(this, albumID);
+        songsList = new SongsArrayList(AudioExtensionMethods.getSongList(this, albumID)) {
+            @Override
+            public void notifyDataSetChanged() {
+                if(recyclerViewAdapter != null)
+                    recyclerViewAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void notifyItemRemoved(int index) {
+                if(recyclerViewAdapter != null)
+                    recyclerViewAdapter.notifyItemRemoved(index);
+            }
+
+            @Override
+            public void notifyItemInserted(int index) {
+                if(recyclerViewAdapter != null)
+                    recyclerViewAdapter.notifyItemInserted(index);
+            }
+
+            @Override
+            public void notifyItemChanged(int index) {
+                if(recyclerViewAdapter != null)
+                    recyclerViewAdapter.notifyItemChanged(index);
+            }
+        };
         albumArtist = AudioExtensionMethods.getAlbumArtistTitle(this, albumID);
-        recyclerViewAdapter = new AlbumInnerLayoutSongRecyclerViewAdapter(this, songsList);
+        recyclerViewAdapter = new AlbumInnerLayoutSongRecyclerViewAdapter(this, albumID, songsList);
 
         runOnUiThread(new Runnable() {
             @Override
@@ -196,31 +221,7 @@ public class AlbumActivity extends VerticalSlidingDrawerBaseActivity {
                             break;
 
                         case R.id.album_context_menu_delete_album:
-                            new MaterialDialog.Builder(AlbumActivity.this)
-                                    .content("Delete this album \'" +  albumTitle + "\' ?")
-                                    .positiveText(R.string.delete_text)
-                                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                                        @Override
-                                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                            for (final Song song : songsList) {
-                                                File file = new File(song.getData());
-                                                if (file.delete())
-                                                    getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.MediaColumns._ID + "='" + song.getID() + "'", null);
-                                            }
-
-                                            Toast.makeText(AlbumActivity.this, "Album Deleted : \'" + albumTitle + "\'", Toast.LENGTH_SHORT).show();
-                                            Intent returnIntent = new Intent();
-                                            setResult(RESULT_OK, returnIntent);
-                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                                                finishAfterTransition();
-
-                                            else
-                                                finish();
-                                            finish();
-                                        }
-                                    })
-                                    .negativeText(R.string.cancel_text)
-                                    .show();
+                            deleteAlbum();
                             break;
 
                         case R.id.action_devices_button:
@@ -254,12 +255,40 @@ public class AlbumActivity extends VerticalSlidingDrawerBaseActivity {
                 } catch (Exception ignored) {}
                 return true;
             }
+
+            private void deleteAlbum() {
+                new MaterialDialog.Builder(AlbumActivity.this)
+                        .content("Delete this album \'" +  albumTitle + "\' ?")
+                        .positiveText(R.string.delete_text)
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                for (final Song song : songsList) {
+                                    File file = new File(song.getData());
+                                    if (file.delete()){
+                                        songsList.remove(song);
+                                        SharedVariables.fullSongsList.remove(song);
+                                        getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.MediaColumns._ID + "='" + song.getID() + "'", null);
+                                    }
+
+                                }
+
+                                Toast.makeText(AlbumActivity.this, "Album Deleted : \'" + albumTitle + "\'", Toast.LENGTH_SHORT).show();
+                                Intent returnIntent = new Intent();
+                                returnIntent.putExtra("albumID", albumID);
+                                setResult(RESULT_OK, returnIntent);
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                                    finishAfterTransition();
+                                else
+                                    finish();
+                            }
+                        })
+                        .negativeText(R.string.cancel_text)
+                        .show();
+            }
         });
     }
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == KeyConstants.REQUEST_CODE_TAG_EDITOR) {
-            if(resultCode == RESULT_OK)
-                recyclerViewAdapter.notifyDataSetChanged();
-        }
+        ActivityHelper.onActivityResultMethod(this, requestCode, resultCode, data, songsList);
     }
 }

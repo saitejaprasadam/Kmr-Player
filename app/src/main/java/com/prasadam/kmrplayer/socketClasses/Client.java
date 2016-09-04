@@ -24,9 +24,9 @@ public class Client extends AsyncTask<Void, Void, Void> {
     public Client(final InetAddress serverIPAddress, final String message) {
         try{
             this.message = message;
-            clientSocket = new Socket(serverIPAddress, KeyConstants.MAIN_SERVER_SOCKET_PORT_ADDRESS);
+            clientSocket = new Socket(serverIPAddress.getHostAddress(), KeyConstants.MAIN_SERVER_SOCKET_PORT_ADDRESS);
         }
-        catch (IOException ignored){}
+        catch (IOException e){ e.printStackTrace();}
     }
     public Client(final String serverIPAddress, final String message) {
         try{
@@ -47,13 +47,13 @@ public class Client extends AsyncTask<Void, Void, Void> {
             OutputStreamWriter osw = new OutputStreamWriter(os);
             BufferedWriter bw = new BufferedWriter(osw);
 
-            Log.d("Sent", message);
             bw.write(message);
             bw.flush();
             bw.close();
             osw.close();
             os.close();
             clientSocket.close();
+            Log.d("Sent", message);
         }
 
         catch (IOException | RuntimeException exception) {

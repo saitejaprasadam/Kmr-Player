@@ -3,6 +3,7 @@ package com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.view.KeyEvent;
 
 /*
@@ -46,15 +47,10 @@ public class NotificationBroadcast extends BroadcastReceiver {
             }
 
             else{
-                if (intent.getAction().equals(Intent.ACTION_HEADSET_PLUG)) {
-                    int state = intent.getIntExtra("state", -1);
-                    switch (state) {
-                        case 0:
-                            Controls.pauseControl(context);
-                            break;
-                    }
-                }
-                if (intent.getAction().equals(MusicService.NOTIFY_PLAY))
+
+                if (AudioManager.ACTION_AUDIO_BECOMING_NOISY.equals(intent.getAction()))
+                    Controls.pauseControl(context);
+                else if (intent.getAction().equals(MusicService.NOTIFY_PLAY))
                     Controls.playControl(context);
                 else if (intent.getAction().equals(MusicService.NOTIFY_PAUSE))
                     Controls.pauseControl(context);

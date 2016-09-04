@@ -75,13 +75,16 @@ public class Controls {
 
     public static void favControl(Context context) {
         MusicService.currentSong.setIsLiked(context, !MusicService.currentSong.getIsLiked(context));
-        PlayerConstants.NOTIFICATION_HANDLER.sendEmptyMessage(0);
+        updateNotification();
         VerticalSlidingDrawerBaseActivity.updateSongLikeStatus(context);
         SongsFragment.recyclerViewAdapter.notifyDataSetChanged();
         VerticalSlidingDrawerBaseActivity.NowPlayingPlaylistRecyclerViewAdapter.notifyDataSetChanged();
     }
     public static void updateNowPlayingUI(){
         PlayerConstants.UPDATE_NOW_PLAYING_UI.sendEmptyMessage(0);
+    }
+    public static void updateNotification(){
+        PlayerConstants.NOTIFICATION_HANDLER.sendEmptyMessage(0);
     }
 
     private static void sendMessage(String message) {
@@ -97,14 +100,14 @@ public class Controls {
 
         if(PlayerConstants.getShuffleState()){
             long seed = System.nanoTime();
-            ArrayList<Song> shuffledPlaylist = new ArrayList<>(PlayerConstants.getPlaylist());
+            ArrayList<Song> shuffledPlaylist = new ArrayList<>(PlayerConstants.getPlayList());
             Collections.shuffle(shuffledPlaylist, new Random(seed));
             PlayerConstants.clearPlaylist();
             PlayerConstants.addSongToPlaylist(context, MusicService.currentSong);
             PlayerConstants.SONG_NUMBER = 0;
             ArrayList<Song> tempList = new ArrayList<>();
             for (Song song : shuffledPlaylist)
-                if(!PlayerConstants.getPlaylist().contains(song))
+                if(!PlayerConstants.getPlayList().contains(song))
                     tempList.add(song);
             PlayerConstants.addSongToPlaylist(context, tempList);
         }
@@ -112,7 +115,7 @@ public class Controls {
         else{
             ArrayList<Song> tempArrayList = new ArrayList<>();
             for (String hashID : PlayerConstants.get_hash_id_current_playlist()) {
-                for(Song song: PlayerConstants.getPlaylist()){
+                for(Song song: PlayerConstants.getPlayList()){
                     if(hashID.equals(song.getHashID()))
                         tempArrayList.add(song);
                 }
@@ -120,7 +123,7 @@ public class Controls {
 
             PlayerConstants.setPlayList(context, tempArrayList);
             int index = 0;
-            for (Song song: PlayerConstants.getPlaylist()){
+            for (Song song: PlayerConstants.getPlayList()){
                 if(MusicService.currentSong.getHashID().equals(song.getHashID())){
                     PlayerConstants.SONG_NUMBER = index;
                     break;

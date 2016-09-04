@@ -16,19 +16,19 @@ import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
 public class NSDServer {
 
     private static Context context;
-    private static String SERVICE_NAME = ExtensionMethods.deviceName();
-    private static String SERVICE_TYPE = "_kmr._tcp.";
+    private final static String SERVICE_TYPE = "_kmr._tcp.";
+    public static String SERVICE_NAME;
     public static NsdManager mNsdManager;
-    private static NsdServiceInfo serviceInfo;
 
     public static void startService(Context thiscontext) {
         context = thiscontext;
+        SERVICE_NAME = ExtensionMethods.deviceName(context);
         mNsdManager = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
         registerService(1231);
     }
     public static void registerService(int port) {
 
-        serviceInfo = new NsdServiceInfo();
+        NsdServiceInfo serviceInfo = new NsdServiceInfo();
         serviceInfo.setServiceName(SERVICE_NAME);
         serviceInfo.setServiceType(SERVICE_TYPE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
@@ -57,7 +57,6 @@ public class NSDServer {
 
         @Override
         public void onServiceUnregistered(NsdServiceInfo serviceInfo) {
-            // NsdManager.unregisterService() called and passed in this listener.
             Log.d("NsdserviceOnUnregister", "Service Unregistered : " + serviceInfo.getServiceName());
         }
 

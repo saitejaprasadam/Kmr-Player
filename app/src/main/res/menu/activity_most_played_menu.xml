@@ -33,10 +33,6 @@
         android:title="@string/add_to_text" />
 
     <item
-        android:id="@+id/action_pie_chart"
-        android:title="@string/pie_chart_text" />
-
-    <item
         android:id="@+id/action_equilzer"
         android:orderInCategory="100"
         android:title="@string/action_equilzer"

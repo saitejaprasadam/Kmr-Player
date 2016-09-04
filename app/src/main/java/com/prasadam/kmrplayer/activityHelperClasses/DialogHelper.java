@@ -1,5 +1,6 @@
 package com.prasadam.kmrplayer.ActivityHelperClasses;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -8,18 +9,19 @@ import android.media.MediaExtractor;
 import android.media.MediaFormat;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicPlayerExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.FabricHelpers.CustomEventHelpers;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 
@@ -123,22 +125,6 @@ public class DialogHelper {
                         }
                     }
                 })
-                .show();
-    }
-
-    public static void songsSortDialog(Context context) {
-
-        new MaterialDialog.Builder(context)
-                .title(R.string.sort_by_text)
-                .items(R.array.songs_sort_by)
-                .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
-                    @Override
-                    public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-
-                        return true;
-                    }
-                })
-                .positiveText(R.string.ok_text)
                 .show();
     }
 
@@ -288,5 +274,42 @@ public class DialogHelper {
                     .positiveText(context.getString(R.string.ok_text))
                     .content(content.toString())
                     .show();
+    }
+
+    public static void reportBug(final Activity activity) {
+
+        new MaterialDialog.Builder(activity)
+                .items(R.array.report_bug)
+                .itemsCallback(new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+
+                        if(which == 0)
+                            new MaterialDialog.Builder(activity)
+                                    .title(R.string.describe_bug)
+                                    .inputRange(10, 100)
+                                    .input(R.string.empty, R.string.empty, new MaterialDialog.InputCallback() {
+                                        @Override
+                                        public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
+                                            CustomEventHelpers.reportBug(input);
+                                        }
+                                    }).show();
+
+
+                        else if(which == 1)
+                            new MaterialDialog.Builder(activity)
+                                    .title(R.string.describe_your_suggestion)
+                                    .inputRange(10, 100)
+                                    .input(R.string.empty, R.string.empty, new MaterialDialog.InputCallback() {
+                                        @Override
+                                        public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
+                                            CustomEventHelpers.sendSuggestion(input);
+                                        }
+                                    }).show();
+
+                        Toast.makeText(activity, "Successfully sent, we will look into it asap!!", Toast.LENGTH_LONG).show();
+                    }
+                })
+                .show();
     }
 }

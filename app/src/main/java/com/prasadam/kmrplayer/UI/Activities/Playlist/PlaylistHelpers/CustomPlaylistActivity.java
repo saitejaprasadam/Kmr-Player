@@ -1,4 +1,4 @@
-package com.prasadam.kmrplayer.UI.Activities.Playlist;
+package com.prasadam.kmrplayer.UI.Activities.Playlist.PlaylistHelpers;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -31,7 +31,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods.createNewCustomPlaylist;
-import static com.prasadam.kmrplayer.SharedClasses.ExtensionMethods.setStatusBarTranslucent;
+import static com.prasadam.kmrplayer.SharedClasses.ExtensionMethods.setStatusBarTranslucent_PreLollipop;
 
 /*
  * Created by Prasadam Saiteja on 5/29/2016.
@@ -66,7 +66,7 @@ public class CustomPlaylistActivity extends VerticalSlidingDrawerBaseActivity {
         ButterKnife.bind(this);
 
         ActivityHelper.setCustomActionBar(CustomPlaylistActivity.this);
-        setStatusBarTranslucent(CustomPlaylistActivity.this);
+        ExtensionMethods.setStatusBarTranslucent(this, findViewById(R.id.colored_status_bar));
         ActivityHelper.setDisplayHome(this);
 
         ArrayList<String> playlistNames = AudioExtensionMethods.getCustomPlaylistNames(this);

@@ -2,7 +2,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/root_layout"
-    android:fitsSystemWindows="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -11,6 +10,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white">
+
+        <include
+            android:id="@+id/colored_status_bar"
+            layout="@layout/include_colored_status_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp" />
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
