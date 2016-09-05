@@ -166,10 +166,10 @@ public class MusicService extends Service implements
 
                         player.start();
                     }else if(message.equalsIgnoreCase(getResources().getString(R.string.pause))){
-                        player.pause();
-                        PlayerConstants.SONG_PAUSED = true;
                         if(currentVersionSupportLockScreenControls && remoteControlClient != null)
                             remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PAUSED);
+                        player.pause();
+                        PlayerConstants.SONG_PAUSED = true;
                     }
                     try{
                         newNotification();
@@ -397,6 +397,7 @@ public class MusicService extends Service implements
         super.onDestroy();
     }
     public void onAudioFocusChange(int focusChange) {
+
         try{
             switch (focusChange) {
 
@@ -416,13 +417,12 @@ public class MusicService extends Service implements
                 break;
 
                 case AudioManager.AUDIOFOCUS_LOSS:
-                    if(!PlayerConstants.SONG_PAUSED){
+                    if(player.isPlaying())
                         Controls.pauseControl(getContext());
-                    }
                     break;
 
                 case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
-                    if(!PlayerConstants.SONG_PAUSED){
+                    if(player.isPlaying()){
                         isFocusSnatched = true;
                         Controls.pauseControl(getContext());
                     }

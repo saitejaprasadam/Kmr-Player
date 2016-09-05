@@ -22,14 +22,14 @@ android {
     defaultConfig {
         applicationId "com.prasadam.kmrplayer"
         minSdkVersion 19
-        targetSdkVersion 24
+        targetSdkVersion 22
         versionCode 1
         versionName "1.0"
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -38,9 +38,7 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile files('libs/jaudiotagger-2.0.2.jar')
-    testCompile 'junit:junit:4.12'
 
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
     compile('com.github.afollestad.material-dialogs:core:0.8.5.7@aar') { transitive = true }
     compile('com.mikepenz:aboutlibraries:5.7.1@aar') { transitive = true }
     compile('com.crashlytics.sdk.android:crashlytics:2.6.2@aar') { transitive = true; }

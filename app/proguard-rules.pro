@@ -15,3 +15,7 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+-dontwarn butterknife.internal.**
+-dontwarn com.facebook.**
+-dontwarn org.jaudiotagger.**

@@ -10,7 +10,7 @@ public class KeyConstants extends com.prasadam.kmrplayer.SocketClasses.SocketsKe
     public static final String DIVIDER = " ";
     public static final String SPACE = " ";
 
-    public static final int REQUEST_APP_PERMISSION = 1523;
+    public static final int REQUEST_READ_STORAGE_PERMISSION = 1523;
 
     public static final String ACTIVITY_QUICK_SHARE = "QuickShareActivity";
     public static final String ACTIVITY_NEARBY_DEVICES = "NearbyDevicesActivity";

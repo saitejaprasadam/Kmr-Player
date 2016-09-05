@@ -1,7 +1,6 @@
 package com.prasadam.kmrplayer.UI.Fragments;
 
 import android.app.Activity;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -48,7 +47,6 @@ public class SongsFragment extends Fragment {
         mActivity = activity;
     }
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //setHasOptionsMenu(true);
         View rootView = inflater.inflate(R.layout.fragment_song_list, container, false);
         recyclerView = (FastScrollRecyclerView) rootView.findViewById(R.id.songs_recylcer_view_layout);
         fragmentContainer = (FrameLayout) rootView.findViewById(R.id.sg_fragment_container);

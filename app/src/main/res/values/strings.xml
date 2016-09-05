@@ -66,7 +66,7 @@
     <string name="agree">Agree</string>
     <string name="disagree">Disagree</string>
     <string name="info_text">Info</string>
-    <string name="nearby_info_text">Devices should be running under same network and KMR player should be active</string>
+    <string name="nearby_info_text">Devices should be running under same network and KMR player should be active (All requests dialogs are currently sent to main activity)</string>
     <string name="waiting_for_approval">Waiting for apporoval</string>
     <string name="wait_in_background">wait in background</string>
     <string name="no_devices_available">No devices available</string>

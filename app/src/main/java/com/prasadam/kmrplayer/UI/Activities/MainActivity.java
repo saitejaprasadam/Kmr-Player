@@ -60,13 +60,13 @@ public class MainActivity extends VerticalSlidingDrawerBaseActivity implements N
             public void run() {
 
                 SharedPreferences getPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-                boolean isFirstStart = getPrefs.getBoolean("FirstStart", true);
+                boolean isFirstStart = getPrefs.getBoolean("FirstStart312", true);
 
                 if (isFirstStart) {
                     Intent i = new Intent(MainActivity.this, AppIntroActivity.class);
                     startActivity(i);
                     SharedPreferences.Editor e = getPrefs.edit();
-                    e.putBoolean("FirstStart", false);
+                    e.putBoolean("FirstStart312", false);
                     e.apply();
                 }
             }

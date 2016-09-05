@@ -1,16 +1,12 @@
 package com.prasadam.kmrplayer;
 
 import android.app.Application;
-import android.content.Context;
 
 import com.crashlytics.android.Crashlytics;
-import com.karumi.dexter.Dexter;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicService;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.PlayerConstants;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.SharedPreferences.SharedPreferenceHelper;
-import com.prasadam.kmrplayer.SocketClasses.SocketExtensionMethods;
-import com.splunk.mint.Mint;
 
 import io.fabric.sdk.android.Fabric;
 import java.util.ArrayList;
@@ -25,7 +21,6 @@ public class SmartCastApplication extends Application{
     public void onCreate() {
         super.onCreate();
         Fabric.with(this, new Crashlytics());
-        //LeakCanary.install(this);
         setMusicPlaylist_and_Settings();
     }
 

@@ -26,9 +26,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.prasadam.kmrplayer.R;
+import com.prasadam.kmrplayer.SubClasses.SquaredView;
 
 public class AchievementUnlocked {
-
 
     private achievementListener listener;
 
@@ -672,29 +672,6 @@ public class AchievementUnlocked {
         anim.start();
 
 
-    }
-
-
-}
-
-class SquaredView extends View {
-
-    public SquaredView(Context context) {
-        super(context);
-    }
-
-    public SquaredView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    public SquaredView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-    }
-
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, widthMeasureSpec);
     }
 }
 

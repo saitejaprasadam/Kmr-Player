@@ -1,5 +1,7 @@
 package com.prasadam.kmrplayer.UI.Fragments;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -12,8 +14,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.prasadam.kmrplayer.R;
+import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
+import com.prasadam.kmrplayer.SharedClasses.PermissionHelper;
 
 /*
  * Created by Prasadam saiteja on 3/14/2016.
@@ -99,13 +104,9 @@ public class TabFragment extends Fragment{
             }
             return null;
         }
-
-        @Override
         public int getCount() {
             return int_items;
         }
-
-        @Override
         public CharSequence getPageTitle(int position) {
             switch (position){
                 case 0 :
