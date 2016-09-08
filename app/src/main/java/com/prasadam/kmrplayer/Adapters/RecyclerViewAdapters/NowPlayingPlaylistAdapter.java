@@ -39,7 +39,7 @@ import com.prasadam.kmrplayer.UI.Fragments.SongsFragment;
 import java.io.File;
 import java.util.Collections;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /*
@@ -282,12 +282,12 @@ public class NowPlayingPlaylistAdapter extends RecyclerView.Adapter<NowPlayingPl
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements NowPlayingPlaylistInterfaces.ItemTouchHelperViewHolder {
 
-        @Bind(R.id.now_playing_playlist_fav_button) LikeButton nowPlayingPlaylistLikeButton;
-        @Bind(R.id.now_playing_playlist_song_context_menu) ImageView nowPlayingPlaylistContextMenu;
-        @Bind(R.id.now_playing_playlist_song_title_text_view) TextView songTitleTextView;
-        @Bind(R.id.now_playing_playlist_song_artist_text_view) TextView songArtistTextView;
-        @Bind(R.id.now_playing_playlist_root_layout) FrameLayout cardviewRootLayout;
-        @Bind(R.id.now_playing_playlist_song_album_art) ImageView albumArtImageView;
+        @BindView(R.id.now_playing_playlist_fav_button) LikeButton nowPlayingPlaylistLikeButton;
+        @BindView(R.id.now_playing_playlist_song_context_menu) ImageView nowPlayingPlaylistContextMenu;
+        @BindView(R.id.now_playing_playlist_song_title_text_view) TextView songTitleTextView;
+        @BindView(R.id.now_playing_playlist_song_artist_text_view) TextView songArtistTextView;
+        @BindView(R.id.now_playing_playlist_root_layout) FrameLayout cardviewRootLayout;
+        @BindView(R.id.now_playing_playlist_song_album_art) ImageView albumArtImageView;
         public long songID;
 
         public MyViewHolder(View itemView) {

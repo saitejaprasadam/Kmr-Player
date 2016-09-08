@@ -92,7 +92,6 @@ public class DBHelper extends SQLiteOpenHelper {
                     byte[] digest = messageDigest.digest(bFile);
                     String songHashID = new BigInteger(1, digest).toString(32);
 
-                    Log.d(thisData, songHashID);
                     SQLiteDatabase wdb = this.getWritableDatabase();
                     ContentValues cv = new ContentValues();
                     cv.put(ID_COLUMN_NAME, songHashID);
@@ -107,7 +106,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
                     rdb.close();
                     wdb.close();
-
+                    musicCursor.close();
+                    if(tempCursor != null)
+                        tempCursor.close();
                     return songHashID;
                 }
 
@@ -133,7 +134,7 @@ public class DBHelper extends SQLiteOpenHelper {
             return songID;
         }
 
-
+        rdb.close();
         return 0;
     }
 
@@ -239,6 +240,7 @@ public class DBHelper extends SQLiteOpenHelper {
             return songsID;
         }
 
+        rdb.close();
         return songsID;
     }
 

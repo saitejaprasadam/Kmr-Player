@@ -26,7 +26,7 @@ import com.prasadam.kmrplayer.UI.Activities.VerticalSlidingDrawerBaseActivity;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -40,9 +40,9 @@ import static com.prasadam.kmrplayer.SharedClasses.ExtensionMethods.setStatusBar
 public class CustomPlaylistActivity extends VerticalSlidingDrawerBaseActivity {
 
     private CustomPlaylistAdapter CustomPlaylistActivityrecyclerViewAdapter;
-    @Bind(R.id.custom_playlist_recycler_view) RecyclerView recyclerView;
-    @Bind(R.id.fragment_container) FrameLayout fragmentContainer;
-    @Bind(R.id.add_new_custom_playlist) FloatingActionButton addNewPlaylistFab;
+    @BindView(R.id.custom_playlist_recycler_view) RecyclerView recyclerView;
+    @BindView(R.id.fragment_container) FrameLayout fragmentContainer;
+    @BindView(R.id.add_new_custom_playlist) FloatingActionButton addNewPlaylistFab;
 
     @OnClick (R.id.add_new_custom_playlist)
     public void addNewPlaylist(View view){

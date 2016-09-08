@@ -21,7 +21,7 @@
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:orientation="horizontal"
-        android:layout_margin="10dp">
+        android:layout_marginStart="10dp">
 
         <com.like.LikeButton
             app:icon_type="heart"
@@ -37,6 +37,7 @@
             android:clickable="true"
             android:id="@+id/song_context_menu"
             android:layout_gravity="center_vertical"
+            android:paddingEnd="10dp"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:src="@mipmap/ic_more_vert_black_24dp"/>

@@ -38,7 +38,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -54,35 +54,19 @@ public class CustomPlaylistInnerActivity extends VerticalSlidingDrawerBaseActivi
     private UnifedSongAdapter customPlaylistSongsRecylcerViewAdapter;
     private SongsArrayList songsList;
 
-    @Bind (R.id.fragment_container) FrameLayout FragmentContainer;
-    @Bind (R.id.custom_playlist_inner_recyler_view) RecyclerView customPlaylistInnerRecyclerView;
-    @Bind (R.id.background_image_view) ImageView blurredBackgroundImageView;
-    @Bind (R.id.album_art_image_view1) ImageView albumartImageView1;
-    @Bind (R.id.album_art_image_view2) ImageView albumartImageView2;
-    @Bind (R.id.album_art_image_view3) ImageView albumartImageView3;
-    @Bind (R.id.album_art_image_view4) ImageView albumartImageView4;
-    @Bind (R.id.playlist_song_count_textview) TextView songCountTextView;
-    @Bind (R.id.playlist_name_text_view) TextView playlistNameTextView;
+    @BindView (R.id.fragment_container) FrameLayout FragmentContainer;
+    @BindView (R.id.custom_playlist_inner_recyler_view) RecyclerView customPlaylistInnerRecyclerView;
+    @BindView (R.id.background_image_view) ImageView blurredBackgroundImageView;
+    @BindView (R.id.album_art_image_view1) ImageView albumartImageView1;
+    @BindView (R.id.album_art_image_view2) ImageView albumartImageView2;
+    @BindView (R.id.album_art_image_view3) ImageView albumartImageView3;
+    @BindView (R.id.album_art_image_view4) ImageView albumartImageView4;
+    @BindView (R.id.playlist_song_count_textview) TextView songCountTextView;
+    @BindView (R.id.playlist_name_text_view) TextView playlistNameTextView;
 
     @OnClick (R.id.shuffle_fab_button)
     public void shuffleButtonClick(View view) {
-
-        PlayerConstants.SONG_PAUSED = false;
-        ArrayList<Song> shuffledPlaylist = songsList;
-
-        long seed = System.nanoTime();
-        Collections.shuffle(shuffledPlaylist, new Random(seed));
-        PlayerConstants.setPlayList(this, shuffledPlaylist);
-        PlayerConstants.SONG_NUMBER = 0;
-
-        boolean isServiceRunning = UtilFunctions.isServiceRunning(MusicService.class.getName(), this);
-        if (!isServiceRunning) {
-            Intent i = new Intent(this, MusicService.class);
-            startService(i);
-        }
-
-        else
-            PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
+        MusicPlayerExtensionMethods.shufflePlay(this, songsList);
     }
 
     public void onCreate(Bundle b) {
@@ -175,7 +159,7 @@ public class CustomPlaylistInnerActivity extends VerticalSlidingDrawerBaseActivi
     private void setToolbar() {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.mipmap.ic_chevron_left_white_24dp);
-        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+        toolbar.setTitleTextColor(ActivityHelper.getColor(this, R.color.white));
         toolbar.inflateMenu(R.menu.activity_custom_playlist_inner_layout);
         toolbar.setOverflowIcon(getResources().getDrawable(R.mipmap.ic_more_vert_white_24dp));
 

@@ -28,6 +28,7 @@ import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
+import com.prasadam.kmrplayer.ActivityHelperClasses.ActivityHelper;
 import com.prasadam.kmrplayer.Adapters.UIAdapters.AchievementUnlocked;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.BlurBuilder;
@@ -272,65 +273,70 @@ public class MusicService extends Service implements
     }
     private void newNotification() {
 
-        currentSong = PlayerConstants.getPlayList().get(PlayerConstants.SONG_NUMBER);
-        UpdateMetadata();
-        updateWidget();
-        RemoteViews smallView = new RemoteViews(getPackageName(), R.layout.notification);
-        smallView.setTextViewText(R.id.notification_song_name, currentSong.getTitle());
-        smallView.setTextViewText(R.id.notification_artist_name, currentSong.getArtist());
+        if(PlayerConstants.getPlaylistSize() > 0){
+            currentSong = PlayerConstants.getPlayList().get(PlayerConstants.SONG_NUMBER);
+            UpdateMetadata();
+            updateWidget();
+            RemoteViews smallView = new RemoteViews(getPackageName(), R.layout.notification);
+            smallView.setTextViewText(R.id.notification_song_name, currentSong.getTitle());
+            smallView.setTextViewText(R.id.notification_artist_name, currentSong.getArtist());
 
-        RemoteViews expanedView = new RemoteViews(getPackageName(), R.layout.notification_expanded);
-        expanedView.setTextViewText(R.id.notification_song_name, currentSong.getTitle());
-        expanedView.setTextViewText(R.id.notification_album_name, currentSong.getAlbum());
-        expanedView.setTextViewText(R.id.notification_artist_name, currentSong.getArtist());
+            RemoteViews expanedView = new RemoteViews(getPackageName(), R.layout.notification_expanded);
+            expanedView.setTextViewText(R.id.notification_song_name, currentSong.getTitle());
+            expanedView.setTextViewText(R.id.notification_album_name, currentSong.getAlbum());
+            expanedView.setTextViewText(R.id.notification_artist_name, currentSong.getArtist());
 
-        if(PlayerConstants.SONG_PAUSED){
-            smallView.setImageViewBitmap(R.id.notification_play_pause_button, ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_play_arrow_black_24dp)).getBitmap());
-            expanedView.setImageViewBitmap(R.id.notification_play_pause_button, ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_play_arrow_black_24dp)).getBitmap());
+            if(PlayerConstants.SONG_PAUSED){
+                smallView.setImageViewBitmap(R.id.notification_play_pause_button, ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_play_arrow_black_24dp)).getBitmap());
+                expanedView.setImageViewBitmap(R.id.notification_play_pause_button, ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_play_arrow_black_24dp)).getBitmap());
+            }
+            else{
+                smallView.setImageViewBitmap(R.id.notification_play_pause_button, ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_pause_black_24dp)).getBitmap());
+                expanedView.setImageViewBitmap(R.id.notification_play_pause_button, ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_pause_black_24dp)).getBitmap());
+            }
+
+            if(currentSong.getIsLiked(this))
+                expanedView.setImageViewBitmap(R.id.notification_favorite_button, ((BitmapDrawable) getResources().getDrawable(R.drawable.ic_favorite_red_24dp)).getBitmap());
+
+            else
+                expanedView.setImageViewBitmap(R.id.notification_favorite_button, ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_favorite_border_black_24dp)).getBitmap());
+
+
+            setListeners(smallView);
+            setListeners(expanedView);
+
+            Bitmap albumArt = AudioExtensionMethods.getBitMap(getBaseContext(), currentSong.getAlbumArtLocation());
+            if(albumArt != null){
+                smallView.setImageViewBitmap(R.id.notification_album_art, albumArt);
+                expanedView.setImageViewBitmap(R.id.notification_album_art, albumArt);
+            }
+
+            else{
+                smallView.setImageViewBitmap(R.id.notification_album_art, ((BitmapDrawable) getResources().getDrawable(R.mipmap.unkown_album_art)).getBitmap());
+                expanedView.setImageViewBitmap(R.id.notification_album_art, ((BitmapDrawable) getResources().getDrawable(R.mipmap.unkown_album_art)).getBitmap());
+            }
+
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                    .setContent(smallView)
+                    .setSmallIcon(R.mipmap.launcher_icon)
+                    .setOngoing(false);
+
+            if(SharedPreferenceHelper.getStickyNotificationStatus(getContext()))
+                builder.setOngoing(true);
+
+            if(currentVersionSupportBigNotification)
+                builder.setCustomBigContentView(expanedView);
+
+            Intent nIntent = new Intent(this, MainActivity.class);
+            nIntent.putExtra("notificationIntent", true);
+            nIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, nIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            builder.setContentIntent(pendingIntent);
+
+            Notification notification = builder.build();
+            NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            nm.notify(626272, notification);
         }
-        else{
-            smallView.setImageViewBitmap(R.id.notification_play_pause_button, ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_pause_black_24dp)).getBitmap());
-            expanedView.setImageViewBitmap(R.id.notification_play_pause_button, ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_pause_black_24dp)).getBitmap());
-        }
-
-        if(currentSong.getIsLiked(this))
-            expanedView.setImageViewBitmap(R.id.notification_favorite_button, ((BitmapDrawable) getResources().getDrawable(R.drawable.ic_favorite_red_24dp)).getBitmap());
-
-        else
-            expanedView.setImageViewBitmap(R.id.notification_favorite_button, ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_favorite_border_black_24dp)).getBitmap());
-
-
-        setListeners(smallView);
-        setListeners(expanedView);
-
-        Bitmap albumArt = AudioExtensionMethods.getBitMap(getBaseContext(), currentSong.getAlbumArtLocation());
-        if(albumArt != null){
-            smallView.setImageViewBitmap(R.id.notification_album_art, albumArt);
-            expanedView.setImageViewBitmap(R.id.notification_album_art, albumArt);
-        }
-
-        else{
-            smallView.setImageViewBitmap(R.id.notification_album_art, ((BitmapDrawable) getResources().getDrawable(R.mipmap.unkown_album_art)).getBitmap());
-            expanedView.setImageViewBitmap(R.id.notification_album_art, ((BitmapDrawable) getResources().getDrawable(R.mipmap.unkown_album_art)).getBitmap());
-        }
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .setContent(smallView)
-                .setSmallIcon(R.mipmap.launcher_icon)
-                .setOngoing(true);
-
-        if(currentVersionSupportBigNotification)
-            builder.setCustomBigContentView(expanedView);
-
-        Intent nIntent = new Intent(this, MainActivity.class);
-        nIntent.putExtra("notificationIntent", true);
-        nIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, nIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        builder.setContentIntent(pendingIntent);
-
-        Notification notification = builder.build();
-        NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        nm.notify(626272, notification);
     }
     private void updateWidget() {
         Intent intent = new Intent(this, NowPlayingWidget.class);
@@ -364,19 +370,19 @@ public class MusicService extends Service implements
                     if(albumArt != null)
                         new AchievementUnlocked(getApplicationContext())
                                 .setTitle(nextSong.getTitle())
-                                .setTitleColor(getContext().getResources().getColor(R.color.white))
-                                .setBackgroundColor(getContext().getResources().getColor(R.color.launcher_background_color))
+                                .setTitleColor(ActivityHelper.getColor(getContext(), R.color.white))
+                                .setBackgroundColor(ActivityHelper.getColor(getContext(), R.color.launcher_background_color))
                                 .setIcon(new BitmapDrawable(albumArt))
                                 .setSubTitle(nextSong.getArtist())
-                                .setSubtitleColor(getContext().getResources().getColor(R.color.layout_Background)).isLarge(false).build().show();
+                                .setSubtitleColor(ActivityHelper.getColor(this, R.color.layout_Background)).isLarge(false).build().show();
                     else
                         new AchievementUnlocked(getApplicationContext())
                                 .setTitle(nextSong.getTitle())
-                                .setTitleColor(getContext().getResources().getColor(R.color.white))
-                                .setBackgroundColor(getContext().getResources().getColor(R.color.launcher_background_color))
-                                .setIcon(getDrawable(R.mipmap.launcher_icon))
+                                .setTitleColor(ActivityHelper.getColor(getContext(), R.color.white))
+                                .setBackgroundColor(ActivityHelper.getColor(getContext(), R.color.launcher_background_color))
+                                .setIcon(getContext().getResources().getDrawable(R.mipmap.launcher_icon))
                                 .setSubTitle(nextSong.getArtist())
-                                .setSubtitleColor(getContext().getColor(R.color.layout_Background)).isLarge(false).build().show();
+                                .setSubtitleColor(ActivityHelper.getColor(getContext(), R.color.layout_Background)).isLarge(false).build().show();
                 }
             }
     }

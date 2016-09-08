@@ -180,4 +180,9 @@ public class SharedPreferenceHelper {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getBoolean(SharedPreferenceKeyConstants.KEY_COLORED_NAV_BAR, true);
     }
+
+    public static boolean getStickyNotificationStatus(Context context){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getBoolean(SharedPreferenceKeyConstants.KEY_STICKY_NOTIFICATION, true);
+    }
 }

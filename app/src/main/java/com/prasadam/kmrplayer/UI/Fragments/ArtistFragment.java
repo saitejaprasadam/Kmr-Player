@@ -31,6 +31,7 @@ public class ArtistFragment extends Fragment {
     public static ArtistAdapter recyclerViewAdapter;
     private FrameLayout fragmentContainer;
     private Activity mActivity;
+    private View rootView;
 
     @SuppressWarnings("deprecation")
     @Override
@@ -41,7 +42,7 @@ public class ArtistFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_artist_layout, container, false);
+        rootView = inflater.inflate(R.layout.fragment_artist_layout, container, false);
         recyclerView = (FastScrollRecyclerView) rootView.findViewById(R.id.artist_recylcer_view_layout);
         fragmentContainer = (FrameLayout) rootView.findViewById(R.id.ar_fragment_container);
         setScrollListener();
@@ -88,6 +89,10 @@ public class ArtistFragment extends Fragment {
                     ActivityHelper.showEmptyFragment(getActivity(), getResources().getString(R.string.no_artist_text), fragmentContainer);
             }
         }.start();
+    }
+    public void onResume(){
+        super.onResume();
+        fragmentContainer = (FrameLayout) rootView.findViewById(R.id.ar_fragment_container);
     }
     private void setScrollListener() {
         recyclerView.setOnScrollListener(new HidingScrollListener() {

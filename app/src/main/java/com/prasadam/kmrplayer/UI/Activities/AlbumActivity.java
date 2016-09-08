@@ -42,7 +42,7 @@ import com.prasadam.kmrplayer.SubClasses.CustomArrayList.SongsArrayList;
 import java.io.File;
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -57,13 +57,13 @@ public class AlbumActivity extends VerticalSlidingDrawerBaseActivity {
     private Long albumID;
     private SongsArrayList songsList;
 
-    @Bind (R.id.actual_album_art) ImageView actualAlbumArt;
-    @Bind (R.id.blurred_album_art) ImageView blurredAlbumArt;
-    @Bind (R.id.album_info_colored_box) RelativeLayout colorBoxLayout;
-    @Bind (R.id.Album_name_albumrecyclerview) TextView albumNameTextView;
-    @Bind (R.id.Artist_name_albumrecyclerview) TextView artistNameTextView;
-    @Bind (R.id.shuffle_fab_button) FloatingActionButton shuffleFabButton;
-    @Bind (R.id.songs_recylcer_view_layout) RecyclerView recyclerView;
+    @BindView (R.id.actual_album_art) ImageView actualAlbumArt;
+    @BindView (R.id.blurred_album_art) ImageView blurredAlbumArt;
+    @BindView (R.id.album_info_colored_box) RelativeLayout colorBoxLayout;
+    @BindView (R.id.Album_name_albumrecyclerview) TextView albumNameTextView;
+    @BindView (R.id.Artist_name_albumrecyclerview) TextView artistNameTextView;
+    @BindView (R.id.shuffle_fab_button) FloatingActionButton shuffleFabButton;
+    @BindView (R.id.songs_recylcer_view_layout) RecyclerView recyclerView;
 
     @OnClick (R.id.album_info)
     public void artistOnClickListener(View view){

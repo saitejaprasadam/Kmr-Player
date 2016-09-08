@@ -26,7 +26,7 @@ import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SubClasses.CustomArrayList.SongsArrayList;
 import com.prasadam.kmrplayer.UI.Activities.VerticalSlidingDrawerBaseActivity;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /*
@@ -35,9 +35,9 @@ import butterknife.ButterKnife;
 
 public class MostPlayedSongsActivity extends VerticalSlidingDrawerBaseActivity {
 
-    @Bind(R.id.most_played_recycer_view) RecyclerView mostPlayedRecylcerView;
-    @Bind (R.id.root_layout) FrameLayout rootLayout;
-    @Bind(R.id.fragment_container) FrameLayout fragmentContainer;
+    @BindView(R.id.most_played_recycer_view) RecyclerView mostPlayedRecylcerView;
+    @BindView (R.id.root_layout) FrameLayout rootLayout;
+    @BindView(R.id.fragment_container) FrameLayout fragmentContainer;
 
     private SongsArrayList songsList;
     private UnifedSongAdapter MostPlayedActivityrecyclerViewAdapter;
@@ -91,7 +91,6 @@ public class MostPlayedSongsActivity extends VerticalSlidingDrawerBaseActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            setSearchListener();
                             MostPlayedActivityrecyclerViewAdapter = new UnifedSongAdapter(MostPlayedSongsActivity.this, songsList);
 
                             if (!ExtensionMethods.isTablet(MostPlayedSongsActivity.this))
@@ -115,6 +114,7 @@ public class MostPlayedSongsActivity extends VerticalSlidingDrawerBaseActivity {
                             mostPlayedRecylcerView.addItemDecoration(new DividerItemDecoration(MostPlayedSongsActivity.this, LinearLayoutManager.VERTICAL));
                             loading.dismiss();
                             ActivityHelper.setShuffleFAB(MostPlayedSongsActivity.this, rootLayout, mostPlayedRecylcerView, songsList);
+                            setSearchListener();
                         }
                     });
                 }

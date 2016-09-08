@@ -44,7 +44,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 /*
@@ -53,14 +53,14 @@ import butterknife.OnClick;
 
 public class TagEditorActivity extends AppCompatActivity {
 
-    @Bind (R.id.input_song_title) EditText songTitle;
-    @Bind (R.id.input_song_album) EditText songAlbum;
-    @Bind (R.id.input_song_artist) EditText songArtist;
-    @Bind (R.id.input_song_year) EditText songYear;
-    @Bind (R.id.input_song_genre) EditText songGenre;
-    @Bind (R.id.blurred_album_art) ImageView blurredAlbumArt;
-    @Bind (R.id.actual_album_art) ImageView actualAlbumArt;
-    @Bind (R.id.apply_fab_button) ImageView applyFabButton;
+    @BindView (R.id.input_song_title) EditText songTitle;
+    @BindView (R.id.input_song_album) EditText songAlbum;
+    @BindView (R.id.input_song_artist) EditText songArtist;
+    @BindView (R.id.input_song_year) EditText songYear;
+    @BindView (R.id.input_song_genre) EditText songGenre;
+    @BindView (R.id.blurred_album_art) ImageView blurredAlbumArt;
+    @BindView (R.id.actual_album_art) ImageView actualAlbumArt;
+    @BindView (R.id.apply_fab_button) ImageView applyFabButton;
 
     private int Choose_Image = 3121;
     private String currentSongID, songLocation;

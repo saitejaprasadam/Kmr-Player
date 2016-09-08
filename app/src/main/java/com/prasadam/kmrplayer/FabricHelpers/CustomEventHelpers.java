@@ -1,7 +1,10 @@
 package com.prasadam.kmrplayer.FabricHelpers;
 
+import android.os.Build;
+
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.CustomEvent;
+import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SocketClasses.NetworkServiceDiscovery.NSDServer;
 
 /*
@@ -31,5 +34,12 @@ public class CustomEventHelpers {
     public static void sendSuggestion(CharSequence input) {
         Answers.getInstance().logCustom(new CustomEvent("Suggestions")
                 .putCustomAttribute("Suggestion", String.valueOf(input)));
+    }
+
+    public static void registerUser(String username) {
+
+        Answers.getInstance().logCustom(new CustomEvent("Registered users")
+                .putCustomAttribute("Username", username)
+                .putCustomAttribute("Device Model", ExtensionMethods.getDeviceModelName()));
     }
 }

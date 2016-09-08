@@ -17,7 +17,7 @@ public class InitiateQuickShare extends AsyncTask<Void, Void, Void>{
 
     public InitiateQuickShare(String hostAddress, ArrayList<String> songsList){
         this.hostAddress = hostAddress;
-        this.songsList = songsList;
+        this.songsList = new ArrayList<>(songsList);
     }
 
     @Override

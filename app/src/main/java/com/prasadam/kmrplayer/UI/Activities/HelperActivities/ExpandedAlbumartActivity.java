@@ -22,7 +22,7 @@ import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import java.io.File;
 import java.io.FileOutputStream;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -32,8 +32,8 @@ import butterknife.OnClick;
 
 public class ExpandedAlbumartActivity extends AppCompatActivity {
 
-    @Bind(R.id.blurred_album_art) ImageView blurredAlbumArt;
-    @Bind(R.id.actual_album_art) ImageView actualAlbumArt;
+    @BindView(R.id.blurred_album_art) ImageView blurredAlbumArt;
+    @BindView(R.id.actual_album_art) ImageView actualAlbumArt;
 
     @OnClick (R.id.parent_layout)
     public void parentClicked(View view){

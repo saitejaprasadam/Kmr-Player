@@ -8,7 +8,6 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.SocketClasses.GroupPlay.GroupPlayHelper;
 import com.prasadam.kmrplayer.UI.Activities.VerticalSlidingDrawerBaseActivity;
 
 import java.util.ArrayList;
@@ -88,8 +87,17 @@ public class MusicPlayerExtensionMethods {
         }
 
         else{
-            GroupPlayHelper.notifyGroupPlayClientsIfExists();
-            PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
+
+            if(MusicService.currentSong == null)
+                PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
+
+            else{
+                if(!MusicService.currentSong.getHashID().equals(PlayerConstants.getPlayList().get(PlayerConstants.SONG_NUMBER).getHashID()))
+                    PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
+                else
+                    Toast.makeText(context, "now playing list updated", Toast.LENGTH_SHORT).show();
+            }
+
             VerticalSlidingDrawerBaseActivity.updateAlbumAdapter();
         }
     }
@@ -100,6 +108,7 @@ public class MusicPlayerExtensionMethods {
             Intent i = new Intent(mActivity, MusicService.class);
             mActivity.startService(i);
         }
+        //HearingHelper.StartHearingHelper();
     }
 
     public static void changeSong(Context mActivity, int position){

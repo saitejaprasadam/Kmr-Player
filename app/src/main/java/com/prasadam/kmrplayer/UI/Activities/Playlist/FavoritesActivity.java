@@ -26,7 +26,7 @@ import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SubClasses.CustomArrayList.SongsArrayList;
 import com.prasadam.kmrplayer.UI.Activities.VerticalSlidingDrawerBaseActivity;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /*
@@ -35,9 +35,9 @@ import butterknife.ButterKnife;
 
 public class FavoritesActivity extends VerticalSlidingDrawerBaseActivity {
 
-    @Bind(R.id.root_layout) FrameLayout rootLayout;
-    @Bind(R.id.favorites_recycler_view) RecyclerView recyclerView;
-    @Bind(R.id.fragment_container) FrameLayout fragmentContainer;
+    @BindView(R.id.root_layout) FrameLayout rootLayout;
+    @BindView(R.id.favorites_recycler_view) RecyclerView recyclerView;
+    @BindView(R.id.fragment_container) FrameLayout fragmentContainer;
 
     private SongsArrayList favoriteSongList;
     private UnifedSongAdapter FavoritesActivityrecyclerViewAdapter;
@@ -97,7 +97,6 @@ public class FavoritesActivity extends VerticalSlidingDrawerBaseActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            setSearchListener();
                             FavoritesActivityrecyclerViewAdapter = new UnifedSongAdapter(FavoritesActivity.this, favoriteSongList);
 
                             if (!ExtensionMethods.isTablet(FavoritesActivity.this))
@@ -121,6 +120,7 @@ public class FavoritesActivity extends VerticalSlidingDrawerBaseActivity {
                             recyclerView.addItemDecoration(new DividerItemDecoration(FavoritesActivity.this, LinearLayoutManager.VERTICAL));
                             loading.dismiss();
                             ActivityHelper.setShuffleFAB(FavoritesActivity.this, rootLayout, recyclerView, favoriteSongList);
+                            setSearchListener();
                         }
                     });
                 }

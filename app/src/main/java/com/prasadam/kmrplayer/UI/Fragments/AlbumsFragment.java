@@ -30,6 +30,7 @@ public class AlbumsFragment extends Fragment {
     public static AlbumAdapter recyclerViewAdapter;
     private Activity mActivity;
     private FrameLayout fragmentContainer;
+    private View rootView;
 
     @Override
     public void onAttach(Activity activity) {
@@ -37,7 +38,7 @@ public class AlbumsFragment extends Fragment {
         mActivity = activity;
     }
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_album_list, container, false);
+        rootView = inflater.inflate(R.layout.fragment_album_list, container, false);
         recyclerView = (FastScrollRecyclerView) rootView.findViewById(R.id.album_recylcer_view_layout);
         fragmentContainer = (FrameLayout) rootView.findViewById(R.id.ab_fragment_container);
         setScrollListener();
@@ -84,6 +85,10 @@ public class AlbumsFragment extends Fragment {
                     ActivityHelper.showEmptyFragment(getActivity(), getResources().getString(R.string.no_albums_text), fragmentContainer);
             }
         }.start();
+    }
+    public void onResume(){
+        super.onResume();
+        fragmentContainer = (FrameLayout) rootView.findViewById(R.id.sg_fragment_container);
     }
 
     private void setScrollListener() {

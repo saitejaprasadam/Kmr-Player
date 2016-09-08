@@ -189,7 +189,7 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
         if(ExtensionMethods.isTablet(this) && ExtensionMethods.isLandScape(this))
             nowPlayingPlaylistRecyclerView.setPadding(0, ExtensionMethods.getStatusBarHeight(this), 0, 0);
 
-        nowPlayingSeekBar.getProgressDrawable().setColorFilter(getResources().getColor(R.color.colorAccentGeneric), PorterDuff.Mode.MULTIPLY);
+        nowPlayingSeekBar.getProgressDrawable().setColorFilter(ActivityHelper.getColor(this, R.color.colorAccentGeneric), PorterDuff.Mode.MULTIPLY);
         if(!(ExtensionMethods.isLandScape(this) && !ExtensionMethods.isTablet(this)))
             nowPlayingSeekBar.setPadding(0, 0, 0, 0);
 
@@ -248,7 +248,7 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
 
                 if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
                     if(newState == SlidingUpPanelLayout.PanelState.COLLAPSED)
-                        getWindow().setNavigationBarColor(getResources().getColor(R.color.black));
+                        getWindow().setNavigationBarColor(ActivityHelper.getColor(getBaseContext(), R.color.black));
                     else if(SharedPreferenceHelper.getColoredNavBarState(VerticalSlidingDrawerBaseActivity.this))
                             getWindow().setNavigationBarColor(((ColorDrawable) nowPlayingColorPallatteView.getBackground()).getColor());
                 }
@@ -330,7 +330,7 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
         });
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
-            nowPlayingMinimalProgressBar.getProgressDrawable().setColorFilter(getResources().getColor(R.color.colorAccentGeneric), android.graphics.PorterDuff.Mode.SRC_IN);
+            nowPlayingMinimalProgressBar.getProgressDrawable().setColorFilter(ActivityHelper.getColor(getBaseContext(), R.color.colorAccentGeneric), android.graphics.PorterDuff.Mode.SRC_IN);
 
         nowPlayingFavButton.setOnLikeListener(new OnLikeListener() {
             @Override

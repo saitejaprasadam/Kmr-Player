@@ -34,7 +34,7 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 import java.io.File;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /*
@@ -209,12 +209,12 @@ public class SongsAdapter extends ObservableRecyclerView.Adapter<SongsAdapter.so
     }
     class songsViewHolder extends RecyclerView.ViewHolder{
 
-        @Bind (R.id.songTitle_RecyclerView) TextView titleTextView;
-        @Bind (R.id.songArtist_recycler_view) TextView artistTextView;
-        @Bind (R.id.songAlbumArt_RecyclerView) ImageView AlbumArtImageView;
-        @Bind (R.id.rootLayout_recycler_view) RelativeLayout rootLayout;
-        @Bind (R.id.song_context_menu) ImageView contextMenuView;
-        @Bind (R.id.fav_button) LikeButton favoriteButton;
+        @BindView (R.id.songTitle_RecyclerView) TextView titleTextView;
+        @BindView (R.id.songArtist_recycler_view) TextView artistTextView;
+        @BindView (R.id.songAlbumArt_RecyclerView) ImageView AlbumArtImageView;
+        @BindView (R.id.rootLayout_recycler_view) RelativeLayout rootLayout;
+        @BindView (R.id.song_context_menu) ImageView contextMenuView;
+        @BindView (R.id.fav_button) LikeButton favoriteButton;
         public String albumPath;
 
         public songsViewHolder(View itemView) {

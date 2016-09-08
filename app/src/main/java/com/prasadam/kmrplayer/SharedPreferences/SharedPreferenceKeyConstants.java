@@ -26,6 +26,7 @@ public class SharedPreferenceKeyConstants {
     public static final String KEY_LOCKSCREEN_META_DATA = "KEY_LOCKSCREEN_META_DATA";
 
     public static final String KEY_COLORED_NAV_BAR = "KEY_COLORED_NAV_BAR";
+    public static final String KEY_STICKY_NOTIFICATION = "KEY_STICKY_NOTIFICATION";
 
     public static final String KEY_VERSION = "KEY_VERSION";
     public static final String KEY_EQUALIZER = "KEY_EQUALIZER";

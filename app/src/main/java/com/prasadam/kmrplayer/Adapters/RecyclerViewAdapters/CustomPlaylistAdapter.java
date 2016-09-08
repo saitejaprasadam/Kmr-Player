@@ -26,7 +26,7 @@ import com.prasadam.kmrplayer.UI.Activities.Playlist.CustomPlaylistInnerActivity
 import java.io.File;
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods.getAlbumArtsForPlaylistCover;
@@ -192,15 +192,15 @@ public class CustomPlaylistAdapter extends RecyclerView.Adapter<CustomPlaylistAd
 
     class songsViewHolder extends RecyclerView.ViewHolder{
 
-        @Bind (R.id.background_image_view) ImageView blurredBckgorundImageView;
-        @Bind (R.id.album_art_image_view1) ImageView albumartImageView1;
-        @Bind (R.id.album_art_image_view2) ImageView albumartImageView2;
-        @Bind (R.id.album_art_image_view3) ImageView albumartImageView3;
-        @Bind (R.id.album_art_image_view4) ImageView albumartImageView4;
-        @Bind (R.id.playlist_name_text_view) TextView playlistNameTextView;
-        @Bind (R.id.songs_count_text_view) TextView songCountTextView;
-        @Bind (R.id.context_menu) ImageView contextMenu;
-        @Bind (R.id.rootLayout_recycler_view) CardView rootView;
+        @BindView (R.id.background_image_view) ImageView blurredBckgorundImageView;
+        @BindView (R.id.album_art_image_view1) ImageView albumartImageView1;
+        @BindView (R.id.album_art_image_view2) ImageView albumartImageView2;
+        @BindView (R.id.album_art_image_view3) ImageView albumartImageView3;
+        @BindView (R.id.album_art_image_view4) ImageView albumartImageView4;
+        @BindView (R.id.playlist_name_text_view) TextView playlistNameTextView;
+        @BindView (R.id.songs_count_text_view) TextView songCountTextView;
+        @BindView (R.id.context_menu) ImageView contextMenu;
+        @BindView (R.id.rootLayout_recycler_view) CardView rootView;
 
         public songsViewHolder(View itemView) {
             super(itemView);

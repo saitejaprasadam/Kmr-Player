@@ -23,7 +23,7 @@ import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SubClasses.CustomArrayList.SongsArrayList;
 import com.prasadam.kmrplayer.UI.Activities.VerticalSlidingDrawerBaseActivity;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 /*
  * Created by Prasadam Saiteja on 5/27/2016.
@@ -31,9 +31,9 @@ import butterknife.ButterKnife;
 
 public class RecentlyAddedActivity extends VerticalSlidingDrawerBaseActivity {
 
-    @Bind (R.id.recently_added_playlist_recycler_view) RecyclerView recentlyAddedRecyclerView;
-    @Bind (R.id.root_layout) FrameLayout rootLayout;
-    @Bind(R.id.fragment_container) FrameLayout fragmentContainer;
+    @BindView (R.id.recently_added_playlist_recycler_view) RecyclerView recentlyAddedRecyclerView;
+    @BindView (R.id.root_layout) FrameLayout rootLayout;
+    @BindView(R.id.fragment_container) FrameLayout fragmentContainer;
 
     private SongsArrayList songsList;
     private UnifedSongAdapter RecentlyAddedAcitivityrecyclerViewAdapter;
@@ -93,7 +93,6 @@ public class RecentlyAddedActivity extends VerticalSlidingDrawerBaseActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            setSearchListener();
                             RecentlyAddedAcitivityrecyclerViewAdapter = new UnifedSongAdapter(RecentlyAddedActivity.this, songsList);
                             if (!ExtensionMethods.isTablet(RecentlyAddedActivity.this)) {
                                 if (!ExtensionMethods.isLandScape(RecentlyAddedActivity.this))    //Mobile Portrait
@@ -113,6 +112,7 @@ public class RecentlyAddedActivity extends VerticalSlidingDrawerBaseActivity {
                             recentlyAddedRecyclerView.addItemDecoration(new DividerItemDecoration(RecentlyAddedActivity.this, LinearLayoutManager.VERTICAL));
                             loading.dismiss();
                             ActivityHelper.setShuffleFAB(RecentlyAddedActivity.this, rootLayout, recentlyAddedRecyclerView, songsList);
+                            setSearchListener();
                         }
                     });
                 }

@@ -27,6 +27,7 @@ import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.Controls;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicPlayerExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.FabricHelpers.CustomEventHelpers;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
@@ -168,6 +169,7 @@ public class MainActivity extends VerticalSlidingDrawerBaseActivity implements N
                         public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
                             SharedPreferenceHelper.setUsername(getBaseContext(), String.valueOf(input));
                             Toast.makeText(getBaseContext(), "Reboot application to apply changes", Toast.LENGTH_LONG).show();
+                            CustomEventHelpers.registerUser(String.valueOf(input));
                         }
                     }).show();
 
@@ -177,9 +179,11 @@ public class MainActivity extends VerticalSlidingDrawerBaseActivity implements N
         MusicPlayerExtensionMethods.startMusicService(MainActivity.this);
     }
     private void createTabFragment() {
-        FragmentManager mFragmentManager = getSupportFragmentManager();
-        FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
-        mFragmentTransaction.replace(R.id.containerView, new TabFragment()).commit();
+        if (!isFinishing()) {
+            FragmentManager mFragmentManager = getSupportFragmentManager();
+            FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
+            mFragmentTransaction.replace(R.id.containerView, new TabFragment()).commit();
+        }
     }
     private void setNavigationDrawer() {
 

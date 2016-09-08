@@ -27,7 +27,7 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 import java.io.File;
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /*
@@ -57,12 +57,10 @@ public class AlbumAdapter extends ObservableRecyclerView.Adapter<AlbumAdapter.Al
 
     @Override
     public AlbumAdapter.AlbumViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view;
         if(albumArrayList == null)
-            view = inflater.inflate(R.layout.recycler_view_albums_layout, parent, false);
+            return new AlbumViewHolder(inflater.inflate(R.layout.recycler_view_albums_layout, parent, false));
         else
-            view = inflater.inflate(R.layout.recycler_view_album_search_layout, parent, false);
-        return new AlbumViewHolder(view);
+            return new AlbumViewHolder(inflater.inflate(R.layout.recycler_view_album_search_layout, parent, false));
     }
     public void onBindViewHolder(final AlbumAdapter.AlbumViewHolder holder, int position) {
 
@@ -71,6 +69,7 @@ public class AlbumAdapter extends ObservableRecyclerView.Adapter<AlbumAdapter.Al
             currentAlbum = SharedVariables.fullAlbumList.get(position);
         else
             currentAlbum = albumArrayList.get(position);
+
         holder.albumNameTextView.setText(currentAlbum.getTitle());
         holder.artistNameTextView.setText(currentAlbum.getArtist());
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
@@ -135,7 +134,6 @@ public class AlbumAdapter extends ObservableRecyclerView.Adapter<AlbumAdapter.Al
                 }
             }).start();
     }
-
     private void setImage(final AlbumViewHolder holder, final String albumpath){
         if(albumpath == null)
             holder.albumArtImageView.setImageResource(R.mipmap.unkown_album_art);
@@ -168,11 +166,11 @@ public class AlbumAdapter extends ObservableRecyclerView.Adapter<AlbumAdapter.Al
 
     class AlbumViewHolder extends RecyclerView.ViewHolder{
 
-        @Bind (R.id.album_art_albumrecyclerview) ImageView albumArtImageView;
-        @Bind (R.id.Album_name_albumrecyclerview) TextView albumNameTextView;
-        @Bind (R.id.Artist_name_albumrecyclerview) TextView artistNameTextView;
-        @Bind (R.id.color_box_layout_albumrecyclerview) RelativeLayout colorBoxLayout;
-        @Bind (R.id.root_layout_album_recyler_view) android.support.v7.widget.CardView rootLayout;
+        @BindView (R.id.album_art_albumrecyclerview) ImageView albumArtImageView;
+        @BindView (R.id.Album_name_albumrecyclerview) TextView albumNameTextView;
+        @BindView (R.id.Artist_name_albumrecyclerview) TextView artistNameTextView;
+        @BindView (R.id.color_box_layout_albumrecyclerview) RelativeLayout colorBoxLayout;
+        @BindView (R.id.root_layout_album_recyler_view) android.support.v7.widget.CardView rootLayout;
         private String albumLocation = null;
 
         public AlbumViewHolder(View itemView) {

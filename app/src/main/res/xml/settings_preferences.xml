@@ -14,6 +14,12 @@
             android:title="@string/Show_Floating_notification"
             android:summary="@string/shows_a_floating_information_on_screen_when_song_changes" />
 
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="KEY_STICKY_NOTIFICATION"
+            android:title="@string/Sticky_Notification"
+            android:summary="@string/Sticky_Notification_desc"/>
+
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/Theme">

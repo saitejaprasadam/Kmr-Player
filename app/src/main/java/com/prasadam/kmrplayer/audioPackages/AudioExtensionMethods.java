@@ -628,7 +628,7 @@ public class AudioExtensionMethods {
 
         ContentResolver musicResolver = context.getContentResolver();
         Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        Cursor musicCursor = musicResolver.query(musicUri, null, MediaStore.Audio.Media.IS_MUSIC + " and " + MediaStore.Audio.Media.ARTIST + "=\"" + artistName + "\"", null, null);
+        Cursor musicCursor = musicResolver.query(musicUri, null, MediaStore.Audio.Media.IS_MUSIC + " and " + MediaStore.Audio.Media.ARTIST + "=\'" + artistName + "\'", null, null);
 
         if(musicCursor!=null && musicCursor.moveToFirst()) {
             do {
@@ -676,7 +676,7 @@ public class AudioExtensionMethods {
 
         ContentResolver musicResolver = context.getContentResolver();
         Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        Cursor musicCursor = musicResolver.query(musicUri, null, MediaStore.Audio.Media.IS_MUSIC + " and " + MediaStore.Audio.Media.ARTIST + "=\"" + artistTitle + "\"", null, null);
+        Cursor musicCursor = musicResolver.query(musicUri, null, MediaStore.Audio.Media.IS_MUSIC + " and " + MediaStore.Audio.Media.ARTIST + "=\'" + artistTitle + "\'", null, null);
         ArrayList<Song> songList = new ArrayList<>();
 
         if(musicCursor!=null && musicCursor.moveToFirst()) {

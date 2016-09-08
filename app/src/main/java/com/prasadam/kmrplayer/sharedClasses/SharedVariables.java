@@ -18,8 +18,6 @@ public class SharedVariables {
 
     public static void Initializers(Context context) {
         Fresco.initialize(context);
-        //LastFm.initializeLastFm();
-        //LastFm.getLastFmImages("anirudh");
     }
 
     public static volatile SongsArrayList fullSongsList = new SongsArrayList() {

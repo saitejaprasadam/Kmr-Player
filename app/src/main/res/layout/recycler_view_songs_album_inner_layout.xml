@@ -4,7 +4,6 @@
     android:layout_height="62dp"
     android:layout_width="match_parent"
     android:paddingStart="13dp"
-    android:paddingEnd="13dp"
     android:id="@+id/rootLayout_recycler_view"
     android:clickable="true"
     android:background="@drawable/ripple">
@@ -31,6 +30,7 @@
             android:clickable="true"
             android:id="@+id/song_context_menu"
             android:layout_gravity="center_vertical"
+            android:paddingEnd="10dp"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:src="@mipmap/ic_more_vert_black_24dp"

@@ -42,7 +42,7 @@ import com.prasadam.kmrplayer.SubClasses.CustomArrayList.SongsArrayList;
 import java.io.File;
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -61,13 +61,13 @@ public class ArtistActivity extends VerticalSlidingDrawerBaseActivity {
     private ArtistInnerLayoutSongRecyclerViewAdapter songRecyclerViewAdapter;
     private SmallAlbumAdapter albumRecyclerViewAdapter;
 
-    @Bind(R.id.artist_image) ImageView artistAlbumArtImageView;
-    @Bind(R.id.blurred_album_art) ImageView blurredAlbumArt;
-    @Bind(R.id.artist_title) TextView artistTitle;
-    @Bind(R.id.album_count_text_view) TextView albumCountTextview;
-    @Bind(R.id.song_count_text_view) TextView songCountTextview;
-    @Bind(R.id.songs_recycler_view_artist_activity) RecyclerView songRecyclerview;
-    @Bind(R.id.albums_recycler_view_artist_activity) RecyclerView albumRecyclerview;
+    @BindView(R.id.artist_image) ImageView artistAlbumArtImageView;
+    @BindView(R.id.blurred_album_art) ImageView blurredAlbumArt;
+    @BindView(R.id.artist_title) TextView artistTitle;
+    @BindView(R.id.album_count_text_view) TextView albumCountTextview;
+    @BindView(R.id.song_count_text_view) TextView songCountTextview;
+    @BindView(R.id.songs_recycler_view_artist_activity) RecyclerView songRecyclerview;
+    @BindView(R.id.albums_recycler_view_artist_activity) RecyclerView albumRecyclerview;
 
     @OnClick(R.id.shuffle_fab_button)
     public void ShuffleOnClickListener(View view){

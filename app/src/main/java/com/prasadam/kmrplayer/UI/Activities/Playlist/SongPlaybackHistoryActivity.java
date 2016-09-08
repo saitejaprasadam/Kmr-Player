@@ -23,7 +23,7 @@ import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SubClasses.CustomArrayList.SongsArrayList;
 import com.prasadam.kmrplayer.UI.Activities.VerticalSlidingDrawerBaseActivity;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /*
@@ -32,9 +32,9 @@ import butterknife.ButterKnife;
 
 public class SongPlaybackHistoryActivity extends VerticalSlidingDrawerBaseActivity {
 
-    @Bind(R.id.history_recycler_view) RecyclerView recyclerView;
-    @Bind (R.id.root_layout) FrameLayout rootLayout;
-    @Bind(R.id.fragment_container) FrameLayout fragmentContainer;
+    @BindView(R.id.history_recycler_view) RecyclerView recyclerView;
+    @BindView (R.id.root_layout) FrameLayout rootLayout;
+    @BindView(R.id.fragment_container) FrameLayout fragmentContainer;
 
     private Menu mOptionsMenu;
     private SongsArrayList songsList;
@@ -88,7 +88,6 @@ public class SongPlaybackHistoryActivity extends VerticalSlidingDrawerBaseActivi
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            setSearchListener();
                             songHistoryActivityrecyclerViewAdapter = new UnifedSongAdapter(SongPlaybackHistoryActivity.this, songsList);
                             if (!ExtensionMethods.isTablet(SongPlaybackHistoryActivity.this)) {
                                 if (!ExtensionMethods.isLandScape(SongPlaybackHistoryActivity.this))    //Mobile Portrait
@@ -108,6 +107,7 @@ public class SongPlaybackHistoryActivity extends VerticalSlidingDrawerBaseActivi
                             recyclerView.addItemDecoration(new DividerItemDecoration(SongPlaybackHistoryActivity.this, LinearLayoutManager.VERTICAL));
                             loading.dismiss();
                             ActivityHelper.setShuffleFAB(SongPlaybackHistoryActivity.this, rootLayout, recyclerView, songsList);
+                            setSearchListener();
                         }
                     });
                 }

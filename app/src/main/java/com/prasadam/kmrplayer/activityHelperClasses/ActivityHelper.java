@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -174,9 +175,16 @@ public class ActivityHelper {
         }
     }
 
-    public static boolean hasSoftNavBar(Resources resources)
-    {
+    public static boolean hasSoftNavBar(Resources resources) {
         int id = resources.getIdentifier("config_showNavigationBar", "bool", "android");
         return id > 0 && resources.getBoolean(id);
+    }
+    public static int getColor(Context context, int id) {
+        final int version = Build.VERSION.SDK_INT;
+        if (version >= 23) {
+            return ContextCompat.getColor(context, id);
+        } else {
+            return context.getResources().getColor(id);
+        }
     }
 }

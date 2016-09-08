@@ -25,7 +25,7 @@ import com.prasadam.kmrplayer.R;
 import java.io.File;
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /*
@@ -120,10 +120,10 @@ public class SmallAlbumAdapter extends ObservableRecyclerView.Adapter<SmallAlbum
 
     public class ArtistViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.artist_title) TextView artistNameTextView;
-        @Bind(R.id.artist_image) ImageView artistAlbumArtImageView;
-        @Bind(R.id.color_box_layout_albumrecyclerview) FrameLayout colorBoxLayout;
-        @Bind(R.id.rootLayout_recycler_view) CardView rootLayout;
+        @BindView(R.id.artist_title) TextView artistNameTextView;
+        @BindView(R.id.artist_image) ImageView artistAlbumArtImageView;
+        @BindView(R.id.color_box_layout_albumrecyclerview) FrameLayout colorBoxLayout;
+        @BindView(R.id.rootLayout_recycler_view) CardView rootLayout;
 
         public ArtistViewHolder(View view) {
             super(view);

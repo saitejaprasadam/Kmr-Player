@@ -38,7 +38,7 @@ import com.prasadam.kmrplayer.UI.Fragments.NoItemsFragment;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -49,15 +49,15 @@ import butterknife.OnClick;
 public class SearchActivity extends VerticalSlidingDrawerBaseActivity {
 
     protected static final int RESULT_SPEECH = 1;
-    @Bind(R.id.search_textbox) EditText searchBox;
-    @Bind(R.id.songs_layout) LinearLayout songsLayout;
-    @Bind(R.id.artist_layout) LinearLayout artistLayout;
-    @Bind(R.id.albums_layout) LinearLayout albumLayout;
-    @Bind(R.id.fragment_container) FrameLayout fragmentContainer;
+    @BindView(R.id.search_textbox) EditText searchBox;
+    @BindView(R.id.songs_layout) LinearLayout songsLayout;
+    @BindView(R.id.artist_layout) LinearLayout artistLayout;
+    @BindView(R.id.albums_layout) LinearLayout albumLayout;
+    @BindView(R.id.fragment_container) FrameLayout fragmentContainer;
 
-    @Bind(R.id.songs_recycler_view) RecyclerView songsRecyclerView;
-    @Bind(R.id.artist_recycler_view) RecyclerView artistRecyclerView;
-    @Bind(R.id.albums_recycler_view) RecyclerView albumRecyclerView;
+    @BindView(R.id.songs_recycler_view) RecyclerView songsRecyclerView;
+    @BindView(R.id.artist_recycler_view) RecyclerView artistRecyclerView;
+    @BindView(R.id.albums_recycler_view) RecyclerView albumRecyclerView;
     private NoItemsFragment noResultFragment = null;
 
     private UnifedSongAdapter songRecyclerViewAdapter;

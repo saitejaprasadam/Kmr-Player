@@ -41,13 +41,14 @@ public class SongsFragment extends Fragment {
     private Activity mActivity;
     private FloatingActionButton shuffleButton;
     private FrameLayout fragmentContainer;
+    private View rootView;
 
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         mActivity = activity;
     }
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_song_list, container, false);
+        rootView = inflater.inflate(R.layout.fragment_song_list, container, false);
         recyclerView = (FastScrollRecyclerView) rootView.findViewById(R.id.songs_recylcer_view_layout);
         fragmentContainer = (FrameLayout) rootView.findViewById(R.id.sg_fragment_container);
         setScrollListener();
@@ -178,6 +179,10 @@ public class SongsFragment extends Fragment {
         menu.clear();
         inflater.inflate(R.menu.main_in_songs_fragment, menu);
         super.onCreateOptionsMenu(menu, inflater);
+    }
+    public void onResume(){
+        super.onResume();
+        fragmentContainer = (FrameLayout) rootView.findViewById(R.id.sg_fragment_container);
     }
 
     private void hideShuffleFab(){

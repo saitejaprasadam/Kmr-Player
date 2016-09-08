@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivityHelper;
+import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Artist;
 import com.prasadam.kmrplayer.R;
@@ -29,7 +30,7 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 import java.io.File;
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /*
@@ -81,12 +82,7 @@ public class ArtistAdapter extends ObservableRecyclerView.Adapter<ArtistAdapter.
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Intent intent = new Intent(mActivity, ArtistActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                //ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(mActivity, holder.artistAlbumArtImageView, "AlbumArtImageTranscition");
-                intent.putExtra(ArtistActivity.ARTIST_EXTRA, artist.getArtistTitle());
-                context.startActivity(intent);
+                ActivitySwitcher.jumpToArtist(mActivity, artist.getArtistTitle());
             }
         });
     }
@@ -165,10 +161,10 @@ public class ArtistAdapter extends ObservableRecyclerView.Adapter<ArtistAdapter.
 
     public class ArtistViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.artist_title) TextView artistNameTextView;
-        @Bind(R.id.artist_image) ImageView artistAlbumArtImageView;
-        @Bind(R.id.color_box_layout_albumrecyclerview) FrameLayout colorBoxLayout;
-        @Bind(R.id.rootLayout_recycler_view) CardView rootLayout;
+        @BindView(R.id.artist_title) TextView artistNameTextView;
+        @BindView(R.id.artist_image) ImageView artistAlbumArtImageView;
+        @BindView(R.id.color_box_layout_albumrecyclerview) FrameLayout colorBoxLayout;
+        @BindView(R.id.rootLayout_recycler_view) CardView rootLayout;
 
         public ArtistViewHolder(View view) {
             super(view);

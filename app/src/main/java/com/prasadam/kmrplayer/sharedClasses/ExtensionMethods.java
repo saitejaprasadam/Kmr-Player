@@ -1,7 +1,6 @@
 package com.prasadam.kmrplayer.SharedClasses;
 
 import android.app.Activity;
-import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -10,6 +9,7 @@ import android.os.Build;
 import android.util.Log;
 import android.view.View;
 
+import com.prasadam.kmrplayer.ActivityHelperClasses.ActivityHelper;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedPreferences.SharedPreferenceHelper;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
@@ -64,7 +64,7 @@ public class ExtensionMethods {
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
             SystemBarTintManager tintManager = new SystemBarTintManager(activity);
-            tintManager.setStatusBarTintColor(activity.getResources().getColor(R.color.colorPrimaryDark));
+            tintManager.setStatusBarTintColor(ActivityHelper.getColor(activity, R.color.colorPrimaryDark));
             tintManager.setStatusBarTintEnabled(true);
         }
     }
@@ -96,12 +96,30 @@ public class ExtensionMethods {
         if(username != null)
             return username;
 
-        if(BluetoothAdapter.getDefaultAdapter() != null)
-            return BluetoothAdapter.getDefaultAdapter().getName();
-        else return "Smart cast";
+        return getDeviceModelName();
     }
     public static String getTimeStamp(){
         UUID uuid = UUID.randomUUID();
         return uuid.toString();
+    }
+
+    private static String capitalize(String s) {
+        if (s == null || s.length() == 0) {
+            return "";
+        }
+        char first = s.charAt(0);
+        if (Character.isUpperCase(first)) {
+            return s;
+        } else {
+            return Character.toUpperCase(first) + s.substring(1);
+        }
+    }
+    public static String getDeviceModelName(){
+        String manufacturer = Build.MANUFACTURER;
+        String model = Build.MODEL;
+        if (model.startsWith(manufacturer))
+            return capitalize(model);
+        else
+            return capitalize(manufacturer) + " " + model;
     }
 }

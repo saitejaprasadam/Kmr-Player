@@ -28,7 +28,7 @@ import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.QuickShareActivit
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /*
@@ -196,11 +196,11 @@ public class NearbyDevicesAdapter extends RecyclerView.Adapter<NearbyDevicesAdap
 
     public class ViewAdapter extends RecyclerView.ViewHolder{
 
-        @Bind(R.id.rootLayout_recycler_view) RelativeLayout rootLayout;
-        @Bind(R.id.nearby_devices_album_art) ImageView nearbyDevicesImageView;
-        @Bind(R.id.nearby_devices_context_menu) ImageView nearbyDevicesContextMenu;
-        @Bind(R.id.device_name_textview) TextView nearbyDeviceNameTextView;
-        @Bind(R.id.current_song_playing) TextView currentSongTextView;
+        @BindView(R.id.rootLayout_recycler_view) RelativeLayout rootLayout;
+        @BindView(R.id.nearby_devices_album_art) ImageView nearbyDevicesImageView;
+        @BindView(R.id.nearby_devices_context_menu) ImageView nearbyDevicesContextMenu;
+        @BindView(R.id.device_name_textview) TextView nearbyDeviceNameTextView;
+        @BindView(R.id.current_song_playing) TextView currentSongTextView;
         private int imageID = 0;
 
         public ViewAdapter(View itemView) {

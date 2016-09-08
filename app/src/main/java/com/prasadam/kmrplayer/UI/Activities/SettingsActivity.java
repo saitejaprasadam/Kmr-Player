@@ -121,6 +121,14 @@ public class SettingsActivity extends AppCompatActivity{
                 }
             });
 
+            (findPreference(SharedPreferenceKeyConstants.KEY_STICKY_NOTIFICATION)).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Controls.updateNotification();
+                    return true;
+                }
+            });
+
             (findPreference(SharedPreferenceKeyConstants.KEY_VERSION)).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
