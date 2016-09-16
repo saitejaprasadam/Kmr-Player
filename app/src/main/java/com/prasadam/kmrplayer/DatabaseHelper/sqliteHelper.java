@@ -1,4 +1,4 @@
-package com.prasadam.kmrplayer.SharedClasses;
+package com.prasadam.kmrplayer.DatabaseHelper;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -22,7 +22,7 @@ import java.util.ArrayList;
  * Created by Prasadam Saiteja on 5/20/2016.
  */
 
-public class DBHelper extends SQLiteOpenHelper {
+public class sqliteHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "smartcast.db";
     private static final String FAVORITES_TABLE_NAME = "favorites";
@@ -34,7 +34,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String ID_COLUMN_NAME = "hashID";
     private static final String PLAYLIST_NAME_COLUMN_NAME = "playlistName";
 
-    public DBHelper(Context context) {
+    public sqliteHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
     }
 
@@ -266,6 +266,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     long thisDuration = musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
                     String thisdata = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.DATA));
                     String albumID = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
+                    long artistID = musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID));
                     String albumArtPath = null;
 
                     musicUri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
@@ -278,7 +279,7 @@ public class DBHelper extends SQLiteOpenHelper {
                         albumArtCursor.close();
                     }
 
-                    Song song = new Song(songID, thisTitle, thisArtist, thisAlbum, thisDuration, thisdata, albumArtPath, songHashID);
+                    Song song = new Song(songID, thisTitle, thisArtist, artistID, thisAlbum, thisDuration, thisdata, albumArtPath, songHashID);
                     song.repeatCount = cursor.getInt(0);
                     mostPlayedSongs.add(song);
 

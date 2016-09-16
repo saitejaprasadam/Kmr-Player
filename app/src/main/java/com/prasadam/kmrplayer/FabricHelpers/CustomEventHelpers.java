@@ -30,7 +30,6 @@ public class CustomEventHelpers {
         Answers.getInstance().logCustom(new CustomEvent("Reported bugs")
                 .putCustomAttribute("Bug", String.valueOf(input)));
     }
-
     public static void sendSuggestion(CharSequence input) {
         Answers.getInstance().logCustom(new CustomEvent("Suggestions")
                 .putCustomAttribute("Suggestion", String.valueOf(input)));

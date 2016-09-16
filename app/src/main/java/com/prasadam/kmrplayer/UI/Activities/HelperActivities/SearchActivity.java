@@ -31,7 +31,6 @@ import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Album;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Artist;
 import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SubClasses.CustomArrayList.SongsArrayList;
 import com.prasadam.kmrplayer.UI.Activities.VerticalSlidingDrawerBaseActivity;
 import com.prasadam.kmrplayer.UI.Fragments.NoItemsFragment;
@@ -80,7 +79,7 @@ public class SearchActivity extends VerticalSlidingDrawerBaseActivity {
         super.onCreate(bundle);
         setContentView(R.layout.activity_search_layout);
         ButterKnife.bind(this);
-        ExtensionMethods.setStatusBarTranslucent(this, findViewById(R.id.colored_status_bar));
+        ActivityHelper.setStatusBarTranslucent(this, findViewById(R.id.colored_status_bar));
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.mipmap.ic_chevron_left_white_24dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -164,7 +163,7 @@ public class SearchActivity extends VerticalSlidingDrawerBaseActivity {
     public void onBackPressed() {
         InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(searchBox.getWindowToken(), 0);
-        finish();
+        super.onBackPressed();
     }
     public void onDestroy(){
         super.onDestroy();

@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.prasadam.kmrplayer.ActivityHelperClasses.ActivityHelper;
 import com.prasadam.kmrplayer.AudioPackages.BlurBuilder;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
@@ -134,7 +135,7 @@ public class TagEditorActivity extends AppCompatActivity {
             }, 800);
         }
 
-        catch (CannotReadException | IOException | InvalidAudioFrameException | TagException | ReadOnlyFileException | CannotWriteException e) {
+        catch (CannotReadException | IOException | InvalidAudioFrameException | TagException | ReadOnlyFileException | CannotWriteException | IllegalArgumentException e) {
             Toast.makeText(TagEditorActivity.this, "Error changing tag", Toast.LENGTH_SHORT).show();
             Intent returnIntent = new Intent();
             setResult(Activity.RESULT_CANCELED, returnIntent);
@@ -157,7 +158,7 @@ public class TagEditorActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
-        toolbar.setPadding(0, ExtensionMethods.getStatusBarHeight(this), 0, 0);
+        toolbar.setPadding(0, ActivityHelper.getStatusBarHeight(this), 0, 0);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

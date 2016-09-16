@@ -35,9 +35,9 @@ import com.prasadam.kmrplayer.AudioPackages.BlurBuilder;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicPlayerExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 import com.prasadam.kmrplayer.SubClasses.CustomArrayList.SongsArrayList;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -53,7 +53,8 @@ import butterknife.OnClick;
 public class AlbumActivity extends VerticalSlidingDrawerBaseActivity {
 
     private AlbumInnerLayoutSongRecyclerViewAdapter recyclerViewAdapter;
-    private String albumTitle, albumArtist, albumartPath = null;
+    private String albumTitle;
+    private String albumartPath = null;
     private Long albumID;
     private SongsArrayList songsList;
 
@@ -67,7 +68,7 @@ public class AlbumActivity extends VerticalSlidingDrawerBaseActivity {
 
     @OnClick (R.id.album_info)
     public void artistOnClickListener(View view){
-        ActivitySwitcher.jumpToArtist(AlbumActivity.this, albumArtist);
+        ActivitySwitcher.jumpToArtist(AlbumActivity.this, AudioExtensionMethods.getAlbumArtistID(AlbumActivity.this, albumID));
     }
 
     @OnClick (R.id.actual_album_art)
@@ -90,6 +91,15 @@ public class AlbumActivity extends VerticalSlidingDrawerBaseActivity {
         recyclerViewAdapter = null;
         songsList = null;
     }
+    public void onBackPressed() {
+        if (mainLayoutRootLayout != null && (mainLayoutRootLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED || mainLayoutRootLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED))
+            mainLayoutRootLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            finishAfterTransition();
+
+            else
+                finish();
+    }
 
     private void initalize() {
         albumID = getIntent().getExtras().getLong("albumID");
@@ -99,7 +109,7 @@ public class AlbumActivity extends VerticalSlidingDrawerBaseActivity {
         toolbar.setOverflowIcon(getResources().getDrawable(R.mipmap.ic_more_vert_white_24dp));
         setToolBarMenuListener(toolbar);
 
-        toolbar.setPadding(0, ExtensionMethods.getStatusBarHeight(this), 0, 0);
+        toolbar.setPadding(0, ActivityHelper.getStatusBarHeight(this), 0, 0);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -185,7 +195,6 @@ public class AlbumActivity extends VerticalSlidingDrawerBaseActivity {
                     recyclerViewAdapter.notifyItemChanged(index);
             }
         };
-        albumArtist = AudioExtensionMethods.getAlbumArtistTitle(this, albumID);
         recyclerViewAdapter = new AlbumInnerLayoutSongRecyclerViewAdapter(this, albumID, songsList);
 
         runOnUiThread(new Runnable() {
@@ -237,7 +246,7 @@ public class AlbumActivity extends VerticalSlidingDrawerBaseActivity {
                             break;
 
                         case R.id.album_context_menu_jump_to_artist:
-                            ActivitySwitcher.jumpToArtist(AlbumActivity.this, albumArtist);
+                            ActivitySwitcher.jumpToArtist(AlbumActivity.this, AudioExtensionMethods.getAlbumArtistID(AlbumActivity.this, albumID));
                             break;
 
                         case R.id.action_equilzer:

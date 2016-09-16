@@ -192,7 +192,7 @@ public class NowPlayingPlaylistAdapter extends RecyclerView.Adapter<NowPlayingPl
                                     break;
 
                                 case R.id.song_context_menu_jump_to_artist:
-                                    ActivitySwitcher.jumpToArtist(context, currentSong.getArtist());
+                                    ActivitySwitcher.jumpToArtist(context, currentSong.getArtistID());
                                     break;
                             }
                         }

@@ -20,7 +20,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.BlurBuilder;
 import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.SharedClasses.DBHelper;
+import com.prasadam.kmrplayer.DatabaseHelper.sqliteHelper;
 import com.prasadam.kmrplayer.UI.Activities.Playlist.CustomPlaylistInnerActivity;
 
 import java.io.File;
@@ -163,8 +163,8 @@ public class CustomPlaylistAdapter extends RecyclerView.Adapter<CustomPlaylistAd
                                                         Toast.makeText(context , "Provide a different name!!!", Toast.LENGTH_SHORT).show();
 
                                                     else{
-                                                        DBHelper dbHelper = new DBHelper(context);
-                                                        if(dbHelper.renamePlaylist(playlistName, newName)){
+                                                        sqliteHelper sqliteHelper = new sqliteHelper(context);
+                                                        if(sqliteHelper.renamePlaylist(playlistName, newName)){
                                                             Toast.makeText(context, "Name changed successfully", Toast.LENGTH_SHORT).show();
                                                             playlistNamesList = AudioExtensionMethods.getCustomPlaylistNames(context);
                                                             notifyDataSetChanged();

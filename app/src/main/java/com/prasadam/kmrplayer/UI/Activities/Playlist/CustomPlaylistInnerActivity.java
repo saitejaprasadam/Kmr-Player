@@ -3,7 +3,6 @@ package com.prasadam.kmrplayer.UI.Activities.Playlist;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,10 +23,6 @@ import com.prasadam.kmrplayer.Adapters.UIAdapters.DividerItemDecoration;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.BlurBuilder;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicPlayerExtensionMethods;
-import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicService;
-import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.PlayerConstants;
-import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.UtilFunctions;
-import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SubClasses.CustomArrayList.SongsArrayList;
@@ -35,8 +30,6 @@ import com.prasadam.kmrplayer.UI.Activities.VerticalSlidingDrawerBaseActivity;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -204,14 +197,10 @@ public class CustomPlaylistInnerActivity extends VerticalSlidingDrawerBaseActivi
             }
         });
 
-        toolbar.setPadding(0, ExtensionMethods.getStatusBarHeight(this), 0, 0);
+        toolbar.setPadding(0, ActivityHelper.getStatusBarHeight(this), 0, 0);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                    finishAfterTransition();
-
-                else
                     finish();
             }
         });

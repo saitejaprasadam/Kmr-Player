@@ -80,7 +80,9 @@ public class SongsAdapter extends ObservableRecyclerView.Adapter<SongsAdapter.so
 
             holder.rootLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {MusicPlayerExtensionMethods.playSong(activity, SharedVariables.fullSongsList, SharedVariables.fullSongsList.indexOf(currentSongDetails));}
+                public void onClick(View view) {
+                    MusicPlayerExtensionMethods.playSong(activity, SharedVariables.fullSongsList, SharedVariables.fullSongsList.indexOf(currentSongDetails));
+                }
             });
             setContextMenu(holder, currentSongDetails, position);
             setAlbumArt(holder, currentSongDetails);
@@ -163,7 +165,7 @@ public class SongsAdapter extends ObservableRecyclerView.Adapter<SongsAdapter.so
                                     break;
 
                                 case R.id.song_context_menu_jump_to_artist:
-                                    ActivitySwitcher.jumpToArtist(context, currentSong.getArtist());
+                                    ActivitySwitcher.jumpToArtist(context, currentSong.getArtistID());
                                     break;
                             }
                         }

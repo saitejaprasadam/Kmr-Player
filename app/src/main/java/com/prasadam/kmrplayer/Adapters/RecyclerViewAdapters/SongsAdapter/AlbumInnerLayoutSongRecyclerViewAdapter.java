@@ -167,7 +167,7 @@ public class AlbumInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapte
                                     break;
 
                                 case R.id.song_context_menu_jump_to_artist:
-                                    ActivitySwitcher.jumpToArtist(context, currentSong.getArtist());
+                                    ActivitySwitcher.jumpToArtist(context, currentSong.getArtistID());
                                     break;
 
                                 case R.id.song_context_menu_tagEditor:

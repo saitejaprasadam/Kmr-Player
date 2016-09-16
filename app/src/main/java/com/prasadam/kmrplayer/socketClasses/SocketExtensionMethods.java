@@ -20,9 +20,17 @@ import java.util.List;
 
 public class SocketExtensionMethods {
 
+    public enum EVENT_STATE {
+        WAITING, Denied, Approved
+    }
+
     public static void stopNSDServies(){
-        NSDServer.mNsdManager.unregisterService(NSDServer.mRegistrationListener);
-        NSDClient.mNsdManager.stopServiceDiscovery(NSDClient.mDiscoveryListener);
+
+        if(NSDServer.mNsdManager != null)
+            NSDServer.mNsdManager.unregisterService(NSDServer.mRegistrationListener);
+
+        if(NSDClient.mNsdManager != null)
+            NSDClient.mNsdManager.stopServiceDiscovery(NSDClient.mDiscoveryListener);
         NSDClient.devicesList = null;
     }
     public static void startNSDServices(Context context){

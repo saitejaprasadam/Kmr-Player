@@ -9,7 +9,7 @@ import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.NearbyDevicesActivity;
 import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.QuickShareActivity;
 
-import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /*
  * Created by Prasadam Saiteja on 7/5/2016.
@@ -20,7 +20,7 @@ public class NSDClient {
     private static String SERVICE_NAME;
     private static String SERVICE_TYPE = "_kmr._tcp.";
     public static NsdManager mNsdManager;
-    public static ArrayList<NSD> devicesList = new ArrayList<>();
+    public static CopyOnWriteArrayList<NSD> devicesList = new CopyOnWriteArrayList<>();
     private static Context context;
 
     public static void startSearch(Context c){

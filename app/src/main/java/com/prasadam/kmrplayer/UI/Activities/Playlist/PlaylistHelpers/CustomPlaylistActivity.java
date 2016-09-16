@@ -31,7 +31,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods.createNewCustomPlaylist;
-import static com.prasadam.kmrplayer.SharedClasses.ExtensionMethods.setStatusBarTranslucent_PreLollipop;
 
 /*
  * Created by Prasadam Saiteja on 5/29/2016.
@@ -65,8 +64,8 @@ public class CustomPlaylistActivity extends VerticalSlidingDrawerBaseActivity {
         setContentView(R.layout.activity_custom_playlist_layout);
         ButterKnife.bind(this);
 
-        ActivityHelper.setCustomActionBar(CustomPlaylistActivity.this);
-        ExtensionMethods.setStatusBarTranslucent(this, findViewById(R.id.colored_status_bar));
+        ActivityHelper.setBackButtonToCustomToolbarBar(CustomPlaylistActivity.this);
+        ActivityHelper.setStatusBarTranslucent(this, findViewById(R.id.colored_status_bar));
         ActivityHelper.setDisplayHome(this);
 
         ArrayList<String> playlistNames = AudioExtensionMethods.getCustomPlaylistNames(this);

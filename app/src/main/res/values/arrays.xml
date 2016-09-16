@@ -16,4 +16,8 @@
         <item>@string/suggestion_text</item>
     </string-array>
 
+    <string-array name="event_context_menu">
+        <item>@string/delete_event_text</item>
+    </string-array>
+
 </resources>

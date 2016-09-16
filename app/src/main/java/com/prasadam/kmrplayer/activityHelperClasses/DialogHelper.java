@@ -42,6 +42,11 @@ public class DialogHelper {
                 .content(R.string.nearby_info_text)
                 .show();
     }
+    public static void showEventsInfo(Context context) {
+        new MaterialDialog.Builder(context)
+                .content(R.string.events_info_text)
+                .show();
+    }
 
     public static void AddToDialog(final Context context, final Song song){
 
@@ -292,6 +297,7 @@ public class DialogHelper {
                                         @Override
                                         public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
                                             CustomEventHelpers.reportBug(input);
+                                            Toast.makeText(activity, "Successfully sent, we will look into it asap!!", Toast.LENGTH_LONG).show();
                                         }
                                     }).show();
 
@@ -304,10 +310,9 @@ public class DialogHelper {
                                         @Override
                                         public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
                                             CustomEventHelpers.sendSuggestion(input);
+                                            Toast.makeText(activity, "Successfully sent, we will look into it asap!!", Toast.LENGTH_LONG).show();
                                         }
                                     }).show();
-
-                        Toast.makeText(activity, "Successfully sent, we will look into it asap!!", Toast.LENGTH_LONG).show();
                     }
                 })
                 .show();

@@ -94,8 +94,12 @@ public class MusicPlayerExtensionMethods {
             else{
                 if(!MusicService.currentSong.getHashID().equals(PlayerConstants.getPlayList().get(PlayerConstants.SONG_NUMBER).getHashID()))
                     PlayerConstants.SONG_CHANGE_HANDLER.sendMessage(PlayerConstants.SONG_CHANGE_HANDLER.obtainMessage());
-                else
+                else{
+                    if(!MusicService.player.isPlaying())
+                        Controls.playControl(context);
                     Toast.makeText(context, "now playing list updated", Toast.LENGTH_SHORT).show();
+                }
+
             }
 
             VerticalSlidingDrawerBaseActivity.updateAlbumAdapter();

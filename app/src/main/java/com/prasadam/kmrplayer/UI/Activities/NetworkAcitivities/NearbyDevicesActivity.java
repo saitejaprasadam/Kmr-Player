@@ -14,11 +14,11 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivityHelper;
+import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.ActivityHelperClasses.DialogHelper;
 import com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.NearbyDevicesAdapter;
 import com.prasadam.kmrplayer.Adapters.UIAdapters.DividerItemDecoration;
 import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 
 /*
  * Created by Prasadam Saiteja on 7/5/2016.
@@ -37,7 +37,7 @@ public class NearbyDevicesActivity extends AppCompatActivity{
 
         NoDevicesTextView = (TextView) findViewById(R.id.no_devices_available_text_view);
         ActivityHelper.setDisplayHome(this);
-        ExtensionMethods.setStatusBarTranslucent_PreLollipop(NearbyDevicesActivity.this);
+        ActivityHelper.setStatusBarTranslucent_PreLollipop(NearbyDevicesActivity.this);
         DialogHelper.checkForNetworkState(this, (FloatingActionButton) findViewById(R.id.wifi_fab));
         wifiBroadCastReceiver();
         setRecyclerView();
@@ -92,6 +92,10 @@ public class NearbyDevicesActivity extends AppCompatActivity{
         switch (item.getItemId()){
             case android.R.id.home:
                 finish();
+                break;
+
+            case R.id.action_events:
+                ActivitySwitcher.launchEventsActivity(this);
                 break;
 
             case R.id.action_nearby_info:

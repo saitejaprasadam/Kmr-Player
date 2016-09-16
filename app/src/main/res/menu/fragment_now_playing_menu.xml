@@ -5,16 +5,18 @@
     <item
         android:id="@+id/action_search"
         android:icon="@mipmap/ic_search_white_24dp"
-        android:orderInCategory="100"
         android:title="@string/search_text"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_devices_button"
         android:icon="@mipmap/ic_devices_white_24dp"
-        android:orderInCategory="100"
         android:title="@string/nearby_devices_text"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_events"
+        android:title="@string/events_text" />
 
     <item
         android:id="@+id/action_equilzer"

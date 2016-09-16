@@ -44,8 +44,8 @@ public class RecentlyAddedActivity extends VerticalSlidingDrawerBaseActivity {
         setContentView(R.layout.activity_recently_added_layout);
         ButterKnife.bind(this);
 
-        ActivityHelper.setCustomActionBar(RecentlyAddedActivity.this);
-        ExtensionMethods.setStatusBarTranslucent(this, findViewById(R.id.colored_status_bar));
+        ActivityHelper.setBackButtonToCustomToolbarBar(RecentlyAddedActivity.this);
+        ActivityHelper.setStatusBarTranslucent(this, findViewById(R.id.colored_status_bar));
         ActivityHelper.setDisplayHome(this);
 
         final MaterialDialog loading = new MaterialDialog.Builder(this)

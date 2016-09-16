@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/event_root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/media_item_height"
+    android:clickable="true"
+    android:background="@drawable/ripple">
+
+    <com.prasadam.kmrplayer.SubClasses.SquareImageview
+        android:id="@+id/event_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:scaleX="-1"
+        android:padding="13dp"
+        android:src="@drawable/ic_reply_black_24dp"/>
+
+    <LinearLayout
+        android:id="@+id/prompt_layout"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true">
+
+        <ImageView
+            android:id="@+id/event_deny"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:tint="@color/red"
+            android:clickable="true"
+            android:src="@drawable/ic_close_white_24dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="13dp"/>
+        <ImageView
+            android:id="@+id/event_accept"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:tint="@color/Teal"
+            android:clickable="true"
+            android:src="@mipmap/ic_done_white_24dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="13dp"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/request_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toEndOf="@+id/event_icon"
+        android:layout_toStartOf="@+id/prompt_layout"
+        android:gravity="center_vertical"
+        android:text="Lambert is requesting you to send your current playing song ?"/>
+
+    <TextView
+        android:id="@+id/event_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Just now"
+        android:padding="4dp"
+        android:textSize="9sp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"/>
+
+</RelativeLayout>

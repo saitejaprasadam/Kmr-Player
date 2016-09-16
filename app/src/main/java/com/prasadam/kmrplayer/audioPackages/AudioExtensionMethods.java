@@ -22,7 +22,7 @@ import com.prasadam.kmrplayer.AudioPackages.modelClasses.Album;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Artist;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.SharedClasses.DBHelper;
+import com.prasadam.kmrplayer.DatabaseHelper.sqliteHelper;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 
@@ -38,8 +38,8 @@ public class AudioExtensionMethods {
 
     public static String generateHashID(Context context,long songID){
 
-        DBHelper dbHelper = new DBHelper(context);
-        return dbHelper.getSongHashID(context, songID);
+        sqliteHelper sqliteHelper = new sqliteHelper(context);
+        return sqliteHelper.getSongHashID(context, songID);
     }
     public static Long getAlubmID(Context context, Long songID){
 
@@ -56,8 +56,8 @@ public class AudioExtensionMethods {
     }
     public static long getSongID(Context context, String songHashID) {
 
-        DBHelper dbHelper = new DBHelper(context);
-        return dbHelper.getSongID(songHashID);
+        sqliteHelper sqliteHelper = new sqliteHelper(context);
+        return sqliteHelper.getSongID(songHashID);
     }
     public static Song getSongFromID(Context context, long songID){
 
@@ -73,6 +73,7 @@ public class AudioExtensionMethods {
             long thisDuration = musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
             String thisdata = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.DATA));
             String albumID = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
+            long artistID = musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID));
             String albumArtPath = null;
 
             musicUri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
@@ -87,7 +88,7 @@ public class AudioExtensionMethods {
             }
 
             musicCursor.close();
-            return new Song(thisId, thisTitle, thisArtist, thisAlbum, thisDuration, thisdata, albumArtPath, generateHashID(context, thisId));
+            return new Song(thisId, thisTitle, thisArtist, artistID, thisAlbum, thisDuration, thisdata, albumArtPath, generateHashID(context, thisId));
         }
 
         return null;
@@ -106,6 +107,8 @@ public class AudioExtensionMethods {
             long thisDuration = musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
             String thisdata = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.DATA));
             String albumID = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
+            long artistID = musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID));
+
             String albumArtPath = null;
 
             musicUri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
@@ -120,7 +123,7 @@ public class AudioExtensionMethods {
             }
 
             musicCursor.close();
-            return new Song(thisId, thisTitle, thisArtist, thisAlbum, thisDuration, thisdata, albumArtPath, generateHashID(context, thisId));
+            return new Song(thisId, thisTitle, thisArtist, artistID, thisAlbum, thisDuration, thisdata, albumArtPath, generateHashID(context, thisId));
         }
 
         return null;
@@ -183,8 +186,9 @@ public class AudioExtensionMethods {
                 String thisArtist = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST));
                 String thisSongCount = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Artists.NUMBER_OF_TRACKS));
                 String thisAlbumCount = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Artists.NUMBER_OF_ALBUMS));
+                long thisArtistID = musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Artists._ID));
 
-                artistArrayList.add(new Artist(thisArtist, thisSongCount, thisAlbumCount, AudioExtensionMethods.getArtistAlbumArt(context, thisArtist)));
+                artistArrayList.add(new Artist(thisArtist, thisArtistID, thisSongCount, thisAlbumCount, AudioExtensionMethods.getArtistAlbumArt(context, thisArtistID)));
 
             } while (musicCursor.moveToNext());
             musicCursor.close();
@@ -257,6 +261,7 @@ public class AudioExtensionMethods {
                 long thisDuration = musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
                 String thisdata = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.DATA));
                 String albumID = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
+                long artistID = musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID));
                 String albumArtPath = null;
 
                 musicUri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
@@ -269,7 +274,7 @@ public class AudioExtensionMethods {
                     }
                     cursor.close();
                 }
-                songList.add(new Song(thisId, thisTitle, thisArtist, thisAlbum, thisDuration, thisdata, albumArtPath, generateHashID(context, thisId)));
+                songList.add(new Song(thisId, thisTitle, thisArtist, artistID, thisAlbum, thisDuration, thisdata, albumArtPath, generateHashID(context, thisId)));
             }
             while (musicCursor.moveToPrevious());
         }
@@ -296,6 +301,7 @@ public class AudioExtensionMethods {
                 String thisAlbumID = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
                 long thisDuration = musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
                 String thisdata = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+                long artistID = musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID));
                 String albumArtPath = null;
 
                 musicUri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
@@ -309,9 +315,7 @@ public class AudioExtensionMethods {
                     cursor.close();
                 }
 
-                Song song = new Song(thisId, thisTitle, thisArtist, thisAlbum, thisDuration, thisdata, albumArtPath, generateHashID(context, thisId));
-
-                songList.add(song);
+                songList.add(new Song(thisId, thisTitle, thisArtist, artistID, thisAlbum, thisDuration, thisdata, albumArtPath, generateHashID(context, thisId)));
             }
             while (musicCursor.moveToNext());
         }
@@ -344,6 +348,7 @@ public class AudioExtensionMethods {
                 long thisDuration = musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
                 String thisdata = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.DATA));
                 String albumID = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
+                long artistID = musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID));
                 String albumArtPath = null;
 
                 musicUri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
@@ -360,7 +365,7 @@ public class AudioExtensionMethods {
                 if(songList.size() > 40)
                     break;
 
-                songList.add(new Song(thisId, thisTitle, thisArtist, thisAlbum, thisDuration, thisdata, albumArtPath, generateHashID(context, thisId)));
+                songList.add(new Song(thisId, thisTitle, thisArtist, artistID, thisAlbum, thisDuration, thisdata, albumArtPath, generateHashID(context, thisId)));
             }
             while (musicCursor.moveToPrevious());
         }
@@ -372,8 +377,8 @@ public class AudioExtensionMethods {
     }
     public static ArrayList<Song> getMostPlayedSongsList(Context context) {
 
-        DBHelper dbHelper = new DBHelper(context);
-        return dbHelper.getMostPlayedSongsList(context);
+        sqliteHelper sqliteHelper = new sqliteHelper(context);
+        return sqliteHelper.getMostPlayedSongsList(context);
     }
 
     public static Bitmap getBitMap(Context context, String absolutePath) {
@@ -398,8 +403,8 @@ public class AudioExtensionMethods {
                 .itemsCallback(new MaterialDialog.ListCallback() {
                     @Override
                     public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                        DBHelper dbHelper = new DBHelper(context);
-                        if(dbHelper.addSongToPlaylist(String.valueOf(text), songHashID))
+                        sqliteHelper sqliteHelper = new sqliteHelper(context);
+                        if(sqliteHelper.addSongToPlaylist(String.valueOf(text), songHashID))
                             Toast.makeText(context, R.string.song_added_to_playlist_text, Toast.LENGTH_SHORT).show();
                         else
                             Toast.makeText(context, R.string.error_adding_song_to_playlist_text, Toast.LENGTH_SHORT).show();
@@ -427,9 +432,9 @@ public class AudioExtensionMethods {
                                     .progress(true, 0)
                                     .show();
 
-                            DBHelper dbHelper = new DBHelper(context);
+                            sqliteHelper sqliteHelper = new sqliteHelper(context);
                             for (Song song : songsList)
-                                dbHelper.addSongToPlaylist(String.valueOf(text), song.getHashID());
+                                sqliteHelper.addSongToPlaylist(String.valueOf(text), song.getHashID());
 
                             loading[0].dismiss();
                             Toast.makeText(context, R.string.songs_added_to_playlist_text, Toast.LENGTH_SHORT).show();
@@ -445,8 +450,8 @@ public class AudioExtensionMethods {
         }
     }
     public static boolean removeFromPlaylist(Activity context, String playlist,Song currentSong) {
-        DBHelper dbHelper = new DBHelper(context);
-        if(dbHelper.removeSongFromPlaylist(playlist, currentSong.getHashID())){
+        sqliteHelper sqliteHelper = new sqliteHelper(context);
+        if(sqliteHelper.removeSongFromPlaylist(playlist, currentSong.getHashID())){
             Toast.makeText(context, R.string.song_removed_from_playlist_text, Toast.LENGTH_SHORT).show();
             return true;
         }
@@ -460,18 +465,18 @@ public class AudioExtensionMethods {
 
     public static void setSongFavorite(Context context, String songHashID, Boolean isFav){
 
-        DBHelper dbhelper = new DBHelper(context);
+        sqliteHelper dbhelper = new sqliteHelper(context);
         dbhelper.setFavorite(songHashID, isFav);
     }
     public static boolean isSongFavorite(Context context, String songHashID){
-        DBHelper dbhelper = new DBHelper(context);
+        sqliteHelper dbhelper = new sqliteHelper(context);
         return dbhelper.isFavorite(songHashID);
     }
     public static ArrayList<Song> getFavoriteSongsList(Context context) {
 
         ArrayList<Song> favSongsList = new ArrayList<>();
-        DBHelper dbHelper = new DBHelper(context);
-        ArrayList<String> favSongsID = dbHelper.getFavoriteSongsList();
+        sqliteHelper sqliteHelper = new sqliteHelper(context);
+        ArrayList<String> favSongsID = sqliteHelper.getFavoriteSongsList();
 
         if(favSongsID.size() == 0)
             return  favSongsList;
@@ -493,6 +498,7 @@ public class AudioExtensionMethods {
                 long thisDuration = musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
                 String thisdata = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.DATA));
                 String albumID = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
+                long artistID = musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID));
                 String albumArtPath = null;
 
                 musicUri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
@@ -506,7 +512,7 @@ public class AudioExtensionMethods {
                     cursor.close();
                 }
 
-                favSongsList.add(new Song(thisId, thisTitle, thisArtist, thisAlbum, thisDuration, thisdata, albumArtPath, AudioExtensionMethods.generateHashID(context, thisId)));
+                favSongsList.add(new Song(thisId, thisTitle, thisArtist, artistID, thisAlbum, thisDuration, thisdata, albumArtPath, AudioExtensionMethods.generateHashID(context, thisId)));
             }
         }
 
@@ -515,13 +521,13 @@ public class AudioExtensionMethods {
 
     public static void addSongToHistory(Context context, String songHashID) {
 
-        DBHelper dbHelper = new DBHelper(context);
-        dbHelper.addSongToHistory(songHashID);
+        sqliteHelper sqliteHelper = new sqliteHelper(context);
+        sqliteHelper.addSongToHistory(songHashID);
     }
     public static ArrayList<Song> getSongPlayBackHistory(Context context) {
 
-        DBHelper dbHelper = new DBHelper(context);
-        ArrayList<Long> songPlayingHistoryIDList = dbHelper.getSongPlayingHistory();
+        sqliteHelper sqliteHelper = new sqliteHelper(context);
+        ArrayList<Long> songPlayingHistoryIDList = sqliteHelper.getSongPlayingHistory();
         ArrayList<Song> songPlaybackHistoryList = new ArrayList<>();
 
         if(songPlayingHistoryIDList.size() == 0)
@@ -542,6 +548,7 @@ public class AudioExtensionMethods {
                 long thisDuration = musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
                 String thisdata = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.DATA));
                 String albumID = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
+                long artistID = musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID));
                 String albumArtPath = null;
 
                 musicUri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
@@ -555,7 +562,7 @@ public class AudioExtensionMethods {
                     cursor.close();
                 }
                 musicCursor.close();
-                songPlaybackHistoryList.add(new Song(thisId, thisTitle, thisArtist, thisAlbum, thisDuration, thisdata, albumArtPath, generateHashID(context, thisId)));
+                songPlaybackHistoryList.add(new Song(thisId, thisTitle, thisArtist, artistID, thisAlbum, thisDuration, thisdata, albumArtPath, generateHashID(context, thisId)));
             }
         }
 
@@ -563,28 +570,28 @@ public class AudioExtensionMethods {
     }
 
     public static boolean createNewCustomPlaylist(Context context,String playlistName) {
-        DBHelper dbhelper = new DBHelper(context);
+        sqliteHelper dbhelper = new sqliteHelper(context);
         return dbhelper.createCustomPlaylist(playlistName);
     }
     public static ArrayList<String> getCustomPlaylistNames(Context context) {
-        DBHelper dbHelper = new DBHelper(context);
-        return dbHelper.getCustomPlaylistNames();
+        sqliteHelper sqliteHelper = new sqliteHelper(context);
+        return sqliteHelper.getCustomPlaylistNames();
     }
     public static int getPlaylistSongCount(Context context, String playlistName) {
-        DBHelper dbHelper = new DBHelper(context);
-        return dbHelper.getSongCountInPlaylist(playlistName);
+        sqliteHelper sqliteHelper = new sqliteHelper(context);
+        return sqliteHelper.getSongCountInPlaylist(playlistName);
     }
     public static ArrayList<String> getAlbumArtsForPlaylistCover(Context context, String playlistName) {
 
-        DBHelper dbHelper = new DBHelper(context);
-        return dbHelper.getAlbumArtsForPlaylistCover(context, playlistName);
+        sqliteHelper sqliteHelper = new sqliteHelper(context);
+        return sqliteHelper.getAlbumArtsForPlaylistCover(context, playlistName);
     }
     public static ArrayList<Song> getSongsListFromCustomPlaylist(Context context, String playlistName) {
 
-        DBHelper dbHelper = new DBHelper(context);
+        sqliteHelper sqliteHelper = new sqliteHelper(context);
         ArrayList<Song> songsList = new ArrayList<>();
 
-        ArrayList<String> songsHashID =  dbHelper.getSongsListFromCustomPlaylist(playlistName);
+        ArrayList<String> songsHashID =  sqliteHelper.getSongsListFromCustomPlaylist(playlistName);
         if(songsHashID.size() == 0)
             return songsList;
 
@@ -604,6 +611,7 @@ public class AudioExtensionMethods {
                 long thisDuration = musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
                 String thisdata = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.DATA));
                 String albumID = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
+                long artistID = musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID));
                 musicCursor.close();
                 String albumArtPath = null;
 
@@ -617,18 +625,18 @@ public class AudioExtensionMethods {
                     cursor.close();
                 }
 
-                songsList.add(new Song(thisId, thisTitle, thisArtist, thisAlbum, thisDuration, thisdata, albumArtPath, generateHashID(context, thisId)));
+                songsList.add(new Song(thisId, thisTitle, thisArtist, artistID, thisAlbum, thisDuration, thisdata, albumArtPath, generateHashID(context, thisId)));
             }
         }
 
         return songsList;
     }
 
-    public static String getArtistAlbumArt(Context context, String artistName){
+    public static String getArtistAlbumArt(Context context, long artistID){
 
         ContentResolver musicResolver = context.getContentResolver();
         Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        Cursor musicCursor = musicResolver.query(musicUri, null, MediaStore.Audio.Media.IS_MUSIC + " and " + MediaStore.Audio.Media.ARTIST + "=\'" + artistName + "\'", null, null);
+        Cursor musicCursor = musicResolver.query(musicUri, null, MediaStore.Audio.Media.IS_MUSIC + " and " + MediaStore.Audio.Media.ARTIST_ID + "=\'" + artistID + "\'", null, null);
 
         if(musicCursor!=null && musicCursor.moveToFirst()) {
             do {
@@ -655,11 +663,11 @@ public class AudioExtensionMethods {
 
         return null;
     }
-    public static Artist getArtist(Context context, String artistName) {
+    public static Artist getArtist(Context context, long artistID) {
 
         ContentResolver musicResolver = context.getContentResolver();
         Uri musicUri = MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI;
-        Cursor musicCursor = musicResolver.query(musicUri, null, MediaStore.Audio.Artists.ARTIST + "=\"" + artistName + "\"", null, null);
+        Cursor musicCursor = musicResolver.query(musicUri, null, MediaStore.Audio.Artists._ID + "=\"" + artistID + "\"", null, null);
 
         if(musicCursor!=null && musicCursor.moveToFirst()) {
             String thisArtist = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST));
@@ -667,16 +675,16 @@ public class AudioExtensionMethods {
             String thisAlbumCount = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Artists.NUMBER_OF_ALBUMS));
 
             musicCursor.close();
-            return new Artist(thisArtist, thisSongCount, thisAlbumCount, AudioExtensionMethods.getArtistAlbumArt(context, thisArtist));
+            return new Artist(thisArtist, artistID, thisSongCount, thisAlbumCount, AudioExtensionMethods.getArtistAlbumArt(context, artistID));
         }
 
         return null;
     }
-    public static ArrayList<Song> getSongListFromArtist(Context context, String artistTitle) {
+    public static ArrayList<Song> getSongListFromArtist(Context context, long artistID) {
 
         ContentResolver musicResolver = context.getContentResolver();
         Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        Cursor musicCursor = musicResolver.query(musicUri, null, MediaStore.Audio.Media.IS_MUSIC + " and " + MediaStore.Audio.Media.ARTIST + "=\'" + artistTitle + "\'", null, null);
+        Cursor musicCursor = musicResolver.query(musicUri, null, MediaStore.Audio.Media.IS_MUSIC + " and " + MediaStore.Audio.Media.ARTIST_ID + "=\'" + artistID + "\'", null, null);
         ArrayList<Song> songList = new ArrayList<>();
 
         if(musicCursor!=null && musicCursor.moveToFirst()) {
@@ -701,7 +709,7 @@ public class AudioExtensionMethods {
                     cursor.close();
                 }
 
-                songList.add(new Song(thisId, thisTitle, thisArtist, thisAlbum, thisDuration, thisdata, albumArtPath, generateHashID(context, thisId)));
+                songList.add(new Song(thisId, thisTitle, thisArtist, artistID, thisAlbum, thisDuration, thisdata, albumArtPath, generateHashID(context, thisId)));
             }
             while (musicCursor.moveToNext());
             musicCursor.close();
@@ -714,11 +722,11 @@ public class AudioExtensionMethods {
 
         return songList;
     }
-    public static ArrayList<Album> getAlbumListFromArtist(Context context, String artistTitle) {
+    public static ArrayList<Album> getAlbumListFromArtist(Context context, long artistID) {
 
         ContentResolver musicResolver = context.getContentResolver();
         Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        Cursor musicCursor = musicResolver.query(musicUri, null, MediaStore.Audio.Media.ARTIST + "=\"" + artistTitle + "\"", null, null);
+        Cursor musicCursor = musicResolver.query(musicUri, null, MediaStore.Audio.Media.ARTIST_ID + "=\"" + artistID + "\"", null, null);
         ArrayList<Album> albumArrayList = new ArrayList<>();
         ArrayList<String> albumList = new ArrayList<>();
 
@@ -770,6 +778,21 @@ public class AudioExtensionMethods {
         }
 
         return null;
+    }
+    public static long getAlbumArtistID(Context context, Long albumID) {
+
+        ContentResolver musicResolver = context.getContentResolver();
+        Uri musicUri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
+        Cursor musicCursor = musicResolver.query(musicUri, null, MediaStore.Audio.Albums._ID + "=\"" + albumID + "\"", null, null);
+
+        if(musicCursor != null && musicCursor.moveToFirst()){
+
+            Long artistID = musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Albums._ID));
+            musicCursor.close();
+            return artistID;
+        }
+
+        return 0;
     }
 
     public static ArrayList<Song> getSongListForSearch(String songName){

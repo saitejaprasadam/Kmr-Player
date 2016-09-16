@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.graphics.Palette;
@@ -35,7 +34,6 @@ import com.prasadam.kmrplayer.AudioPackages.modelClasses.Album;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Artist;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 import com.prasadam.kmrplayer.SubClasses.CustomArrayList.SongsArrayList;
 
@@ -52,7 +50,7 @@ import butterknife.OnClick;
 
 public class ArtistActivity extends VerticalSlidingDrawerBaseActivity {
 
-    public static String ARTIST_EXTRA = "artist";
+    private String ARTIST_EXTRA = "artistID";
     private Artist artist;
     private SongsArrayList songsList;
     private ArrayList<Album> albumList;
@@ -87,6 +85,14 @@ public class ArtistActivity extends VerticalSlidingDrawerBaseActivity {
         artistTitle.setSelected(true);
         colorPaletteView = (FrameLayout) findViewById(R.id.color_pallete_view);
 
+        long artistID = getIntent().getExtras().getLong(ARTIST_EXTRA);
+        artist = AudioExtensionMethods.getArtist(ArtistActivity.this, artistID);
+
+        if(artist == null){
+            Toast.makeText(this, "Problem fetching artist", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+
         initalizer();
         setData();
 
@@ -113,7 +119,7 @@ public class ArtistActivity extends VerticalSlidingDrawerBaseActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                songsList = new SongsArrayList(AudioExtensionMethods.getSongListFromArtist(ArtistActivity.this, artist.getArtistTitle())) {
+                songsList = new SongsArrayList(AudioExtensionMethods.getSongListFromArtist(ArtistActivity.this, artist.getArtistID())) {
                     @Override
                     public void notifyDataSetChanged() {
                         if(songRecyclerViewAdapter != null)
@@ -155,7 +161,7 @@ public class ArtistActivity extends VerticalSlidingDrawerBaseActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                albumList = AudioExtensionMethods.getAlbumListFromArtist(ArtistActivity.this, artist.getArtistTitle());
+                albumList = AudioExtensionMethods.getAlbumListFromArtist(ArtistActivity.this, artist.getArtistID());
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -170,10 +176,7 @@ public class ArtistActivity extends VerticalSlidingDrawerBaseActivity {
     private void setData() {
 
         try{
-            String artistName = getIntent().getExtras().getString(ARTIST_EXTRA);
-            artist = AudioExtensionMethods.getArtist(ArtistActivity.this, artistName);
-
-            artistTitle.setText(artistName);
+            artistTitle.setText(artist.getArtistTitle());
             int songCount = Integer.parseInt(artist.getSongCount());
             int albumCount = Integer.parseInt(artist.getAlbumCount());
 
@@ -260,14 +263,10 @@ public class ArtistActivity extends VerticalSlidingDrawerBaseActivity {
         toolbar.setOverflowIcon(getResources().getDrawable(R.mipmap.ic_more_vert_white_24dp));
         setToolBarMenuListener(toolbar);
 
-        toolbar.setPadding(0, ExtensionMethods.getStatusBarHeight(this), 0, 0);
+        toolbar.setPadding(0, ActivityHelper.getStatusBarHeight(this), 0, 0);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                    finishAfterTransition();
-
-                else
                     finish();
             }
         });

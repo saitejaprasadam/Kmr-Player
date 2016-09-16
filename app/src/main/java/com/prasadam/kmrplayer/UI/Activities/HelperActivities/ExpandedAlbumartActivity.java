@@ -15,9 +15,9 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.prasadam.kmrplayer.ActivityHelperClasses.ActivityHelper;
 import com.prasadam.kmrplayer.AudioPackages.BlurBuilder;
 import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -116,6 +116,13 @@ public class ExpandedAlbumartActivity extends AppCompatActivity {
             blurredAlbumArt.setImageBitmap(BlurBuilder.blur(this, ((BitmapDrawable) actualAlbumArt.getDrawable()).getBitmap()));
         }
     }
+    public void onBackPressed() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            finishAfterTransition();
+
+        else
+            finish();
+    }
     private void initalizer() {
 
         if (Build.VERSION.SDK_INT >= 21)
@@ -123,7 +130,7 @@ public class ExpandedAlbumartActivity extends AppCompatActivity {
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.mipmap.ic_chevron_left_white_24dp);
-        toolbar.setPadding(0, ExtensionMethods.getStatusBarHeight(this), 0, 0);
+        toolbar.setPadding(0, ActivityHelper.getStatusBarHeight(this), 0, 0);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

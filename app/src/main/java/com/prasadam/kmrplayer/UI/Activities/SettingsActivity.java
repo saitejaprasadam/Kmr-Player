@@ -15,7 +15,6 @@ import com.prasadam.kmrplayer.ActivityHelperClasses.DialogHelper;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.Controls;
 import com.prasadam.kmrplayer.BuildConfig;
 import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SharedClasses.PermissionHelper;
 import com.prasadam.kmrplayer.SharedPreferences.SharedPreferenceHelper;
 import com.prasadam.kmrplayer.SharedPreferences.SharedPreferenceKeyConstants;
@@ -33,7 +32,7 @@ public class SettingsActivity extends AppCompatActivity{
             getSupportActionBar().setHomeAsUpIndicator(R.mipmap.ic_chevron_left_white_24dp);
         }
         getFragmentManager().beginTransaction().replace(android.R.id.content, new SettingsFragment()).commit();
-        ExtensionMethods.setStatusBarTranslucent_PreLollipop(SettingsActivity.this);
+        ActivityHelper.setStatusBarTranslucent_PreLollipop(SettingsActivity.this);
     }
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home)

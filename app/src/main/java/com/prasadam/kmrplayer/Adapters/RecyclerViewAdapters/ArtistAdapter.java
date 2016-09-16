@@ -2,7 +2,6 @@ package com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -24,7 +23,6 @@ import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Artist;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
-import com.prasadam.kmrplayer.UI.Activities.ArtistActivity;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 import java.io.File;
@@ -82,7 +80,7 @@ public class ArtistAdapter extends ObservableRecyclerView.Adapter<ArtistAdapter.
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ActivitySwitcher.jumpToArtist(mActivity, artist.getArtistTitle());
+                ActivitySwitcher.jumpToArtist(mActivity, artist.getArtistID());
             }
         });
     }

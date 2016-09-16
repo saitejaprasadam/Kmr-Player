@@ -3,9 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/action_events"
+        android:icon="@drawable/ic_turned_in_not_white_24dp"
+        android:title="@string/events_text"
+        app:showAsAction="always"/>
+
+    <item
         android:id="@+id/action_nearby_info"
         android:icon="@mipmap/ic_info_outline_white_24dp"
         android:title="@string/info_text"
-        app:showAsAction="always"/>
+        app:showAsAction="ifRoom"/>
 
 </menu>

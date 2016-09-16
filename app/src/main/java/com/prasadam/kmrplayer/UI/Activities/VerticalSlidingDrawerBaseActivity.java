@@ -97,9 +97,9 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
         FrameLayout actContent = (FrameLayout) mainLayoutRootLayout.findViewById(R.id.main_content);
 
         getLayoutInflater().inflate(layoutResID, actContent, true);
-        setHandlers();
         super.setContentView(mainLayoutRootLayout);
 
+        albumArtParallaxAdapter = new NowPlayingAlbumArtAdapter(this);
         Toolbar nowPlayingToolbar = (Toolbar) findViewById(R.id.now_playing_toolbar);
         nowPlayingToolbar.setNavigationIcon(R.mipmap.ic_keyboard_arrow_down_white_24dp);
         nowPlayingToolbar.inflateMenu(R.menu.fragment_now_playing_menu);
@@ -113,16 +113,19 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
         });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-            nowPlayingToolbar.setPadding(0, ExtensionMethods.getStatusBarHeight(this), 0, 0);
+            nowPlayingToolbar.setPadding(0, ActivityHelper.getStatusBarHeight(this), 0, 0);
 
-        //initalize();
-        Controls.updateNowPlayingUI();
+        initalizeNowPlayingUI();
+        initalizePlaylistRecyclerView();
+        nowPlayingListeners();
+        setAlbumAdapter();
+        setNowPlayingSongContextMenu();
     }
 
     public void onResume() {
         super.onResume();
+        initalizeNowPlayingUI();
         setHandlers();
-        initalize();
         Controls.updateNowPlayingUI();
         if(mainLayoutRootLayout != null && mainLayoutRootLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED)
             nowPlayingMinimalRootLayout.setVisibility(View.INVISIBLE);
@@ -153,12 +156,7 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
             super.onBackPressed();
     }
 
-    private void initalize() {
-        initalizeNowPlayingUI();
-        initalizePlaylistRecyclerView();
-        Controls.updateNowPlayingUI();
-    }
-    private void initalizeNowPlayingUI()    {
+    private void initalizeNowPlayingUI(){
         nowPlayingMinimalRootLayout = (RelativeLayout) findViewById(R.id.now_playing_minimal_root_layout);
         mainLayoutRootLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
         nowPlayingMinimalAlbumArt = (ImageView) findViewById(R.id.now_playing_minimal_album_art);
@@ -185,9 +183,10 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
         nowPlayingSeekBar = (SeekBar) findViewById(R.id.window_song_seekbar);
         nowPlayingMaxDuration = (TextView) findViewById(R.id.now_playing_max_duration);
         nowPlayingCurrentDuration = (TextView) findViewById(R.id.now_playing_current_duration);
+        viewPager = (ViewPager) findViewById(R.id.parallaxSlider);
 
         if(ExtensionMethods.isTablet(this) && ExtensionMethods.isLandScape(this))
-            nowPlayingPlaylistRecyclerView.setPadding(0, ExtensionMethods.getStatusBarHeight(this), 0, 0);
+            nowPlayingPlaylistRecyclerView.setPadding(0, ActivityHelper.getStatusBarHeight(this), 0, 0);
 
         nowPlayingSeekBar.getProgressDrawable().setColorFilter(ActivityHelper.getColor(this, R.color.colorAccentGeneric), PorterDuff.Mode.MULTIPLY);
         if(!(ExtensionMethods.isLandScape(this) && !ExtensionMethods.isTablet(this)))
@@ -197,14 +196,6 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
             nowPlayingMinimalRootLayout.setVisibility(View.INVISIBLE);
         else
             nowPlayingMinimalRootLayout.setVisibility(View.VISIBLE);
-
-        nowPlayingListeners();
-        setNowPlayingSongContextMenu();
-        viewPager = (ViewPager) findViewById(R.id.parallaxSlider);
-        albumArtParallaxAdapter = new NowPlayingAlbumArtAdapter(this);
-        viewPager.setAdapter(albumArtParallaxAdapter);
-        viewPager.setOnPageChangeListener(this);
-        viewPager.setOffscreenPageLimit(0);
     }
 
     private void setNowPlayingToolBarMenuListener(Toolbar nowPlayingToolbar) {
@@ -428,7 +419,7 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
                                     break;
 
                                 case R.id.song_context_menu_jump_to_artist:
-                                    ActivitySwitcher.jumpToArtist(VerticalSlidingDrawerBaseActivity.this, MusicService.currentSong.getArtist());
+                                    ActivitySwitcher.jumpToArtist(VerticalSlidingDrawerBaseActivity.this, MusicService.currentSong.getArtistID());
                                     break;
                             }
                         }
@@ -450,6 +441,11 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
         ItemTouchHelper.Callback callback = new NowPlayingPlaylistInterfaces.SimpleItemTouchHelperCallback(NowPlayingPlaylistRecyclerViewAdapter);
         mItemTouchHelper = new ItemTouchHelper(callback);
         mItemTouchHelper.attachToRecyclerView(nowPlayingPlaylistRecyclerView);
+    }
+    private void setAlbumAdapter() {
+        viewPager.setAdapter(albumArtParallaxAdapter);
+        viewPager.setOnPageChangeListener(this);
+        viewPager.setOffscreenPageLimit(0);
     }
 
     private void setHandlers(){

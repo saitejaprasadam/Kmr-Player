@@ -9,14 +9,17 @@ public class Artist {
     private String artistTitle, songCount, albumCount;
     public String artistAlbumArt = null;
     public int colorBoxLayoutColor, artistNameTextViewColor;
+    private long artistID;
 
-    public Artist(String artistTitle, String songCount, String albumCount, String artistAlbumArt) {
+    public Artist(String artistTitle, long artistID, String songCount, String albumCount, String artistAlbumArt) {
         this.artistTitle = artistTitle;
+        this.artistID = artistID;
         this.songCount = songCount;
         this.albumCount = albumCount;
         this.artistAlbumArt = artistAlbumArt;
     }
 
+    public long getArtistID(){ return artistID; }
     public String getArtistTitle(){
         return artistTitle;
     }

@@ -14,11 +14,11 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivityHelper;
+import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.ActivityHelperClasses.DialogHelper;
 import com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.NearbyDevicesAdapter;
 import com.prasadam.kmrplayer.Adapters.UIAdapters.DividerItemDecoration;
 import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
 
 import java.util.ArrayList;
@@ -73,7 +73,7 @@ public class QuickShareActivity extends AppCompatActivity{
     }
 
     private void InitActionBarAndToolBar() {
-        ExtensionMethods.setStatusBarTranslucent_PreLollipop(QuickShareActivity.this);
+        ActivityHelper.setStatusBarTranslucent_PreLollipop(QuickShareActivity.this);
         ActivityHelper.setDisplayHome(this);
     }
     private void setRecyclerView(ArrayList<String> songsPathList) {
@@ -101,6 +101,10 @@ public class QuickShareActivity extends AppCompatActivity{
         switch (item.getItemId()){
             case android.R.id.home:
                 finish();
+                break;
+
+            case R.id.action_events:
+                ActivitySwitcher.launchEventsActivity(this);
                 break;
 
             case R.id.action_nearby_info:

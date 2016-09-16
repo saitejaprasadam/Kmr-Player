@@ -32,9 +32,9 @@ import butterknife.ButterKnife;
 
 public class SongPlaybackHistoryActivity extends VerticalSlidingDrawerBaseActivity {
 
-    @BindView(R.id.history_recycler_view) RecyclerView recyclerView;
+    @BindView (R.id.history_recycler_view) RecyclerView recyclerView;
     @BindView (R.id.root_layout) FrameLayout rootLayout;
-    @BindView(R.id.fragment_container) FrameLayout fragmentContainer;
+    @BindView (R.id.fragment_container) FrameLayout fragmentContainer;
 
     private Menu mOptionsMenu;
     private SongsArrayList songsList;
@@ -45,8 +45,8 @@ public class SongPlaybackHistoryActivity extends VerticalSlidingDrawerBaseActivi
         setContentView(R.layout.activity_song_playback_history_layout);
         ButterKnife.bind(this);
 
-        ActivityHelper.setCustomActionBar(SongPlaybackHistoryActivity.this);
-        ExtensionMethods.setStatusBarTranslucent(this, findViewById(R.id.colored_status_bar));
+        ActivityHelper.setBackButtonToCustomToolbarBar(SongPlaybackHistoryActivity.this);
+        ActivityHelper.setStatusBarTranslucent(this, findViewById(R.id.colored_status_bar));
         ActivityHelper.setDisplayHome(this);
 
         final MaterialDialog loading = new MaterialDialog.Builder(this)

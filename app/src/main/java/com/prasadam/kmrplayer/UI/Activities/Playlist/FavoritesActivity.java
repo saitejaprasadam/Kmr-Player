@@ -49,8 +49,8 @@ public class FavoritesActivity extends VerticalSlidingDrawerBaseActivity {
         ButterKnife.bind(this);
         recyclerView = (RecyclerView) findViewById(R.id.favorites_recycler_view);
 
-        ActivityHelper.setCustomActionBar(FavoritesActivity.this);
-        ExtensionMethods.setStatusBarTranslucent(this, findViewById(R.id.colored_status_bar));
+        ActivityHelper.setBackButtonToCustomToolbarBar(FavoritesActivity.this);
+        ActivityHelper.setStatusBarTranslucent(this, findViewById(R.id.colored_status_bar));
         ActivityHelper.setDisplayHome(this);
 
         final MaterialDialog loading = new MaterialDialog.Builder(this)

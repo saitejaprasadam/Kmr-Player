@@ -29,7 +29,6 @@ import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicPlayerExten
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
 import com.prasadam.kmrplayer.FabricHelpers.CustomEventHelpers;
 import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 import com.prasadam.kmrplayer.SharedPreferences.SharedPreferenceHelper;
 import com.prasadam.kmrplayer.SocketClasses.SocketExtensionMethods;
@@ -133,11 +132,15 @@ public class MainActivity extends VerticalSlidingDrawerBaseActivity implements N
                 break;
 
             case R.id.action_equilzer:
-                ActivitySwitcher.initEqualizer(MainActivity.this);
+                ActivitySwitcher.initEqualizer(this);
+                break;
+
+            case R.id.action_events:
+                ActivitySwitcher.launchEventsActivity(this);
                 break;
 
             case R.id.action_devices_button:
-                ActivitySwitcher.jumpToAvaiableDevies(MainActivity.this);
+                ActivitySwitcher.jumpToAvaiableDevies(this);
                 break;
 
             default:
@@ -175,7 +178,7 @@ public class MainActivity extends VerticalSlidingDrawerBaseActivity implements N
 
         createTabFragment();
         setNavigationDrawer();
-        ExtensionMethods.setStatusBarTranslucent_PreLollipop(MainActivity.this);
+        ActivityHelper.setStatusBarTranslucent_PreLollipop(MainActivity.this);
         MusicPlayerExtensionMethods.startMusicService(MainActivity.this);
     }
     private void createTabFragment() {

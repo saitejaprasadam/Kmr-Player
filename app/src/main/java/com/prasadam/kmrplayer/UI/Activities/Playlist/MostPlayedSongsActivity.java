@@ -48,8 +48,8 @@ public class MostPlayedSongsActivity extends VerticalSlidingDrawerBaseActivity {
         setContentView(R.layout.activity_most_played_layout);
         ButterKnife.bind(this);
 
-        ActivityHelper.setCustomActionBar(MostPlayedSongsActivity.this);
-        ExtensionMethods.setStatusBarTranslucent(this, findViewById(R.id.colored_status_bar));
+        ActivityHelper.setBackButtonToCustomToolbarBar(MostPlayedSongsActivity.this);
+        ActivityHelper.setStatusBarTranslucent(this, findViewById(R.id.colored_status_bar));
         ActivityHelper.setDisplayHome(this);
 
         final MaterialDialog loading = new MaterialDialog.Builder(this)

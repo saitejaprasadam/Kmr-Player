@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_devices_button"
+        android:icon="@mipmap/ic_devices_white_24dp"
+        android:title="@string/nearby_devices_text"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_events_info"
+        android:icon="@mipmap/ic_info_outline_white_24dp"
+        android:title="@string/info_text"
+        app:showAsAction="ifRoom"/>
+
+</menu>

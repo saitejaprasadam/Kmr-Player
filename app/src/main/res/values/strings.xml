@@ -28,7 +28,7 @@
     <string name="details_text">Details</string>
     <string name="share_text">Share</string>
     <string name="tag_editor_text">Tag editor</string>
-    <string name="set_as_rigntone_text">Set as Rigntone</string>
+    <string name="set_as_ringtone_text">Set as Ringtone</string>
     <string name="share_album_text">Share album</string>
     <string name="delete_album_text">Delete album</string>
     <string name="favorites_text">Favorites</string>
@@ -82,9 +82,6 @@
     <string name="problem_fetching_current_playing_song">Problem fetching current playing song</string>
     <string name="now_playing_text">Now playing :</string>
     <string name="get_current_playing_song">Get current playing song</string>
-    <string name="request_for_current_playing_song">is requesting for current playing song</string>
-    <string name="request_for_current_playing_song_text">Request for current song</string>
-    <string name="quick_share_request_text">Quick share request</string>
     <string name="current_song_request_rejected">has rejected your request for transferring his current playing song</string>
     <string name="current_song_request_accepted">Receiving now playing song from</string>
     <string name="delete_artist_text">Delete artist</string>
@@ -165,4 +162,9 @@
     <string name="describe_your_suggestion">Describe suggestion (Provide email for reply)</string>
     <string name="Sticky_Notification">Sticky Notification</string>
     <string name="Sticky_Notification_desc">Swiping notification won\'t be dismissed</string>
+    <string name="left_bracket">(</string>
+    <string name="right_bracket">)</string>
+    <string name="events_text">Events</string>
+    <string name="events_info_text">All transfer requests are requested here</string>
+    <string name="delete_event_text">Delete event</string>
 </resources>

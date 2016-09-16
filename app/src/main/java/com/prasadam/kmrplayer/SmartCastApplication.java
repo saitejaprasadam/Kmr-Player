@@ -6,8 +6,11 @@ import com.crashlytics.android.Crashlytics;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicService;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.PlayerConstants;
 import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SharedPreferences.SharedPreferenceHelper;
 
+import com.twitter.sdk.android.Twitter;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
 import io.fabric.sdk.android.Fabric;
 import java.util.ArrayList;
 
@@ -17,13 +20,20 @@ import java.util.ArrayList;
 
 public class SmartCastApplication extends Application{
 
+    // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
+    private static final String TWITTER_KEY = "gfQomdrCg4EUIwnB74H20UtKw";
+    private static final String TWITTER_SECRET = "iVVMb27aUGFVaoruwHW4TO4HfucfMctz35b6KpiYhfe7DxY322";
+
     @Override
     public void onCreate() {
         super.onCreate();
-        Fabric.with(this, new Crashlytics());
+        TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
+        Fabric.with(this, new Crashlytics(), new Twitter(authConfig));
         setMusicPlaylist_and_Settings();
-    }
 
+        Crashlytics.setUserName(ExtensionMethods.deviceName(this));
+        Crashlytics.setUserIdentifier(ExtensionMethods.getDeviceModelName());
+    }
     private void setMusicPlaylist_and_Settings() {
         SharedPreferenceHelper.getShuffle(this);
         SharedPreferenceHelper.getLoop(this);

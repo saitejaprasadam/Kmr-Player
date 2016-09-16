@@ -19,12 +19,12 @@ import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
 import com.prasadam.kmrplayer.UI.Activities.AlbumActivity;
 import com.prasadam.kmrplayer.UI.Activities.ArtistActivity;
+import com.prasadam.kmrplayer.UI.Activities.HelperActivities.EventsActivity;
 import com.prasadam.kmrplayer.UI.Activities.HelperActivities.ExpandedAlbumartActivity;
 import com.prasadam.kmrplayer.UI.Activities.HelperActivities.SearchActivity;
 import com.prasadam.kmrplayer.UI.Activities.HelperActivities.TagEditorActivity;
 import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.NearbyDevicesActivity;
 import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.QuickShareActivity;
-import com.prasadam.kmrplayer.UI.Activities.Playlist.MostPlayedSongsActivity;
 import com.prasadam.kmrplayer.UI.Activities.SettingsActivity;
 
 import java.util.ArrayList;
@@ -50,10 +50,10 @@ public class ActivitySwitcher {
         albumActivityIntent.putExtra("albumID", albumID);
         mActivity.startActivityForResult(albumActivityIntent, KeyConstants.REQUEST_CODE_DELETE_ALBUM, options.toBundle());
     }
-    public static void jumpToArtist(final Context context, final String artistTitle){
+    public static void jumpToArtist(final Context context, final long artistID){
         Intent albumActivityIntent = new Intent(context, ArtistActivity.class);
         albumActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        albumActivityIntent.putExtra("artist", artistTitle);
+        albumActivityIntent.putExtra("artistID", artistID);
         context.startActivity(albumActivityIntent);
     }
     public static void ExpandedAlbumArtWithTranscition(final Activity mActivity, final ImageView imageView, final String albumArtLocation){
@@ -70,10 +70,19 @@ public class ActivitySwitcher {
         mActivity.startActivityForResult(tagEditorIntent, KeyConstants.REQUEST_CODE_TAG_EDITOR);
     }
     public static void initEqualizer(final Context context) {
-        Intent i = new Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL);
-        i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, MusicService.player.getAudioSessionId());
-        i.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.getPackageName());
-        context.startActivity(i);
+
+        try{
+            Intent i = new Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL);
+            i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, MusicService.player.getAudioSessionId());
+            i.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.getPackageName());
+            context.startActivity(i);
+        }
+        catch (ActivityNotFoundException exception){
+            Toast.makeText(context, "No stock equilzer found", Toast.LENGTH_SHORT).show();
+        }
+    }
+    public static void launchEventsActivity(final Context context){
+        context.startActivity(new Intent(context, EventsActivity.class));
     }
 
     public static void jumpToAvaiableDevies(final Context context) {

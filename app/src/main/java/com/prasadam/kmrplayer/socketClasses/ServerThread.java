@@ -34,9 +34,7 @@ public class ServerThread extends Thread {
                     socketServerReplyThread.run();
                 }
 
-                catch (IOException| NullPointerException e){
-                    e.printStackTrace();
-                }
+                catch (IOException| NullPointerException ignored){}
             }
     }
 }
