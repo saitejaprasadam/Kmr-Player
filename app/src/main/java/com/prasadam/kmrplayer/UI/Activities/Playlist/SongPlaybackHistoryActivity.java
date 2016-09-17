@@ -115,10 +115,10 @@ public class SongPlaybackHistoryActivity extends VerticalSlidingDrawerBaseActivi
         }).start();
     }
     public void onDestroy() {
-        super.onDestroy();
         recyclerView.setAdapter(null);
         songHistoryActivityrecyclerViewAdapter = null;
         songsList = null;
+        super.onDestroy();
     }
 
     public void setSearchListener(){

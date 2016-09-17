@@ -1,6 +1,7 @@
 package com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters;
 
 import android.content.Context;
+import android.os.Handler;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -65,8 +66,6 @@ public class NearbyDevicesAdapter extends RecyclerView.Adapter<NearbyDevicesAdap
 
         if(serverObject.GetDeviceType() == null)
             SocketExtensionMethods.requestForDeviceType(context, serverObject.GetClientNSD());
-
-        SocketExtensionMethods.requestForCurrentSongPlaying(context, serverObject.GetClientNSD());
 
         holder.nearbyDeviceNameTextView.setText(serverObject.GetClientNSD().getServiceName());
         if(context.getClass().getSimpleName().equals(KeyConstants.ACTIVITY_QUICK_SHARE))

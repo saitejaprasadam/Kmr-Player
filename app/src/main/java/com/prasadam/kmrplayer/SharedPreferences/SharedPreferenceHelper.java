@@ -7,7 +7,7 @@ import android.preference.PreferenceManager;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicService;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.PlayerConstants;
-import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.ModelClasses.Song;
 
 import java.util.ArrayList;
 import java.util.HashSet;

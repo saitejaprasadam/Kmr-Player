@@ -12,6 +12,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.NearbyDevicesAdapter;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.PlayerConstants;
 import com.prasadam.kmrplayer.DatabaseHelper.db4oHelper;
+import com.prasadam.kmrplayer.ModelClasses.Event;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
@@ -132,11 +133,9 @@ public class ServerResponseThread extends Thread {
 
     private void InitateQuickShareTransferRequest(final Event event) {
 
-        db4oHelper.pushEventObject(context, event);
-
         if(SharedPreferenceHelper.getClientTransferRequestAlwaysAccept(context, event.getClientMacAddress())){
             event.setEventState(SocketExtensionMethods.EVENT_STATE.Approved);
-            db4oHelper.updateEventObject(context, event);
+            db4oHelper.pushEventObject(context, event);
             SocketExtensionMethods.requestStrictModePermit();
             String result = SocketExtensionMethods.GenerateSocketMessage(context, KeyConstants.SOCKET_QUICK_SHARE_TRANSFER_RESULT, event.getTimeStamp(), KeyConstants.SOCKET_RESULT_OK);
             Client quickShareResponse = new Client(clientIPAddress, result);
@@ -144,6 +143,9 @@ public class ServerResponseThread extends Thread {
             FileReceiver nioServer = new FileReceiver(context, Integer.valueOf(event.getResult()));
             nioServer.execute();
         }
+
+        else
+            db4oHelper.pushEventObject(context, event);
     }
     private void QuickShareTransferResult(final Event event) {
 
@@ -281,7 +283,6 @@ public class ServerResponseThread extends Thread {
 
         if(PlayerConstants.getPlaylistSize() != 0 && PlayerConstants.getPlaylistSize() >= PlayerConstants.SONG_NUMBER) {
 
-            db4oHelper.pushEventObject(context, event);
             final String currentSongFilePath = PlayerConstants.getPlayList().get(PlayerConstants.SONG_NUMBER).getData();
             if(SharedPreferenceHelper.getClientTransferRequestAlwaysAccept(context, event.getClientMacAddress())) {
                 new Thread(new Runnable() {
@@ -289,7 +290,7 @@ public class ServerResponseThread extends Thread {
                     public void run() {
                         SocketExtensionMethods.requestStrictModePermit();
                         event.setEventState(SocketExtensionMethods.EVENT_STATE.Approved);
-                        db4oHelper.updateEventObject(context, event);
+                        db4oHelper.pushEventObject(context, event);
                         String result = SocketExtensionMethods.GenerateSocketMessage(context, KeyConstants.SOCKET_CURRENT_SONG_RESULT, ExtensionMethods.getTimeStamp(), KeyConstants.SOCKET_RESULT_OK);
                         Client quickShareResponse = new Client(clientIPAddress, result);
                         quickShareResponse.execute();
@@ -304,6 +305,9 @@ public class ServerResponseThread extends Thread {
                     }
                 }).start();
             }
+
+            else
+                db4oHelper.pushEventObject(context, event);
         }
     }
     private void CurrentSongResult(final Event event){

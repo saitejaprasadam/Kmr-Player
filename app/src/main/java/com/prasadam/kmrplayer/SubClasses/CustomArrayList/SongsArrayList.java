@@ -1,6 +1,6 @@
 package com.prasadam.kmrplayer.SubClasses.CustomArrayList;
 
-import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.ModelClasses.Song;
 
 import java.util.ArrayList;
 import java.util.Collection;

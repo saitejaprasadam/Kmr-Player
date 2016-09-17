@@ -123,10 +123,10 @@ public class MostPlayedSongsActivity extends VerticalSlidingDrawerBaseActivity {
 
     }
     public void onDestroy() {
-        super.onDestroy();
         mostPlayedRecylcerView.setAdapter(null);
         MostPlayedActivityrecyclerViewAdapter = null;
         songsList = null;
+        super.onDestroy();
     }
 
     private void setSearchListener() {

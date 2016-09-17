@@ -1,0 +1,52 @@
+<!-- [ Mirror metadata ] generatedAt: 1474066042242 -->
+<!-- Generated screen file. Fill the id tags below with content with
+which to populate your previewed layout. For a complete specification
+of sample data, please see http://jimulabs.com/sample-data-specifications/ 
+
+Valid attributes on <screen> tag: theme="@style/someTheme" inEditMode="false" overlay="@drawable/mockup" -->
+<screen>
+    <_content layout="@layout/fragment_vertical_sliding_drawer">
+        <!-- ImageView Examples:
+        <vertical_slide_drawer_blurred_image_view src="@drawable/image_resource" />
+        <vertical_slide_drawer_blurred_image_view src="relative_path/image.jpg" /> -->
+        <vertical_slide_drawer_blurred_image_view />
+        <!-- TextView Examples:
+        <now_playing_current_duration text="@string/string_resource" />
+        <now_playing_current_duration text="Text literal" textSize="14sp" /> -->
+        <now_playing_current_duration />
+        <now_playing_max_duration />
+        <now_playing_song_context_menu />
+        <now_playing_song_title_text_view />
+        <now_playing_song_artist_text_view />
+        <now_playing_next_button />
+        <now_playing_previous_button />
+        <now_playing_shuffle_button />
+        <now_playing_repeat_button />
+        <now_playing_playlist_recycler_view layoutManager="linear:vertical">
+        <!-- Examples of valid layoutManager values: "linear", "staggeredGrid:5:horizontal", "staggeredGrid:4" -->
+            <items layout="@android:layout/simple_list_item_1" >
+                <_item>
+                    <text1>Vancouver</text1>
+                </_item>
+                <_item>
+                    <text1>Cairo</text1>
+                </_item>
+                <_item>
+                    <text1>New York</text1>
+                </_item>
+                <_item>
+                    <text1>San Francisco</text1>
+                </_item>
+                <_item>
+                    <text1>Seattle</text1>
+                </_item>
+                <_item>
+                    <text1>Hong Kong</text1>
+                </_item>
+                <_item>
+                    <text1>Tokyo</text1>
+                </_item>
+            </items>
+                </now_playing_playlist_recycler_view>
+    </_content>
+</screen>

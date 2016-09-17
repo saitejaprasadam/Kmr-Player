@@ -28,8 +28,8 @@ import com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.ArtistAdapter;
 import com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.SongsAdapter.UnifedSongAdapter;
 import com.prasadam.kmrplayer.Adapters.UIAdapters.DividerItemDecoration;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
-import com.prasadam.kmrplayer.AudioPackages.modelClasses.Album;
-import com.prasadam.kmrplayer.AudioPackages.modelClasses.Artist;
+import com.prasadam.kmrplayer.ModelClasses.Album;
+import com.prasadam.kmrplayer.ModelClasses.Artist;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SubClasses.CustomArrayList.SongsArrayList;
 import com.prasadam.kmrplayer.UI.Activities.VerticalSlidingDrawerBaseActivity;
@@ -166,13 +166,13 @@ public class SearchActivity extends VerticalSlidingDrawerBaseActivity {
         super.onBackPressed();
     }
     public void onDestroy(){
-        super.onDestroy();
         songsRecyclerView.setAdapter(null);
         artistRecyclerView.setAdapter(null);
         albumRecyclerView.setAdapter(null);
         songRecyclerViewAdapter = null;
         artistRecyclerViewAdapter = null;
         albumRecyclerViewAdapter = null;
+        super.onDestroy();
     }
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

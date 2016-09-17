@@ -1,0 +1,14 @@
+<!-- [ Mirror metadata ] generatedAt: 1474066041977 -->
+<!-- Generated screen file. Fill the id tags below with content with
+which to populate your previewed layout. For a complete specification
+of sample data, please see http://jimulabs.com/sample-data-specifications/ 
+
+Valid attributes on <screen> tag: theme="@style/someTheme" inEditMode="false" overlay="@drawable/mockup" -->
+<screen>
+    <_content layout="@layout/recycler_view_small_album_layout">
+        <!-- TextView Examples:
+        <artist_title text="@string/string_resource" />
+        <artist_title text="Text literal" textSize="14sp" /> -->
+        <artist_title />
+    </_content>
+</screen>

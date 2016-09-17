@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -50,10 +52,10 @@ public class QuickShareActivity extends AppCompatActivity{
             unregisterReceiver(receiver);
             receiver = null;
         }
-        super.onDestroy();
         quickShareRecyclerView.setAdapter(null);
         QuickShareRecyclerviewAdapter = null;
         NoDevicesTextView = null;
+        super.onDestroy();
     }
 
     private void wifiBroadCastReceiver() {
@@ -86,8 +88,14 @@ public class QuickShareActivity extends AppCompatActivity{
     }
     public static void updateAdapater(){
         try{
-            if(QuickShareRecyclerviewAdapter != null)
-                QuickShareRecyclerviewAdapter.notifyDataSetChanged();
+            Handler mainThread = new Handler(Looper.getMainLooper());
+            mainThread.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(QuickShareRecyclerviewAdapter != null)
+                        QuickShareRecyclerviewAdapter.notifyDataSetChanged();
+                }
+            });
         }
         catch (Exception ignore){}
     }

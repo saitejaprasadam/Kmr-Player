@@ -51,7 +51,7 @@ import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.Controls;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicPlayerExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicService;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.PlayerConstants;
-import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.ModelClasses.Song;
 import com.prasadam.kmrplayer.Interfaces.NowPlayingPlaylistInterfaces;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
@@ -116,15 +116,15 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
             nowPlayingToolbar.setPadding(0, ActivityHelper.getStatusBarHeight(this), 0, 0);
 
         initalizeNowPlayingUI();
-        initalizePlaylistRecyclerView();
         nowPlayingListeners();
-        setAlbumAdapter();
         setNowPlayingSongContextMenu();
     }
 
     public void onResume() {
         super.onResume();
+        initalizePlaylistRecyclerView();
         initalizeNowPlayingUI();
+        setAlbumAdapter();
         setHandlers();
         Controls.updateNowPlayingUI();
         if(mainLayoutRootLayout != null && mainLayoutRootLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED)
@@ -136,11 +136,11 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
         }
     }
     public void onDestroy(){
-        super.onDestroy();
         if(animator != null){
             animator.removeAllListeners();
             animator = null;
         }
+        super.onDestroy();
     }
     public void onPause(){
         super.onPause();

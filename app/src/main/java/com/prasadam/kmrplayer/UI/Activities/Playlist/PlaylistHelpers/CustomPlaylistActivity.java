@@ -108,9 +108,9 @@ public class CustomPlaylistActivity extends VerticalSlidingDrawerBaseActivity {
         }
     }
     public void onDestroy(){
-        super.onDestroy();
         recyclerView.setAdapter(null);
         CustomPlaylistActivityrecyclerViewAdapter = null;
+        super.onDestroy();
     }
 
     @Override

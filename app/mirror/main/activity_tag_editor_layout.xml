@@ -1,0 +1,15 @@
+<!-- [ Mirror metadata ] generatedAt: 1474066041706 -->
+<!-- Generated screen file. Fill the id tags below with content with
+which to populate your previewed layout. For a complete specification
+of sample data, please see http://jimulabs.com/sample-data-specifications/ 
+
+Valid attributes on <screen> tag: theme="@style/someTheme" inEditMode="false" overlay="@drawable/mockup" -->
+<screen>
+    <_content layout="@layout/activity_tag_editor_layout">
+        <!-- ImageView Examples:
+        <blurred_album_art src="@drawable/image_resource" />
+        <blurred_album_art src="relative_path/image.jpg" /> -->
+        <blurred_album_art />
+        <apply_fab_button />
+    </_content>
+</screen>

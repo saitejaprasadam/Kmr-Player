@@ -1,0 +1,22 @@
+<!-- [ Mirror metadata ] generatedAt: 1474066042008 -->
+<!-- Generated screen file. Fill the id tags below with content with
+which to populate your previewed layout. For a complete specification
+of sample data, please see http://jimulabs.com/sample-data-specifications/ 
+
+Valid attributes on <screen> tag: theme="@style/someTheme" inEditMode="false" overlay="@drawable/mockup" -->
+<screen>
+    <_content layout="@layout/widget_now_playing">
+        <!-- ImageView Examples:
+        <widget_prev_button src="@drawable/image_resource" />
+        <widget_prev_button src="relative_path/image.jpg" /> -->
+        <widget_prev_button />
+        <widget_play_pause_button />
+        <widget_next_button />
+        <widget_now_playing_album_art />
+        <!-- TextView Examples:
+        <widget_song_name text="@string/string_resource" />
+        <widget_song_name text="Text literal" textSize="14sp" /> -->
+        <widget_song_name />
+        <widget_artist_name />
+    </_content>
+</screen>

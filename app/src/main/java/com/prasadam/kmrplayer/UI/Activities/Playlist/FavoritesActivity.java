@@ -128,10 +128,10 @@ public class FavoritesActivity extends VerticalSlidingDrawerBaseActivity {
         }).start();
     }
     public void onDestroy() {
-        super.onDestroy();
         recyclerView.setAdapter(null);
         FavoritesActivityrecyclerViewAdapter = null;
         favoriteSongList = null;
+        super.onDestroy();
     }
 
     public void setSearchListener(){

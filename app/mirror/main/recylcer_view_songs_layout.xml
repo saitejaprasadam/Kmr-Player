@@ -1,0 +1,19 @@
+<!-- [ Mirror metadata ] generatedAt: 1474066042002 -->
+<!-- Generated screen file. Fill the id tags below with content with
+which to populate your previewed layout. For a complete specification
+of sample data, please see http://jimulabs.com/sample-data-specifications/ 
+
+Valid attributes on <screen> tag: theme="@style/someTheme" inEditMode="false" overlay="@drawable/mockup" -->
+<screen>
+    <_content layout="@layout/recylcer_view_songs_layout">
+        <!-- ImageView Examples:
+        <song_context_menu src="@drawable/image_resource" />
+        <song_context_menu src="relative_path/image.jpg" /> -->
+        <song_context_menu />
+        <!-- TextView Examples:
+        <songTitle_RecyclerView text="@string/string_resource" />
+        <songTitle_RecyclerView text="Text literal" textSize="14sp" /> -->
+        <songTitle_RecyclerView />
+        <songArtist_recycler_view />
+    </_content>
+</screen>

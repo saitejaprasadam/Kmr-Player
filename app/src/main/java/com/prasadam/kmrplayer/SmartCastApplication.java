@@ -3,9 +3,10 @@ package com.prasadam.kmrplayer;
 import android.app.Application;
 
 import com.crashlytics.android.Crashlytics;
+import com.firebase.client.Firebase;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicService;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.PlayerConstants;
-import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.ModelClasses.Song;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SharedPreferences.SharedPreferenceHelper;
 
@@ -29,10 +30,13 @@ public class SmartCastApplication extends Application{
         super.onCreate();
         TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
         Fabric.with(this, new Crashlytics(), new Twitter(authConfig));
-        setMusicPlaylist_and_Settings();
-
         Crashlytics.setUserName(ExtensionMethods.deviceName(this));
         Crashlytics.setUserIdentifier(ExtensionMethods.getDeviceModelName());
+
+        Firebase.setAndroidContext(this);
+        Firebase myFirebaseRef = new Firebase("https://kmr-player-950e3.firebaseio.com/");
+
+        setMusicPlaylist_and_Settings();
     }
     private void setMusicPlaylist_and_Settings() {
         SharedPreferenceHelper.getShuffle(this);

@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,6 +21,9 @@ import com.prasadam.kmrplayer.ActivityHelperClasses.DialogHelper;
 import com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.NearbyDevicesAdapter;
 import com.prasadam.kmrplayer.Adapters.UIAdapters.DividerItemDecoration;
 import com.prasadam.kmrplayer.R;
+import com.prasadam.kmrplayer.SocketClasses.NetworkServiceDiscovery.NSD;
+import com.prasadam.kmrplayer.SocketClasses.NetworkServiceDiscovery.NSDClient;
+import com.prasadam.kmrplayer.SocketClasses.SocketExtensionMethods;
 
 /*
  * Created by Prasadam Saiteja on 7/5/2016.
@@ -30,6 +35,7 @@ public class NearbyDevicesActivity extends AppCompatActivity{
     public static TextView NoDevicesTextView;
     private RecyclerView NearbyRecyclerView;
     private BroadcastReceiver receiver;
+    private Handler currentSongPlayingRequestHandler;
 
     public void onCreate(Bundle bundle){
         super.onCreate(bundle);
@@ -41,16 +47,19 @@ public class NearbyDevicesActivity extends AppCompatActivity{
         DialogHelper.checkForNetworkState(this, (FloatingActionButton) findViewById(R.id.wifi_fab));
         wifiBroadCastReceiver();
         setRecyclerView();
+        setCurrentSongPlayingHandler();
     }
+
     public void onDestroy(){
         if (receiver != null) {
             unregisterReceiver(receiver);
             receiver = null;
         }
-        super.onDestroy();
+        currentSongPlayingRequestHandler = null;
         NearbyRecyclerView.setAdapter(null);
         nearbyDevicesRecyclerviewAdapter = null;
         NoDevicesTextView = null;
+        super.onDestroy();
     }
 
     private void setRecyclerView() {
@@ -63,8 +72,14 @@ public class NearbyDevicesActivity extends AppCompatActivity{
     }
     public static void updateAdapater(){
         try{
-            if(nearbyDevicesRecyclerviewAdapter != null)
-                nearbyDevicesRecyclerviewAdapter.notifyDataSetChanged();
+            Handler mainThread = new Handler(Looper.getMainLooper());
+            mainThread.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(nearbyDevicesRecyclerviewAdapter != null)
+                        nearbyDevicesRecyclerviewAdapter.notifyDataSetChanged();
+                }
+            });
         }
         catch (Exception ignore){}
     }
@@ -80,6 +95,24 @@ public class NearbyDevicesActivity extends AppCompatActivity{
             public void onReceive(Context context, Intent intent) {DialogHelper.checkForNetworkState(NearbyDevicesActivity.this, (FloatingActionButton) findViewById(R.id.wifi_fab));}
         };
         registerReceiver(receiver, filter);
+    }
+    private void setCurrentSongPlayingHandler() {
+
+        if(currentSongPlayingRequestHandler == null){
+            currentSongPlayingRequestHandler = new Handler();
+            currentSongPlayingRequestHandler.post(new Runnable() {
+                @Override
+                public void run() {
+
+                    for (NSD serverObject : NSDClient.devicesList){
+                        SocketExtensionMethods.requestForCurrentSongPlaying(NearbyDevicesActivity.this, serverObject.GetClientNSD());
+                    }
+
+                    if(currentSongPlayingRequestHandler != null)
+                        currentSongPlayingRequestHandler.postDelayed(this, 8000);
+                }
+            });
+        }
     }
 
     @Override

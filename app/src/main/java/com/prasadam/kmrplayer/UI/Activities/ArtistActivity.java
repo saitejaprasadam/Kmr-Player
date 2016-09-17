@@ -30,9 +30,9 @@ import com.prasadam.kmrplayer.Adapters.UIAdapters.DividerItemDecoration;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.BlurBuilder;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicPlayerExtensionMethods;
-import com.prasadam.kmrplayer.AudioPackages.modelClasses.Album;
-import com.prasadam.kmrplayer.AudioPackages.modelClasses.Artist;
-import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.ModelClasses.Album;
+import com.prasadam.kmrplayer.ModelClasses.Artist;
+import com.prasadam.kmrplayer.ModelClasses.Song;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 import com.prasadam.kmrplayer.SubClasses.CustomArrayList.SongsArrayList;
@@ -105,13 +105,13 @@ public class ArtistActivity extends VerticalSlidingDrawerBaseActivity {
         setSongRecyclerView(loading);
     }
     public void onDestroy(){
-        super.onDestroy();
         songRecyclerview.setAdapter(null);
         albumRecyclerview.setAdapter(null);
         songRecyclerViewAdapter = null;
         albumRecyclerViewAdapter = null;
         songsList.clear();
         albumList.clear();
+        super.onDestroy();
     }
 
     private void setSongRecyclerView(final MaterialDialog loading) {

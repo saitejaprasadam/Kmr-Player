@@ -33,7 +33,7 @@ import com.prasadam.kmrplayer.Adapters.UIAdapters.DividerItemDecoration;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.BlurBuilder;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicPlayerExtensionMethods;
-import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.ModelClasses.Song;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 import com.prasadam.kmrplayer.SubClasses.CustomArrayList.SongsArrayList;
@@ -86,10 +86,10 @@ public class AlbumActivity extends VerticalSlidingDrawerBaseActivity {
         getSongsList();
     }
     public void onDestroy(){
-        super.onDestroy();
         recyclerView.setAdapter(null);
         recyclerViewAdapter = null;
         songsList = null;
+        super.onDestroy();
     }
     public void onBackPressed() {
         if (mainLayoutRootLayout != null && (mainLayoutRootLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED || mainLayoutRootLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED))

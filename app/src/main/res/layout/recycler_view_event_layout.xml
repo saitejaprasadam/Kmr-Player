@@ -50,6 +50,9 @@
         android:layout_height="match_parent"
         android:layout_toEndOf="@+id/event_icon"
         android:layout_toStartOf="@+id/prompt_layout"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:scrollHorizontally="true"
         android:gravity="center_vertical"
         android:text="Lambert is requesting you to send your current playing song ?"/>
 

@@ -120,10 +120,10 @@ public class RecentlyAddedActivity extends VerticalSlidingDrawerBaseActivity {
         }).start();
     }
     public void onDestroy() {
-        super.onDestroy();
         recentlyAddedRecyclerView.setAdapter(null);
         RecentlyAddedAcitivityrecyclerViewAdapter = null;
         songsList = null;
+        super.onDestroy();
     }
 
     private void setSearchListener() {

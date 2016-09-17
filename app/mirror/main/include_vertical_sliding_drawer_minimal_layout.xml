@@ -1,0 +1,21 @@
+<!-- [ Mirror metadata ] generatedAt: 1474066041869 -->
+<!-- Generated screen file. Fill the id tags below with content with
+which to populate your previewed layout. For a complete specification
+of sample data, please see http://jimulabs.com/sample-data-specifications/ 
+
+Valid attributes on <screen> tag: theme="@style/someTheme" inEditMode="false" overlay="@drawable/mockup" -->
+<screen>
+    <_content layout="@layout/include_vertical_sliding_drawer_minimal_layout">
+        <!-- ImageView Examples:
+        <now_playing_minimal_album_art src="@drawable/image_resource" />
+        <now_playing_minimal_album_art src="relative_path/image.jpg" /> -->
+        <now_playing_minimal_album_art />
+        <now_playing_minimal_next_button />
+        <now_playing_minimal_play_button />
+        <!-- TextView Examples:
+        <now_playing_minimal_song_title_text_view text="@string/string_resource" />
+        <now_playing_minimal_song_title_text_view text="Text literal" textSize="14sp" /> -->
+        <now_playing_minimal_song_title_text_view />
+        <now_playing_minimal_song_artist_text_view />
+    </_content>
+</screen>

@@ -18,9 +18,9 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.prasadam.kmrplayer.AudioPackages.modelClasses.Album;
-import com.prasadam.kmrplayer.AudioPackages.modelClasses.Artist;
-import com.prasadam.kmrplayer.AudioPackages.modelClasses.Song;
+import com.prasadam.kmrplayer.ModelClasses.Album;
+import com.prasadam.kmrplayer.ModelClasses.Artist;
+import com.prasadam.kmrplayer.ModelClasses.Song;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.DatabaseHelper.sqliteHelper;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;

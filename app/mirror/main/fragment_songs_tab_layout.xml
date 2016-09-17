@@ -1,0 +1,19 @@
+<!-- [ Mirror metadata ] generatedAt: 1474066041747 -->
+<!-- Generated screen file. Fill the id tags below with content with
+which to populate your previewed layout. For a complete specification
+of sample data, please see http://jimulabs.com/sample-data-specifications/ 
+
+Valid attributes on <screen> tag: theme="@style/someTheme" inEditMode="false" overlay="@drawable/mockup" -->
+<screen>
+    <actionbar showTabsFor="@id/viewpager"/>
+    <_content layout="@layout/fragment_songs_tab_layout">
+        <viewpager>
+            <!-- Add pages to your ViewPager here like so:
+            <_page title="page title" icon="@drawable/my_icon"/>
+            <_page layout="@layout/my_page_layout">
+                <my_image_view src="@drawable/my_image"/>
+            </_page>
+            -->
+        </viewpager>
+    </_content>
+</screen>

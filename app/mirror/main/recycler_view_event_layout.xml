@@ -1,0 +1,20 @@
+<!-- [ Mirror metadata ] generatedAt: 1474066041945 -->
+<!-- Generated screen file. Fill the id tags below with content with
+which to populate your previewed layout. For a complete specification
+of sample data, please see http://jimulabs.com/sample-data-specifications/ 
+
+Valid attributes on <screen> tag: theme="@style/someTheme" inEditMode="false" overlay="@drawable/mockup" -->
+<screen>
+    <_content layout="@layout/recycler_view_event_layout">
+        <!-- ImageView Examples:
+        <event_deny src="@drawable/image_resource" />
+        <event_deny src="relative_path/image.jpg" /> -->
+        <event_deny />
+        <event_accept />
+        <!-- TextView Examples:
+        <request_text_view text="@string/string_resource" />
+        <request_text_view text="Text literal" textSize="14sp" /> -->
+        <request_text_view />
+        <event_time />
+    </_content>
+</screen>

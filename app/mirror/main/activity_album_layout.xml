@@ -1,0 +1,45 @@
+<!-- [ Mirror metadata ] generatedAt: 1474066042230 -->
+<!-- Generated screen file. Fill the id tags below with content with
+which to populate your previewed layout. For a complete specification
+of sample data, please see http://jimulabs.com/sample-data-specifications/ 
+
+Valid attributes on <screen> tag: theme="@style/someTheme" inEditMode="false" overlay="@drawable/mockup" -->
+<screen>
+    <_content layout="@layout/activity_album_layout">
+        <!-- ImageView Examples:
+        <blurred_album_art src="@drawable/image_resource" />
+        <blurred_album_art src="relative_path/image.jpg" /> -->
+        <blurred_album_art />
+        <!-- TextView Examples:
+        <Album_name_albumrecyclerview text="@string/string_resource" />
+        <Album_name_albumrecyclerview text="Text literal" textSize="14sp" /> -->
+        <Album_name_albumrecyclerview />
+        <Artist_name_albumrecyclerview />
+        <songs_recylcer_view_layout layoutManager="linear:vertical">
+        <!-- Examples of valid layoutManager values: "linear", "staggeredGrid:5:horizontal", "staggeredGrid:4" -->
+            <items layout="@android:layout/simple_list_item_1" >
+                <_item>
+                    <text1>Dalmatian</text1>
+                </_item>
+                <_item>
+                    <text1>Great Dane</text1>
+                </_item>
+                <_item>
+                    <text1>Shi Tzu</text1>
+                </_item>
+                <_item>
+                    <text1>Corgi</text1>
+                </_item>
+                <_item>
+                    <text1>Labrador</text1>
+                </_item>
+                <_item>
+                    <text1>Doberman</text1>
+                </_item>
+                <_item>
+                    <text1>Chihuahua</text1>
+                </_item>
+            </items>
+                </songs_recylcer_view_layout>
+    </_content>
+</screen>

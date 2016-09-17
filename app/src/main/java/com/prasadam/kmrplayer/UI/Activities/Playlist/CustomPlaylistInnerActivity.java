@@ -143,10 +143,10 @@ public class CustomPlaylistInnerActivity extends VerticalSlidingDrawerBaseActivi
         }
     }
     public void onDestroy(){
-        super.onDestroy();
         customPlaylistInnerRecyclerView.setAdapter(null);
         customPlaylistSongsRecylcerViewAdapter = null;
         songsList = null;
+        super.onDestroy();
     }
 
     private void setToolbar() {

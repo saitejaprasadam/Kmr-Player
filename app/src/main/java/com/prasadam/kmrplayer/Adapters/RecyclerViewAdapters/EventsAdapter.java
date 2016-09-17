@@ -15,8 +15,9 @@ import com.prasadam.kmrplayer.DatabaseHelper.db4oHelper;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
+import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 import com.prasadam.kmrplayer.SocketClasses.Client;
-import com.prasadam.kmrplayer.SocketClasses.Event;
+import com.prasadam.kmrplayer.ModelClasses.Event;
 import com.prasadam.kmrplayer.SocketClasses.FileTransfer.FileReceiver;
 import com.prasadam.kmrplayer.SocketClasses.FileTransfer.FileSender;
 import com.prasadam.kmrplayer.SocketClasses.SocketExtensionMethods;
@@ -48,7 +49,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewAdapte
         return new ViewAdapter(view);
     }
     public void onBindViewHolder(ViewAdapter holder, final int position) {
-        final Event event = db4oHelper.getEventObjects(context).get(position);
+        final Event event = SharedVariables.fullEventsList.get(position);
 
         holder.eventTime.setText(getDateStringFormat(event.getTime()));
         onEventClickListener(holder, position, event);
@@ -57,7 +58,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewAdapte
     }
 
     public int getItemCount() {
-        return db4oHelper.getEventObjects(context).size();
+        return SharedVariables.fullEventsList.size();
     }
 
     private void eventSetter(ViewAdapter holder, Event event) {
@@ -68,11 +69,18 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewAdapte
                 if(event.getEventState() == SocketExtensionMethods.EVENT_STATE.WAITING){
                     holder.eventIcon.setImageResource(R.drawable.ic_reply_black_24dp);
                     holder.eventIcon.setScaleX(-1);
-                    holder.requestTextView.setText(event.getClientName() + " is requesting you to send your current playing song ?");
+                    if(event.getCurrentSongName() != null)
+                        holder.requestTextView.setText(event.getClientName() + " is requesting you to send your current playing song (" + event.getCurrentSongName() + ") ?");
+                    else
+                        holder.requestTextView.setText(event.getClientName() + " is requesting you to send your current playing song ?");
                 }
 
-                else
-                    holder.requestTextView.setText(event.getClientName() + " requested you to send your current playing song ?   (" + event.getEventState() + ")");
+                else{
+                    if(event.getCurrentSongName() != null)
+                        holder.requestTextView.setText(event.getClientName() + " requested you to send your current playing song (" + event.getCurrentSongName() + ") ?   (" + event.getEventState() + ")");
+                    else
+                        holder.requestTextView.setText(event.getClientName() + " requested you to send your current playing song ?   (" + event.getEventState() + ")");
+                }
             }
             break;
 
@@ -146,6 +154,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewAdapte
                             public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
                                 if(which == 0){
                                     db4oHelper.removeEventObject(context, event);
+                                    SharedVariables.fullEventsList.remove(event);
                                     notifyItemRemoved(position);
                                 }
                             }
@@ -248,6 +257,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewAdapte
         public ViewAdapter(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            requestTextView.setSelected(true);
         }
     }
 }

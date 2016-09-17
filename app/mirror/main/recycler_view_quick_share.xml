@@ -1,0 +1,19 @@
+<!-- [ Mirror metadata ] generatedAt: 1474066041967 -->
+<!-- Generated screen file. Fill the id tags below with content with
+which to populate your previewed layout. For a complete specification
+of sample data, please see http://jimulabs.com/sample-data-specifications/ 
+
+Valid attributes on <screen> tag: theme="@style/someTheme" inEditMode="false" overlay="@drawable/mockup" -->
+<screen>
+    <_content layout="@layout/recycler_view_quick_share">
+        <!-- ImageView Examples:
+        <nearby_devices_context_menu src="@drawable/image_resource" />
+        <nearby_devices_context_menu src="relative_path/image.jpg" /> -->
+        <nearby_devices_context_menu />
+        <!-- TextView Examples:
+        <device_name_textview text="@string/string_resource" />
+        <device_name_textview text="Text literal" textSize="14sp" /> -->
+        <device_name_textview />
+        <current_song_playing />
+    </_content>
+</screen>

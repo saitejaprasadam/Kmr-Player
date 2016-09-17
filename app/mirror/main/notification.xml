@@ -1,0 +1,22 @@
+<!-- [ Mirror metadata ] generatedAt: 1474066041874 -->
+<!-- Generated screen file. Fill the id tags below with content with
+which to populate your previewed layout. For a complete specification
+of sample data, please see http://jimulabs.com/sample-data-specifications/ 
+
+Valid attributes on <screen> tag: theme="@style/someTheme" inEditMode="false" overlay="@drawable/mockup" -->
+<screen>
+    <_content layout="@layout/notification">
+        <!-- ImageView Examples:
+        <notification_album_art src="@drawable/image_resource" />
+        <notification_album_art src="relative_path/image.jpg" /> -->
+        <notification_album_art />
+        <notification_prev_button />
+        <notification_play_pause_button />
+        <notification_next_button />
+        <!-- TextView Examples:
+        <notification_song_name text="@string/string_resource" />
+        <notification_song_name text="Text literal" textSize="14sp" /> -->
+        <notification_song_name />
+        <notification_artist_name />
+    </_content>
+</screen>
