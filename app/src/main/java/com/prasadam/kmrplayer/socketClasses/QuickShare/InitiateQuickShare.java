@@ -1,7 +1,9 @@
 package com.prasadam.kmrplayer.SocketClasses.QuickShare;
 
+import android.content.Context;
 import android.os.AsyncTask;
 
+import com.prasadam.kmrplayer.ModelClasses.Event;
 import com.prasadam.kmrplayer.SocketClasses.FileTransfer.FileSender;
 
 import java.util.ArrayList;
@@ -12,11 +14,12 @@ import java.util.ArrayList;
 
 public class InitiateQuickShare extends AsyncTask<Void, Void, Void>{
 
-    private String hostAddress;
+    private Event event;
     private ArrayList<String> songsList;
+    private Context context;
 
-    public InitiateQuickShare(String hostAddress, ArrayList<String> songsList){
-        this.hostAddress = hostAddress;
+    public InitiateQuickShare(Context context, Event event, ArrayList<String> songsList){
+        this.event = event;
         this.songsList = new ArrayList<>(songsList);
     }
 
@@ -24,7 +27,7 @@ public class InitiateQuickShare extends AsyncTask<Void, Void, Void>{
     protected Void doInBackground(Void... voids) {
 
         for (String song : songsList) {
-            FileSender nioClient = new FileSender(hostAddress);
+            FileSender nioClient = new FileSender(context, event);
             nioClient.sendFile(song);
             nioClient.endConnection();
         }

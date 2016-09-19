@@ -6,7 +6,7 @@
 
 -keepclasseswithmembers class * { @retrofit2.http.* <methods>; }
 
--keepattributes SourceFile,LineNumberTable,Annotation
+-keepattributes SourceFile, LineNumberTable, Annotation
 
 -keep class .R
 -keep class **.R$* { <fields>;}
@@ -14,6 +14,9 @@
 -keep class retrofit2.** { *; }
 -keep class com.crashlytics.** { *; }
 -keep class com.crashlytics.android.**
+-keep public class com.db4o.** { *; }
+
+-keep public interface * {}
 
 # Works around a bug in the animated GIF module which will be fixed in 0.12.0
 -keep class com.facebook.imagepipeline.animated.factory.AnimatedFactoryImpl {
@@ -30,3 +33,4 @@
 -dontwarn okhttp3.**
 -dontwarn javax.annotation.**
 -dontwarn com.android.volley.toolbox.**
+-dontwarn org.w3c.dom.bootstrap.DOMImplementationRegistry

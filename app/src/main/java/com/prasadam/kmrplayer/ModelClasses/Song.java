@@ -2,6 +2,8 @@ package com.prasadam.kmrplayer.ModelClasses;
 
 import android.content.Context;
 
+import java.io.Serializable;
+
 import static com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods.isSongFavorite;
 import static com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods.setSongFavorite;
 
@@ -9,14 +11,13 @@ import static com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods.setSong
  * Created by saiteja prasadam on 2/14/2016.
  */
 
-public class Song{
+public class Song implements Serializable {
 
     private long id, duration, artistID;
     private String title, artist, album, data, albumArtLocation, hashID;
     public int repeatCount;
 
     public Song(long songID, String songTitle, String songArtist, long artistID, String songAlbum, long songDuration, String songData, String albumArtLocation, String hashID) {
-
         this.id = songID;
         this.title = songTitle;
         this.artist = songArtist;
@@ -26,6 +27,17 @@ public class Song{
         this.data = songData;
         this.albumArtLocation = albumArtLocation;
         this.hashID = hashID;
+    }
+    public Song(Song song) {
+        this.id = song.getID();
+        this.title = song.getTitle();
+        this.artist = song.getArtist();
+        this.artistID = song.getArtistID();
+        this.album = song.getAlbum();
+        this.duration = song.getDuration();
+        this.data = song.getData();
+        this.albumArtLocation = song.getAlbumArtLocation();
+        this.hashID = song.getHashID();
     }
 
     public long getArtistID() { return artistID; }

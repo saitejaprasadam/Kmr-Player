@@ -98,4 +98,19 @@ public class ExtensionMethods {
         else
             return capitalize(manufacturer) + " " + model;
     }
+
+    public static String extractFileNameFromPath( String filePathName ) {
+        if ( filePathName == null )
+            return null;
+
+        int dotPos = filePathName.lastIndexOf( '.' );
+        int slashPos = filePathName.lastIndexOf( '\\' );
+        if ( slashPos == -1 )
+            slashPos = filePathName.lastIndexOf( '/' );
+
+        if ( dotPos > slashPos )
+            return filePathName.substring( slashPos > 0 ? slashPos + 1 : 0);
+
+        return filePathName.substring( slashPos > 0 ? slashPos + 1 : 0 );
+    }
 }

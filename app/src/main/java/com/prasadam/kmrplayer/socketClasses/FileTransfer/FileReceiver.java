@@ -4,22 +4,22 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
-import com.prasadam.kmrplayer.ModelClasses.Song;
+import com.prasadam.kmrplayer.DatabaseHelper.db4oHelper;
+import com.prasadam.kmrplayer.ModelClasses.Event;
+import com.prasadam.kmrplayer.ModelClasses.TransferableSong;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
-import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
+import com.prasadam.kmrplayer.SocketClasses.SocketExtensionMethods;
+import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.EventsActivity;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.math.BigInteger;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.security.SecureRandom;
 
 /*
  * Created by Prasadam Saiteja on 7/16/2016.
@@ -28,15 +28,14 @@ import java.security.SecureRandom;
 public class FileReceiver extends AsyncTask<Void, Void, Void>{
 
     private ServerSocketChannel serverSocketChannel;
-    private SecureRandom random = new SecureRandom();
     private Context context;
-    public int countToBeRecevied;
+    private Event event;
 
-    public FileReceiver(Context context, int countToBeRecevied){
+    public FileReceiver(Context context, Event event){
 
         try {
             if(serverSocketChannel == null){
-                this.countToBeRecevied = countToBeRecevied;
+                this.event = event;
                 this.context = context;
                 serverSocketChannel = ServerSocketChannel.open();
                 serverSocketChannel.socket().bind(new InetSocketAddress(KeyConstants.FILE_TRANSFER_SOCKET_PORT_ADDRESS));
@@ -45,23 +44,22 @@ public class FileReceiver extends AsyncTask<Void, Void, Void>{
             e.printStackTrace();
         }
     }
-    public String nextSessionId() {
-        return new BigInteger(130, random).toString(32);
-    }
 
     @Override
     protected Void doInBackground(Void... voids) {
 
-        do{
+        Log.d("count", String.valueOf(event.getSongsToTransferArrayList().size()));
+
+        for (TransferableSong transferableSong : event.getSongsToTransferArrayList()) {
             try {
                 SocketChannel clientSocketChannel = serverSocketChannel.accept();
-                String fileName = nextSessionId() + ".mp3";
-
+                String fileName = ExtensionMethods.extractFileNameFromPath(transferableSong.getSong().getData());
                 File PlayerDirectory  = new File(KeyConstants.PLAYER_DIRECTORY_PATH);
 
                 if(!PlayerDirectory.exists())
                     PlayerDirectory.mkdir();
 
+                Log.d("song", transferableSong.getSong().getTitle());
                 File songFile = new File(PlayerDirectory.getAbsolutePath() + File.separator + fileName);
                 songFile.createNewFile();
                 RandomAccessFile aFile = new RandomAccessFile(songFile, "rw");
@@ -73,23 +71,20 @@ public class FileReceiver extends AsyncTask<Void, Void, Void>{
                     buffer.clear();
                 }
 
+                transferableSong.setSongTransferState(SocketExtensionMethods.TRANSFER_STATE.Completed);
                 ExtensionMethods.scanMedia(context, PlayerDirectory + File.separator + fileName);
-                Thread.sleep(100);
                 fileChannel.close();
                 clientSocketChannel.close();
-                Song song = AudioExtensionMethods.getSongFromPath(context, PlayerDirectory + File.separator + fileName);
-                if(song != null)
-                    SharedVariables.fullSongsList.add(song);
-
-                System.out.println("File Received " + countToBeRecevied);
-                countToBeRecevied--;
-            } catch (IOException | InterruptedException e) {
-                countToBeRecevied--;
-                Log.d("Exception", e.toString());
             }
 
-        }while(countToBeRecevied > 0);
+            catch (IOException e) {
+                Log.d("Exception", e.toString());
+            }
+        }
 
+        event.setEventState(SocketExtensionMethods.EVENT_STATE.Completed);
+        db4oHelper.updateEventObject(context, event);
+        EventsActivity.eventNotifyDataSetChanged();
         return null;
     }
 }

@@ -1,7 +1,6 @@
 package com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters;
 
 import android.content.Context;
-import android.os.Handler;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +13,7 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.prasadam.kmrplayer.ModelClasses.Song;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
@@ -39,6 +39,7 @@ import butterknife.ButterKnife;
 public class NearbyDevicesAdapter extends RecyclerView.Adapter<NearbyDevicesAdapter.ViewAdapter>{
 
     private ArrayList<String> QuickSharePathList;
+    private ArrayList<Song> QuickShareSongsList;
     private LayoutInflater inflater;
     private Context context;
     public static MaterialDialog waitingDialog;
@@ -98,7 +99,8 @@ public class NearbyDevicesAdapter extends RecyclerView.Adapter<NearbyDevicesAdap
         return count;
     }
 
-    public void setQuickShareSongPathList(ArrayList<String> songPathList){
+    public void setQuickShareSongPathList(ArrayList<Song> quickShareSongsList, ArrayList<String> songPathList){
+        this.QuickShareSongsList = quickShareSongsList;
         this.QuickSharePathList = songPathList;
     }
     private void setHolderQuickShareActivity(ViewAdapter holder, final NSD serverObject) {
@@ -125,7 +127,7 @@ public class NearbyDevicesAdapter extends RecyclerView.Adapter<NearbyDevicesAdap
                         .show();
 
                 QuickShareHelper.addQuickShareRequest(timeStamp, QuickSharePathList);
-                ClientHelper.requstForQuickShare(context, serverObject, timeStamp, QuickSharePathList);
+                ClientHelper.requstForQuickShare(context, serverObject, timeStamp, QuickShareSongsList, QuickSharePathList);
             }
         });
     }

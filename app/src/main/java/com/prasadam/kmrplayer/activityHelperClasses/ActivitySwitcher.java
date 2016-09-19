@@ -96,13 +96,17 @@ public class ActivitySwitcher {
             songsPath.add(song.getData());
         }
         quickShareIntent.putStringArrayListExtra(KeyConstants.INTENT_SONGS_PATH_LIST, songsPath);
+        quickShareIntent.putExtra(KeyConstants.INTENT_SONGS_LIST, songsList);
         context.startActivity(quickShareIntent);
     }
     public static void jumpToQuickShareActivity(final Context context, final Song song){
         Intent quickShareIntent = new Intent(context, QuickShareActivity.class);
         ArrayList<String> songsPath = new ArrayList<>();
         songsPath.add(song.getData());
+        ArrayList<Song> arrayList = new ArrayList<>();
+        arrayList.add(song);
         quickShareIntent.putStringArrayListExtra(KeyConstants.INTENT_SONGS_PATH_LIST, songsPath);
+        quickShareIntent.putExtra(KeyConstants.INTENT_SONGS_LIST, arrayList);
         context.startActivity(quickShareIntent);
     }
 

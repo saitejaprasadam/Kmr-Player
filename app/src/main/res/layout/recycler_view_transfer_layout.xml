@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/media_item_height"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:clickable="true"
+    android:background="@drawable/ripple">
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/songs_album_art"
+        android:layout_height="match_parent"
+        android:layout_width="@dimen/media_item_height"
+        fresco:placeholderImage="@mipmap/unkown_album_art"
+        android:adjustViewBounds="true"
+        android:padding="10dp" />
+
+    <FrameLayout
+        android:id="@+id/transfer_actions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true">
+
+        <ImageView
+            android:id="@+id/transfer_action_button"
+            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:src="@drawable/ic_close_white_24dp"
+            android:tint="@color/red"
+            android:visibility="gone"
+            android:padding="10dp" />
+
+        <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+            android:id="@+id/transfer_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:indeterminate="true"
+            style="@style/Widget.MaterialProgressBar.ProgressBar.Large"/>
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toEndOf="@id/songs_album_art"
+        android:layout_toStartOf="@id/transfer_actions"
+        android:orientation="vertical"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/songTitle_RecyclerView"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:text="@string/songs_text"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="14sp"
+            android:textColor="?android:attr/textColorPrimary"/>
+
+        <TextView
+            android:id="@+id/songArtist_recycler_view"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textSize="12sp"
+            android:text="@string/artist_text"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="?android:attr/textColorSecondary"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

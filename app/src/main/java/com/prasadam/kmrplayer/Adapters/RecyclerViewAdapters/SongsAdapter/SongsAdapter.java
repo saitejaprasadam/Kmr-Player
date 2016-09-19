@@ -84,7 +84,7 @@ public class SongsAdapter extends ObservableRecyclerView.Adapter<SongsAdapter.so
                     MusicPlayerExtensionMethods.playSong(activity, SharedVariables.fullSongsList, SharedVariables.fullSongsList.indexOf(currentSongDetails));
                 }
             });
-            setContextMenu(holder, currentSongDetails, position);
+            setContextMenu(holder, currentSongDetails);
             setAlbumArt(holder, currentSongDetails);
         }
 
@@ -94,7 +94,7 @@ public class SongsAdapter extends ObservableRecyclerView.Adapter<SongsAdapter.so
         return SharedVariables.fullSongsList.size();
     }
 
-    private void setContextMenu(final songsViewHolder holder, final Song currentSong, final int position) {
+    private void setContextMenu(final songsViewHolder holder, final Song currentSong) {
 
         holder.contextMenuView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,7 +119,7 @@ public class SongsAdapter extends ObservableRecyclerView.Adapter<SongsAdapter.so
                                                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                                     File file = new File(currentSong.getData());
                                                     if(file.delete()) {
-                                                        SharedVariables.fullSongsList.remove(position);
+                                                        SharedVariables.fullSongsList.remove(currentSong);
                                                         Toast.makeText(context, "Song Deleted : \'" + currentSong.getTitle() + "\'", Toast.LENGTH_SHORT).show();
                                                         context.getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.MediaColumns._ID + "='" + currentSong.getID() + "'", null);
                                                     }

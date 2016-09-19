@@ -3,7 +3,6 @@ package com.prasadam.kmrplayer;
 import android.app.Application;
 
 import com.crashlytics.android.Crashlytics;
-import com.firebase.client.Firebase;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicService;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.PlayerConstants;
 import com.prasadam.kmrplayer.ModelClasses.Song;
@@ -33,8 +32,8 @@ public class SmartCastApplication extends Application{
         Crashlytics.setUserName(ExtensionMethods.deviceName(this));
         Crashlytics.setUserIdentifier(ExtensionMethods.getDeviceModelName());
 
-        Firebase.setAndroidContext(this);
-        Firebase myFirebaseRef = new Firebase("https://kmr-player-950e3.firebaseio.com/");
+        //Firebase.setAndroidContext(this);
+        //Firebase myFirebaseRef = new Firebase("https://kmr-player-950e3.firebaseio.com/");
 
         setMusicPlaylist_and_Settings();
     }

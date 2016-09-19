@@ -4,6 +4,8 @@ import android.content.Context;
 import android.net.nsd.NsdServiceInfo;
 import android.os.StrictMode;
 
+import com.prasadam.kmrplayer.ModelClasses.Event;
+import com.prasadam.kmrplayer.ModelClasses.Song;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
@@ -11,6 +13,7 @@ import com.prasadam.kmrplayer.SocketClasses.NetworkServiceDiscovery.NSDClient;
 import com.prasadam.kmrplayer.SocketClasses.NetworkServiceDiscovery.NSDServer;
 
 import java.net.NetworkInterface;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,7 +24,10 @@ import java.util.List;
 public class SocketExtensionMethods {
 
     public enum EVENT_STATE {
-        WAITING, Denied, Approved
+        WAITING, Denied, Approved, Completed
+    }
+    public enum TRANSFER_STATE{
+        WAITING, Denied, Completed
     }
 
     public static void stopNSDServies(){
@@ -44,16 +50,24 @@ public class SocketExtensionMethods {
             StrictMode.setThreadPolicy(policy);
     }
 
-    public static String GenerateSocketMessage(Context context, String command, String timeStamp, String result){
-        return getMACAddress() + KeyConstants.DIVIDER + ExtensionMethods.deviceName(context).replaceAll(KeyConstants.SPACE, KeyConstants.SPECIAL_CHAR) + KeyConstants.DIVIDER + command + KeyConstants.DIVIDER + timeStamp + KeyConstants.DIVIDER + result;
+    public static Event GenerateSocketEventMessage(Context context, String command, String timeStamp){
+        return new Event(getMACAddress(), ExtensionMethods.deviceName(context).replaceAll(KeyConstants.SPACE, KeyConstants.SPECIAL_CHAR), command, timeStamp);
     }
-    public static String GenerateSocketMessage(Context context, String command, String timeStamp){
-        return getMACAddress() + KeyConstants.DIVIDER + ExtensionMethods.deviceName(context).replaceAll(KeyConstants.SPACE, KeyConstants.SPECIAL_CHAR) + KeyConstants.DIVIDER + command + KeyConstants.DIVIDER + timeStamp;
+    public static Event GenerateSocketEventMessage(Context context, String command, String timeStamp, String result){
+        Event event = new Event(getMACAddress(), ExtensionMethods.deviceName(context).replaceAll(KeyConstants.SPACE, KeyConstants.SPECIAL_CHAR), command, timeStamp);
+        event.setResult(result);
+        return event;
+    }
+    public static Event GenerateSocketEventMessage(Context context, String command, String timeStamp, String result, ArrayList<Song> transferSongsList){
+        Event event = new Event(context, getMACAddress(), ExtensionMethods.deviceName(context).replaceAll(KeyConstants.SPACE, KeyConstants.SPECIAL_CHAR), command, timeStamp, transferSongsList);
+        event.setResult(result);
+        return event;
     }
 
+
     public static void requestForDeviceType(Context context, NsdServiceInfo nsdClient) {
-        String message = GenerateSocketMessage(context, KeyConstants.SOCKET_REQUEST_DEVICE_TYPE, ExtensionMethods.getTimeStamp());
-        Client client = new Client(nsdClient.getHost(), message);
+        Event eventMessage = GenerateSocketEventMessage(context, KeyConstants.SOCKET_REQUEST_DEVICE_TYPE, ExtensionMethods.getTimeStamp());
+        Client client = new Client(nsdClient.getHost(), eventMessage);
         client.execute();
     }
     public static String getDeviceType(Context context){
@@ -95,14 +109,14 @@ public class SocketExtensionMethods {
     }
 
     public static void requestForCurrentSongPlaying(Context context, NsdServiceInfo nsdClient) {
-        String message = GenerateSocketMessage(context, KeyConstants.SOCKET_REQUEST_CURRENT_SONG_NAME, ExtensionMethods.getTimeStamp());
-        Client client = new Client(nsdClient.getHost(), message);
+        Event eventMessage = GenerateSocketEventMessage(context, KeyConstants.SOCKET_REQUEST_CURRENT_SONG_NAME, ExtensionMethods.getTimeStamp());
+        Client client = new Client(nsdClient.getHost(), eventMessage);
         client.execute();
     }
 
     public static void requestForMacAddress(Context context, NsdServiceInfo nsdClient) {
-        String message = GenerateSocketMessage(context, KeyConstants.SOCKET_REQUEST_MAC_ADDRESS, ExtensionMethods.getTimeStamp());
-        Client client = new Client(nsdClient.getHost(), message);
+        Event eventMessage = GenerateSocketEventMessage(context, KeyConstants.SOCKET_REQUEST_MAC_ADDRESS, ExtensionMethods.getTimeStamp());
+        Client client = new Client(nsdClient.getHost(), eventMessage);
         client.execute();
     }
     public static String getMACAddress(){
@@ -131,9 +145,5 @@ public class SocketExtensionMethods {
             }
         } catch (Exception ignored) { }
         return "02:00:00:00:00:00";
-
-        /*WifiManager manager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        WifiInfo info = manager.getConnectionInfo();
-        return info.getMacAddress();*/
     }
 }

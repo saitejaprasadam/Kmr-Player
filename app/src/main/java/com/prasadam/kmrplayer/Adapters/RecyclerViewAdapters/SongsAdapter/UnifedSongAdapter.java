@@ -128,7 +128,7 @@ public class UnifedSongAdapter extends RecyclerView.Adapter<UnifedSongAdapter.so
                                                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                                     File file = new File(currentSong.getData());
                                                     if (file.delete()) {
-                                                        songsList.remove(position);
+                                                        songsList.remove(currentSong);
                                                         SharedVariables.fullSongsList.remove(currentSong);
                                                         Toast.makeText(context, "Song Deleted : \'" + currentSong.getTitle() + "\'", Toast.LENGTH_SHORT).show();
                                                         context.getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.MediaColumns._ID + "='" + currentSong.getID() + "'", null);

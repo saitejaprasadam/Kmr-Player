@@ -13,6 +13,7 @@ import com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.NearbyDevicesAdapter
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.PlayerConstants;
 import com.prasadam.kmrplayer.DatabaseHelper.db4oHelper;
 import com.prasadam.kmrplayer.ModelClasses.Event;
+import com.prasadam.kmrplayer.ModelClasses.Song;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
@@ -27,11 +28,10 @@ import com.prasadam.kmrplayer.SocketClasses.QuickShare.QuickShareHelper;
 import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.NearbyDevicesActivity;
 import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.QuickShareActivity;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 
 /*
  * Created by Prasadam Saiteja on 7/3/2016.
@@ -52,20 +52,12 @@ public class ServerResponseThread extends Thread {
     public void run() {
         try {
             InputStream is = clientSocket.getInputStream();
-            InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(isr);
-            String receivedCommand = br.readLine();
-            Log.d("command", receivedCommand);
-            final String[] commandArray = receivedCommand.split(" ");
+            ObjectInputStream inStream = new ObjectInputStream(is);
+            Event event = (Event) inStream.readObject();
+            Log.d("command", event.getClientName() + " " + event.getCommand());
 
-            Event event = new Event(commandArray[0],
-                    clientIPAddress,
-                    commandArray[1].replaceAll(KeyConstants.SPECIAL_CHAR, KeyConstants.SPACE),
-                    commandArray[2],
-                    commandArray[3]);
-
-            if(commandArray.length > 4)
-                event.setResult(commandArray[4]);
+            event.setClientIpAddress(clientIPAddress);
+            event.setServerCurrentSong();
 
             switch (event.getCommand()){
 
@@ -114,7 +106,7 @@ public class ServerResponseThread extends Thread {
                     break;
 
                 case KeyConstants.SOCKET_REQUEST_MAC_ADDRESS:
-                    RequestMacAddress();
+                    RequestMacAddress(event);
                     break;
 
                 case KeyConstants.SOCKET_MAC_ADDRESS_RESULT:
@@ -126,7 +118,7 @@ public class ServerResponseThread extends Thread {
                     break;
 
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.e("ServerResponseThread", String.valueOf(e));
         }
     }
@@ -137,10 +129,10 @@ public class ServerResponseThread extends Thread {
             event.setEventState(SocketExtensionMethods.EVENT_STATE.Approved);
             db4oHelper.pushEventObject(context, event);
             SocketExtensionMethods.requestStrictModePermit();
-            String result = SocketExtensionMethods.GenerateSocketMessage(context, KeyConstants.SOCKET_QUICK_SHARE_TRANSFER_RESULT, event.getTimeStamp(), KeyConstants.SOCKET_RESULT_OK);
-            Client quickShareResponse = new Client(clientIPAddress, result);
+            Event eventMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_QUICK_SHARE_TRANSFER_RESULT, event.getTimeStamp(), KeyConstants.SOCKET_RESULT_OK);
+            Client quickShareResponse = new Client(event.getClientIpAddress(), eventMessage);
             quickShareResponse.execute();
-            FileReceiver nioServer = new FileReceiver(context, Integer.valueOf(event.getResult()));
+            FileReceiver nioServer = new FileReceiver(context, event);
             nioServer.execute();
         }
 
@@ -174,7 +166,7 @@ public class ServerResponseThread extends Thread {
                         NearbyDevicesAdapter.waitingDialog = null;
                     }
 
-                    InitiateQuickShare initiateQuickShare = new InitiateQuickShare(clientIPAddress, QuickShareHelper.getSongsList(event.getTimeStamp()));
+                    InitiateQuickShare initiateQuickShare = new InitiateQuickShare(context, event, QuickShareHelper.getSongsList(event.getTimeStamp()));
                     initiateQuickShare.execute();
                     Toast.makeText(context, context.getString(R.string.initating_quick_share) + KeyConstants.SPACE + event.getClientName(), Toast.LENGTH_SHORT).show();
                 }
@@ -197,8 +189,8 @@ public class ServerResponseThread extends Thread {
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                     SocketExtensionMethods.requestStrictModePermit();
-                                    String reply = SocketExtensionMethods.GenerateSocketMessage(context, KeyConstants.SOCKET_GROUP_PLAY_RESULT, event.getTimeStamp(), KeyConstants.SOCKET_RESULT_OK);
-                                    Client client = new Client(clientIPAddress, reply);
+                                    Event eventMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_GROUP_PLAY_RESULT, event.getTimeStamp(), KeyConstants.SOCKET_RESULT_OK);
+                                    Client client = new Client(clientIPAddress, eventMessage);
                                     client.execute();
                                     GroupPlayHelper.setGroupPlayMaster(clientIPAddress);
                                     NearbyDevicesActivity.updateAdapater();
@@ -209,8 +201,8 @@ public class ServerResponseThread extends Thread {
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                 SocketExtensionMethods.requestStrictModePermit();
-                                String reply = SocketExtensionMethods.GenerateSocketMessage(context, KeyConstants.SOCKET_GROUP_PLAY_RESULT, event.getTimeStamp(), KeyConstants.SOCKET_RESULT_CANCEL);
-                                Client client = new Client(clientIPAddress, reply);
+                                Event eventMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_GROUP_PLAY_RESULT, event.getTimeStamp(), KeyConstants.SOCKET_RESULT_CANCEL);
+                                Client client = new Client(clientIPAddress, eventMessage);
                                 client.execute();
                             }
                         })
@@ -245,8 +237,8 @@ public class ServerResponseThread extends Thread {
     }
 
     private void RequestDeviceType(final Context context) {
-        String message = SocketExtensionMethods.GenerateSocketMessage(context, KeyConstants.SOCKET_DEVICE_TYPE_RESULT, ExtensionMethods.getTimeStamp(), SocketExtensionMethods.getDeviceType(context));
-        Client client = new Client(clientIPAddress, message);
+        Event eventMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_DEVICE_TYPE_RESULT, ExtensionMethods.getTimeStamp(), SocketExtensionMethods.getDeviceType(context));
+        Client client = new Client(clientIPAddress, eventMessage);
         client.execute();
     }
     private void DeviceTypeResult(final Event event) {
@@ -262,19 +254,20 @@ public class ServerResponseThread extends Thread {
     private void RequestCurrentSongName() {
 
         if(PlayerConstants.getPlaylistSize() != 0 && PlayerConstants.getPlaylistSize() >= PlayerConstants.SONG_NUMBER){
-            String SongName = PlayerConstants.getPlayList().get(PlayerConstants.SONG_NUMBER).getTitle();
-            if(PlayerConstants.getPlayList().get(PlayerConstants.SONG_NUMBER).getArtist().length() > 0)
-                SongName = SongName + KeyConstants.SPACE + context.getResources().getString(R.string.by_text) + KeyConstants.SPACE + PlayerConstants.getPlayList().get(PlayerConstants.SONG_NUMBER).getArtist();
-            SongName = SongName.replaceAll(KeyConstants.SPACE, KeyConstants.SPECIAL_CHAR);
-            String message = SocketExtensionMethods.GenerateSocketMessage(context, KeyConstants.SOCKET_CURRENT_SONG_NAME_RESULT, ExtensionMethods.getTimeStamp(), SongName);
-            Client client = new Client(clientIPAddress, message);
+            Event eventMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_CURRENT_SONG_NAME_RESULT, ExtensionMethods.getTimeStamp());
+            Client client = new Client(clientIPAddress, eventMessage);
             client.execute();
         }
     }
     private void CurrentSongNameResult(final Event event) {
+
+        String SongName = event.getClientCurrentSong().getTitle();
+        if(event.getClientCurrentSong().getArtist().length() > 0)
+            SongName = SongName + KeyConstants.SPACE + context.getResources().getString(R.string.by_text) + KeyConstants.SPACE + event.getClientCurrentSong().getArtist();
+
         for (NSD device : NSDClient.devicesList) {
             if(device.getHostAddress().equals(clientIPAddress))
-                device.setCurrentSongPlaying(event.getResult().replaceAll(KeyConstants.SPECIAL_CHAR, KeyConstants.SPACE));
+                device.setCurrentSongPlaying(SongName);
         }
         NearbyDevicesActivity.updateAdapater();
     }
@@ -291,12 +284,14 @@ public class ServerResponseThread extends Thread {
                         SocketExtensionMethods.requestStrictModePermit();
                         event.setEventState(SocketExtensionMethods.EVENT_STATE.Approved);
                         db4oHelper.pushEventObject(context, event);
-                        String result = SocketExtensionMethods.GenerateSocketMessage(context, KeyConstants.SOCKET_CURRENT_SONG_RESULT, ExtensionMethods.getTimeStamp(), KeyConstants.SOCKET_RESULT_OK);
-                        Client quickShareResponse = new Client(clientIPAddress, result);
+                        ArrayList<Song> songArrayList = new ArrayList<>();
+                        songArrayList.add(PlayerConstants.getPlayList().get(PlayerConstants.SONG_NUMBER));
+                        Event eventMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_CURRENT_SONG_RESULT, ExtensionMethods.getTimeStamp(), KeyConstants.SOCKET_RESULT_OK, songArrayList);
+                        Client quickShareResponse = new Client(event.getClientIpAddress(), eventMessage);
                         quickShareResponse.execute();
                         try {
-                            Thread.sleep(1000);
-                            FileSender fileSender = new FileSender(clientIPAddress);
+                            Thread.sleep(500);
+                            FileSender fileSender = new FileSender(context, event);
                             fileSender.sendFile(currentSongFilePath);
                             fileSender.endConnection();
                         } catch (InterruptedException e) {
@@ -326,7 +321,7 @@ public class ServerResponseThread extends Thread {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    FileReceiver fileReceiver = new FileReceiver(context, 1);
+                    FileReceiver fileReceiver = new FileReceiver(context, event);
                     fileReceiver.execute();
                     Toast.makeText(context, context.getString(R.string.current_song_request_accepted) + KeyConstants.SPACE + event.getClientName(), Toast.LENGTH_SHORT).show();
                 }
@@ -335,22 +330,22 @@ public class ServerResponseThread extends Thread {
     }
 
     private void InvalidCommand(final Event event) {
-        String message = SocketExtensionMethods.GenerateSocketMessage(context, KeyConstants.SOCKET_FEATURE_NOT_AVAILABLE, ExtensionMethods.getTimeStamp(), event.getCommand());
-        Client invalidCommand = new Client(clientIPAddress, message);
+        Event eventMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_FEATURE_NOT_AVAILABLE, ExtensionMethods.getTimeStamp(), event.getCommand());
+        Client invalidCommand = new Client(event.getClientIpAddress(), eventMessage);
         invalidCommand.execute();
     }
     private void InvalidCommandResult(final Event event) {
 
     }
 
-    private void RequestMacAddress() {
-        String message = SocketExtensionMethods.GenerateSocketMessage(context, KeyConstants.SOCKET_MAC_ADDRESS_RESULT, ExtensionMethods.getTimeStamp(), SocketExtensionMethods.getMACAddress());
-        Client macAddressResponse = new Client(clientIPAddress, message);
+    private void RequestMacAddress(Event event) {
+        Event eventMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_MAC_ADDRESS_RESULT, ExtensionMethods.getTimeStamp(), SocketExtensionMethods.getMACAddress());
+        Client macAddressResponse = new Client(event.getClientIpAddress(), eventMessage);
         macAddressResponse.execute();
     }
     private void MacAddressResult(final Event event){
         for (NSD device : NSDClient.devicesList) {
-            if(device.getHostAddress().equals(clientIPAddress))
+            if(device.getHostAddress().equals(event.getClientIpAddress()))
                 device.setMacAddress(event.getResult());
         }
     }

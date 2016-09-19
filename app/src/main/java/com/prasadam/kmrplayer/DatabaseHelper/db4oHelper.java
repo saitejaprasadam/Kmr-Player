@@ -40,7 +40,7 @@ public class db4oHelper{
         while (result.hasNext()){
             Event event = result.next();
 
-            if(event.getEventState() == null || event.getEventState() == SocketExtensionMethods.EVENT_STATE.WAITING)
+            if(event.getEventState() == SocketExtensionMethods.EVENT_STATE.WAITING)
                 event.setEventState(SocketExtensionMethods.EVENT_STATE.Denied);
 
             list.add(event);

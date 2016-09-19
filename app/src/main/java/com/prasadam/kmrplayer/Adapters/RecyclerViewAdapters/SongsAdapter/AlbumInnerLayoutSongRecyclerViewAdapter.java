@@ -84,7 +84,7 @@ public class AlbumInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapte
                     holder.albumPath = imgFile.getAbsolutePath();
             }
 
-            setContextMenu(holder, currentSongDetails, position);
+            setContextMenu(holder, currentSongDetails);
             holder.rootLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {MusicPlayerExtensionMethods.playSong(context, songsList, songsList.indexOf(currentSongDetails));}
@@ -97,7 +97,7 @@ public class AlbumInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapte
         return songsList.size();
     }
 
-    private void setContextMenu(final songsViewHolder holder, final Song currentSong, final int position) {
+    private void setContextMenu(final songsViewHolder holder, final Song currentSong) {
 
         holder.contextMenuView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,7 +122,7 @@ public class AlbumInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapte
                                                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                                     File file = new File(currentSong.getData());
                                                     if (file.delete()) {
-                                                        songsList.remove(position);
+                                                        songsList.remove(currentSong);
                                                         SharedVariables.fullSongsList.remove(currentSong);
                                                         Toast.makeText(context, "Song Deleted : \'" + currentSong.getTitle() + "\'", Toast.LENGTH_SHORT).show();
                                                         context.getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.MediaColumns._ID + "='" + currentSong.getID() + "'", null);

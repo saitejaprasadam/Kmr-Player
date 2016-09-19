@@ -1,7 +1,13 @@
 package com.prasadam.kmrplayer.SocketClasses.FileTransfer;
 
+import android.content.Context;
+
+import com.prasadam.kmrplayer.DatabaseHelper.db4oHelper;
 import com.prasadam.kmrplayer.FabricHelpers.CustomEventHelpers;
+import com.prasadam.kmrplayer.ModelClasses.Event;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
+import com.prasadam.kmrplayer.SocketClasses.SocketExtensionMethods;
+import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.EventsActivity;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,11 +25,15 @@ import java.nio.channels.SocketChannel;
 public class FileSender {
 
     private SocketChannel socketChannel;
+    private Context context;
+    private Event event;
 
-    public FileSender(String clientAddress){
+    public FileSender(Context context, Event event){
         try {
             socketChannel = SocketChannel.open();
-            SocketAddress socketAddress = new InetSocketAddress(clientAddress, KeyConstants.FILE_TRANSFER_SOCKET_PORT_ADDRESS);
+            this.context = context;
+            this.event = event;
+            SocketAddress socketAddress = new InetSocketAddress(event.getClientIpAddress(), KeyConstants.FILE_TRANSFER_SOCKET_PORT_ADDRESS);
             socketChannel.connect(socketAddress);
 
         } catch (IOException e) {
@@ -46,11 +56,16 @@ public class FileSender {
                 buffer.clear();
             }
 
-            Thread.sleep(1000);
             aFile.close();
             CustomEventHelpers.quickShareEventRegister(file.getName());
-            System.out.println("File Sent" + filePath);
-        } catch (IOException | InterruptedException e) {
+
+            if(event.getCommand().equals(KeyConstants.SOCKET_REQUEST_CURRENT_SONG)){
+                event.setEventState(SocketExtensionMethods.EVENT_STATE.Completed);
+                db4oHelper.updateEventObject(context, event);
+                EventsActivity.eventNotifyDataSetChanged();
+            }
+
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

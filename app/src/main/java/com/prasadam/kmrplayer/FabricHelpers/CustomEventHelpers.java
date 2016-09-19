@@ -1,7 +1,5 @@
 package com.prasadam.kmrplayer.FabricHelpers;
 
-import android.os.Build;
-
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.CustomEvent;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;

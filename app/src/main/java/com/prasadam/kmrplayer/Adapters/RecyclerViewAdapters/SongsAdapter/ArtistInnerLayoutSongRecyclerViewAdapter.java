@@ -80,14 +80,20 @@ public class ArtistInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapt
                 @Override
                 public void onClick(View view) { MusicPlayerExtensionMethods.playSong(context, songsList, songsList.indexOf(currentSongDetails));}
             });
-            setContextMenu(holder, position, currentSongDetails);
+            setContextMenu(holder, currentSongDetails);
             setAlbumArt(holder, currentSongDetails);
         }
 
         catch (Exception ignored){}
     }
 
-    private void setContextMenu(final songsViewHolder holder, final int position, final Song currentSong) {
+    public int getItemCount() {
+        if(songsList == null)
+            return 0;
+        return songsList.size();
+    }
+
+    private void setContextMenu(final songsViewHolder holder, final Song currentSong) {
         holder.contextMenuView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,7 +118,7 @@ public class ArtistInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapt
                                                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                                     File file = new File(currentSong.getData());
                                                     if (file.delete()) {
-                                                        songsList.remove(position);
+                                                        songsList.remove(currentSong);
                                                         SharedVariables.fullSongsList.remove(currentSong);
                                                         Toast.makeText(context, "Song Deleted : \'" + currentSong.getTitle() + "\'", Toast.LENGTH_SHORT).show();
                                                         context.getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.MediaColumns._ID + "='" + currentSong.getID() + "'", null);
@@ -167,12 +173,6 @@ public class ArtistInnerLayoutSongRecyclerViewAdapter extends RecyclerView.Adapt
                 popup.show();
             }
         });
-    }
-
-    public int getItemCount() {
-        if(songsList == null)
-            return 0;
-        return songsList.size();
     }
     public void setSongsList(ArrayList<Song> songsList){
         this.songsList = songsList;

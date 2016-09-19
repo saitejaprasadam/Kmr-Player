@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.PlayerConstants;
 import com.prasadam.kmrplayer.DatabaseHelper.db4oHelper;
+import com.prasadam.kmrplayer.ModelClasses.Song;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
@@ -23,6 +24,7 @@ import com.prasadam.kmrplayer.SocketClasses.FileTransfer.FileSender;
 import com.prasadam.kmrplayer.SocketClasses.SocketExtensionMethods;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -69,15 +71,15 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewAdapte
                 if(event.getEventState() == SocketExtensionMethods.EVENT_STATE.WAITING){
                     holder.eventIcon.setImageResource(R.drawable.ic_reply_black_24dp);
                     holder.eventIcon.setScaleX(-1);
-                    if(event.getCurrentSongName() != null)
-                        holder.requestTextView.setText(event.getClientName() + " is requesting you to send your current playing song (" + event.getCurrentSongName() + ") ?");
+                    if(event.getServerCurrentSong() != null)
+                        holder.requestTextView.setText(event.getClientName() + " is requesting you to send your current playing song (" + event.getServerCurrentSong().getTitle() + ") ?");
                     else
                         holder.requestTextView.setText(event.getClientName() + " is requesting you to send your current playing song ?");
                 }
 
                 else{
-                    if(event.getCurrentSongName() != null)
-                        holder.requestTextView.setText(event.getClientName() + " requested you to send your current playing song (" + event.getCurrentSongName() + ") ?   (" + event.getEventState() + ")");
+                    if(event.getServerCurrentSong() != null)
+                        holder.requestTextView.setText(event.getClientName() + " requested you to send your current playing song (" + event.getServerCurrentSong().getTitle() + ") ?   (" + event.getEventState() + ")");
                     else
                         holder.requestTextView.setText(event.getClientName() + " requested you to send your current playing song ?   (" + event.getEventState() + ")");
                 }
@@ -111,6 +113,12 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewAdapte
             }
 
             else if(event.getEventState() == SocketExtensionMethods.EVENT_STATE.Approved){
+                holder.eventIcon.setImageResource(R.mipmap.ic_done_white_24dp);
+                holder.eventIcon.setScaleX(1);
+                holder.eventIcon.setColorFilter(context.getResources().getColor(R.color.Teal));
+            }
+
+            else if(event.getEventState() == SocketExtensionMethods.EVENT_STATE.Completed){
                 holder.eventIcon.setImageResource(R.drawable.ic_done_all_white_24dp);
                 holder.eventIcon.setScaleX(1);
                 holder.eventIcon.setColorFilter(context.getResources().getColor(R.color.Teal));
@@ -191,16 +199,16 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewAdapte
 
             case KeyConstants.SOCKET_REQUEST_CURRENT_SONG:{
                 SocketExtensionMethods.requestStrictModePermit();
-                String result = SocketExtensionMethods.GenerateSocketMessage(context, KeyConstants.SOCKET_CURRENT_SONG_RESULT, ExtensionMethods.getTimeStamp(), KeyConstants.SOCKET_RESULT_CANCEL);
-                Client quickShareResponse = new Client(event.getClientIpAddress(), result);
+                Event eventMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_CURRENT_SONG_RESULT, ExtensionMethods.getTimeStamp(), KeyConstants.SOCKET_RESULT_CANCEL);
+                Client quickShareResponse = new Client(event.getClientIpAddress(), eventMessage);
                 quickShareResponse.execute();
             }
             break;
 
             case KeyConstants.SOCKET_INITIATE_QUICK_SHARE_TRANSFER_REQUEST:{
                 SocketExtensionMethods.requestStrictModePermit();
-                String result = SocketExtensionMethods.GenerateSocketMessage(context, KeyConstants.SOCKET_QUICK_SHARE_TRANSFER_RESULT, event.getTimeStamp(), KeyConstants.SOCKET_RESULT_CANCEL);
-                Client quickShareResponse = new Client(event.getClientIpAddress(), result);
+                Event eventMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_QUICK_SHARE_TRANSFER_RESULT, event.getTimeStamp(), KeyConstants.SOCKET_RESULT_CANCEL);
+                Client quickShareResponse = new Client(event.getClientIpAddress(), eventMessage);
                 quickShareResponse.execute();
             }
             break;
@@ -216,12 +224,14 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewAdapte
                     public void run() {
                         SocketExtensionMethods.requestStrictModePermit();
                         final String currentSongFilePath = PlayerConstants.getPlayList().get(PlayerConstants.SONG_NUMBER).getData();
-                        String result = SocketExtensionMethods.GenerateSocketMessage(context, KeyConstants.SOCKET_CURRENT_SONG_RESULT, ExtensionMethods.getTimeStamp(), KeyConstants.SOCKET_RESULT_OK);
-                        Client quickShareResponse = new Client(event.getClientIpAddress(), result);
+                        ArrayList<Song> songArrayList = new ArrayList<>();
+                        songArrayList.add(PlayerConstants.getPlayList().get(PlayerConstants.SONG_NUMBER));
+                        Event eventMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_CURRENT_SONG_RESULT, ExtensionMethods.getTimeStamp(), KeyConstants.SOCKET_RESULT_OK, songArrayList);
+                        Client quickShareResponse = new Client(event.getClientIpAddress(), eventMessage);
                         quickShareResponse.execute();
                         try {
                             Thread.sleep(1000);
-                            FileSender fileSender = new FileSender(event.getClientIpAddress());
+                            FileSender fileSender = new FileSender(context, event);
                             fileSender.sendFile(currentSongFilePath);
                             fileSender.endConnection();
                         } catch (InterruptedException e) {
@@ -235,10 +245,10 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewAdapte
 
             case KeyConstants.SOCKET_INITIATE_QUICK_SHARE_TRANSFER_REQUEST:{
                 SocketExtensionMethods.requestStrictModePermit();
-                String result = SocketExtensionMethods.GenerateSocketMessage(context, KeyConstants.SOCKET_QUICK_SHARE_TRANSFER_RESULT, event.getTimeStamp(), KeyConstants.SOCKET_RESULT_OK);
-                Client quickShareResponse = new Client(event.getClientIpAddress(), result);
+                Event eventMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_QUICK_SHARE_TRANSFER_RESULT, event.getTimeStamp(), KeyConstants.SOCKET_RESULT_OK);
+                Client quickShareResponse = new Client(event.getClientIpAddress(), eventMessage);
                 quickShareResponse.execute();
-                FileReceiver nioServer = new FileReceiver(context, Integer.valueOf(event.getResult()));
+                FileReceiver nioServer = new FileReceiver(context, event);
                 nioServer.execute();
             }
             break;

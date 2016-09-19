@@ -20,6 +20,7 @@ import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.ActivityHelperClasses.DialogHelper;
 import com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.NearbyDevicesAdapter;
 import com.prasadam.kmrplayer.Adapters.UIAdapters.DividerItemDecoration;
+import com.prasadam.kmrplayer.ModelClasses.Song;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
 
@@ -41,11 +42,12 @@ public class QuickShareActivity extends AppCompatActivity{
         setContentView(R.layout.activity_quick_share);
 
         final ArrayList<String> songsPathList = getIntent().getStringArrayListExtra(KeyConstants.INTENT_SONGS_PATH_LIST);
+        final ArrayList<Song> songsArrayList = (ArrayList<Song>) getIntent().getSerializableExtra(KeyConstants.INTENT_SONGS_LIST);
         NoDevicesTextView = (TextView) findViewById(R.id.no_devices_available_text_view);
         InitActionBarAndToolBar();
         DialogHelper.checkForNetworkState(this, (FloatingActionButton) findViewById(R.id.wifi_fab));
         wifiBroadCastReceiver();
-        setRecyclerView(songsPathList);
+        setRecyclerView(songsArrayList, songsPathList);
     }
     public void onDestroy(){
         if (receiver != null) {
@@ -78,9 +80,9 @@ public class QuickShareActivity extends AppCompatActivity{
         ActivityHelper.setStatusBarTranslucent_PreLollipop(QuickShareActivity.this);
         ActivityHelper.setDisplayHome(this);
     }
-    private void setRecyclerView(ArrayList<String> songsPathList) {
+    private void setRecyclerView(ArrayList<Song> songsArrayList, ArrayList<String> songsPathList) {
         QuickShareRecyclerviewAdapter = new NearbyDevicesAdapter(this);
-        QuickShareRecyclerviewAdapter.setQuickShareSongPathList(songsPathList);
+        QuickShareRecyclerviewAdapter.setQuickShareSongPathList(songsArrayList, songsPathList);
         quickShareRecyclerView = (RecyclerView) findViewById(R.id.quick_share_recycler_view);
         quickShareRecyclerView.setAdapter(QuickShareRecyclerviewAdapter);
         quickShareRecyclerView.addItemDecoration(new DividerItemDecoration(QuickShareActivity.this, LinearLayoutManager.VERTICAL));
