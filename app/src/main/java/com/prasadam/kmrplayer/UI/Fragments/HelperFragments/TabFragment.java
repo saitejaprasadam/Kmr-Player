@@ -1,7 +1,5 @@
-package com.prasadam.kmrplayer.UI.Fragments;
+package com.prasadam.kmrplayer.UI.Fragments.HelperFragments;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -14,20 +12,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
-import com.prasadam.kmrplayer.SharedClasses.PermissionHelper;
+import com.prasadam.kmrplayer.UI.Fragments.AlbumsFragment;
+import com.prasadam.kmrplayer.UI.Fragments.ArtistFragment;
+import com.prasadam.kmrplayer.UI.Fragments.PlaylistFragment;
+import com.prasadam.kmrplayer.UI.Fragments.SongsFragment;
 
 /*
  * Created by Prasadam saiteja on 3/14/2016.
  */
 
 public class TabFragment extends Fragment{
-    public static TabLayout tabLayout;
-    public static ViewPager viewPager;
-    public static int int_items = 4;
+
+    public TabLayout tabLayout;
+    public ViewPager viewPager;
+    public final int int_items = 4;
 
     @Nullable
     @Override
@@ -79,6 +79,7 @@ public class TabFragment extends Fragment{
         savedInstanceState.putInt("viewPager_current_item", viewPager.getCurrentItem());
         super.onSaveInstanceState(savedInstanceState);
     }
+
     class MyAdapter extends FragmentPagerAdapter {
 
         private SongsFragment songsFragment;

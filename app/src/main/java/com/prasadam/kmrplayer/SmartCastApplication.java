@@ -9,8 +9,6 @@ import com.prasadam.kmrplayer.ModelClasses.Song;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SharedPreferences.SharedPreferenceHelper;
 
-import com.twitter.sdk.android.Twitter;
-import com.twitter.sdk.android.core.TwitterAuthConfig;
 import io.fabric.sdk.android.Fabric;
 import java.util.ArrayList;
 
@@ -27,8 +25,10 @@ public class SmartCastApplication extends Application{
     @Override
     public void onCreate() {
         super.onCreate();
-        TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
-        Fabric.with(this, new Crashlytics(), new Twitter(authConfig));
+        //TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET)
+        // , new Twitter(authConfig)
+
+        Fabric.with(this, new Crashlytics());
         Crashlytics.setUserName(ExtensionMethods.deviceName(this));
         Crashlytics.setUserIdentifier(ExtensionMethods.getDeviceModelName());
 

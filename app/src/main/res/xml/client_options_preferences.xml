@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:key="KEY_SOCKET_CLIENT_SEND_WITHOUT_CONFIRMATION"
+        android:title="@string/Transfer_without_confirmation"
+        android:summary="@string/Send_songs_without_confirmation_text"/>
+
+</PreferenceScreen>

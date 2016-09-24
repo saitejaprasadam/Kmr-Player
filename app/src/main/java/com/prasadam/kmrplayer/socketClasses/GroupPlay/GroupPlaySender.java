@@ -49,6 +49,7 @@ public class GroupPlaySender{
 
             Thread.sleep(1000);
             aFile.close();
+
         } catch (IOException | InterruptedException e) {
             Log.e("exception", String.valueOf(e));
         }

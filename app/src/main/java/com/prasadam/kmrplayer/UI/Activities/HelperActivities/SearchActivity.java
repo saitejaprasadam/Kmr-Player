@@ -32,8 +32,8 @@ import com.prasadam.kmrplayer.ModelClasses.Album;
 import com.prasadam.kmrplayer.ModelClasses.Artist;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SubClasses.CustomArrayList.SongsArrayList;
-import com.prasadam.kmrplayer.UI.Activities.VerticalSlidingDrawerBaseActivity;
-import com.prasadam.kmrplayer.UI.Fragments.NoItemsFragment;
+import com.prasadam.kmrplayer.UI.Activities.BaseActivity.VerticalSlidingDrawerBaseActivity;
+import com.prasadam.kmrplayer.UI.Fragments.HelperFragments.NoItemsFragmentV4;
 
 import java.util.ArrayList;
 
@@ -57,7 +57,7 @@ public class SearchActivity extends VerticalSlidingDrawerBaseActivity {
     @BindView(R.id.songs_recycler_view) RecyclerView songsRecyclerView;
     @BindView(R.id.artist_recycler_view) RecyclerView artistRecyclerView;
     @BindView(R.id.albums_recycler_view) RecyclerView albumRecyclerView;
-    private NoItemsFragment noResultFragment = null;
+    private NoItemsFragmentV4 noResultFragment = null;
 
     private UnifedSongAdapter songRecyclerViewAdapter;
     private ArtistAdapter artistRecyclerViewAdapter;

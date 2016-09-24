@@ -24,7 +24,7 @@ import com.prasadam.kmrplayer.ListenerClasses.SongsSearchListener;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SubClasses.CustomArrayList.SongsArrayList;
-import com.prasadam.kmrplayer.UI.Activities.VerticalSlidingDrawerBaseActivity;
+import com.prasadam.kmrplayer.UI.Activities.BaseActivity.VerticalSlidingDrawerBaseActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,7 +33,7 @@ import butterknife.ButterKnife;
  * Created by Prasadam Saiteja on 5/28/2016.
  */
 
-public class FavoritesActivity extends VerticalSlidingDrawerBaseActivity {
+public class FavoritesActivity extends VerticalSlidingDrawerBaseActivity{
 
     @BindView(R.id.root_layout) FrameLayout rootLayout;
     @BindView(R.id.favorites_recycler_view) RecyclerView recyclerView;

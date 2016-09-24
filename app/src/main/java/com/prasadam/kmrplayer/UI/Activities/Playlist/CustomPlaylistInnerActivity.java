@@ -26,7 +26,7 @@ import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicPlayerExten
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SubClasses.CustomArrayList.SongsArrayList;
-import com.prasadam.kmrplayer.UI.Activities.VerticalSlidingDrawerBaseActivity;
+import com.prasadam.kmrplayer.UI.Activities.BaseActivity.VerticalSlidingDrawerBaseActivity;
 
 import java.io.File;
 import java.util.ArrayList;

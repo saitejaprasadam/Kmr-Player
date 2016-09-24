@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.PlayerConstants;
 import com.prasadam.kmrplayer.Interfaces.OnDoubleTapListener;
 import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.UI.Activities.VerticalSlidingDrawerBaseActivity;
+import com.prasadam.kmrplayer.UI.Activities.BaseActivity.VerticalSlidingDrawerBaseActivity;
 import com.prasadam.kmrplayer.UI.Fragments.SongsFragment;
 
 import java.io.File;

@@ -5,8 +5,10 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.PorterDuff;
 import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
@@ -29,7 +31,8 @@ import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
 import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 import com.prasadam.kmrplayer.SubClasses.CustomArrayList.SongsArrayList;
-import com.prasadam.kmrplayer.UI.Fragments.NoItemsFragment;
+import com.prasadam.kmrplayer.UI.Fragments.HelperFragments.NoItemsFragment;
+import com.prasadam.kmrplayer.UI.Fragments.HelperFragments.NoItemsFragmentV4;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.util.ArrayList;
@@ -46,24 +49,24 @@ public class ActivityHelper {
             appCompatActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }
-    public static void setDisplayHome_CloseIcon(AppCompatActivity appCompatActivity){
-        if(appCompatActivity.getSupportActionBar() != null ){
-            appCompatActivity.getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white_24dp);
-            appCompatActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-    }
 
-    public static NoItemsFragment showEmptyFragment(Activity activtiy, String message){
-        NoItemsFragment newFragment = new NoItemsFragment();
+    public static NoItemsFragmentV4 showEmptyFragment(Activity activtiy, String message){
+        NoItemsFragmentV4 newFragment = new NoItemsFragmentV4();
         FragmentTransaction ft = activtiy.getFragmentManager().beginTransaction();
         ft.add(android.R.id.content, newFragment).addToBackStack(KeyConstants.EMPTY_FRAGMENT_TAG).commitAllowingStateLoss();
         newFragment.setDescriptionTextView(message);
         return newFragment;
     }
-    public static NoItemsFragment showEmptyFragment(Activity activtiy, String message, FrameLayout fragmentContainer){
-        NoItemsFragment newFragment = new NoItemsFragment();
+    public static NoItemsFragmentV4 showEmptyFragment(Activity activtiy, String message, FrameLayout fragmentContainer){
+        NoItemsFragmentV4 newFragment = new NoItemsFragmentV4();
         FragmentTransaction ft = activtiy.getFragmentManager().beginTransaction();
         ft.add(fragmentContainer.getId(), newFragment).addToBackStack(KeyConstants.EMPTY_FRAGMENT_TAG).commitAllowingStateLoss();
+        newFragment.setDescriptionTextView(message);
+        return newFragment;
+    }
+    public static NoItemsFragment showEmptyFragmentChildFragment(Fragment childFragmentManger, String message, FrameLayout fragmentContainer){
+        NoItemsFragment newFragment = new NoItemsFragment();
+        childFragmentManger.getChildFragmentManager().beginTransaction().add(fragmentContainer.getId(), newFragment, KeyConstants.EMPTY_FRAGMENT_TAG).commit();;
         newFragment.setDescriptionTextView(message);
         return newFragment;
     }
@@ -110,6 +113,8 @@ public class ActivityHelper {
 
     public static void setShuffleFAB(final Activity mActivity, final FrameLayout rootLayout, final RecyclerView recyclerView, final ArrayList<Song> songsList) {
         final FloatingActionButton fab = new FloatingActionButton(mActivity);
+        fab.setColorFilter(getColor(mActivity, R.color.colorAccentGeneric));
+        fab.getBackground().setColorFilter(getColor(mActivity, R.color.white), PorterDuff.Mode.SRC_ATOP);
         fab.setImageResource(R.mipmap.ic_shuffle_white_24dp);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

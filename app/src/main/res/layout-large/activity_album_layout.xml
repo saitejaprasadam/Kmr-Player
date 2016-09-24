@@ -149,6 +149,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:clickable="true"
+            android:tint="@color/colorAccentGeneric"
+            app:backgroundTint="@color/white"
             android:id="@+id/shuffle_fab_button"
             android:src="@mipmap/ic_shuffle_white_24dp"
             app:layout_anchor="@id/album_image_view_anchor"

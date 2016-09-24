@@ -21,7 +21,7 @@ import com.prasadam.kmrplayer.ListenerClasses.SongsSearchListener;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SubClasses.CustomArrayList.SongsArrayList;
-import com.prasadam.kmrplayer.UI.Activities.VerticalSlidingDrawerBaseActivity;
+import com.prasadam.kmrplayer.UI.Activities.BaseActivity.VerticalSlidingDrawerBaseActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

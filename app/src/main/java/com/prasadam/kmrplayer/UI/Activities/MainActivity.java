@@ -32,8 +32,9 @@ import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 import com.prasadam.kmrplayer.SharedPreferences.SharedPreferenceHelper;
 import com.prasadam.kmrplayer.SocketClasses.SocketExtensionMethods;
+import com.prasadam.kmrplayer.UI.Activities.BaseActivity.VerticalSlidingDrawerBaseActivity;
 import com.prasadam.kmrplayer.UI.Activities.HelperActivities.AppIntroActivity;
-import com.prasadam.kmrplayer.UI.Fragments.TabFragment;
+import com.prasadam.kmrplayer.UI.Fragments.HelperFragments.TabFragment;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 public class MainActivity extends VerticalSlidingDrawerBaseActivity implements NavigationView.OnNavigationItemSelectedListener {

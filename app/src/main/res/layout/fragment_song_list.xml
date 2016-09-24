@@ -15,6 +15,8 @@
             app:fastScrollThumbColor="@color/colorAccentGeneric"
             app:fastScrollPopupTextColor="@android:color/primary_text_dark"
             android:id="@+id/songs_recylcer_view_layout"
+            app:fastScrollAutoHide="true"
+            app:fastScrollAutoHideDelay="1500"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
@@ -27,6 +29,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:clickable="true"
+        android:tint="@color/colorAccentGeneric"
+        app:backgroundTint="@color/white"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:src="@mipmap/ic_shuffle_white_24dp"

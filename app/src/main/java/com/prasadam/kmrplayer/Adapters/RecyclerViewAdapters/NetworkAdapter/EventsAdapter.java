@@ -1,4 +1,4 @@
-package com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters;
+package com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.NetworkAdapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -19,8 +19,8 @@ import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
 import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 import com.prasadam.kmrplayer.SocketClasses.Client;
 import com.prasadam.kmrplayer.ModelClasses.Event;
-import com.prasadam.kmrplayer.SocketClasses.FileTransfer.FileReceiver;
-import com.prasadam.kmrplayer.SocketClasses.FileTransfer.FileSender;
+import com.prasadam.kmrplayer.SocketClasses.FileTransfer.Music.FileReceiver;
+import com.prasadam.kmrplayer.SocketClasses.FileTransfer.Music.FileSender;
 import com.prasadam.kmrplayer.SocketClasses.SocketExtensionMethods;
 
 import java.text.SimpleDateFormat;
@@ -37,8 +37,8 @@ import butterknife.ButterKnife;
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewAdapter>{
 
-    private LayoutInflater inflater;
-    private Context context;
+    private final LayoutInflater inflater;
+    private final Context context;
 
     public EventsAdapter(Context context){
         this.context = context;
@@ -47,8 +47,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewAdapte
 
     @Override
     public ViewAdapter onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.recycler_view_event_layout, parent, false);
-        return new ViewAdapter(view);
+        return new ViewAdapter(inflater.inflate(R.layout.recycler_view_event_layout, parent, false));
     }
     public void onBindViewHolder(ViewAdapter holder, final int position) {
         final Event event = SharedVariables.fullEventsList.get(position);
@@ -115,13 +114,13 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewAdapte
             else if(event.getEventState() == SocketExtensionMethods.EVENT_STATE.Approved){
                 holder.eventIcon.setImageResource(R.mipmap.ic_done_white_24dp);
                 holder.eventIcon.setScaleX(1);
-                holder.eventIcon.setColorFilter(context.getResources().getColor(R.color.Teal));
+                holder.eventIcon.setColorFilter(context.getResources().getColor(R.color.teal));
             }
 
             else if(event.getEventState() == SocketExtensionMethods.EVENT_STATE.Completed){
                 holder.eventIcon.setImageResource(R.drawable.ic_done_all_white_24dp);
                 holder.eventIcon.setScaleX(1);
-                holder.eventIcon.setColorFilter(context.getResources().getColor(R.color.Teal));
+                holder.eventIcon.setColorFilter(context.getResources().getColor(R.color.teal));
             }
         }
 
@@ -233,7 +232,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewAdapte
                             Thread.sleep(1000);
                             FileSender fileSender = new FileSender(context, event);
                             fileSender.sendFile(currentSongFilePath);
-                            fileSender.endConnection();
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -245,6 +243,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewAdapte
 
             case KeyConstants.SOCKET_INITIATE_QUICK_SHARE_TRANSFER_REQUEST:{
                 SocketExtensionMethods.requestStrictModePermit();
+                db4oHelper.pushSongTransferObject(context, event.getSongsToTransferArrayList());
                 Event eventMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_QUICK_SHARE_TRANSFER_RESULT, event.getTimeStamp(), KeyConstants.SOCKET_RESULT_OK);
                 Client quickShareResponse = new Client(event.getClientIpAddress(), eventMessage);
                 quickShareResponse.execute();

@@ -167,4 +167,9 @@
     <string name="events_text">Events</string>
     <string name="events_info_text">All transfer requests are requested here</string>
     <string name="delete_event_text">Delete event</string>
+    <string name="transfer_history">Transfer History</string>
+    <string name="options_text">Options</string>
+    <string name="Send_songs_without_confirmation_text">Accept songs transfer request without confirmation</string>
+    <string name="Transfer_without_confirmation">Share without confirmation</string>
+    <string name="problem_fetching_song">Problem fetching song</string>
 </resources>

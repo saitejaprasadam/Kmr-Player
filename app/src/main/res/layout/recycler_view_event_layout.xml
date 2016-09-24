@@ -36,7 +36,7 @@
             android:id="@+id/event_accept"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:tint="@color/Teal"
+            android:tint="@color/teal"
             android:clickable="true"
             android:src="@mipmap/ic_done_white_24dp"
             android:background="?attr/selectableItemBackgroundBorderless"

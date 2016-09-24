@@ -1,8 +1,8 @@
-package com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters;
+package com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.NetworkAdapter;
 
-import android.content.Context;
-import android.os.StrictMode;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +26,7 @@ import com.prasadam.kmrplayer.SocketClasses.QuickShare.QuickShareHelper;
 import com.prasadam.kmrplayer.SocketClasses.SocketExtensionMethods;
 import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.NearbyDevicesActivity;
 import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.QuickShareActivity;
+import com.prasadam.kmrplayer.UI.Fragments.DialogFragment.NearbyDevicesDetails_DialogFragment;
 
 import java.util.ArrayList;
 
@@ -41,17 +42,13 @@ public class NearbyDevicesAdapter extends RecyclerView.Adapter<NearbyDevicesAdap
     private ArrayList<String> QuickSharePathList;
     private ArrayList<Song> QuickShareSongsList;
     private LayoutInflater inflater;
-    private Context context;
+    private AppCompatActivity context;
     public static MaterialDialog waitingDialog;
 
-    public NearbyDevicesAdapter(Context context){
+    public NearbyDevicesAdapter(AppCompatActivity context){
         this.context = context;
         inflater = LayoutInflater.from(context);
-
-        if (android.os.Build.VERSION.SDK_INT > 9) {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-        }
+        SocketExtensionMethods.requestStrictModePermit();
     }
     public NearbyDevicesAdapter.ViewAdapter onCreateViewHolder(ViewGroup parent, int viewType) {
         View view;
@@ -122,6 +119,13 @@ public class NearbyDevicesAdapter extends RecyclerView.Adapter<NearbyDevicesAdap
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                 QuickShareHelper.removeQuickShareRequest(timeStamp);
                                 waitingDialog.dismiss();
+                                context.finish();
+                            }
+                        })
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                context.finish();
                             }
                         })
                         .show();
@@ -139,16 +143,20 @@ public class NearbyDevicesAdapter extends RecyclerView.Adapter<NearbyDevicesAdap
         else if(GroupPlayHelper.IsClientGroupPlayMaster(serverObject.getHostAddress()))
             holder.nearbyDevicesContextMenu.setImageResource(R.mipmap.ic_hearing_black_24dp);
 
-        if(serverObject.getCurrentSongPlaying() != null)
-            holder.currentSongTextView.setText(context.getResources().getString(R.string.now_playing_text) + KeyConstants.SPACE + serverObject.getCurrentSongPlaying());
-        else
-            holder.currentSongTextView.setText(context.getResources().getString(R.string.problem_fetching_current_playing_song));
+        if(!holder.currentSongTextView.getText().equals(context.getResources().getString(R.string.now_playing_text) + KeyConstants.SPACE + serverObject.getCurrentSongTitle(context)))
+            NearbyDevicesDetails_DialogFragment.refreshDialogFragment(serverObject.getMacAddress());
+
+        holder.currentSongTextView.setText(context.getResources().getString(R.string.now_playing_text) + KeyConstants.SPACE + serverObject.getCurrentSongTitle(context));
 
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                ArrayList<String> dialogOptions = PopulateDialogItems(serverObject);
+                NearbyDevicesDetails_DialogFragment dialogFragment = new NearbyDevicesDetails_DialogFragment(serverObject);
+                dialogFragment.show(context.getSupportFragmentManager(), "dialogFragment");
+
+                /*ArrayList<String> dialogOptions = PopulateDialogItems(serverObject);
+                if(dialogOptions.size() > 0)
                 new MaterialDialog.Builder(context)
                         .items(dialogOptions)
                         .itemsCallback(new MaterialDialog.ListCallback() {
@@ -168,31 +176,15 @@ public class NearbyDevicesAdapter extends RecyclerView.Adapter<NearbyDevicesAdap
                                             SharedPreferenceHelper.setClientTransferRequestAlwaysAccept(context, serverObject.getMacAddress(), false);
                             }
                         })
-                        .show();
+                        .show();*/
             }
         });
     }
-    private ArrayList<String> PopulateDialogItems(NSD serverObject) {
 
-        ArrayList<String> dialogOptions = new ArrayList<>();
-
-        /*if(GroupPlayHelper.IsClientGroupPlayMaster(serverObject.getHostAddress()) || GroupPlayHelper.IsClientConntectedToGroupPlay(serverObject.getHostAddress()))
-            dialogOptions.add(context.getResources().getString(R.string.disconnect_from_group_play_text));
-        else
-            dialogOptions.add(context.getResources().getString(R.string.request_for_group_play_text));*/
-
-        if(serverObject.getCurrentSongPlaying() != null)
-            dialogOptions.add(context.getResources().getString(R.string.get_current_playing_song));
-
-        if(serverObject.getMacAddress() != null){
-            if(!SharedPreferenceHelper.getClientTransferRequestAlwaysAccept(context, serverObject.getMacAddress()))
-                dialogOptions.add(context.getResources().getString(R.string.accept_all_transfers_without_confirmation));
-            else
-                dialogOptions.add(context.getResources().getString(R.string.prompt_confirmation_before_initating_transfers));
-        }
-
-
-        return dialogOptions;
+    public static void dismissMaterialDialog(){
+        if(waitingDialog != null)
+            waitingDialog.dismiss();
+        waitingDialog = null;
     }
 
     public class ViewAdapter extends RecyclerView.ViewHolder{

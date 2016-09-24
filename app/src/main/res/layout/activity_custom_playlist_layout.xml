@@ -49,6 +49,8 @@
             android:layout_alignParentEnd="true"
             android:layout_margin="16dp"
             android:clickable="true"
+            android:tint="@color/colorAccentGeneric"
+            app:backgroundTint="@color/white"
             android:soundEffectsEnabled="true"
             android:src="@mipmap/ic_playlist_add_white_24dp" />
 

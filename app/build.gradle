@@ -59,9 +59,6 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.6.2@aar') { transitive = true; }
 
     apt 'com.jakewharton:butterknife-compiler:8.4.0'
-    compile('com.twitter.sdk.android:twitter:2.0.0@aar') {
-        transitive = true;
-    }
 
     compile 'com.google.android.gms:play-services-auth:9.4.0'
     compile 'com.android.support:appcompat-v7:24.1.1'
@@ -73,10 +70,10 @@ dependencies {
     compile 'com.facebook.fresco:fresco:0.11.0'
     compile 'com.jakewharton:butterknife:8.4.0'
     compile 'com.github.ksoichiro:android-observablescrollview:1.6.0'
-    compile 'com.simplecityapps:recyclerview-fastscroll:1.0.9'
+    compile 'com.simplecityapps:recyclerview-fastscroll:1.0.11'
     compile 'com.sothree.slidinguppanel:library:3.3.0'
     compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
     compile 'com.github.jd-alexander:LikeButton:0.2.0'
     compile 'com.github.paolorotolo:appintro:4.0.0'
-    compile 'com.firebase:firebase-client-android:2.3.1'
+    compile 'com.github.jorgecastilloprz:fabprogresscircle:1.01@aar'
 }

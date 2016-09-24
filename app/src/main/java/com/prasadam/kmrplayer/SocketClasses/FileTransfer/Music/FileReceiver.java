@@ -1,16 +1,22 @@
-package com.prasadam.kmrplayer.SocketClasses.FileTransfer;
+package com.prasadam.kmrplayer.SocketClasses.FileTransfer.Music;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
+import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.DatabaseHelper.db4oHelper;
 import com.prasadam.kmrplayer.ModelClasses.Event;
+import com.prasadam.kmrplayer.ModelClasses.Song;
 import com.prasadam.kmrplayer.ModelClasses.TransferableSong;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
+import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 import com.prasadam.kmrplayer.SocketClasses.SocketExtensionMethods;
 import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.EventsActivity;
+import com.prasadam.kmrplayer.UI.Fragments.DialogFragment.NearbyDevicesDetails_DialogFragment;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,19 +54,16 @@ public class FileReceiver extends AsyncTask<Void, Void, Void>{
     @Override
     protected Void doInBackground(Void... voids) {
 
-        Log.d("count", String.valueOf(event.getSongsToTransferArrayList().size()));
-
         for (TransferableSong transferableSong : event.getSongsToTransferArrayList()) {
             try {
                 SocketChannel clientSocketChannel = serverSocketChannel.accept();
-                String fileName = ExtensionMethods.extractFileNameFromPath(transferableSong.getSong().getData());
+                final String fileName = ExtensionMethods.extractFileNameFromPath(transferableSong.getSong().getData());
                 File PlayerDirectory  = new File(KeyConstants.PLAYER_DIRECTORY_PATH);
 
                 if(!PlayerDirectory.exists())
                     PlayerDirectory.mkdir();
 
-                Log.d("song", transferableSong.getSong().getTitle());
-                File songFile = new File(PlayerDirectory.getAbsolutePath() + File.separator + fileName);
+                final File songFile = new File(PlayerDirectory.getAbsolutePath() + File.separator + fileName);
                 songFile.createNewFile();
                 RandomAccessFile aFile = new RandomAccessFile(songFile, "rw");
                 ByteBuffer buffer = ByteBuffer.allocate(KeyConstants.TRANSFER_BUFFER_SIZE);
@@ -75,9 +78,19 @@ public class FileReceiver extends AsyncTask<Void, Void, Void>{
                 ExtensionMethods.scanMedia(context, PlayerDirectory + File.separator + fileName);
                 fileChannel.close();
                 clientSocketChannel.close();
+                serverSocketChannel.close();
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    public void run() {
+                        Song song = AudioExtensionMethods.getSongFromPath(context, songFile.getAbsolutePath());
+                        if(song != null){
+                            SharedVariables.fullSongsList.add(song);
+                            NearbyDevicesDetails_DialogFragment.refreshDialogFragment(event.getClientMacAddress());
+                        }
+                    }
+                }, 800);
             }
 
-            catch (IOException e) {
+            catch (Exception e) {
                 Log.d("Exception", e.toString());
             }
         }

@@ -37,7 +37,7 @@ import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedPreferences.SharedPreferenceHelper;
 import com.prasadam.kmrplayer.SocketClasses.SocketExtensionMethods;
 import com.prasadam.kmrplayer.UI.Activities.MainActivity;
-import com.prasadam.kmrplayer.UI.Activities.VerticalSlidingDrawerBaseActivity;
+import com.prasadam.kmrplayer.UI.Activities.BaseActivity.VerticalSlidingDrawerBaseActivity;
 import com.prasadam.kmrplayer.Widgets.NowPlayingWidget;
 
 import java.io.IOException;

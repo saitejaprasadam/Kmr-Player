@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.NearbyDevicesAdapter;
+import com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.NetworkAdapter.NearbyDevicesAdapter;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.PlayerConstants;
 import com.prasadam.kmrplayer.DatabaseHelper.db4oHelper;
 import com.prasadam.kmrplayer.ModelClasses.Event;
@@ -17,9 +17,12 @@ import com.prasadam.kmrplayer.ModelClasses.Song;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
+import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 import com.prasadam.kmrplayer.SharedPreferences.SharedPreferenceHelper;
-import com.prasadam.kmrplayer.SocketClasses.FileTransfer.FileReceiver;
-import com.prasadam.kmrplayer.SocketClasses.FileTransfer.FileSender;
+import com.prasadam.kmrplayer.SocketClasses.FileTransfer.Bitmap.BitmapReceiver;
+import com.prasadam.kmrplayer.SocketClasses.FileTransfer.Bitmap.BitmapSender;
+import com.prasadam.kmrplayer.SocketClasses.FileTransfer.Music.FileReceiver;
+import com.prasadam.kmrplayer.SocketClasses.FileTransfer.Music.FileSender;
 import com.prasadam.kmrplayer.SocketClasses.GroupPlay.GroupPlayHelper;
 import com.prasadam.kmrplayer.SocketClasses.NetworkServiceDiscovery.NSD;
 import com.prasadam.kmrplayer.SocketClasses.NetworkServiceDiscovery.NSDClient;
@@ -28,6 +31,7 @@ import com.prasadam.kmrplayer.SocketClasses.QuickShare.QuickShareHelper;
 import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.NearbyDevicesActivity;
 import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.QuickShareActivity;
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.net.Socket;
@@ -113,6 +117,14 @@ public class ServerResponseThread extends Thread {
                     MacAddressResult(event);
                     break;
 
+                case KeyConstants.SOCKET_REQUEST_ALBUM_ART:
+                    RequestAlbumArt(event);
+                    break;
+
+                case KeyConstants.SOCKET_ALBUM_ART_RESULT:
+                    AlbumArtResult(event);
+                    break;
+
                 default:
                     InvalidCommand(event);
                     break;
@@ -125,19 +137,23 @@ public class ServerResponseThread extends Thread {
 
     private void InitateQuickShareTransferRequest(final Event event) {
 
-        if(SharedPreferenceHelper.getClientTransferRequestAlwaysAccept(context, event.getClientMacAddress())){
-            event.setEventState(SocketExtensionMethods.EVENT_STATE.Approved);
-            db4oHelper.pushEventObject(context, event);
-            SocketExtensionMethods.requestStrictModePermit();
-            Event eventMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_QUICK_SHARE_TRANSFER_RESULT, event.getTimeStamp(), KeyConstants.SOCKET_RESULT_OK);
-            Client quickShareResponse = new Client(event.getClientIpAddress(), eventMessage);
-            quickShareResponse.execute();
-            FileReceiver nioServer = new FileReceiver(context, event);
-            nioServer.execute();
-        }
+        if(event.getSongsToTransferArrayList().size() > 0){
+            if(SharedPreferenceHelper.getClientTransferRequestAlwaysAccept(context, event.getClientMacAddress())){
+                event.setEventState(SocketExtensionMethods.EVENT_STATE.Approved);
+                db4oHelper.pushEventObject(context, event);
+                db4oHelper.pushSongTransferObject(context, event.getSongsToTransferArrayList());
 
-        else
-            db4oHelper.pushEventObject(context, event);
+                SocketExtensionMethods.requestStrictModePermit();
+                Event eventMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_QUICK_SHARE_TRANSFER_RESULT, event.getTimeStamp(), KeyConstants.SOCKET_RESULT_OK);
+                Client quickShareResponse = new Client(event.getClientIpAddress(), eventMessage);
+                quickShareResponse.execute();
+                FileReceiver nioServer = new FileReceiver(context, event);
+                nioServer.execute();
+            }
+
+            else
+                db4oHelper.pushEventObject(context, event);
+        }
     }
     private void QuickShareTransferResult(final Event event) {
 
@@ -146,10 +162,7 @@ public class ServerResponseThread extends Thread {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    if(NearbyDevicesAdapter.waitingDialog != null){
-                        NearbyDevicesAdapter.waitingDialog.dismiss();
-                        NearbyDevicesAdapter.waitingDialog = null;
-                    }
+                    NearbyDevicesAdapter.dismissMaterialDialog();
                     QuickShareHelper.removeQuickShareRequest(event.getTimeStamp());
                     Toast.makeText(context, event.getClientName() + KeyConstants.SPACE + context.getString(R.string.quick_share_rejected), Toast.LENGTH_SHORT).show();
                 }
@@ -161,11 +174,7 @@ public class ServerResponseThread extends Thread {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    if(NearbyDevicesAdapter.waitingDialog != null){
-                        NearbyDevicesAdapter.waitingDialog.dismiss();
-                        NearbyDevicesAdapter.waitingDialog = null;
-                    }
-
+                    NearbyDevicesAdapter.dismissMaterialDialog();
                     InitiateQuickShare initiateQuickShare = new InitiateQuickShare(context, event, QuickShareHelper.getSongsList(event.getTimeStamp()));
                     initiateQuickShare.execute();
                     Toast.makeText(context, context.getString(R.string.initating_quick_share) + KeyConstants.SPACE + event.getClientName(), Toast.LENGTH_SHORT).show();
@@ -261,13 +270,9 @@ public class ServerResponseThread extends Thread {
     }
     private void CurrentSongNameResult(final Event event) {
 
-        String SongName = event.getClientCurrentSong().getTitle();
-        if(event.getClientCurrentSong().getArtist().length() > 0)
-            SongName = SongName + KeyConstants.SPACE + context.getResources().getString(R.string.by_text) + KeyConstants.SPACE + event.getClientCurrentSong().getArtist();
-
         for (NSD device : NSDClient.devicesList) {
             if(device.getHostAddress().equals(clientIPAddress))
-                device.setCurrentSongPlaying(SongName);
+                device.setCurrentSongPlaying(event.getClientCurrentSong());
         }
         NearbyDevicesActivity.updateAdapater();
     }
@@ -293,8 +298,7 @@ public class ServerResponseThread extends Thread {
                             Thread.sleep(500);
                             FileSender fileSender = new FileSender(context, event);
                             fileSender.sendFile(currentSongFilePath);
-                            fileSender.endConnection();
-                        } catch (InterruptedException e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
@@ -338,7 +342,7 @@ public class ServerResponseThread extends Thread {
 
     }
 
-    private void RequestMacAddress(Event event) {
+    private void RequestMacAddress(final Event event) {
         Event eventMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_MAC_ADDRESS_RESULT, ExtensionMethods.getTimeStamp(), SocketExtensionMethods.getMACAddress());
         Client macAddressResponse = new Client(event.getClientIpAddress(), eventMessage);
         macAddressResponse.execute();
@@ -347,6 +351,49 @@ public class ServerResponseThread extends Thread {
         for (NSD device : NSDClient.devicesList) {
             if(device.getHostAddress().equals(event.getClientIpAddress()))
                 device.setMacAddress(event.getResult());
+        }
+    }
+
+    private void RequestAlbumArt(final Event event) {
+
+        for (Song song : SharedVariables.fullSongsList)
+            if(song.getHashID().equals(event.getTimeStamp()))
+            {
+                File file = new File(song.getAlbumArtLocation());
+                if(file.exists()){
+                    Event eventMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_ALBUM_ART_RESULT, event.getTimeStamp(), KeyConstants.SOCKET_RESULT_OK);
+                    Client quickShareResponse = new Client(event.getClientIpAddress(), eventMessage);
+                    quickShareResponse.execute();
+                    try {
+                        Thread.sleep(500);
+                        BitmapSender bitmapSender = new BitmapSender(event);
+                        bitmapSender.sendBitmap(file.getAbsolutePath());
+                        bitmapSender.endConnection();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                else{
+                    Event eventMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_ALBUM_ART_RESULT, event.getTimeStamp(), KeyConstants.SOCKET_RESULT_CANCEL);
+                    Client quickShareResponse = new Client(event.getClientIpAddress(), eventMessage);
+                    quickShareResponse.execute();
+                }
+
+                break;
+            }
+    }
+    private void AlbumArtResult(final Event event) {
+
+        if(event.getResult().equals(KeyConstants.SOCKET_RESULT_OK)){
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    BitmapReceiver fileReceiver = new BitmapReceiver(context, event);
+                    fileReceiver.execute();
+                }
+            });
         }
     }
 }

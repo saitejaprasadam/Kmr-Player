@@ -1,4 +1,4 @@
-package com.prasadam.kmrplayer.UI.Activities;
+package com.prasadam.kmrplayer.UI.Activities.BaseActivity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -122,8 +122,8 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
 
     public void onResume() {
         super.onResume();
-        initalizePlaylistRecyclerView();
         initalizeNowPlayingUI();
+        initalizePlaylistRecyclerView();
         setAlbumAdapter();
         setHandlers();
         Controls.updateNowPlayingUI();

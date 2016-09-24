@@ -1,4 +1,4 @@
-package com.prasadam.kmrplayer.SocketClasses.FileTransfer;
+package com.prasadam.kmrplayer.SocketClasses.FileTransfer.Music;
 
 import android.content.Context;
 
@@ -65,14 +65,8 @@ public class FileSender {
                 EventsActivity.eventNotifyDataSetChanged();
             }
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    public void endConnection(){
-        try {
             socketChannel.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

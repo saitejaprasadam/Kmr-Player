@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.prasadam.kmrplayer.ModelClasses.Event;
+import com.prasadam.kmrplayer.ModelClasses.TransferableSong;
 import com.prasadam.kmrplayer.SubClasses.CustomArrayList.AlbumArrayList;
 import com.prasadam.kmrplayer.SubClasses.CustomArrayList.ArtistArrayList;
 import com.prasadam.kmrplayer.SubClasses.CustomArrayList.SongsArrayList;
@@ -42,5 +43,7 @@ public class SharedVariables {
         public void onItemRemovedListener(int index) { ArtistFragment.onItemRemoved(index); }
         public void onItemAddedListener(int index) { ArtistFragment.onItemAdded(index); }
     };
+
     public static volatile ArrayList<Event> fullEventsList = new ArrayList<>();
+    public static volatile ArrayList<TransferableSong> fullTransferList = new ArrayList<>();
 }

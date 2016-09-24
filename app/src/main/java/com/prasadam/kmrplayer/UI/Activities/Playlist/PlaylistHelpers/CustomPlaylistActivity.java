@@ -22,7 +22,7 @@ import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.ListenerClasses.HidingScrollListener;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
-import com.prasadam.kmrplayer.UI.Activities.VerticalSlidingDrawerBaseActivity;
+import com.prasadam.kmrplayer.UI.Activities.BaseActivity.VerticalSlidingDrawerBaseActivity;
 
 import java.util.ArrayList;
 

@@ -9,6 +9,7 @@ import java.io.File;
  */
 
 public class SocketsKeyConstants {
+
     public static final String TABLET = "TABLET";
     public static final String MOBILE = "MOBILE";
     public static final String Iphone = "IPHONE";
@@ -20,6 +21,7 @@ public class SocketsKeyConstants {
 
     public static final int MAIN_SERVER_SOCKET_PORT_ADDRESS = 6262;
     public static final int FILE_TRANSFER_SOCKET_PORT_ADDRESS = 7248;
+    public static final int BITMAP_TRANSFER_SOCKET_PORT_ADDRESS = 6272;
     public static final int GROUP_PLAY_SOCKET_PORT_ADDRESS = 1104;
 
     public static final int TRANSFER_BUFFER_SIZE = 1024 * 50;
@@ -49,4 +51,7 @@ public class SocketsKeyConstants {
 
     public static final String SOCKET_REQUEST_MAC_ADDRESS = "SOCKET_REQUEST_MAC_ADDRESS";
     public static final String SOCKET_MAC_ADDRESS_RESULT = "SOCKET_MAC_ADDRESS_RESULT";
+
+    public static final String SOCKET_REQUEST_ALBUM_ART = "SOCKET_REQUEST_ALBUM_ART";
+    public static final String SOCKET_ALBUM_ART_RESULT = "SOCKET_ALBUM_ART_RESULT";
 }

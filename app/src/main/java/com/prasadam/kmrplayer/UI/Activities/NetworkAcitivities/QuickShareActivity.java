@@ -8,21 +8,20 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import com.prasadam.kmrplayer.ActivityHelperClasses.ActivityHelper;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.ActivityHelperClasses.DialogHelper;
-import com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.NearbyDevicesAdapter;
+import com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.NetworkAdapter.NearbyDevicesAdapter;
 import com.prasadam.kmrplayer.Adapters.UIAdapters.DividerItemDecoration;
 import com.prasadam.kmrplayer.ModelClasses.Song;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
+import com.prasadam.kmrplayer.UI.Activities.BaseActivity.TranslucentBaseActivity;
 
 import java.util.ArrayList;
 
@@ -30,7 +29,7 @@ import java.util.ArrayList;
  * Created by Prasadam Saiteja on 7/8/2016.
  */
 
-public class QuickShareActivity extends AppCompatActivity{
+public class QuickShareActivity extends TranslucentBaseActivity {
 
     public static TextView NoDevicesTextView;
     public static NearbyDevicesAdapter QuickShareRecyclerviewAdapter;
@@ -44,7 +43,6 @@ public class QuickShareActivity extends AppCompatActivity{
         final ArrayList<String> songsPathList = getIntent().getStringArrayListExtra(KeyConstants.INTENT_SONGS_PATH_LIST);
         final ArrayList<Song> songsArrayList = (ArrayList<Song>) getIntent().getSerializableExtra(KeyConstants.INTENT_SONGS_LIST);
         NoDevicesTextView = (TextView) findViewById(R.id.no_devices_available_text_view);
-        InitActionBarAndToolBar();
         DialogHelper.checkForNetworkState(this, (FloatingActionButton) findViewById(R.id.wifi_fab));
         wifiBroadCastReceiver();
         setRecyclerView(songsArrayList, songsPathList);
@@ -75,19 +73,6 @@ public class QuickShareActivity extends AppCompatActivity{
         };
         registerReceiver(receiver, filter);
     }
-
-    private void InitActionBarAndToolBar() {
-        ActivityHelper.setStatusBarTranslucent_PreLollipop(QuickShareActivity.this);
-        ActivityHelper.setDisplayHome(this);
-    }
-    private void setRecyclerView(ArrayList<Song> songsArrayList, ArrayList<String> songsPathList) {
-        QuickShareRecyclerviewAdapter = new NearbyDevicesAdapter(this);
-        QuickShareRecyclerviewAdapter.setQuickShareSongPathList(songsArrayList, songsPathList);
-        quickShareRecyclerView = (RecyclerView) findViewById(R.id.quick_share_recycler_view);
-        quickShareRecyclerView.setAdapter(QuickShareRecyclerviewAdapter);
-        quickShareRecyclerView.addItemDecoration(new DividerItemDecoration(QuickShareActivity.this, LinearLayoutManager.VERTICAL));
-        quickShareRecyclerView.setLayoutManager(new LinearLayoutManager(QuickShareActivity.this));
-    }
     public static void updateAdapater(){
         try{
             Handler mainThread = new Handler(Looper.getMainLooper());
@@ -100,6 +85,14 @@ public class QuickShareActivity extends AppCompatActivity{
             });
         }
         catch (Exception ignore){}
+    }
+    private void setRecyclerView(ArrayList<Song> songsArrayList, ArrayList<String> songsPathList) {
+        QuickShareRecyclerviewAdapter = new NearbyDevicesAdapter(this);
+        QuickShareRecyclerviewAdapter.setQuickShareSongPathList(songsArrayList, songsPathList);
+        quickShareRecyclerView = (RecyclerView) findViewById(R.id.quick_share_recycler_view);
+        quickShareRecyclerView.setAdapter(QuickShareRecyclerviewAdapter);
+        quickShareRecyclerView.addItemDecoration(new DividerItemDecoration(QuickShareActivity.this, LinearLayoutManager.VERTICAL));
+        quickShareRecyclerView.setLayoutManager(new LinearLayoutManager(QuickShareActivity.this));
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {

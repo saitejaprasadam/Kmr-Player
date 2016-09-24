@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.prasadam.kmrplayer.ModelClasses.Event;
-import com.prasadam.kmrplayer.SocketClasses.FileTransfer.FileSender;
+import com.prasadam.kmrplayer.SocketClasses.FileTransfer.Music.FileSender;
 
 import java.util.ArrayList;
 
@@ -29,7 +29,6 @@ public class InitiateQuickShare extends AsyncTask<Void, Void, Void>{
         for (String song : songsList) {
             FileSender nioClient = new FileSender(context, event);
             nioClient.sendFile(song);
-            nioClient.endConnection();
         }
 
         return null;

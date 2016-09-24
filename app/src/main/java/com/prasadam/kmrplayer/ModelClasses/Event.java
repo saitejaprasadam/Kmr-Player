@@ -1,7 +1,5 @@
 package com.prasadam.kmrplayer.ModelClasses;
 
-import android.content.Context;
-
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicService;
 import com.prasadam.kmrplayer.SocketClasses.SocketExtensionMethods;
 
@@ -15,7 +13,7 @@ import java.util.Date;
 
 public class Event implements Serializable {
 
-    private String clientMacAddress, clientIpAddress, clientName, command, timeStamp, result;
+    private String clientMacAddress, clientIpAddress, clientName, command, timeStamp, result, futureUse;
     private Song clientCurrentSong, serverCurrentSong;
     private ArrayList<TransferableSong> songsToTransfer = new ArrayList<>();
     private SocketExtensionMethods.EVENT_STATE eventState = SocketExtensionMethods.EVENT_STATE.WAITING;
@@ -30,17 +28,22 @@ public class Event implements Serializable {
         if(MusicService.currentSong != null)
             this.clientCurrentSong = MusicService.currentSong;
     }
-    public Event(Context context, String clientMacAddress, String clientName, String command, String timeStamp, ArrayList<Song> songsList){
+    public Event(String clientMacAddress, String clientName, String command, String timeStamp, ArrayList<Song> songsList){
         this.clientMacAddress = clientMacAddress;
         this.clientName = clientName;
         this.command = command;
         this.timeStamp = timeStamp;
         this.time = new Date();
         for (Song song : songsList) {
-            songsToTransfer.add(new TransferableSong(context, song));
+            songsToTransfer.add(new TransferableSong(song, clientMacAddress));
         }
         if(MusicService.currentSong != null)
             this.clientCurrentSong = MusicService.currentSong;
+    }
+    public Event(String timeStamp) {
+        this.timeStamp = timeStamp;
+        eventState = null;
+        songsToTransfer = null;
     }
 
     public void setResult(String result){
@@ -84,4 +87,25 @@ public class Event implements Serializable {
     }
     public Song getClientCurrentSong(){ return clientCurrentSong; }
     public ArrayList<TransferableSong> getSongsToTransferArrayList(){ return songsToTransfer; }
+
+    public String getFutureUse() {
+        return futureUse;
+    }
+    public void setFutureUse(String futureUse) {
+        this.futureUse = futureUse;
+    }
+
+    public void copy(Event event) {
+        this.clientMacAddress = event.getClientMacAddress();
+        this.clientIpAddress = event.getClientIpAddress();
+        this.clientName = event.getClientName();
+        this.command = event.getCommand();
+        this.timeStamp = event.getTimeStamp();
+        this.futureUse = event.getFutureUse();
+        this.clientCurrentSong = event.getClientCurrentSong();
+        this.serverCurrentSong = event.getServerCurrentSong();
+        this.songsToTransfer = event.getSongsToTransferArrayList();
+        this.eventState = event.getEventState();
+        this.time = event.getTime();
+    }
 }

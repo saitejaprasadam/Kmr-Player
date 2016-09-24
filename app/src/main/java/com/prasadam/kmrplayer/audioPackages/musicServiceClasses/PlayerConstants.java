@@ -6,7 +6,7 @@ import android.os.Handler;
 import com.prasadam.kmrplayer.ModelClasses.Song;
 import com.prasadam.kmrplayer.SharedPreferences.SharedPreferenceHelper;
 import com.prasadam.kmrplayer.SubClasses.CustomArrayList.SongsArrayList;
-import com.prasadam.kmrplayer.UI.Activities.VerticalSlidingDrawerBaseActivity;
+import com.prasadam.kmrplayer.UI.Activities.BaseActivity.VerticalSlidingDrawerBaseActivity;
 
 import java.util.ArrayList;
 

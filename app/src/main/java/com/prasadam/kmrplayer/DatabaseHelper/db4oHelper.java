@@ -6,11 +6,13 @@ import android.content.ContextWrapper;
 import com.db4o.Db4oEmbedded;
 import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
+import com.prasadam.kmrplayer.ModelClasses.TransferableSong;
 import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 import com.prasadam.kmrplayer.ModelClasses.Event;
 import com.prasadam.kmrplayer.SocketClasses.SocketExtensionMethods;
 import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.EventsActivity;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /*
@@ -19,22 +21,14 @@ import java.util.ArrayList;
 
 public class db4oHelper{
 
-    private static ObjectContainer db;
+    private static final String eventsDbName = "events.db4o";
+    private static final String transfersDbName = "transfers.db4o";
 
-    public static void pushEventObject(Context context, Event event) {
+    public static ArrayList<Event> getEventObjects(final Context context) {
 
-        if(db == null)
-            db = Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), new ContextWrapper(context).getFilesDir() + "/events.db4o");
-        db.store(event);
-        db.commit();
-        SharedVariables.fullEventsList.add(event);
-        EventsActivity.eventNotifyDataSetChanged();
-    }
-    public static ArrayList<Event> getEventObjects(Context context) {
-
+        SocketExtensionMethods.requestStrictModePermit();
         ArrayList<Event> list = new ArrayList<>();
-        if(db == null)
-            db = Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), new ContextWrapper(context).getFilesDir() + "/events.db4o");
+        ObjectContainer db = Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), new ContextWrapper(context).getFilesDir() + File.separator + eventsDbName);
         ObjectSet<Event> result = db.query(Event.class);
 
         while (result.hasNext()){
@@ -46,21 +40,73 @@ public class db4oHelper{
             list.add(event);
         }
 
+        db.close();
         return list;
     }
-    public static void removeEventObject(Context context, Event e) {
+    public static void pushEventObject(final Context context, final Event event) {
 
-        if(db == null)
-            db = Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), new ContextWrapper(context).getFilesDir() + "/events.db4o");
-        db.delete(e);
+        SharedVariables.fullEventsList.add(event);
+        EventsActivity.eventNotifyDataSetChanged();
+        ObjectContainer db = Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), new ContextWrapper(context).getFilesDir() + File.separator + eventsDbName);
+        db.store(event);
         db.commit();
+        db.close();
+    }
+    public static void removeEventObject(final Context context, final Event event) {
+
+        ObjectContainer db = Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), new ContextWrapper(context).getFilesDir() + File.separator + eventsDbName);
+        db.delete(event);
+        db.commit();
+        db.close();
+    }
+    public static void updateEventObject(final Context context, final Event updatedEvent){
+
+        ObjectContainer db = Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), new ContextWrapper(context).getFilesDir() + File.separator + eventsDbName);
+        Event temp = new Event(updatedEvent.getTimeStamp());
+        ObjectSet result = db.queryByExample(temp);
+        if(result.hasNext()) {
+            Event event = (Event) result.next();
+            event.copy(updatedEvent);
+            db.store(event);
+            db.commit();
+            db.close();
+        }
     }
 
-    public static void updateEventObject(Context context, Event updatedEvent){
-        if(db == null)
-            db = Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), new ContextWrapper(context).getFilesDir() + "/events.db4o");
+    public static ArrayList<TransferableSong> getTransferableSongObjects(final Context context){
 
-        db.store(updatedEvent);
+        SocketExtensionMethods.requestStrictModePermit();
+        ArrayList<TransferableSong> list = new ArrayList<>();
+        ObjectContainer db = Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), new ContextWrapper(context).getFilesDir() + File.separator + transfersDbName);
+        ObjectSet<TransferableSong> result = db.query(TransferableSong.class);
+
+        while (result.hasNext()){
+            TransferableSong transfrableSong = result.next();
+            if(transfrableSong.getSongTransferState() == SocketExtensionMethods.TRANSFER_STATE.WAITING)
+                transfrableSong.setSongTransferState(SocketExtensionMethods.TRANSFER_STATE.Denied);
+
+            else if(transfrableSong.getSongTransferState() == SocketExtensionMethods.TRANSFER_STATE.IN_PROGRESS)
+                transfrableSong.setSongTransferState(SocketExtensionMethods.TRANSFER_STATE.Completed);
+
+            list.add(transfrableSong);
+        }
+
+        db.close();
+        return list;
+    }
+    public static void pushSongTransferObject(final Context context, final ArrayList<TransferableSong> songsToTransferArrayList) {
+
+        SharedVariables.fullTransferList.addAll(songsToTransferArrayList);
+        ObjectContainer db = Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), new ContextWrapper(context).getFilesDir() + File.separator + transfersDbName);
+        db.store(songsToTransferArrayList);
         db.commit();
+        db.close();
+    }
+    public static void removeTransferObject(final Context context, final TransferableSong transferableSong) {
+
+        ObjectContainer db = Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), new ContextWrapper(context).getFilesDir() + File.separator + transfersDbName);
+        db.delete(transferableSong);
+        db.commit();
+        db.close();
     }
 }

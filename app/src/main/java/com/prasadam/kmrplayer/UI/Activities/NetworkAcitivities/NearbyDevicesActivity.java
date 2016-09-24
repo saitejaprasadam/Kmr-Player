@@ -8,28 +8,27 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import com.prasadam.kmrplayer.ActivityHelperClasses.ActivityHelper;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.ActivityHelperClasses.DialogHelper;
-import com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.NearbyDevicesAdapter;
+import com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.NetworkAdapter.NearbyDevicesAdapter;
 import com.prasadam.kmrplayer.Adapters.UIAdapters.DividerItemDecoration;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SocketClasses.NetworkServiceDiscovery.NSD;
 import com.prasadam.kmrplayer.SocketClasses.NetworkServiceDiscovery.NSDClient;
 import com.prasadam.kmrplayer.SocketClasses.SocketExtensionMethods;
+import com.prasadam.kmrplayer.UI.Activities.BaseActivity.TranslucentBaseActivity;
 
 /*
  * Created by Prasadam Saiteja on 7/5/2016.
  */
 
-public class NearbyDevicesActivity extends AppCompatActivity{
+public class NearbyDevicesActivity extends TranslucentBaseActivity{
 
     public static NearbyDevicesAdapter nearbyDevicesRecyclerviewAdapter;
     public static TextView NoDevicesTextView;
@@ -41,15 +40,12 @@ public class NearbyDevicesActivity extends AppCompatActivity{
         super.onCreate(bundle);
         setContentView(R.layout.activity_nearby_devices);
 
+        setRecyclerView();
         NoDevicesTextView = (TextView) findViewById(R.id.no_devices_available_text_view);
-        ActivityHelper.setDisplayHome(this);
-        ActivityHelper.setStatusBarTranslucent_PreLollipop(NearbyDevicesActivity.this);
         DialogHelper.checkForNetworkState(this, (FloatingActionButton) findViewById(R.id.wifi_fab));
         wifiBroadCastReceiver();
-        setRecyclerView();
         setCurrentSongPlayingHandler();
     }
-
     public void onDestroy(){
         if (receiver != null) {
             unregisterReceiver(receiver);
@@ -109,7 +105,7 @@ public class NearbyDevicesActivity extends AppCompatActivity{
                     }
 
                     if(currentSongPlayingRequestHandler != null)
-                        currentSongPlayingRequestHandler.postDelayed(this, 8000);
+                        currentSongPlayingRequestHandler.postDelayed(this, 3000);
                 }
             });
         }

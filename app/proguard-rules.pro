@@ -34,3 +34,4 @@
 -dontwarn javax.annotation.**
 -dontwarn com.android.volley.toolbox.**
 -dontwarn org.w3c.dom.bootstrap.DOMImplementationRegistry
+-dontwarn com.db4o.**

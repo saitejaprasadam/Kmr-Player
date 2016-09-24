@@ -8,7 +8,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.prasadam.kmrplayer.ModelClasses.Song;
 import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.UI.Activities.VerticalSlidingDrawerBaseActivity;
+import com.prasadam.kmrplayer.UI.Activities.BaseActivity.VerticalSlidingDrawerBaseActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -182,6 +182,29 @@ public class MusicPlayerExtensionMethods {
 
     }
 
+    public static void playNow(Context context, Song songToBeAdded) {
+
+        if(songToBeAdded.getHashID().equals(MusicService.currentSong.getHashID())){
+            if(PlayerConstants.SONG_PAUSED)
+                Controls.playControl(context);
+            Toast.makeText(context, "This is song is currently playing", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        for (Song song : PlayerConstants.getPlayList()) {
+            if(song.getHashID().equals(songToBeAdded.getHashID())){
+                PlayerConstants.removeSongFromPlaylist(context, song);
+                break;
+            }
+        }
+
+        PlayerConstants.getPlayList().add(PlayerConstants.SONG_NUMBER + 1, songToBeAdded);
+        if(PlayerConstants.getShuffleState())
+            PlayerConstants.add_hash_id_current_playlist(songToBeAdded.getHashID());
+
+        VerticalSlidingDrawerBaseActivity.updateAlbumAdapter();
+        Controls.nextControl(context);
+    }
     public static void playNext(Context context, Song songToBeAdded) {
 
         if(songToBeAdded.getHashID().equals(MusicService.currentSong.getHashID())){

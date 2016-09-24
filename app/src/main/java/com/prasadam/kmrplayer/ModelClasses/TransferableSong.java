@@ -1,12 +1,6 @@
 package com.prasadam.kmrplayer.ModelClasses;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-
-import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
-import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.UtilFunctions;
 import com.prasadam.kmrplayer.SocketClasses.SocketExtensionMethods;
-import com.prasadam.kmrplayer.SubClasses.SerializableImage;
 
 import java.io.Serializable;
 
@@ -17,12 +11,13 @@ import java.io.Serializable;
 public class TransferableSong implements Serializable{
 
     private SocketExtensionMethods.TRANSFER_STATE songTransferState = SocketExtensionMethods.TRANSFER_STATE.WAITING;
-    //private SerializableImage albumArt = null;
+    private String client_mac_address;
+    private String futureUse;
     private Song song;
 
-    public TransferableSong(Context context, Song song) {
+    public TransferableSong(Song song, String client_mac_address) {
         this.song = song;
-        //albumArt = new SerializableImage(UtilFunctions.getAlbumart(context, AudioExtensionMethods.getAlubmID(context, song.getID())));
+        this.client_mac_address = client_mac_address;
     }
 
     public SocketExtensionMethods.TRANSFER_STATE getSongTransferState(){
@@ -33,5 +28,15 @@ public class TransferableSong implements Serializable{
     }
     public Song getSong(){
         return song;
+    }
+    public String getClient_mac_address() {
+        return client_mac_address;
+    }
+
+    public String getFutureUse() {
+        return futureUse;
+    }
+    public void setFutureUse(String futureUse) {
+        this.futureUse = futureUse;
     }
 }

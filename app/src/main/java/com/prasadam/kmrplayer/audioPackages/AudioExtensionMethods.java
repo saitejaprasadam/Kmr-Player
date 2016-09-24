@@ -93,6 +93,12 @@ public class AudioExtensionMethods {
 
         return null;
     }
+    public static Song getSongFromHashID(String hashID) {
+        for (Song song : SharedVariables.fullSongsList)
+            if(song.getHashID().equals(hashID))
+                return song;
+        return null;
+    }
     public static Song getSongFromPath(Context context, String fileName) {
 
         ContentResolver musicResolver = context.getContentResolver();
@@ -833,5 +839,12 @@ public class AudioExtensionMethods {
 
     public static void RemoveSongFromContentResolver(Context context, long id) {
         context.getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.MediaColumns._ID + "='" + id + "'", null);
+    }
+    public static boolean isSongPresent(String hashID) {
+        for (Song song : SharedVariables.fullSongsList)
+            if(song.getHashID().equals(hashID))
+                return true;
+
+        return false;
     }
 }

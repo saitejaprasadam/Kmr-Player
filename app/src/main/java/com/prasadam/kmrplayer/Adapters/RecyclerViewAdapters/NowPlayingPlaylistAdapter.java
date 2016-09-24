@@ -33,7 +33,7 @@ import com.prasadam.kmrplayer.ModelClasses.Song;
 import com.prasadam.kmrplayer.Interfaces.NowPlayingPlaylistInterfaces;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
-import com.prasadam.kmrplayer.UI.Activities.VerticalSlidingDrawerBaseActivity;
+import com.prasadam.kmrplayer.UI.Activities.BaseActivity.VerticalSlidingDrawerBaseActivity;
 import com.prasadam.kmrplayer.UI.Fragments.SongsFragment;
 
 import java.io.File;
