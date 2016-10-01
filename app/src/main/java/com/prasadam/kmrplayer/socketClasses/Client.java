@@ -6,11 +6,9 @@ import android.util.Log;
 import com.prasadam.kmrplayer.ModelClasses.Event;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 
@@ -56,7 +54,7 @@ public class Client extends AsyncTask<Void, Void, Void> {
             Log.d("Sent", eventMessage.getClientName() + " " + eventMessage.getCommand());
         }
 
-        catch (IOException | RuntimeException exception) {
+        catch (Exception exception) {
             Log.e("Exception", String.valueOf(exception));
         }
         return null;

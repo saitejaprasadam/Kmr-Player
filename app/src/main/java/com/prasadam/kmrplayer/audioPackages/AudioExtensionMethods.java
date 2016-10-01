@@ -847,4 +847,12 @@ public class AudioExtensionMethods {
 
         return false;
     }
+
+    public static boolean checkIfSongExists(String hashID) {
+        for(Song song : SharedVariables.fullSongsList)
+            if(song.getHashID().equals(hashID))
+                return true;
+
+        return false;
+    }
 }

@@ -178,6 +178,7 @@ public class SongsFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
         inflater.inflate(R.menu.main_in_songs_fragment, menu);
+        ActivityHelper.nearbyDevicesCount(getActivity(), menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
     public void onResume(){

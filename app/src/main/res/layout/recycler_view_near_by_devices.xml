@@ -19,8 +19,7 @@
         fresco:roundingBorderWidth="0.1dp" />
 
     <ImageView
-        android:layout_marginEnd="10dp"
-        android:layout_marginStart="10dp"
+        android:padding="30dp"
         android:id="@+id/nearby_devices_context_menu"
         android:layout_gravity="center_vertical"
         android:layout_width="wrap_content"

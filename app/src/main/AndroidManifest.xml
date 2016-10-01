@@ -15,7 +15,7 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application
-        android:name=".SmartCastApplication"
+        android:name=".kmrPlayer"
         android:allowBackup="true"
         android:icon="@mipmap/launcher_icon"
         android:label="@string/app_name"
@@ -76,9 +76,14 @@
         <activity android:name=".UI.Activities.NetworkAcitivities.NearbyDevicesActivity"
             android:label="@string/available_devices_text"
             android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition" />
-        <activity android:name=".UI.Activities.NetworkAcitivities.EventsActivity"
-            android:label="@string/events_text"
+        <activity android:name=".UI.Activities.NetworkAcitivities.RequestsActivity"
+            android:label="@string/Requests_text"
             android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition" />
+        <activity android:name=".UI.Activities.NetworkAcitivities.ReceivedSongsActivity"
+            android:label="@string/received_songs"
+            android:theme="@style/AppTheme.ActionBar.TransparentContextTranscition" />
+        <activity android:name=".UI.Activities.NetworkAcitivities.GroupListenActivity"
+            android:theme="@style/Transuclent_Theme" />
 
         <activity android:name=".UI.Activities.SettingsActivity"
             android:label="@string/settings_text"

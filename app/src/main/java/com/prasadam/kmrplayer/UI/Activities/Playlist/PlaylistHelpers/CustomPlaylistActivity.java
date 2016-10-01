@@ -116,6 +116,7 @@ public class CustomPlaylistActivity extends VerticalSlidingDrawerBaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_custom_playlist_menu, menu);
+        ActivityHelper.nearbyDevicesCount(this, menu);
         return true;
     }
     public boolean onOptionsItemSelected(MenuItem item) {

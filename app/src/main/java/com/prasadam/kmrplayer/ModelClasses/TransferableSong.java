@@ -19,6 +19,11 @@ public class TransferableSong implements Serializable{
         this.song = song;
         this.client_mac_address = client_mac_address;
     }
+    public TransferableSong(String client_mac_address, String hashID, long id) {
+        this.songTransferState = null;
+        this.client_mac_address = client_mac_address;
+        this.song = new Song(hashID, id);
+    }
 
     public SocketExtensionMethods.TRANSFER_STATE getSongTransferState(){
         return songTransferState;
@@ -38,5 +43,12 @@ public class TransferableSong implements Serializable{
     }
     public void setFutureUse(String futureUse) {
         this.futureUse = futureUse;
+    }
+
+    public void copy(TransferableSong updatedTransferableSong) {
+        this.songTransferState = updatedTransferableSong.getSongTransferState();
+        this.client_mac_address = updatedTransferableSong.getClient_mac_address();
+        this.futureUse = updatedTransferableSong.getFutureUse();
+        this.song = updatedTransferableSong.getSong();
     }
 }

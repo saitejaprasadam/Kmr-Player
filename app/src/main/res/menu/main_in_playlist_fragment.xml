@@ -15,13 +15,8 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_events"
+        android:id="@+id/action_requests"
         android:title="@string/events_text"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/action_about"
-        android:title="@string/about_text"
         app:showAsAction="never" />
 
     <item

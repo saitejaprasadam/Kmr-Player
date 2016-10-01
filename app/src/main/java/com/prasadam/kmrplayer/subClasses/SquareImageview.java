@@ -10,19 +10,15 @@ import android.widget.ImageView;
 
 public class SquareImageview extends ImageView{
 
-
     public SquareImageview(Context context) {
         super(context);
     }
-
     public SquareImageview(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
-
     public SquareImageview(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
-
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {

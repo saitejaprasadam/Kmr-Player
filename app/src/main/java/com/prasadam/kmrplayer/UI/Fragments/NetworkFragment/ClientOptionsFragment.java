@@ -13,7 +13,9 @@ import android.widget.FrameLayout;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedPreferences.SharedPreferenceHelper;
 import com.prasadam.kmrplayer.SocketClasses.NetworkServiceDiscovery.NSD;
+import com.prasadam.kmrplayer.SocketClasses.SocketExtensionMethods;
 import com.prasadam.kmrplayer.SubClasses.PreferenceFragment;
+import com.prasadam.kmrplayer.UI.Fragments.DialogFragment.NearbyDevicesDetails_DialogFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,10 +27,13 @@ import butterknife.ButterKnife;
 public class ClientOptionsFragment extends Fragment {
 
     private static final String KEY_SOCKET_CLIENT_SEND_WITHOUT_CONFIRMATION = "KEY_SOCKET_CLIENT_SEND_WITHOUT_CONFIRMATION";
+    private static final String KEY_GROUP_LISTEN = "KEY_GROUP_LISTEN";
+    private static NearbyDevicesDetails_DialogFragment nearbyDevicesDetails_dialogFragment;
     @BindView (R.id.generic_fragment_container) FrameLayout fragmentContainer;
     private final NSD serverObject;
 
-    public ClientOptionsFragment(NSD serverObject){
+    public ClientOptionsFragment(NSD serverObject, NearbyDevicesDetails_DialogFragment nearbyDevicesDetails_dialogFragment){
+        ClientOptionsFragment.nearbyDevicesDetails_dialogFragment = nearbyDevicesDetails_dialogFragment;
         this.serverObject = serverObject;
     }
 
@@ -43,10 +48,6 @@ public class ClientOptionsFragment extends Fragment {
     }
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initComponents();
-    }
-
-    private void initComponents() {
         getChildFragmentManager().beginTransaction().replace(fragmentContainer.getId(), new SettingsFragment(serverObject)).commit();
     }
 
@@ -58,8 +59,6 @@ public class ClientOptionsFragment extends Fragment {
             super();
             this.serverObject = serverObject;
         }
-
-        @Override
         public void onCreate(final Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.client_options_preferences);
@@ -83,6 +82,15 @@ public class ClientOptionsFragment extends Fragment {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
                     SharedPreferenceHelper.setClientTransferRequestAlwaysAccept(getContext(), serverObject.getMacAddress(), !SharedPreferenceHelper.getClientTransferRequestAlwaysAccept(getContext(), serverObject.getMacAddress()));
+                    return false;
+                }
+            });
+
+            (findPreference(KEY_GROUP_LISTEN)).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    SocketExtensionMethods.requestGroupListen(getContext(), serverObject);
+                    nearbyDevicesDetails_dialogFragment.dismissAllowingStateLoss();
                     return false;
                 }
             });

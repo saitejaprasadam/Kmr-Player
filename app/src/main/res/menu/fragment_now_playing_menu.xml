@@ -9,13 +9,17 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_devices_button"
-        android:icon="@mipmap/ic_devices_white_24dp"
-        android:title="@string/nearby_devices_text"
+        android:id="@+id/action_connected_devices"
+        android:icon="@drawable/ic_airplay_white_24dp"
+        android:title="@string/connected_devices_text"
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_events"
+        android:id="@+id/action_devices_button"
+        android:title="@string/nearby_devices_text" />
+
+    <item
+        android:id="@+id/action_requests"
         android:title="@string/events_text" />
 
     <item

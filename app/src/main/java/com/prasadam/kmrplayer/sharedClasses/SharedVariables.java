@@ -3,8 +3,11 @@ package com.prasadam.kmrplayer.SharedClasses;
 import android.content.Context;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.ModelClasses.Event;
 import com.prasadam.kmrplayer.ModelClasses.TransferableSong;
+import com.prasadam.kmrplayer.SocketClasses.NetworkServiceDiscovery.NSD;
+import com.prasadam.kmrplayer.SocketClasses.SocketExtensionMethods;
 import com.prasadam.kmrplayer.SubClasses.CustomArrayList.AlbumArrayList;
 import com.prasadam.kmrplayer.SubClasses.CustomArrayList.ArtistArrayList;
 import com.prasadam.kmrplayer.SubClasses.CustomArrayList.SongsArrayList;
@@ -46,4 +49,30 @@ public class SharedVariables {
 
     public static volatile ArrayList<Event> fullEventsList = new ArrayList<>();
     public static volatile ArrayList<TransferableSong> fullTransferList = new ArrayList<>();
+
+    public static ArrayList<TransferableSong> getFullTransferList(){
+
+        ArrayList<TransferableSong> transferableSongArrayList = new ArrayList<>();
+
+        for(TransferableSong transferableSong : fullTransferList)
+            if(AudioExtensionMethods.checkIfSongExists(transferableSong.getSong().getHashID())
+                    && !transferableSongArrayList.contains(transferableSong)
+                    && transferableSong.getSongTransferState() == SocketExtensionMethods.TRANSFER_STATE.Completed)
+                transferableSongArrayList.add(transferableSong);
+
+        return transferableSongArrayList;
+    }
+    public static ArrayList<TransferableSong> TransferList(NSD serverObject){
+
+        ArrayList<TransferableSong> transferableSongArrayList = new ArrayList<>();
+
+        for (TransferableSong transferableSong : fullTransferList)
+            if(transferableSong.getClient_mac_address().equals(serverObject.getMacAddress())
+                    && !transferableSongArrayList.contains(transferableSong)
+                    && AudioExtensionMethods.checkIfSongExists(transferableSong.getSong().getHashID())
+                    && transferableSong.getSongTransferState() == SocketExtensionMethods.TRANSFER_STATE.Completed)
+                transferableSongArrayList.add(transferableSong);
+
+        return transferableSongArrayList;
+    }
 }

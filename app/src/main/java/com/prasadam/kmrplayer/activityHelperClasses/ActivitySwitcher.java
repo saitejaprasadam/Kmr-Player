@@ -13,16 +13,18 @@ import android.widget.Toast;
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
+import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.Controls;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicService;
 import com.prasadam.kmrplayer.ModelClasses.Song;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
 import com.prasadam.kmrplayer.UI.Activities.AlbumActivity;
 import com.prasadam.kmrplayer.UI.Activities.ArtistActivity;
-import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.EventsActivity;
+import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.RequestsActivity;
 import com.prasadam.kmrplayer.UI.Activities.HelperActivities.ExpandedAlbumartActivity;
 import com.prasadam.kmrplayer.UI.Activities.HelperActivities.SearchActivity;
 import com.prasadam.kmrplayer.UI.Activities.HelperActivities.TagEditorActivity;
+import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.GroupListenActivity;
 import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.NearbyDevicesActivity;
 import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.QuickShareActivity;
 import com.prasadam.kmrplayer.UI.Activities.SettingsActivity;
@@ -81,8 +83,8 @@ public class ActivitySwitcher {
             Toast.makeText(context, "No stock equilzer found", Toast.LENGTH_SHORT).show();
         }
     }
-    public static void launchEventsActivity(final Context context){
-        context.startActivity(new Intent(context, EventsActivity.class));
+    public static void launchRequestsActivity(final Context context){
+        context.startActivity(new Intent(context, RequestsActivity.class));
     }
 
     public static void jumpToAvaiableDevies(final Context context) {
@@ -134,6 +136,7 @@ public class ActivitySwitcher {
         context.startActivity(settingsIntent);
     }
     public static void launchMarket(Context context) {
+
         Uri uri = Uri.parse("market://details?id=" + context.getPackageName());
         Intent myAppLinkToMarket = new Intent(Intent.ACTION_VIEW, uri);
         try {
@@ -141,5 +144,11 @@ public class ActivitySwitcher {
         } catch (ActivityNotFoundException e) {
             Toast.makeText(context, "Unable to find play store", Toast.LENGTH_LONG).show();
         }
+    }
+
+    public static void startGroupListen(Context context) {
+        Controls.pauseControl(context);
+        Intent intent = new Intent(context, GroupListenActivity.class);
+        context.startActivity(intent);
     }
 }

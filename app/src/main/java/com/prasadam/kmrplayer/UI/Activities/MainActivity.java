@@ -111,6 +111,7 @@ public class MainActivity extends VerticalSlidingDrawerBaseActivity implements N
 
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+        ActivityHelper.nearbyDevicesCount(this, menu);
         return true;
     }
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -124,10 +125,6 @@ public class MainActivity extends VerticalSlidingDrawerBaseActivity implements N
                 ActivitySwitcher.launchSearchActivity(this);
                 break;
 
-            case R.id.action_about:
-                ActivitySwitcher.launchAboutActivity(this);
-                break;
-
             case R.id.action_settings:
                 ActivitySwitcher.launchSettings(this);
                 break;
@@ -136,8 +133,8 @@ public class MainActivity extends VerticalSlidingDrawerBaseActivity implements N
                 ActivitySwitcher.initEqualizer(this);
                 break;
 
-            case R.id.action_events:
-                ActivitySwitcher.launchEventsActivity(this);
+            case R.id.action_requests:
+                ActivitySwitcher.launchRequestsActivity(this);
                 break;
 
             case R.id.action_devices_button:

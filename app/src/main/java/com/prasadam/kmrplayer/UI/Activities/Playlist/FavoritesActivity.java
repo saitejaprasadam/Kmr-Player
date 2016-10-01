@@ -146,6 +146,7 @@ public class FavoritesActivity extends VerticalSlidingDrawerBaseActivity{
     public boolean onCreateOptionsMenu(Menu menu) {
 
         getMenuInflater().inflate(R.menu.activity_favorites_menu, menu);
+        ActivityHelper.nearbyDevicesCount(this, menu);
         mOptionsMenu = menu;
         return true;
     }

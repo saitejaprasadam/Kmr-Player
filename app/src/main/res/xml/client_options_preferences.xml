@@ -6,4 +6,10 @@
         android:title="@string/Transfer_without_confirmation"
         android:summary="@string/Send_songs_without_confirmation_text"/>
 
+    <Preference
+        android:key="KEY_GROUP_LISTEN"
+        android:title="@string/Request_group_listen_text"
+        android:summary="@string/group_listen_summary">
+    </Preference>
+
 </PreferenceScreen>

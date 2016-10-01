@@ -10,7 +10,7 @@ import com.prasadam.kmrplayer.ModelClasses.TransferableSong;
 import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 import com.prasadam.kmrplayer.ModelClasses.Event;
 import com.prasadam.kmrplayer.SocketClasses.SocketExtensionMethods;
-import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.EventsActivity;
+import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.RequestsActivity;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -46,16 +46,17 @@ public class db4oHelper{
     public static void pushEventObject(final Context context, final Event event) {
 
         SharedVariables.fullEventsList.add(event);
-        EventsActivity.eventNotifyDataSetChanged();
+        RequestsActivity.eventNotifyDataSetChanged();
         ObjectContainer db = Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), new ContextWrapper(context).getFilesDir() + File.separator + eventsDbName);
         db.store(event);
         db.commit();
         db.close();
     }
     public static void removeEventObject(final Context context, final Event event) {
-
         ObjectContainer db = Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), new ContextWrapper(context).getFilesDir() + File.separator + eventsDbName);
-        db.delete(event);
+        ObjectSet result = db.queryByExample(new Event(event.getTimeStamp()));
+        Event event1 = (Event) result.next();
+        db.delete(event1);
         db.commit();
         db.close();
     }
@@ -71,6 +72,7 @@ public class db4oHelper{
             db.commit();
             db.close();
         }
+        db.close();
     }
 
     public static ArrayList<TransferableSong> getTransferableSongObjects(final Context context){
@@ -105,8 +107,22 @@ public class db4oHelper{
     public static void removeTransferObject(final Context context, final TransferableSong transferableSong) {
 
         ObjectContainer db = Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), new ContextWrapper(context).getFilesDir() + File.separator + transfersDbName);
-        db.delete(transferableSong);
+        db.delete(new TransferableSong(transferableSong.getClient_mac_address(), transferableSong.getSong().getHashID(), transferableSong.getSong().getID()));
         db.commit();
+        db.close();
+    }
+    public static void updateSongTrasferableObject(Context context, TransferableSong transferableSong) {
+
+        ObjectContainer db = Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), new ContextWrapper(context).getFilesDir() + File.separator + transfersDbName);
+        TransferableSong temp = new TransferableSong(transferableSong.getClient_mac_address(), transferableSong.getSong().getHashID(), transferableSong.getSong().getID());
+        ObjectSet result = db.queryByExample(temp);
+        if(result.hasNext()) {
+            TransferableSong finalTransferableSong = (TransferableSong) result.next();
+            finalTransferableSong.copy(transferableSong);
+            db.store(finalTransferableSong);
+            db.commit();
+            db.close();
+        }
         db.close();
     }
 }

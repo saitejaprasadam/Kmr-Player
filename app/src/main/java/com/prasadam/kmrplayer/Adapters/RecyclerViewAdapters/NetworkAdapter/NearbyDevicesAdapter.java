@@ -1,7 +1,6 @@
 package com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.NetworkAdapter;
 
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,7 +16,6 @@ import com.prasadam.kmrplayer.ModelClasses.Song;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
-import com.prasadam.kmrplayer.SharedPreferences.SharedPreferenceHelper;
 import com.prasadam.kmrplayer.SocketClasses.ClientHelper;
 import com.prasadam.kmrplayer.SocketClasses.GroupPlay.GroupPlayHelper;
 import com.prasadam.kmrplayer.SocketClasses.NetworkServiceDiscovery.NSD;
@@ -71,10 +69,7 @@ public class NearbyDevicesAdapter extends RecyclerView.Adapter<NearbyDevicesAdap
         else
             setHolderNearByActivity(holder, serverObject);
 
-        if(holder.imageID == 0)
-            holder.imageID = SocketExtensionMethods.getDeviceImage(serverObject.GetDeviceType());
-
-        holder.nearbyDevicesImageView.setImageResource(holder.imageID);
+        holder.nearbyDevicesImageView.setImageResource(SocketExtensionMethods.getDeviceImage(serverObject.GetDeviceType()));
     }
     public int getItemCount() {
         int count = NSDClient.devicesList.size();
@@ -151,32 +146,8 @@ public class NearbyDevicesAdapter extends RecyclerView.Adapter<NearbyDevicesAdap
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 NearbyDevicesDetails_DialogFragment dialogFragment = new NearbyDevicesDetails_DialogFragment(serverObject);
-                dialogFragment.show(context.getSupportFragmentManager(), "dialogFragment");
-
-                /*ArrayList<String> dialogOptions = PopulateDialogItems(serverObject);
-                if(dialogOptions.size() > 0)
-                new MaterialDialog.Builder(context)
-                        .items(dialogOptions)
-                        .itemsCallback(new MaterialDialog.ListCallback() {
-                            @Override
-                            public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-
-                               if(text.equals(context.getResources().getString(R.string.request_for_group_play_text)))
-                                   ClientHelper.requestForGroupPlay(context, serverObject);
-
-                                else if(text.equals(context.getResources().getString(R.string.get_current_playing_song)))
-                                   ClientHelper.requestForCurrentSong(context, serverObject);
-
-                                   else if(text.equals(context.getResources().getString(R.string.accept_all_transfers_without_confirmation)))
-                                       SharedPreferenceHelper.setClientTransferRequestAlwaysAccept(context, serverObject.getMacAddress(), true);
-
-                                        else if(text.equals(context.getResources().getString(R.string.prompt_confirmation_before_initating_transfers)))
-                                            SharedPreferenceHelper.setClientTransferRequestAlwaysAccept(context, serverObject.getMacAddress(), false);
-                            }
-                        })
-                        .show();*/
+                dialogFragment.show(context.getSupportFragmentManager(), (NearbyDevicesDetails_DialogFragment.class).getSimpleName());
             }
         });
     }
@@ -194,7 +165,6 @@ public class NearbyDevicesAdapter extends RecyclerView.Adapter<NearbyDevicesAdap
         @BindView(R.id.nearby_devices_context_menu) ImageView nearbyDevicesContextMenu;
         @BindView(R.id.device_name_textview) TextView nearbyDeviceNameTextView;
         @BindView(R.id.current_song_playing) TextView currentSongTextView;
-        private int imageID = 0;
 
         public ViewAdapter(View itemView) {
             super(itemView);

@@ -133,6 +133,7 @@ public class SongPlaybackHistoryActivity extends VerticalSlidingDrawerBaseActivi
     public boolean onCreateOptionsMenu(Menu menu) {
 
         getMenuInflater().inflate(R.menu.activity_recently_added_songs_menu, menu);
+        ActivityHelper.nearbyDevicesCount(this, menu);
         mOptionsMenu = menu;
         return true;
     }

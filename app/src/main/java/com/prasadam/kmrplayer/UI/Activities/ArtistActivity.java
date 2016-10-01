@@ -261,6 +261,7 @@ public class ArtistActivity extends VerticalSlidingDrawerBaseActivity {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.mipmap.ic_chevron_left_white_24dp);
         toolbar.inflateMenu(R.menu.activity_artist_menu);
+        ActivityHelper.nearbyDevicesCount(this, toolbar.getMenu());
         toolbar.setOverflowIcon(getResources().getDrawable(R.mipmap.ic_more_vert_white_24dp));
         setToolBarMenuListener(toolbar);
 

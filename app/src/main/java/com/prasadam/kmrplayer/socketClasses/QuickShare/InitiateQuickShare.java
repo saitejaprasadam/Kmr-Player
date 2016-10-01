@@ -20,6 +20,7 @@ public class InitiateQuickShare extends AsyncTask<Void, Void, Void>{
 
     public InitiateQuickShare(Context context, Event event, ArrayList<String> songsList){
         this.event = event;
+        this.context = context;
         this.songsList = new ArrayList<>(songsList);
     }
 

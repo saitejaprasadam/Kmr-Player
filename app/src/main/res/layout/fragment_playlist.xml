@@ -31,7 +31,7 @@
                     <LinearLayout
                         android:id="@+id/recently_added_playlist"
                         android:layout_width="match_parent"
-                        android:layout_height="60dp"
+                        android:layout_height="50dp"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
                         android:clickable="true"
@@ -40,7 +40,7 @@
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:padding="20dp"
+                            android:padding="15dp"
                             android:src="@mipmap/ic_playlist_add_black_24dp"
                             android:contentDescription="@string/recently_added_text" />
 
@@ -57,7 +57,7 @@
                     <LinearLayout
                         android:id="@+id/songs_playback_history"
                         android:layout_width="match_parent"
-                        android:layout_height="60dp"
+                        android:layout_height="50dp"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
                         android:clickable="true"
@@ -66,7 +66,7 @@
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:padding="20dp"
+                            android:padding="15dp"
                             android:src="@mipmap/ic_history_black_24dp"
                             android:contentDescription="@string/history_text" />
 
@@ -83,7 +83,7 @@
                     <LinearLayout
                         android:id="@+id/most_played_linear_layout"
                         android:layout_width="match_parent"
-                        android:layout_height="60dp"
+                        android:layout_height="50dp"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
                         android:clickable="true"
@@ -92,7 +92,7 @@
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:padding="20dp"
+                            android:padding="15dp"
                             android:src="@mipmap/ic_whatshot_black_24dp"
                             android:contentDescription="@string/most_played_text" />
 
@@ -123,9 +123,9 @@
                     android:orientation="vertical">
 
                     <LinearLayout
-                        android:id="@+id/favorites_playlist"
+                        android:id="@+id/received_songs"
                         android:layout_width="match_parent"
-                        android:layout_height="60dp"
+                        android:layout_height="50dp"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
                         android:clickable="true"
@@ -134,8 +134,9 @@
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:padding="20dp"
-                            android:src="@mipmap/ic_favorite_black_24dp"
+                            android:padding="15dp"
+                            android:src="@drawable/ic_cloud_download_white_24dp"
+                            android:tint="@color/black"
                             android:contentDescription="@string/favorite_image_text" />
 
                         <TextView
@@ -143,15 +144,15 @@
                             android:layout_height="wrap_content"
                             android:padding="10dp"
                             android:textColor="@android:color/black"
-                            android:textSize="@dimen/md_title_textsize"
-                            android:text="@string/favorites_text"/>
+                            android:textSize="18sp"
+                            android:text="@string/received_songs"/>
 
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/custom_playlist_linear_layout"
+                        android:id="@+id/favorites_playlist"
                         android:layout_width="match_parent"
-                        android:layout_height="60dp"
+                        android:layout_height="50dp"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
                         android:clickable="true"
@@ -160,7 +161,34 @@
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:padding="20dp"
+                            android:padding="15dp"
+                            android:src="@mipmap/ic_favorite_black_24dp"
+                            android:tint="@color/red"
+                            android:contentDescription="@string/favorite_image_text" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="10dp"
+                            android:textColor="@android:color/black"
+                            android:textSize="18sp"
+                            android:text="@string/favorites_text"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/custom_playlist_linear_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:clickable="true"
+                        android:background="?attr/selectableItemBackground">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="15dp"
                             android:src="@mipmap/ic_playlist_play_black_24dp"
                             android:contentDescription="@string/custom_playlist_text" />
 
@@ -169,7 +197,7 @@
                             android:layout_height="wrap_content"
                             android:padding="10dp"
                             android:textColor="@android:color/black"
-                            android:textSize="@dimen/md_title_textsize"
+                            android:textSize="18sp"
                             android:text="@string/custom_playlist_text"/>
 
                     </LinearLayout>

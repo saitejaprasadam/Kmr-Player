@@ -4,8 +4,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
+import com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.NetworkAdapter.ReceivedSongsAdapter;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.DatabaseHelper.db4oHelper;
 import com.prasadam.kmrplayer.ModelClasses.Event;
@@ -15,7 +15,7 @@ import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
 import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 import com.prasadam.kmrplayer.SocketClasses.SocketExtensionMethods;
-import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.EventsActivity;
+import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.RequestsActivity;
 import com.prasadam.kmrplayer.UI.Fragments.DialogFragment.NearbyDevicesDetails_DialogFragment;
 
 import java.io.File;
@@ -54,7 +54,7 @@ public class FileReceiver extends AsyncTask<Void, Void, Void>{
     @Override
     protected Void doInBackground(Void... voids) {
 
-        for (TransferableSong transferableSong : event.getSongsToTransferArrayList()) {
+        for (final TransferableSong transferableSong : event.getSongsToTransferArrayList()) {
             try {
                 SocketChannel clientSocketChannel = serverSocketChannel.accept();
                 final String fileName = ExtensionMethods.extractFileNameFromPath(transferableSong.getSong().getData());
@@ -78,12 +78,13 @@ public class FileReceiver extends AsyncTask<Void, Void, Void>{
                 ExtensionMethods.scanMedia(context, PlayerDirectory + File.separator + fileName);
                 fileChannel.close();
                 clientSocketChannel.close();
-                serverSocketChannel.close();
                 new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                     public void run() {
                         Song song = AudioExtensionMethods.getSongFromPath(context, songFile.getAbsolutePath());
                         if(song != null){
                             SharedVariables.fullSongsList.add(song);
+                            db4oHelper.updateSongTrasferableObject(context, transferableSong);
+                            ReceivedSongsAdapter.updateAdapter();
                             NearbyDevicesDetails_DialogFragment.refreshDialogFragment(event.getClientMacAddress());
                         }
                     }
@@ -91,13 +92,17 @@ public class FileReceiver extends AsyncTask<Void, Void, Void>{
             }
 
             catch (Exception e) {
-                Log.d("Exception", e.toString());
+                //Log.d("Exception", e.toString());
+                e.printStackTrace();
             }
         }
 
         event.setEventState(SocketExtensionMethods.EVENT_STATE.Completed);
         db4oHelper.updateEventObject(context, event);
-        EventsActivity.eventNotifyDataSetChanged();
+        RequestsActivity.eventNotifyDataSetChanged();
+        try {
+            serverSocketChannel.close();
+        } catch (Exception ignored) {}
         return null;
     }
 }

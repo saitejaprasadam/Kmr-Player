@@ -103,6 +103,7 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
         Toolbar nowPlayingToolbar = (Toolbar) findViewById(R.id.now_playing_toolbar);
         nowPlayingToolbar.setNavigationIcon(R.mipmap.ic_keyboard_arrow_down_white_24dp);
         nowPlayingToolbar.inflateMenu(R.menu.fragment_now_playing_menu);
+        ActivityHelper.nearbyDevicesCount(this, nowPlayingToolbar.getMenu());
         nowPlayingToolbar.setOverflowIcon(getResources().getDrawable(R.mipmap.ic_more_vert_white_24dp));
         setNowPlayingToolBarMenuListener(nowPlayingToolbar);
         nowPlayingToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -210,8 +211,16 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
                             ActivitySwitcher.launchSearchActivity(VerticalSlidingDrawerBaseActivity.this);
                             break;
 
+                        case R.id.action_connected_devices:
+                            DialogHelper.openConnectedDevicesDialog(VerticalSlidingDrawerBaseActivity.this);
+                            break;
+
                         case R.id.action_devices_button:
                             ActivitySwitcher.jumpToAvaiableDevies(VerticalSlidingDrawerBaseActivity.this);
+                            break;
+
+                        case R.id.action_requests:
+                            ActivitySwitcher.launchRequestsActivity(VerticalSlidingDrawerBaseActivity.this);
                             break;
 
                         case R.id.action_equilzer:
@@ -446,6 +455,7 @@ public class VerticalSlidingDrawerBaseActivity extends AppCompatActivity impleme
         viewPager.setAdapter(albumArtParallaxAdapter);
         viewPager.setOnPageChangeListener(this);
         viewPager.setOffscreenPageLimit(0);
+        viewPager.setCurrentItem(PlayerConstants.SONG_NUMBER);
     }
 
     private void setHandlers(){

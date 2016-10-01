@@ -2,6 +2,7 @@ package com.prasadam.kmrplayer.UI.Fragments.NetworkFragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +10,10 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivityHelper;
+import com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.NetworkAdapter.ReceivedSongsAdapter;
+import com.prasadam.kmrplayer.Adapters.UIAdapters.DividerItemDecoration;
 import com.prasadam.kmrplayer.R;
+import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 import com.prasadam.kmrplayer.SocketClasses.NetworkServiceDiscovery.NSD;
 
 import butterknife.BindView;
@@ -40,10 +44,21 @@ public class ClientFileTransferFragment extends Fragment {
     }
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initComponents();
+        InitRecyclerView();
     }
 
-    private void initComponents() {
-        ActivityHelper.showEmptyFragmentChildFragment(this, "No Transfer History", fragmentContainer);
+    private void InitRecyclerView() {
+
+        ReceivedSongsAdapter receivedSongsAdapter = new ReceivedSongsAdapter(getContext(), getActivity(), serverObject);
+
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+        mLayoutManager.setReverseLayout(true);
+        mLayoutManager.setStackFromEnd(true);
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
+        recyclerView.setAdapter(receivedSongsAdapter);
+
+        if(SharedVariables.TransferList(serverObject).size() == 0)
+            ActivityHelper.showEmptyFragmentChildFragment(this, "No songs received", fragmentContainer);
     }
 }

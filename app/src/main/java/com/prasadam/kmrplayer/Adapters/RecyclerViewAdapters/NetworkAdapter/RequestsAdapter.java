@@ -1,6 +1,8 @@
 package com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.NetworkAdapter;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,12 +37,12 @@ import butterknife.ButterKnife;
  * Created by Prasadam Saiteja on 9/15/2016.
  */
 
-public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewAdapter>{
+public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewAdapter>{
 
     private final LayoutInflater inflater;
     private final Context context;
 
-    public EventsAdapter(Context context){
+    public RequestsAdapter(Context context){
         this.context = context;
         inflater = LayoutInflater.from(context);
     }
@@ -80,7 +82,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewAdapte
                     if(event.getServerCurrentSong() != null)
                         holder.requestTextView.setText(event.getClientName() + " requested you to send your current playing song (" + event.getServerCurrentSong().getTitle() + ") ?   (" + event.getEventState() + ")");
                     else
-                        holder.requestTextView.setText(event.getClientName() + " requested you to send your current playing song ?   (" + event.getEventState() + ")");
+                        holder.requestTextView.setText(event.getClientName() + " requested you to send your current playing song (" + event.getEventState() + ")");
                 }
             }
             break;
@@ -93,7 +95,17 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewAdapte
                 }
 
                 else
-                    holder.requestTextView.setText(event.getClientName() + " requested you to receive " + event.getResult() + " songs ?   (" + event.getEventState() + ")");
+                    holder.requestTextView.setText(event.getClientName() + " requested you to receive " + event.getResult() + " songs (" + event.getEventState() + ")");
+            }
+            break;
+
+            case KeyConstants.SOCKET_INITIATE_GROUP_LISTEN_REQUEST: {
+                if (event.getEventState() == SocketExtensionMethods.EVENT_STATE.WAITING) {
+                    holder.eventIcon.setImageResource(R.drawable.ic_add_to_queue_black_24dp);
+                    holder.eventIcon.setScaleX(1);
+                    holder.requestTextView.setText(event.getClientName() + " is requesting you to start group listen ?");
+                } else
+                    holder.requestTextView.setText(event.getClientName() + " requested you to start group listen (" + event.getEventState() + ")");
             }
             break;
 
@@ -143,6 +155,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewAdapte
             @Override
             public void onClick(View view) {
                 event.setEventState(SocketExtensionMethods.EVENT_STATE.Approved);
+                if(event.getCommand().equals(KeyConstants.SOCKET_INITIATE_GROUP_LISTEN_REQUEST))
+                    event.setEventState(SocketExtensionMethods.EVENT_STATE.Completed);
                 db4oHelper.updateEventObject(context, event);
                 notifyItemChanged(position);
                 eventApproved(event);
@@ -193,7 +207,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewAdapte
         return "just now";
     }
 
-    private void eventDenied(Event event) {
+    private void eventDenied(final Event event) {
         switch (event.getCommand()){
 
             case KeyConstants.SOCKET_REQUEST_CURRENT_SONG:{
@@ -209,6 +223,14 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewAdapte
                 Event eventMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_QUICK_SHARE_TRANSFER_RESULT, event.getTimeStamp(), KeyConstants.SOCKET_RESULT_CANCEL);
                 Client quickShareResponse = new Client(event.getClientIpAddress(), eventMessage);
                 quickShareResponse.execute();
+            }
+            break;
+
+            case KeyConstants.SOCKET_INITIATE_GROUP_LISTEN_REQUEST:{
+                SocketExtensionMethods.requestStrictModePermit();
+                Event eventMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_GROUP_LISTEN_RESULT, event.getTimeStamp(), KeyConstants.SOCKET_RESULT_CANCEL);
+                Client groupListenResponse = new Client(event.getClientIpAddress(), eventMessage);
+                groupListenResponse.execute();
             }
             break;
         }
@@ -249,6 +271,20 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewAdapte
                 quickShareResponse.execute();
                 FileReceiver nioServer = new FileReceiver(context, event);
                 nioServer.execute();
+            }
+            break;
+
+            case KeyConstants.SOCKET_INITIATE_GROUP_LISTEN_REQUEST:{
+                SocketExtensionMethods.requestStrictModePermit();
+                PlayerConstants.groupListeners.add(event);
+                Event eventMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_GROUP_LISTEN_RESULT, event.getTimeStamp(), KeyConstants.SOCKET_RESULT_OK);
+                Client groupListenResponse = new Client(event.getClientIpAddress(), eventMessage);
+                groupListenResponse.execute();
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    public void run() {
+                        SocketExtensionMethods.sendGroupListenSongBroadCast(context);
+                    }
+                }, 800);
             }
             break;
         }

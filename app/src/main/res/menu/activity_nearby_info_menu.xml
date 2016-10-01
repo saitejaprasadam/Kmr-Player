@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_events"
+        android:id="@+id/action_requests"
         android:icon="@drawable/ic_turned_in_not_white_24dp"
         android:title="@string/events_text"
         app:showAsAction="always"/>

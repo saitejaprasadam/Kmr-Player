@@ -5,7 +5,9 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -15,11 +17,14 @@ import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 
+import com.mikepenz.actionitembadge.library.ActionItemBadge;
+import com.mikepenz.actionitembadge.library.utils.BadgeStyle;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.Controls;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicPlayerExtensionMethods;
@@ -30,6 +35,7 @@ import com.prasadam.kmrplayer.ListenerClasses.HidingScrollListener;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
 import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
+import com.prasadam.kmrplayer.SocketClasses.NetworkServiceDiscovery.NSDClient;
 import com.prasadam.kmrplayer.SubClasses.CustomArrayList.SongsArrayList;
 import com.prasadam.kmrplayer.UI.Fragments.HelperFragments.NoItemsFragment;
 import com.prasadam.kmrplayer.UI.Fragments.HelperFragments.NoItemsFragmentV4;
@@ -53,20 +59,20 @@ public class ActivityHelper {
     public static NoItemsFragmentV4 showEmptyFragment(Activity activtiy, String message){
         NoItemsFragmentV4 newFragment = new NoItemsFragmentV4();
         FragmentTransaction ft = activtiy.getFragmentManager().beginTransaction();
-        ft.add(android.R.id.content, newFragment).addToBackStack(KeyConstants.EMPTY_FRAGMENT_TAG).commitAllowingStateLoss();
+        ft.replace(android.R.id.content, newFragment).commitAllowingStateLoss();
         newFragment.setDescriptionTextView(message);
         return newFragment;
     }
     public static NoItemsFragmentV4 showEmptyFragment(Activity activtiy, String message, FrameLayout fragmentContainer){
         NoItemsFragmentV4 newFragment = new NoItemsFragmentV4();
         FragmentTransaction ft = activtiy.getFragmentManager().beginTransaction();
-        ft.add(fragmentContainer.getId(), newFragment).addToBackStack(KeyConstants.EMPTY_FRAGMENT_TAG).commitAllowingStateLoss();
+        ft.replace(fragmentContainer.getId(), newFragment).commitAllowingStateLoss();
         newFragment.setDescriptionTextView(message);
         return newFragment;
     }
-    public static NoItemsFragment showEmptyFragmentChildFragment(Fragment childFragmentManger, String message, FrameLayout fragmentContainer){
+    public static NoItemsFragment showEmptyFragmentChildFragment(Fragment fragment, String message, FrameLayout fragmentContainer){
         NoItemsFragment newFragment = new NoItemsFragment();
-        childFragmentManger.getChildFragmentManager().beginTransaction().add(fragmentContainer.getId(), newFragment, KeyConstants.EMPTY_FRAGMENT_TAG).commit();;
+        fragment.getChildFragmentManager().beginTransaction().add(fragmentContainer.getId(), newFragment).commit();;
         newFragment.setDescriptionTextView(message);
         return newFragment;
     }
@@ -76,7 +82,6 @@ public class ActivityHelper {
         toolbar.setOverflowIcon(mAcitivity.getResources().getDrawable(R.mipmap.ic_more_vert_white_24dp));
         mAcitivity.setSupportActionBar(toolbar);
     }
-
     public static int[] getAvailableColor(Context context, Palette palette) {
         int[] temp = new int[3];
         if (palette.getVibrantSwatch() != null) {
@@ -110,7 +115,6 @@ public class ActivityHelper {
         }
         return temp;
     }
-
     public static void setShuffleFAB(final Activity mActivity, final FrameLayout rootLayout, final RecyclerView recyclerView, final ArrayList<Song> songsList) {
         final FloatingActionButton fab = new FloatingActionButton(mActivity);
         fab.setColorFilter(getColor(mActivity, R.color.colorAccentGeneric));
@@ -218,5 +222,15 @@ public class ActivityHelper {
             result = context.getResources().getDimensionPixelSize(resourceId);
         }
         return result;
+    }
+
+    public static void nearbyDevicesCount(Activity context, Menu menu) {
+
+        Drawable myIcon = context.getResources().getDrawable(R.mipmap.ic_devices_white_24dp);
+        if (NSDClient.devicesList.size() > 0)
+            ActionItemBadge.update(context,
+                    menu.findItem(R.id.action_devices_button), myIcon,
+                    new BadgeStyle(BadgeStyle.Style.LARGE, R.layout.menu_action_item_badge_layout, Color.parseColor("#606060"), Color.parseColor("#3e3e3e"), Color.WHITE),
+                    NSDClient.devicesList.size());
     }
 }

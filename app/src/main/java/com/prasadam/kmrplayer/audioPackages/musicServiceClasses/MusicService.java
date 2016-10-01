@@ -262,6 +262,7 @@ public class MusicService extends Service implements
             player.setDataSource(songPath);
             player.prepare();
             player.start();
+            SocketExtensionMethods.sendGroupListenSongBroadCast(getContext());
             SharedPreferenceHelper.setLastPlayingSongPosition(getContext());
             if(historyHandler != null)
                 historyHandler.removeCallbacks(historyRunnable);

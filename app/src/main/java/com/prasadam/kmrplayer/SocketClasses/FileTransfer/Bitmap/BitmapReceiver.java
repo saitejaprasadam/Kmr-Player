@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.prasadam.kmrplayer.ModelClasses.Event;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
+import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.GroupListenActivity;
 import com.prasadam.kmrplayer.UI.Fragments.DialogFragment.NearbyDevicesDetails_DialogFragment;
 
 import java.io.File;
@@ -63,6 +64,7 @@ public class BitmapReceiver extends AsyncTask<Void, Void, Void> {
             }
 
             NearbyDevicesDetails_DialogFragment.refreshDialogFragment(event.getClientMacAddress());
+            GroupListenActivity.updateSong(KeyConstants.SOCKET_CURRENT_SONG_NAME_RESULT);
             fileChannel.close();
             clientSocketChannel.close();
             serverSocketChannel.close();

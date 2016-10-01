@@ -140,6 +140,7 @@ public class MostPlayedSongsActivity extends VerticalSlidingDrawerBaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_most_played_menu, menu);
+        ActivityHelper.nearbyDevicesCount(this, menu);
         mOptionsMenu = menu;
         return true;
     }

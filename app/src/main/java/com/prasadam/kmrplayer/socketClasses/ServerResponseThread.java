@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.NetworkAdapter.NearbyDevicesAdapter;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.PlayerConstants;
 import com.prasadam.kmrplayer.DatabaseHelper.db4oHelper;
@@ -28,6 +29,7 @@ import com.prasadam.kmrplayer.SocketClasses.NetworkServiceDiscovery.NSD;
 import com.prasadam.kmrplayer.SocketClasses.NetworkServiceDiscovery.NSDClient;
 import com.prasadam.kmrplayer.SocketClasses.QuickShare.InitiateQuickShare;
 import com.prasadam.kmrplayer.SocketClasses.QuickShare.QuickShareHelper;
+import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.GroupListenActivity;
 import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.NearbyDevicesActivity;
 import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.QuickShareActivity;
 
@@ -123,6 +125,26 @@ public class ServerResponseThread extends Thread {
 
                 case KeyConstants.SOCKET_ALBUM_ART_RESULT:
                     AlbumArtResult(event);
+                    break;
+
+                case KeyConstants.SOCKET_INITIATE_GROUP_LISTEN_REQUEST:
+                    RequestGroupListen(event);
+                    break;
+
+                case KeyConstants.SOCKET_GROUP_LISTEN_RESULT:
+                    GroupListenResult(event);
+                    break;
+
+                case KeyConstants.SOCKET_GROUP_LISTEN_OPEN_FILE_RECEIVER:
+                    SocketExtensionMethods.GroupListenStartFileReceiver(context, event);
+                    break;
+
+                case KeyConstants.SOCKET_GROUP_LISTEN_DISCONNECT:
+                    SocketExtensionMethods.GroupListenDisconnect(context, event);
+                    break;
+
+                case KeyConstants.SOCKET_GROUP_LISTEN_KICK_OUT_DEVICE:
+                    SocketExtensionMethods.GroupListenEndConnection(context, event);
                     break;
 
                 default:
@@ -274,6 +296,7 @@ public class ServerResponseThread extends Thread {
             if(device.getHostAddress().equals(clientIPAddress))
                 device.setCurrentSongPlaying(event.getClientCurrentSong());
         }
+        GroupListenActivity.updateSong(KeyConstants.SOCKET_CURRENT_SONG_NAME_RESULT);
         NearbyDevicesActivity.updateAdapater();
     }
 
@@ -327,6 +350,7 @@ public class ServerResponseThread extends Thread {
                 public void run() {
                     FileReceiver fileReceiver = new FileReceiver(context, event);
                     fileReceiver.execute();
+                    db4oHelper.pushSongTransferObject(context, event.getSongsToTransferArrayList());
                     Toast.makeText(context, context.getString(R.string.current_song_request_accepted) + KeyConstants.SPACE + event.getClientName(), Toast.LENGTH_SHORT).show();
                 }
             });
@@ -396,4 +420,52 @@ public class ServerResponseThread extends Thread {
             });
         }
     }
+
+    private void RequestGroupListen(final Event event) {
+        if(PlayerConstants.parentGroupListener == null)
+            db4oHelper.pushEventObject(context, event);
+        else{
+            Event eventMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_GROUP_LISTEN_RESULT, ExtensionMethods.getTimeStamp(), KeyConstants.SOCKET_RESULT_CANCEL);
+            Client client = new Client(clientIPAddress, eventMessage);
+            client.execute();
+        }
+    }
+    private void GroupListenResult(final Event event) {
+
+        if(event.getResult().equals(KeyConstants.SOCKET_RESULT_OK) && PlayerConstants.parentGroupListener == null && PlayerConstants.groupListeners.size() == 0){
+            PlayerConstants.parentGroupListener = event;
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(context, event.getClientName() + KeyConstants.SPACE + context.getString(R.string.group_listen_accepted), Toast.LENGTH_LONG).show();
+                }
+            });
+            ActivitySwitcher.startGroupListen(context);
+        }
+
+        else if(event.getResult().equals(KeyConstants.SOCKET_RESULT_CANCEL)){
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(context, event.getClientName() + KeyConstants.SPACE + context.getString(R.string.group_listen_rejected), Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+
+        else{
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(context, context.getString(R.string.group_listen_unkown_issue), Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+
+
+
+    }
+
 }

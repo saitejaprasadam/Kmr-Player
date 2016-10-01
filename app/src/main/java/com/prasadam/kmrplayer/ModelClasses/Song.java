@@ -39,6 +39,11 @@ public class Song implements Serializable {
         this.albumArtLocation = song.getAlbumArtLocation();
         this.hashID = song.getHashID();
     }
+    public Song(String hashID, long id) {
+        this.hashID = hashID;
+        this.id = id;
+
+    }
 
     public long getArtistID() { return artistID; }
     public long getID(){return id;}

@@ -5,6 +5,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivityHelper;
+import com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.NetworkAdapter.ReceivedSongsAdapter;
 import com.prasadam.kmrplayer.Adapters.UIAdapters.DividerItemDecoration;
 import com.prasadam.kmrplayer.DatabaseHelper.db4oHelper;
 import com.prasadam.kmrplayer.R;
@@ -18,9 +19,10 @@ import butterknife.ButterKnife;
  * Created by Prasadam Saiteja on 9/22/2016.
  */
 
-public class TransfersActivity extends TranslucentBaseActivity{
+public class ReceivedSongsActivity extends TranslucentBaseActivity{
 
-    @BindView (R.id.transfer_recycler_view) RecyclerView transfersRecyclerView;
+    @BindView (R.id.transfer_recycler_view) RecyclerView recyclerView;
+    private ReceivedSongsAdapter recyclerViewAdapter;
 
     public void onCreate(Bundle bundle){
         super.onCreate(bundle);
@@ -32,19 +34,23 @@ public class TransfersActivity extends TranslucentBaseActivity{
 
         InitRecyclerView();
     }
+    public void onDestroy(){
+        recyclerView = null;
+        recyclerViewAdapter = null;
+        super.onDestroy();
+    }
 
     private void InitRecyclerView() {
 
-        if(SharedVariables.fullTransferList.size() == 0)
-            ActivityHelper.showEmptyFragment(this, "No transfer history", fragmentContainer);
+        recyclerViewAdapter = new ReceivedSongsAdapter(this, this);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
+        mLayoutManager.setReverseLayout(true);
+        mLayoutManager.setStackFromEnd(true);
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+        recyclerView.setAdapter(recyclerViewAdapter);
 
-        else{
-            LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
-            mLayoutManager.setReverseLayout(true);
-            mLayoutManager.setStackFromEnd(true);
-            transfersRecyclerView.setLayoutManager(mLayoutManager);
-            transfersRecyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
-            //transfersRecyclerView.setAdapter();
-        }
+        if(SharedVariables.getFullTransferList().size() == 0)
+            ActivityHelper.showEmptyFragment(this, "No songs received", fragmentContainer);
     }
 }

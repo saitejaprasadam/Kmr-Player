@@ -7,7 +7,7 @@ import com.prasadam.kmrplayer.FabricHelpers.CustomEventHelpers;
 import com.prasadam.kmrplayer.ModelClasses.Event;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
 import com.prasadam.kmrplayer.SocketClasses.SocketExtensionMethods;
-import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.EventsActivity;
+import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.RequestsActivity;
 
 import java.io.File;
 import java.io.IOException;
@@ -62,7 +62,7 @@ public class FileSender {
             if(event.getCommand().equals(KeyConstants.SOCKET_REQUEST_CURRENT_SONG)){
                 event.setEventState(SocketExtensionMethods.EVENT_STATE.Completed);
                 db4oHelper.updateEventObject(context, event);
-                EventsActivity.eventNotifyDataSetChanged();
+                RequestsActivity.eventNotifyDataSetChanged();
             }
 
             socketChannel.close();

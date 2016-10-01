@@ -70,10 +70,6 @@ public class NearbyDevicesDetails_DialogFragment extends DialogFragment{
     }
     public void onResume() {
         super.onResume();
-        if(serverObject.getCurrentSongPlaying() == null){
-            Toast.makeText(getActivity(), "Device currently not available", Toast.LENGTH_SHORT).show();
-            dismissAllowingStateLoss();
-        }
         setParamsLayout();
         initHandler();
         initComponents();
@@ -120,8 +116,10 @@ public class NearbyDevicesDetails_DialogFragment extends DialogFragment{
     }
     private void initComponents() {
 
-        viewPager.setAdapter(new TabAdapter(getChildFragmentManager()));
-        tabLayout.setupWithViewPager(viewPager);
+        if(viewPager.getAdapter() == null){
+            viewPager.setAdapter(new TabAdapter(getChildFragmentManager(), this));
+            tabLayout.setupWithViewPager(viewPager);
+        }
 
         songDetails.setSelected(true);
         deviceName.setText(serverObject.GetClientNSD().getServiceName());
@@ -178,13 +176,13 @@ public class NearbyDevicesDetails_DialogFragment extends DialogFragment{
 
     class TabAdapter extends FragmentPagerAdapter {
 
-        private ClientFileTransferFragment clientFileTransferFragment;
-        private ClientOptionsFragment clientOptionsFragment;
+        private final ClientFileTransferFragment clientFileTransferFragment;
+        private final ClientOptionsFragment clientOptionsFragment;
 
-        public TabAdapter(FragmentManager fm) {
+        public TabAdapter(FragmentManager fm, NearbyDevicesDetails_DialogFragment nearbyDevicesDetails_dialogFragment) {
             super(fm);
             clientFileTransferFragment  = new ClientFileTransferFragment(serverObject);
-            clientOptionsFragment = new ClientOptionsFragment(serverObject);
+            clientOptionsFragment = new ClientOptionsFragment(serverObject, nearbyDevicesDetails_dialogFragment);
         }
 
         @Override
@@ -205,7 +203,7 @@ public class NearbyDevicesDetails_DialogFragment extends DialogFragment{
                     return getResources().getString(R.string.options_text);
 
                 case 1 :
-                    return getResources().getString(R.string.transfer_history);
+                    return getResources().getString(R.string.songs_received);
             }
             return null;
         }

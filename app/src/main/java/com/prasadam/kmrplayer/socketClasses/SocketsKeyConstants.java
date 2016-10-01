@@ -21,6 +21,7 @@ public class SocketsKeyConstants {
 
     public static final int MAIN_SERVER_SOCKET_PORT_ADDRESS = 6262;
     public static final int FILE_TRANSFER_SOCKET_PORT_ADDRESS = 7248;
+    public static final int GROUP_LISTEN_TRANSFER_SOCKET_PORT_ADDRESS = 7249;
     public static final int BITMAP_TRANSFER_SOCKET_PORT_ADDRESS = 6272;
     public static final int GROUP_PLAY_SOCKET_PORT_ADDRESS = 1104;
 
@@ -54,4 +55,10 @@ public class SocketsKeyConstants {
 
     public static final String SOCKET_REQUEST_ALBUM_ART = "SOCKET_REQUEST_ALBUM_ART";
     public static final String SOCKET_ALBUM_ART_RESULT = "SOCKET_ALBUM_ART_RESULT";
+
+    public static final String SOCKET_INITIATE_GROUP_LISTEN_REQUEST = "SOCKET_INITIATE_GROUP_LISTEN_REQUEST";
+    public static final String SOCKET_GROUP_LISTEN_RESULT = "SOCKET_GROUP_LISTEN_RESULT";
+    public static final String SOCKET_GROUP_LISTEN_OPEN_FILE_RECEIVER = "SOCKET_GROUP_LISTEN_OPEN_FILE_RECEIVER";
+    public static final String SOCKET_GROUP_LISTEN_DISCONNECT = "SOCKET_GROUP_LISTEN_DISCONNECT";
+    public static final String SOCKET_GROUP_LISTEN_KICK_OUT_DEVICE = "SOCKET_GROUP_LISTEN_KICK_OUT_DEVICE";
 }

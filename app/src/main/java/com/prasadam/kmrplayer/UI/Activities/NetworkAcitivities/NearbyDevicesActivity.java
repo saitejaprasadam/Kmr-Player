@@ -123,8 +123,8 @@ public class NearbyDevicesActivity extends TranslucentBaseActivity{
                 finish();
                 break;
 
-            case R.id.action_events:
-                ActivitySwitcher.launchEventsActivity(this);
+            case R.id.action_requests:
+                ActivitySwitcher.launchRequestsActivity(this);
                 break;
 
             case R.id.action_nearby_info:

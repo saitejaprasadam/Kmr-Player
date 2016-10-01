@@ -13,6 +13,7 @@ import android.net.wifi.WifiManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
@@ -24,6 +25,8 @@ import com.prasadam.kmrplayer.ModelClasses.Song;
 import com.prasadam.kmrplayer.FabricHelpers.CustomEventHelpers;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
+import com.prasadam.kmrplayer.UI.Activities.BaseActivity.VerticalSlidingDrawerBaseActivity;
+import com.prasadam.kmrplayer.UI.Fragments.DialogFragment.ConnectedDevices_DialogFragment;
 
 import java.io.File;
 import java.io.IOException;
@@ -316,5 +319,10 @@ public class DialogHelper {
                     }
                 })
                 .show();
+    }
+
+    public static void openConnectedDevicesDialog(AppCompatActivity appCompactActivity) {
+        ConnectedDevices_DialogFragment connectedDevicesFragment = new ConnectedDevices_DialogFragment();
+        connectedDevicesFragment.show(appCompactActivity.getSupportFragmentManager(), (ConnectedDevices_DialogFragment.class).getSimpleName());
     }
 }
