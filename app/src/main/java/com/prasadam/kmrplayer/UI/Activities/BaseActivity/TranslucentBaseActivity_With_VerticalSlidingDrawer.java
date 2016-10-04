@@ -15,15 +15,14 @@ import butterknife.ButterKnife;
 public class TranslucentBaseActivity_With_VerticalSlidingDrawer extends VerticalSlidingDrawerBaseActivity {
 
     protected FrameLayout rootLayout;
-    protected @BindView(R.id.fragment_container) FrameLayout fragmentContainer;
 
     @Override
     public void setContentView(final int layoutResID) {
         rootLayout = (FrameLayout) getLayoutInflater().inflate(R.layout.base_activity_translucent_layout, null);
-        FrameLayout actContent = (FrameLayout) rootLayout.findViewById(R.id.main_content);
+        FrameLayout actContent = (FrameLayout) rootLayout.findViewById(R.id.translucent_main_content);
 
         getLayoutInflater().inflate(layoutResID, actContent, true);
-        super.setContentView(actContent);
+        super.setContentView(rootLayout);
         ButterKnife.bind(this);
 
         ActivityHelper.setBackButtonToCustomToolbarBar(TranslucentBaseActivity_With_VerticalSlidingDrawer.this);

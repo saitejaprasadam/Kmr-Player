@@ -20,7 +20,7 @@ public class TranslucentBaseActivity extends AppCompatActivity{
     @Override
     public void setContentView(final int layoutResID) {
         FrameLayout rootLayout = (FrameLayout) getLayoutInflater().inflate(R.layout.base_activity_translucent_layout, null);
-        fragmentContainer = (FrameLayout) rootLayout.findViewById(R.id.main_content);
+        fragmentContainer = (FrameLayout) rootLayout.findViewById(R.id.translucent_main_content);
 
         getLayoutInflater().inflate(layoutResID, fragmentContainer, true);
         super.setContentView(rootLayout);

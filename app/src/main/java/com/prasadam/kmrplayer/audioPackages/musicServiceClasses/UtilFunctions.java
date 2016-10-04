@@ -28,7 +28,7 @@ public class UtilFunctions {
         return false;
     }
 
-    public static Bitmap getAlbumart(Context context,Long album_id){
+    public static Bitmap getAlbumart(Context context, Long album_id){
         Bitmap bm = null;
         BitmapFactory.Options options = new BitmapFactory.Options();
         try{

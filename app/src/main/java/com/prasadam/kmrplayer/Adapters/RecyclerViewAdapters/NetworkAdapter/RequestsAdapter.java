@@ -14,13 +14,13 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.PlayerConstants;
 import com.prasadam.kmrplayer.DatabaseHelper.db4oHelper;
+import com.prasadam.kmrplayer.ModelClasses.SerializableClasses.IRequest;
 import com.prasadam.kmrplayer.ModelClasses.Song;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
 import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 import com.prasadam.kmrplayer.SocketClasses.Client;
-import com.prasadam.kmrplayer.ModelClasses.Event;
 import com.prasadam.kmrplayer.SocketClasses.FileTransfer.Music.FileReceiver;
 import com.prasadam.kmrplayer.SocketClasses.FileTransfer.Music.FileSender;
 import com.prasadam.kmrplayer.SocketClasses.SocketExtensionMethods;
@@ -52,84 +52,87 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewAd
         return new ViewAdapter(inflater.inflate(R.layout.recycler_view_event_layout, parent, false));
     }
     public void onBindViewHolder(ViewAdapter holder, final int position) {
-        final Event event = SharedVariables.fullEventsList.get(position);
+        final IRequest request = SharedVariables.fullEventsList.get(position);
 
-        holder.eventTime.setText(getDateStringFormat(event.getTime()));
-        onEventClickListener(holder, position, event);
-        eventSetter(holder, event);
-        setPromptLayout(position, holder, event);
+        holder.eventTime.setText(getDateStringFormat(request.getTime()));
+        onEventClickListener(holder, position, request);
+        eventSetter(holder, request);
+        setPromptLayout(position, holder, request);
     }
 
     public int getItemCount() {
         return SharedVariables.fullEventsList.size();
     }
 
-    private void eventSetter(ViewAdapter holder, Event event) {
+    private void eventSetter(ViewAdapter holder, IRequest request) {
 
-        switch (event.getCommand()){
+        switch (request.getCommand()){
 
             case KeyConstants.SOCKET_REQUEST_CURRENT_SONG:{
-                if(event.getEventState() == SocketExtensionMethods.EVENT_STATE.WAITING){
+                if(request.getEventState() == SocketExtensionMethods.EVENT_STATE.WAITING){
                     holder.eventIcon.setImageResource(R.drawable.ic_reply_black_24dp);
                     holder.eventIcon.setScaleX(-1);
-                    if(event.getServerCurrentSong() != null)
-                        holder.requestTextView.setText(event.getClientName() + " is requesting you to send your current playing song (" + event.getServerCurrentSong().getTitle() + ") ?");
+                    if(request.getServerCurrentSong() != null)
+                        holder.requestTextView.setText(request.getClientName() + " is requesting you to send your current playing song (" + request.getServerCurrentSong().getTitle() + ") ?");
                     else
-                        holder.requestTextView.setText(event.getClientName() + " is requesting you to send your current playing song ?");
+                        holder.requestTextView.setText(request.getClientName() + " is requesting you to send your current playing song ?");
                 }
 
                 else{
-                    if(event.getServerCurrentSong() != null)
-                        holder.requestTextView.setText(event.getClientName() + " requested you to send your current playing song (" + event.getServerCurrentSong().getTitle() + ") ?   (" + event.getEventState() + ")");
+                    if(request.getServerCurrentSong() != null)
+                        holder.requestTextView.setText(request.getClientName() + " requested you to send your current playing song (" + request.getServerCurrentSong().getTitle() + ") ?   (" + request.getEventState() + ")");
                     else
-                        holder.requestTextView.setText(event.getClientName() + " requested you to send your current playing song (" + event.getEventState() + ")");
+                        holder.requestTextView.setText(request.getClientName() + " requested you to send your current playing song (" + request.getEventState() + ")");
                 }
             }
             break;
 
             case KeyConstants.SOCKET_INITIATE_QUICK_SHARE_TRANSFER_REQUEST:{
-                if(event.getEventState() == SocketExtensionMethods.EVENT_STATE.WAITING){
+                if(request.getEventState() == SocketExtensionMethods.EVENT_STATE.WAITING){
                     holder.eventIcon.setImageResource(R.drawable.ic_reply_all_black_24dp);
                     holder.eventIcon.setScaleX(-1);
-                    holder.requestTextView.setText(event.getClientName() + " is requesting you to receive " + event.getResult() +" songs ?");
+                    holder.requestTextView.setText(request.getClientName() + " is requesting you to receive " + request.getResult() +" songs ?");
                 }
 
                 else
-                    holder.requestTextView.setText(event.getClientName() + " requested you to receive " + event.getResult() + " songs (" + event.getEventState() + ")");
+                    holder.requestTextView.setText(request.getClientName() + " requested you to receive " + request.getResult() + " songs (" + request.getEventState() + ")");
             }
             break;
 
             case KeyConstants.SOCKET_INITIATE_GROUP_LISTEN_REQUEST: {
-                if (event.getEventState() == SocketExtensionMethods.EVENT_STATE.WAITING) {
+                if (request.getEventState() == SocketExtensionMethods.EVENT_STATE.WAITING) {
                     holder.eventIcon.setImageResource(R.drawable.ic_add_to_queue_black_24dp);
                     holder.eventIcon.setScaleX(1);
-                    holder.requestTextView.setText(event.getClientName() + " is requesting you to start group listen ?");
+                    holder.requestTextView.setText(request.getClientName() + " is requesting you to start group listen ?");
                 } else
-                    holder.requestTextView.setText(event.getClientName() + " requested you to start group listen (" + event.getEventState() + ")");
+                    holder.requestTextView.setText(request.getClientName() + " requested you to start group listen (" + request.getEventState() + ")");
             }
             break;
 
         }
     }
-    private void setPromptLayout(final int position, final ViewAdapter holder, final Event event) {
+    private void setPromptLayout(final int position, final ViewAdapter holder, final IRequest request) {
 
-        if(event.getEventState() != SocketExtensionMethods.EVENT_STATE.WAITING){
+        if(request.getEventState() != SocketExtensionMethods.EVENT_STATE.WAITING){
             holder.eventAcceptButton.setVisibility(View.GONE);
             holder.eventDenyButton.setVisibility(View.GONE);
 
-            if(event.getEventState() == SocketExtensionMethods.EVENT_STATE.Denied){
+            if(request.getEventState() == SocketExtensionMethods.EVENT_STATE.Denied){
                 holder.eventIcon.setImageResource(R.drawable.ic_block_white_24dp);
                 holder.eventIcon.setScaleX(1);
                 holder.eventIcon.setColorFilter(context.getResources().getColor(R.color.red));
             }
 
-            else if(event.getEventState() == SocketExtensionMethods.EVENT_STATE.Approved){
-                holder.eventIcon.setImageResource(R.mipmap.ic_done_white_24dp);
+            else if(request.getEventState() == SocketExtensionMethods.EVENT_STATE.Approved){
+                if(request.getCommand().equals(KeyConstants.SOCKET_INITIATE_GROUP_LISTEN_REQUEST))
+                    holder.eventIcon.setImageResource(R.drawable.ic_done_all_white_24dp);
+                else
+                    holder.eventIcon.setImageResource(R.mipmap.ic_done_white_24dp);
                 holder.eventIcon.setScaleX(1);
                 holder.eventIcon.setColorFilter(context.getResources().getColor(R.color.teal));
             }
 
-            else if(event.getEventState() == SocketExtensionMethods.EVENT_STATE.Completed){
+            else if(request.getEventState() == SocketExtensionMethods.EVENT_STATE.Completed){
                 holder.eventIcon.setImageResource(R.drawable.ic_done_all_white_24dp);
                 holder.eventIcon.setScaleX(1);
                 holder.eventIcon.setColorFilter(context.getResources().getColor(R.color.teal));
@@ -137,33 +140,31 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewAd
         }
 
         else
-            setAcceptDenyListener(position, holder, event);
+            setAcceptDenyListener(position, holder, request);
     }
-    private void setAcceptDenyListener(final int position, final ViewAdapter holder, final Event event) {
+    private void setAcceptDenyListener(final int position, final ViewAdapter holder, final IRequest request) {
 
         holder.eventDenyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                event.setEventState(SocketExtensionMethods.EVENT_STATE.Denied);
-                db4oHelper.updateEventObject(context, event);
+                request.setEventState(SocketExtensionMethods.EVENT_STATE.Denied);
+                db4oHelper.updateRequestObject(context, request);
                 notifyItemChanged(position);
-                eventDenied(event);
+                eventDenied(request);
             }
         });
 
         holder.eventAcceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                event.setEventState(SocketExtensionMethods.EVENT_STATE.Approved);
-                if(event.getCommand().equals(KeyConstants.SOCKET_INITIATE_GROUP_LISTEN_REQUEST))
-                    event.setEventState(SocketExtensionMethods.EVENT_STATE.Completed);
-                db4oHelper.updateEventObject(context, event);
+                request.setEventState(SocketExtensionMethods.EVENT_STATE.Approved);
+                db4oHelper.updateRequestObject(context, request);
                 notifyItemChanged(position);
-                eventApproved(event);
+                eventApproved(request);
             }
         });
     }
-    private void onEventClickListener(ViewAdapter holder, final int position, final Event event) {
+    private void onEventClickListener(ViewAdapter holder, final int position, final IRequest request) {
 
         holder.relativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -174,8 +175,8 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewAd
                             @Override
                             public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
                                 if(which == 0){
-                                    db4oHelper.removeEventObject(context, event);
-                                    SharedVariables.fullEventsList.remove(event);
+                                    db4oHelper.removeRequestObject(context, request);
+                                    SharedVariables.fullEventsList.remove(request);
                                     notifyItemRemoved(position);
                                 }
                             }
@@ -207,37 +208,37 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewAd
         return "just now";
     }
 
-    private void eventDenied(final Event event) {
-        switch (event.getCommand()){
+    private void eventDenied(final IRequest request) {
+        switch (request.getCommand()){
 
             case KeyConstants.SOCKET_REQUEST_CURRENT_SONG:{
                 SocketExtensionMethods.requestStrictModePermit();
-                Event eventMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_CURRENT_SONG_RESULT, ExtensionMethods.getTimeStamp(), KeyConstants.SOCKET_RESULT_CANCEL);
-                Client quickShareResponse = new Client(event.getClientIpAddress(), eventMessage);
+                IRequest requestMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_CURRENT_SONG_RESULT, ExtensionMethods.getTimeStamp(), KeyConstants.SOCKET_RESULT_CANCEL);
+                Client quickShareResponse = new Client(request.getClientIpAddress(), requestMessage);
                 quickShareResponse.execute();
             }
             break;
 
             case KeyConstants.SOCKET_INITIATE_QUICK_SHARE_TRANSFER_REQUEST:{
                 SocketExtensionMethods.requestStrictModePermit();
-                Event eventMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_QUICK_SHARE_TRANSFER_RESULT, event.getTimeStamp(), KeyConstants.SOCKET_RESULT_CANCEL);
-                Client quickShareResponse = new Client(event.getClientIpAddress(), eventMessage);
+                IRequest requestMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_QUICK_SHARE_TRANSFER_RESULT, request.getTimeStamp(), KeyConstants.SOCKET_RESULT_CANCEL);
+                Client quickShareResponse = new Client(request.getClientIpAddress(), requestMessage);
                 quickShareResponse.execute();
             }
             break;
 
             case KeyConstants.SOCKET_INITIATE_GROUP_LISTEN_REQUEST:{
                 SocketExtensionMethods.requestStrictModePermit();
-                Event eventMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_GROUP_LISTEN_RESULT, event.getTimeStamp(), KeyConstants.SOCKET_RESULT_CANCEL);
-                Client groupListenResponse = new Client(event.getClientIpAddress(), eventMessage);
+                IRequest requestMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_GROUP_LISTEN_RESULT, request.getTimeStamp(), KeyConstants.SOCKET_RESULT_CANCEL);
+                Client groupListenResponse = new Client(request.getClientIpAddress(), requestMessage);
                 groupListenResponse.execute();
             }
             break;
         }
     }
-    private void eventApproved(final Event event) {
+    private void eventApproved(final IRequest request) {
 
-        switch (event.getCommand()){
+        switch (request.getCommand()){
 
             case KeyConstants.SOCKET_REQUEST_CURRENT_SONG:{
                 new Thread(new Runnable() {
@@ -247,12 +248,12 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewAd
                         final String currentSongFilePath = PlayerConstants.getPlayList().get(PlayerConstants.SONG_NUMBER).getData();
                         ArrayList<Song> songArrayList = new ArrayList<>();
                         songArrayList.add(PlayerConstants.getPlayList().get(PlayerConstants.SONG_NUMBER));
-                        Event eventMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_CURRENT_SONG_RESULT, ExtensionMethods.getTimeStamp(), KeyConstants.SOCKET_RESULT_OK, songArrayList);
-                        Client quickShareResponse = new Client(event.getClientIpAddress(), eventMessage);
+                        IRequest requestMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_CURRENT_SONG_RESULT, ExtensionMethods.getTimeStamp(), KeyConstants.SOCKET_RESULT_OK, songArrayList);
+                        Client quickShareResponse = new Client(request.getClientIpAddress(), requestMessage);
                         quickShareResponse.execute();
                         try {
                             Thread.sleep(1000);
-                            FileSender fileSender = new FileSender(context, event);
+                            FileSender fileSender = new FileSender(context, request);
                             fileSender.sendFile(currentSongFilePath);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
@@ -265,20 +266,20 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewAd
 
             case KeyConstants.SOCKET_INITIATE_QUICK_SHARE_TRANSFER_REQUEST:{
                 SocketExtensionMethods.requestStrictModePermit();
-                db4oHelper.pushSongTransferObject(context, event.getSongsToTransferArrayList());
-                Event eventMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_QUICK_SHARE_TRANSFER_RESULT, event.getTimeStamp(), KeyConstants.SOCKET_RESULT_OK);
-                Client quickShareResponse = new Client(event.getClientIpAddress(), eventMessage);
+                db4oHelper.pushSongTransferObject(context, request.getSongsToTransferArrayList());
+                IRequest requestMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_QUICK_SHARE_TRANSFER_RESULT, request.getTimeStamp(), KeyConstants.SOCKET_RESULT_OK);
+                Client quickShareResponse = new Client(request.getClientIpAddress(), requestMessage);
                 quickShareResponse.execute();
-                FileReceiver nioServer = new FileReceiver(context, event);
+                FileReceiver nioServer = new FileReceiver(context, request);
                 nioServer.execute();
             }
             break;
 
             case KeyConstants.SOCKET_INITIATE_GROUP_LISTEN_REQUEST:{
                 SocketExtensionMethods.requestStrictModePermit();
-                PlayerConstants.groupListeners.add(event);
-                Event eventMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_GROUP_LISTEN_RESULT, event.getTimeStamp(), KeyConstants.SOCKET_RESULT_OK);
-                Client groupListenResponse = new Client(event.getClientIpAddress(), eventMessage);
+                PlayerConstants.groupListeners.add(request);
+                IRequest requestMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_GROUP_LISTEN_RESULT, request.getTimeStamp(), KeyConstants.SOCKET_RESULT_OK);
+                Client groupListenResponse = new Client(request.getClientIpAddress(), requestMessage);
                 groupListenResponse.execute();
                 new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                     public void run() {

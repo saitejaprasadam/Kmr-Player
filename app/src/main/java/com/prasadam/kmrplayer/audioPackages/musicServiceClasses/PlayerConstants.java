@@ -3,10 +3,9 @@ package com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses;
 import android.content.Context;
 import android.os.Handler;
 
-import com.prasadam.kmrplayer.ModelClasses.Event;
+import com.prasadam.kmrplayer.ModelClasses.SerializableClasses.IRequest;
 import com.prasadam.kmrplayer.ModelClasses.Song;
 import com.prasadam.kmrplayer.SharedPreferences.SharedPreferenceHelper;
-import com.prasadam.kmrplayer.SocketClasses.NetworkServiceDiscovery.NSD;
 import com.prasadam.kmrplayer.SubClasses.CustomArrayList.SongsArrayList;
 import com.prasadam.kmrplayer.UI.Activities.BaseActivity.VerticalSlidingDrawerBaseActivity;
 
@@ -54,8 +53,8 @@ public class PlayerConstants {
     public static Handler PLAY_PAUSE_HANDLER;
     public static Handler UPDATE_NOW_PLAYING_UI;
 
-    public static ArrayList<Event> groupListeners = new ArrayList<>();
-    public static Event parentGroupListener = null;
+    public static ArrayList<IRequest> groupListeners = new ArrayList<>();
+    public static IRequest parentGroupListener = null;
 
     public enum PLAYBACK_STATE_ENUM {
         LOOP, SINGLE_LOOP, OFF;

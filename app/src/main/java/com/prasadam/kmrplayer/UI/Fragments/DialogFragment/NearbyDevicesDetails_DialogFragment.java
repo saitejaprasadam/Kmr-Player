@@ -1,5 +1,6 @@
 package com.prasadam.kmrplayer.UI.Fragments.DialogFragment;
 
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
@@ -43,6 +44,7 @@ import butterknife.ButterKnife;
  * Created by Prasadam Saiteja on 9/23/2016.
  */
 
+@SuppressLint("ValidFragment")
 public class NearbyDevicesDetails_DialogFragment extends DialogFragment{
 
     @BindView (R.id.blurred_album_art) ImageView blurredAlbumArt;
@@ -174,6 +176,7 @@ public class NearbyDevicesDetails_DialogFragment extends DialogFragment{
         });
     }
 
+    @SuppressLint("ValidFragment")
     class TabAdapter extends FragmentPagerAdapter {
 
         private final ClientFileTransferFragment clientFileTransferFragment;

@@ -109,18 +109,27 @@ public class TabFragment extends Fragment{
             return int_items;
         }
         public CharSequence getPageTitle(int position) {
-            switch (position){
-                case 0 :
-                    return getResources().getString(R.string.songs_text);
-                case 1 :
-                    return getResources().getString(R.string.albums_text);
 
-                case 2 :
-                    return getResources().getString(R.string.artist_text);
+            try{
+                switch (position){
+                    case 0 :
+                        return getContext().getResources().getString(R.string.songs_text);
 
-                case 3:
-                    return getResources().getString(R.string.playlist_text);
+                    case 1 :
+                        return getContext().getResources().getString(R.string.albums_text);
+
+                    case 2 :
+                        return getContext().getResources().getString(R.string.artist_text);
+
+                    case 3:
+                        return getContext().getResources().getString(R.string.playlist_text);
+                }
             }
+
+            catch (Exception e){
+                return "songs";
+            }
+
             return null;
         }
     }

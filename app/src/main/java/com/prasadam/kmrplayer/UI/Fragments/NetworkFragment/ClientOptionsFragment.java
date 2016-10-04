@@ -1,5 +1,6 @@
 package com.prasadam.kmrplayer.UI.Fragments.NetworkFragment;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.SwitchPreference;
@@ -24,6 +25,7 @@ import butterknife.ButterKnife;
  * Created by Prasadam Saiteja on 9/24/2016.
  */
 
+@SuppressLint("ValidFragment")
 public class ClientOptionsFragment extends Fragment {
 
     private static final String KEY_SOCKET_CLIENT_SEND_WITHOUT_CONFIRMATION = "KEY_SOCKET_CLIENT_SEND_WITHOUT_CONFIRMATION";
@@ -51,6 +53,7 @@ public class ClientOptionsFragment extends Fragment {
         getChildFragmentManager().beginTransaction().replace(fragmentContainer.getId(), new SettingsFragment(serverObject)).commit();
     }
 
+    @SuppressLint("ValidFragment")
     public static class SettingsFragment extends PreferenceFragment{
 
         private final NSD serverObject;

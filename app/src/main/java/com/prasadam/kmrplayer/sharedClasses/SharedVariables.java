@@ -4,8 +4,8 @@ import android.content.Context;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
-import com.prasadam.kmrplayer.ModelClasses.Event;
-import com.prasadam.kmrplayer.ModelClasses.TransferableSong;
+import com.prasadam.kmrplayer.ModelClasses.SerializableClasses.IRequest;
+import com.prasadam.kmrplayer.ModelClasses.SerializableClasses.ITransferableSong;
 import com.prasadam.kmrplayer.SocketClasses.NetworkServiceDiscovery.NSD;
 import com.prasadam.kmrplayer.SocketClasses.SocketExtensionMethods;
 import com.prasadam.kmrplayer.SubClasses.CustomArrayList.AlbumArrayList;
@@ -47,14 +47,14 @@ public class SharedVariables {
         public void onItemAddedListener(int index) { ArtistFragment.onItemAdded(index); }
     };
 
-    public static volatile ArrayList<Event> fullEventsList = new ArrayList<>();
-    public static volatile ArrayList<TransferableSong> fullTransferList = new ArrayList<>();
+    public static volatile ArrayList<IRequest> fullEventsList = new ArrayList<>();
+    public static volatile ArrayList<ITransferableSong> fullTransferList = new ArrayList<>();
 
-    public static ArrayList<TransferableSong> getFullTransferList(){
+    public static ArrayList<ITransferableSong> getFullTransferList(){
 
-        ArrayList<TransferableSong> transferableSongArrayList = new ArrayList<>();
+        ArrayList<ITransferableSong> transferableSongArrayList = new ArrayList<>();
 
-        for(TransferableSong transferableSong : fullTransferList)
+        for(ITransferableSong transferableSong : fullTransferList)
             if(AudioExtensionMethods.checkIfSongExists(transferableSong.getSong().getHashID())
                     && !transferableSongArrayList.contains(transferableSong)
                     && transferableSong.getSongTransferState() == SocketExtensionMethods.TRANSFER_STATE.Completed)
@@ -62,11 +62,11 @@ public class SharedVariables {
 
         return transferableSongArrayList;
     }
-    public static ArrayList<TransferableSong> TransferList(NSD serverObject){
+    public static ArrayList<ITransferableSong> TransferList(NSD serverObject){
 
-        ArrayList<TransferableSong> transferableSongArrayList = new ArrayList<>();
+        ArrayList<ITransferableSong> transferableSongArrayList = new ArrayList<>();
 
-        for (TransferableSong transferableSong : fullTransferList)
+        for (ITransferableSong transferableSong : fullTransferList)
             if(transferableSong.getClient_mac_address().equals(serverObject.getMacAddress())
                     && !transferableSongArrayList.contains(transferableSong)
                     && AudioExtensionMethods.checkIfSongExists(transferableSong.getSong().getHashID())

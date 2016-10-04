@@ -55,6 +55,10 @@ public class MainActivity extends VerticalSlidingDrawerBaseActivity implements N
 
         initalizer();
     }
+    public void onResume(){
+        super.onResume();
+        invalidateOptionsMenu();
+    }
     private void checkInitalLaunch() {
         new Thread(new Runnable() {
             @Override

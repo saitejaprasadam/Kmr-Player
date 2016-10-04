@@ -29,8 +29,8 @@ import com.prasadam.kmrplayer.ActivityHelperClasses.DialogHelper;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ShareIntentHelper;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicPlayerExtensionMethods;
+import com.prasadam.kmrplayer.ModelClasses.SerializableClasses.ITransferableSong;
 import com.prasadam.kmrplayer.ModelClasses.Song;
-import com.prasadam.kmrplayer.ModelClasses.TransferableSong;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 import com.prasadam.kmrplayer.SocketClasses.NetworkServiceDiscovery.NSD;
@@ -75,7 +75,7 @@ public class ReceivedSongsAdapter extends RecyclerView.Adapter<ReceivedSongsAdap
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         try
         {
-            final TransferableSong transferableSong;
+            final ITransferableSong transferableSong;
 
             if(serverObject == null)
                 transferableSong = SharedVariables.getFullTransferList().get(position);
@@ -105,7 +105,7 @@ public class ReceivedSongsAdapter extends RecyclerView.Adapter<ReceivedSongsAdap
                     public void onClick(View view) {
                         if(serverObject == null){
                             ArrayList<Song> songArrayList = new ArrayList<>();
-                            for(TransferableSong temp : SharedVariables.getFullTransferList())
+                            for(ITransferableSong temp : SharedVariables.getFullTransferList())
                                 songArrayList.add(AudioExtensionMethods.getSongFromHashID(temp.getSong().getHashID()));
 
                             MusicPlayerExtensionMethods.playSong(context, songArrayList, songArrayList.indexOf(song));
@@ -113,7 +113,7 @@ public class ReceivedSongsAdapter extends RecyclerView.Adapter<ReceivedSongsAdap
 
                         else{
                             ArrayList<Song> songArrayList = new ArrayList<>();
-                            for(TransferableSong temp : SharedVariables.TransferList(serverObject))
+                            for(ITransferableSong temp : SharedVariables.TransferList(serverObject))
                                 songArrayList.add(AudioExtensionMethods.getSongFromHashID(temp.getSong().getHashID()));
 
                             MusicPlayerExtensionMethods.playSong(context, songArrayList, songArrayList.indexOf(song));
@@ -223,7 +223,7 @@ public class ReceivedSongsAdapter extends RecyclerView.Adapter<ReceivedSongsAdap
             }
         });
     }
-    private void setAlbumArt(final ViewHolder holder, TransferableSong transferableSong) {
+    private void setAlbumArt(final ViewHolder holder, ITransferableSong transferableSong) {
         Bitmap bitmap = SocketExtensionMethods.getAlbumArt(context, transferableSong);
         if(bitmap != null)
             holder.AlbumArtImageView.setImageBitmap(bitmap);

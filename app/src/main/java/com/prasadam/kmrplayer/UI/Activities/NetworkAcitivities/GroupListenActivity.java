@@ -50,6 +50,7 @@ public class GroupListenActivity extends Activity{
         setContentView(R.layout.activity_listen_layout);
         ButterKnife.bind(this);
         setToolBar();
+        toolbar.setTitle(getResources().getString(R.string.group_listen_text));
 
         albumArt.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,9 +106,10 @@ public class GroupListenActivity extends Activity{
     }
     private void refreshSongTag() {
         try{
-            Bitmap bitmap = SocketExtensionMethods.getAlbumArt(this, parent.getCurrentSongPlaying(), parent.getMacAddress());
+            Bitmap bitmap = SocketExtensionMethods.getAlbumArt(this, parent.getCurrentSongPlaying(), parent);
             if(bitmap != null)
-                albumArt.setImageBitmap(SocketExtensionMethods.getAlbumArt(this, parent.getCurrentSongPlaying(), parent.getMacAddress()));
+                albumArt.setImageBitmap(bitmap);
+
             else
                 albumArt.setImageResource(R.mipmap.unkown_album_art);
 
@@ -123,8 +125,8 @@ public class GroupListenActivity extends Activity{
     private void endGroupListenSessionDialog() {
         new MaterialDialog.Builder(GroupListenActivity.this)
                 .content(R.string.group_listen_end_session_prompt)
-                .positiveText(R.string.agree)
-                .negativeText(R.string.disagree)
+                .positiveText(R.string.ok_text)
+                .negativeText(R.string.cancel_text)
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {

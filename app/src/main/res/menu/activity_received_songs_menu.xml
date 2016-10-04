@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_devices_button"
+        android:icon="@mipmap/ic_devices_white_24dp"
+        android:orderInCategory="100"
+        android:title="@string/nearby_devices_text"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_search"
+        android:title="@string/search_text"
+        android:icon="@mipmap/ic_search_white_24dp"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="always|collapseActionView"/>
+
+    <item
+        android:id="@+id/action_equilzer"
+        android:orderInCategory="100"
+        android:title="@string/action_equilzer"
+        app:showAsAction="never" />
+
+</menu>

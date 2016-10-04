@@ -1,6 +1,6 @@
 package com.prasadam.kmrplayer.SocketClasses.FileTransfer.Bitmap;
 
-import com.prasadam.kmrplayer.ModelClasses.Event;
+import com.prasadam.kmrplayer.ModelClasses.SerializableClasses.IRequest;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
 
 import java.io.File;
@@ -19,10 +19,10 @@ public class BitmapSender {
 
     private SocketChannel socketChannel;
 
-    public BitmapSender(Event event){
+    public BitmapSender(IRequest request){
         try {
             socketChannel = SocketChannel.open();
-            SocketAddress socketAddress = new InetSocketAddress(event.getClientIpAddress(), KeyConstants.BITMAP_TRANSFER_SOCKET_PORT_ADDRESS);
+            SocketAddress socketAddress = new InetSocketAddress(request.getClientIpAddress(), KeyConstants.BITMAP_TRANSFER_SOCKET_PORT_ADDRESS);
             socketChannel.connect(socketAddress);
         } catch (Exception e) {
             e.printStackTrace();

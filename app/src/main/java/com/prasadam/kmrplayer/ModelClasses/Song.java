@@ -42,7 +42,6 @@ public class Song implements Serializable {
     public Song(String hashID, long id) {
         this.hashID = hashID;
         this.id = id;
-
     }
 
     public long getArtistID() { return artistID; }

@@ -3,12 +3,13 @@ package com.prasadam.kmrplayer.SocketClasses;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.prasadam.kmrplayer.ModelClasses.Event;
+import com.prasadam.kmrplayer.ModelClasses.SerializableClasses.IRequest;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
 
@@ -19,21 +20,23 @@ import java.net.Socket;
 public class Client extends AsyncTask<Void, Void, Void> {
 
     private Socket clientSocket;
-    private Event eventMessage;
+    private IRequest requestMessage;
 
-    public Client(final InetAddress serverIPAddress, final Event eventMessage) {
+    public Client(final InetAddress serverIPAddress, final IRequest requestMessage) {
         try{
-            this.eventMessage = eventMessage;
+            this.requestMessage = requestMessage;
             clientSocket = new Socket(serverIPAddress.getHostAddress(), KeyConstants.MAIN_SERVER_SOCKET_PORT_ADDRESS);
         }
-        catch (IOException e){ e.printStackTrace();}
+        catch (ConnectException ignored){}
+        catch (Exception e){ e.printStackTrace();}
     }
-    public Client(final String serverIPAddress, final Event eventMessage) {
+    public Client(final String serverIPAddress, final IRequest requestMessage) {
         try{
-            this.eventMessage = eventMessage;
+            this.requestMessage = requestMessage;
             clientSocket = new Socket(serverIPAddress, KeyConstants.MAIN_SERVER_SOCKET_PORT_ADDRESS);
         }
-        catch (IOException ignored){}
+        catch (ConnectException ignored){}
+        catch (IOException e){ e.printStackTrace();}
     }
 
     @Override
@@ -45,13 +48,13 @@ public class Client extends AsyncTask<Void, Void, Void> {
 
             OutputStream os = clientSocket.getOutputStream();
             ObjectOutputStream outputStream = new ObjectOutputStream(os);
-            outputStream.writeObject(eventMessage);
+            outputStream.writeObject(requestMessage);
 
             os.close();
             outputStream.flush();
             outputStream.close();
             clientSocket.close();
-            Log.d("Sent", eventMessage.getClientName() + " " + eventMessage.getCommand());
+            Log.d("Sent", requestMessage.getClientName() + " " + requestMessage.getCommand());
         }
 
         catch (Exception exception) {

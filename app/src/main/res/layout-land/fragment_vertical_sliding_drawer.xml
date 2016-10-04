@@ -149,7 +149,8 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     android:padding="5dp"
-                    card_view:cardPreventCornerOverlap="false" card_view:cardUseCompatPadding="false"
+                    card_view:cardPreventCornerOverlap="false"
+                    card_view:cardUseCompatPadding="false"
                     android:layout_marginBottom="20dp">
 
                     <RelativeLayout
@@ -218,8 +219,8 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:padding="10dp">
+                    android:clipToPadding="false"
+                    android:padding="20dp">
 
                     <android.support.design.widget.FloatingActionButton
                         android:id="@+id/now_playing_play_pause_button"

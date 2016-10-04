@@ -13,7 +13,7 @@ import android.widget.LinearLayout;
 
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivityHelper;
 import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.ReceivedSongsActivity;
+import com.prasadam.kmrplayer.UI.Activities.Playlist.ReceivedSongsActivity;
 import com.prasadam.kmrplayer.UI.Activities.Playlist.PlaylistHelpers.CustomPlaylistActivity;
 import com.prasadam.kmrplayer.UI.Activities.Playlist.FavoritesActivity;
 import com.prasadam.kmrplayer.UI.Activities.Playlist.MostPlayedSongsActivity;

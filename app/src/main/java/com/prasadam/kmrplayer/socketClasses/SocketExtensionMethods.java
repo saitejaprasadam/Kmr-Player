@@ -7,15 +7,17 @@ import android.net.nsd.NsdServiceInfo;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.StrictMode;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicService;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.PlayerConstants;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.UtilFunctions;
-import com.prasadam.kmrplayer.ModelClasses.Event;
+import com.prasadam.kmrplayer.ModelClasses.SerializableClasses.IRequest;
+import com.prasadam.kmrplayer.ModelClasses.SerializableClasses.ISong;
 import com.prasadam.kmrplayer.ModelClasses.Song;
-import com.prasadam.kmrplayer.ModelClasses.TransferableSong;
+import com.prasadam.kmrplayer.ModelClasses.SerializableClasses.ITransferableSong;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
@@ -66,23 +68,22 @@ public class SocketExtensionMethods {
         StrictMode.setThreadPolicy(policy);
     }
 
-    public static Event GenerateSocketEventMessage(final Context context, String command, String timeStamp){
-        return new Event(getMACAddress(), ExtensionMethods.deviceName(context).replaceAll(KeyConstants.SPACE, KeyConstants.SPECIAL_CHAR), command, timeStamp);
+    public static IRequest GenerateSocketEventMessage(final Context context, String command, String timeStamp){
+        return new IRequest(getMACAddress(), ExtensionMethods.deviceName(context).replaceAll(KeyConstants.SPACE, KeyConstants.SPECIAL_CHAR), command, timeStamp);
     }
-    public static Event GenerateSocketEventMessage(final Context context, String command, String timeStamp, String result){
-        Event event = new Event(getMACAddress(), ExtensionMethods.deviceName(context).replaceAll(KeyConstants.SPACE, KeyConstants.SPECIAL_CHAR), command, timeStamp);
-        event.setResult(result);
-        return event;
+    public static IRequest GenerateSocketEventMessage(final Context context, String command, String timeStamp, String result){
+        return new IRequest(getMACAddress(), ExtensionMethods.deviceName(context).replaceAll(KeyConstants.SPACE, KeyConstants.SPECIAL_CHAR), command, timeStamp, result);
     }
-    public static Event GenerateSocketEventMessage(final Context context, String command, String timeStamp, String result, ArrayList<Song> transferSongsList){
-        Event event = new Event(getMACAddress(), ExtensionMethods.deviceName(context).replaceAll(KeyConstants.SPACE, KeyConstants.SPECIAL_CHAR), command, timeStamp, transferSongsList);
-        event.setResult(result);
-        return event;
+    public static IRequest GenerateSocketEventMessage(final Context context, String command, String timeStamp, String result, ArrayList<Song> transferSongsList){
+        ArrayList<ISong> songsList = new ArrayList<>();
+        for(Song song : transferSongsList)
+            songsList.add(new ISong(song));
+        return new IRequest(getMACAddress(), ExtensionMethods.deviceName(context).replaceAll(KeyConstants.SPACE, KeyConstants.SPECIAL_CHAR), command, timeStamp, songsList, result);
     }
 
     public static void requestForDeviceType(final Context context, NsdServiceInfo nsdClient) {
-        Event eventMessage = GenerateSocketEventMessage(context, KeyConstants.SOCKET_REQUEST_DEVICE_TYPE, ExtensionMethods.getTimeStamp());
-        Client client = new Client(nsdClient.getHost(), eventMessage);
+        IRequest iRequestMessage = GenerateSocketEventMessage(context, KeyConstants.SOCKET_REQUEST_DEVICE_TYPE, ExtensionMethods.getTimeStamp());
+        Client client = new Client(nsdClient.getHost(), iRequestMessage);
         client.execute();
     }
     public static String getDeviceType(final Context context){
@@ -124,8 +125,8 @@ public class SocketExtensionMethods {
     }
 
     public static void requestForCurrentSongPlaying(final Context context, final NsdServiceInfo nsdClient) {
-        Event eventMessage = GenerateSocketEventMessage(context, KeyConstants.SOCKET_REQUEST_CURRENT_SONG_NAME, ExtensionMethods.getTimeStamp());
-        Client client = new Client(nsdClient.getHost(), eventMessage);
+        IRequest iRequestMessage = GenerateSocketEventMessage(context, KeyConstants.SOCKET_REQUEST_CURRENT_SONG_NAME, ExtensionMethods.getTimeStamp());
+        Client client = new Client(nsdClient.getHost(), iRequestMessage);
         client.execute();
     }
 
@@ -148,7 +149,7 @@ public class SocketExtensionMethods {
         SocketExtensionMethods.requestAlbumArt(context, serverObject);
         return null;
     }
-    public static Bitmap getAlbumArt(final Context context, TransferableSong transferableSong){
+    public static Bitmap getAlbumArt(final Context context, ITransferableSong transferableSong){
 
         if(transferableSong == null)
             return null;
@@ -167,7 +168,7 @@ public class SocketExtensionMethods {
         SocketExtensionMethods.requestAlbumArt(context, transferableSong);
         return null;
     }
-    public static Bitmap getAlbumArt(final Context context, Song song, String client_mac_address){
+    public static Bitmap getAlbumArt(final Context context, Song song, NSD parent){
 
         if(song == null)
             return null;
@@ -180,10 +181,10 @@ public class SocketExtensionMethods {
         else{
             for (Song s : SharedVariables.fullSongsList)
                 if(s.getHashID().equals(song.getHashID()))
-                    return UtilFunctions.getAlbumart(context, AudioExtensionMethods.getAlubmID(context, song.getID()));
+                    return UtilFunctions.getAlbumart(context, AudioExtensionMethods.getAlubmID(context, s.getID()));
         }
 
-        SocketExtensionMethods.requestAlbumArt(context, client_mac_address);
+        SocketExtensionMethods.requestAlbumArt(context, parent);
         return null;
     }
 
@@ -207,20 +208,13 @@ public class SocketExtensionMethods {
     }
 
     public static void requestAlbumArt(final Context context, NSD serverObject) {
-        Event eventMessage = GenerateSocketEventMessage(context, KeyConstants.SOCKET_REQUEST_ALBUM_ART, serverObject.getCurrentSongPlaying().getHashID());
-        Client client = new Client(serverObject.GetClientNSD().getHost(), eventMessage);
+        IRequest iRequestMessage = GenerateSocketEventMessage(context, KeyConstants.SOCKET_REQUEST_ALBUM_ART, serverObject.getCurrentSongPlaying().getHashID());
+        Client client = new Client(serverObject.GetClientNSD().getHost(), iRequestMessage);
         client.execute();
     }
-    public static void requestAlbumArt(final Context context, TransferableSong transferableSong){
+    public static void requestAlbumArt(final Context context, ITransferableSong transferableSong){
         for (NSD client : NSDClient.devicesList)
             if(client.getMacAddress().equals(transferableSong.getClient_mac_address())){
-                requestAlbumArt(context, client);
-                break;
-            }
-    }
-    private static void requestAlbumArt(Context context, String client_mac_address) {
-        for (NSD client : NSDClient.devicesList)
-            if(client.getMacAddress().equals(client_mac_address)){
                 requestAlbumArt(context, client);
                 break;
             }
@@ -229,8 +223,8 @@ public class SocketExtensionMethods {
     public static void requestGroupListen(Context context, NSD serverObject) {
 
         if(PlayerConstants.parentGroupListener == null && PlayerConstants.groupListeners.size() == 0){
-            Event eventMessage = GenerateSocketEventMessage(context, KeyConstants.SOCKET_INITIATE_GROUP_LISTEN_REQUEST, ExtensionMethods.getTimeStamp());
-            Client client = new Client(serverObject.GetClientNSD().getHost(), eventMessage);
+            IRequest iRequestMessage = GenerateSocketEventMessage(context, KeyConstants.SOCKET_INITIATE_GROUP_LISTEN_REQUEST, ExtensionMethods.getTimeStamp());
+            Client client = new Client(serverObject.GetClientNSD().getHost(), iRequestMessage);
             client.execute();
             Toast.makeText(context, "Group play request sent to " + serverObject.GetClientNSD().getServiceName(), Toast.LENGTH_SHORT).show();
         }
@@ -246,15 +240,15 @@ public class SocketExtensionMethods {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                for(final Event event : PlayerConstants.groupListeners){
+                for(final IRequest request : PlayerConstants.groupListeners){
                     try{
-                        Event eventMessage = GenerateSocketEventMessage(context, KeyConstants.SOCKET_GROUP_LISTEN_OPEN_FILE_RECEIVER, ExtensionMethods.getTimeStamp());
-                        Client client = new Client(event.getClientIpAddress(), eventMessage);
+                        IRequest iRequestMessage = GenerateSocketEventMessage(context, KeyConstants.SOCKET_GROUP_LISTEN_OPEN_FILE_RECEIVER, ExtensionMethods.getTimeStamp());
+                        Client client = new Client(request.getClientIpAddress(), iRequestMessage);
                         client.execute();
 
                         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                             public void run() {
-                                Group_Listen_FileSender group_listen_fileSender = new Group_Listen_FileSender(context, event);
+                                Group_Listen_FileSender group_listen_fileSender = new Group_Listen_FileSender(context, request);
                                 group_listen_fileSender.sendFile(MusicService.currentSong.getData());
                             }
                         }, 300);
@@ -269,56 +263,56 @@ public class SocketExtensionMethods {
         if(PlayerConstants.parentGroupListener != null)
             GroupListenActivity.updateSong(fileName);
     }
-    public static void GroupListenStartFileReceiver(final Context context, final Event event) {
-        if(PlayerConstants.parentGroupListener != null && event.getClientMacAddress().equals(PlayerConstants.parentGroupListener.getClientMacAddress())){
+    public static void GroupListenStartFileReceiver(final Context context, final IRequest request) {
+        if(PlayerConstants.parentGroupListener != null && request.getClientMacAddress().equals(PlayerConstants.parentGroupListener.getClientMacAddress())){
             Group_Listen_FileReceiver group_listen_fileReceiver = new Group_Listen_FileReceiver(context);
             group_listen_fileReceiver.execute();
         }
     }
     public static void SendDisconnectMessageFromGroupListen(final Context context, final NsdServiceInfo nsdClient){
-        Event eventMessage = GenerateSocketEventMessage(context, KeyConstants.SOCKET_GROUP_LISTEN_DISCONNECT, ExtensionMethods.getTimeStamp());
-        Client client = new Client(nsdClient.getHost(), eventMessage);
+        IRequest iRequestMessage = GenerateSocketEventMessage(context, KeyConstants.SOCKET_GROUP_LISTEN_DISCONNECT, ExtensionMethods.getTimeStamp());
+        Client client = new Client(nsdClient.getHost(), iRequestMessage);
         client.execute();
     }
-    public static void GroupListenDisconnect(final Context context, final Event event) {
+    public static void GroupListenDisconnect(final Context context, final IRequest request) {
 
-        for(Event groupListener : PlayerConstants.groupListeners)
-            if(groupListener.getClientMacAddress().equals(event.getClientMacAddress())){
+        for(IRequest groupListener : PlayerConstants.groupListeners)
+            if(groupListener.getClientMacAddress().equals(request.getClientMacAddress())){
                 PlayerConstants.groupListeners.remove(groupListener);
                 Handler handler = new Handler(Looper.getMainLooper());
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(context, event.getClientName() + KeyConstants.SPACE + context.getResources().getString(R.string.client_disconnected_group_listen), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, request.getClientName() + KeyConstants.SPACE + context.getResources().getString(R.string.client_disconnected_group_listen), Toast.LENGTH_SHORT).show();
                     }
                 });
                 break;
             }
     }
-    public static void disconnectDeviceFromGroupListen(final Context context, final Event connectedDevice) {
-        Event eventMessage = GenerateSocketEventMessage(context, KeyConstants.SOCKET_GROUP_LISTEN_KICK_OUT_DEVICE, ExtensionMethods.getTimeStamp());
-        Client client = new Client(connectedDevice.getClientIpAddress(), eventMessage);
+    public static void disconnectDeviceFromGroupListen(final Context context, final IRequest connectedDevice) {
+        IRequest iRequestMessage = GenerateSocketEventMessage(context, KeyConstants.SOCKET_GROUP_LISTEN_KICK_OUT_DEVICE, ExtensionMethods.getTimeStamp());
+        Client client = new Client(connectedDevice.getClientIpAddress(), iRequestMessage);
         Toast.makeText(context, connectedDevice.getClientName() + KeyConstants.SPACE +  context.getResources().getString(R.string.group_listen_device_disconnected), Toast.LENGTH_SHORT).show();
         client.execute();
     }
-    public static void GroupListenEndConnection(final Context context, final Event event) {
+    public static void GroupListenEndConnection(final Context context, final IRequest request) {
 
-            if(PlayerConstants.parentGroupListener.getClientMacAddress().equals(event.getClientMacAddress())) {
+            if(PlayerConstants.parentGroupListener.getClientMacAddress().equals(request.getClientMacAddress())) {
                 PlayerConstants.parentGroupListener = null;
                 Handler handler = new Handler(Looper.getMainLooper());
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        GroupListenActivity.updateSong(event.getCommand());
-                        Toast.makeText(context, event.getClientName() + KeyConstants.SPACE + context.getResources().getString(R.string.kicked_out_group_listen), Toast.LENGTH_SHORT).show();
+                        GroupListenActivity.updateSong(request.getCommand());
+                        Toast.makeText(context, request.getClientName() + KeyConstants.SPACE + context.getResources().getString(R.string.kicked_out_group_listen), Toast.LENGTH_SHORT).show();
                     }
                 });
             }
     }
 
     public static void requestForMacAddress(final Context context, NsdServiceInfo nsdClient) {
-        Event eventMessage = GenerateSocketEventMessage(context, KeyConstants.SOCKET_REQUEST_MAC_ADDRESS, ExtensionMethods.getTimeStamp());
-        Client client = new Client(nsdClient.getHost(), eventMessage);
+        IRequest iRequestMessage = GenerateSocketEventMessage(context, KeyConstants.SOCKET_REQUEST_MAC_ADDRESS, ExtensionMethods.getTimeStamp());
+        Client client = new Client(nsdClient.getHost(), iRequestMessage);
         client.execute();
     }
     public static String getMACAddress(){

@@ -69,7 +69,7 @@
     <string name="nearby_info_text">Devices should be running under same network and KMR player should be active</string>
     <string name="waiting_for_approval">Waiting for apporoval</string>
     <string name="wait_in_background">wait in background</string>
-    <string name="no_devices_available">No devices available</string>
+    <string name="no_devices_available">No devices nearby</string>
     <string name="group_play_request">is requesting for group play ?</string>
     <string name="group_play_request_text">Group play request</string>
     <string name="group_play_rejected">rejected group play request</string>
@@ -177,7 +177,6 @@
     <string name="group_listen_end_session_prompt">Are you sure want to end group listen session ?</string>
     <string name="artist_album_text">artist | album</string>
     <string name="client_disconnected_group_listen">has disconnected from group listen</string>
-    <string name="air_play_text">Air play</string>
     <string name="Requests_text">Requests</string>
     <string name="connected_devices_text">Connected devices</string>
     <string name="connected_devices_info">All connected devices are listed here.</string>
@@ -186,4 +185,6 @@
     <string name="group_listen_text">Group listen</string>
     <string name="group_listen_device_disconnected">has been disconnected from group listen</string>
     <string name="kicked_out_group_listen">has removed you from group listen</string>
+    <string name="new_request">You have a request from</string>
+    <string name="new_request_received">You received a new request</string>
 </resources>

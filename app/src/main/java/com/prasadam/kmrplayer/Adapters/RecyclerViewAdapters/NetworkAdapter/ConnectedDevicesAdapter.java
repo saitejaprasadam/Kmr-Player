@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.PlayerConstants;
-import com.prasadam.kmrplayer.ModelClasses.Event;
+import com.prasadam.kmrplayer.ModelClasses.SerializableClasses.IRequest;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
 import com.prasadam.kmrplayer.SocketClasses.NetworkServiceDiscovery.NSD;
@@ -38,7 +38,7 @@ public class ConnectedDevicesAdapter extends RecyclerView.Adapter<ConnectedDevic
         return new ViewAdapter(inflater.inflate(R.layout.recycler_view_connected_devices, parent, false));
     }
     public void onBindViewHolder(ConnectedDevicesAdapter.ViewAdapter holder, final int position) {
-        final Event connectedDevice = PlayerConstants.groupListeners.get(position);
+        final IRequest connectedDevice = PlayerConstants.groupListeners.get(position);
 
         for (NSD nsd : NSDClient.devicesList)
             if(nsd.getMacAddress().equals(connectedDevice.getClientMacAddress())){

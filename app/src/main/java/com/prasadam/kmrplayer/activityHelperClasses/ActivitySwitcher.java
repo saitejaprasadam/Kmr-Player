@@ -147,6 +147,7 @@ public class ActivitySwitcher {
     }
 
     public static void startGroupListen(Context context) {
+        NearbyDevicesActivity.currentSongPlayingRequestHandler = null;
         Controls.pauseControl(context);
         Intent intent = new Intent(context, GroupListenActivity.class);
         context.startActivity(intent);

@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.prasadam.kmrplayer.ActivityHelperClasses.ActivityHelper;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.ActivityHelperClasses.DialogHelper;
 import com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.NetworkAdapter.NearbyDevicesAdapter;
@@ -23,22 +24,27 @@ import com.prasadam.kmrplayer.SocketClasses.NetworkServiceDiscovery.NSD;
 import com.prasadam.kmrplayer.SocketClasses.NetworkServiceDiscovery.NSDClient;
 import com.prasadam.kmrplayer.SocketClasses.SocketExtensionMethods;
 import com.prasadam.kmrplayer.UI.Activities.BaseActivity.TranslucentBaseActivity;
+import com.prasadam.kmrplayer.UI.Activities.BaseActivity.VerticalSlidingDrawerBaseActivity;
 
 /*
  * Created by Prasadam Saiteja on 7/5/2016.
  */
 
-public class NearbyDevicesActivity extends TranslucentBaseActivity{
+public class NearbyDevicesActivity extends VerticalSlidingDrawerBaseActivity{
 
     public static NearbyDevicesAdapter nearbyDevicesRecyclerviewAdapter;
     public static TextView NoDevicesTextView;
     private RecyclerView NearbyRecyclerView;
     private BroadcastReceiver receiver;
-    private Handler currentSongPlayingRequestHandler;
+    public static Handler currentSongPlayingRequestHandler;
 
     public void onCreate(Bundle bundle){
         super.onCreate(bundle);
         setContentView(R.layout.activity_nearby_devices);
+
+        ActivityHelper.setBackButtonToCustomToolbarBar(NearbyDevicesActivity.this);
+        ActivityHelper.setStatusBarTranslucent(this, findViewById(R.id.colored_status_bar));
+        ActivityHelper.setDisplayHome(this);
 
         setRecyclerView();
         NoDevicesTextView = (TextView) findViewById(R.id.no_devices_available_text_view);
@@ -100,9 +106,8 @@ public class NearbyDevicesActivity extends TranslucentBaseActivity{
                 @Override
                 public void run() {
 
-                    for (NSD serverObject : NSDClient.devicesList){
+                    for (NSD serverObject : NSDClient.devicesList)
                         SocketExtensionMethods.requestForCurrentSongPlaying(NearbyDevicesActivity.this, serverObject.GetClientNSD());
-                    }
 
                     if(currentSongPlayingRequestHandler != null)
                         currentSongPlayingRequestHandler.postDelayed(this, 3000);

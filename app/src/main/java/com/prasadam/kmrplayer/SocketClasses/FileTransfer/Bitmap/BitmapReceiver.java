@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.prasadam.kmrplayer.ModelClasses.Event;
+import com.prasadam.kmrplayer.ModelClasses.SerializableClasses.IRequest;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
 import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.GroupListenActivity;
 import com.prasadam.kmrplayer.UI.Fragments.DialogFragment.NearbyDevicesDetails_DialogFragment;
@@ -26,13 +26,13 @@ public class BitmapReceiver extends AsyncTask<Void, Void, Void> {
 
     private ServerSocketChannel serverSocketChannel;
     private Context context;
-    private Event event;
+    private IRequest request;
 
-    public BitmapReceiver(Context context, Event event){
+    public BitmapReceiver(Context context, IRequest request){
 
         try {
             if(serverSocketChannel == null){
-                this.event = event;
+                this.request = request;
                 this.context = context;
                 serverSocketChannel = ServerSocketChannel.open();
                 serverSocketChannel.socket().bind(new InetSocketAddress(KeyConstants.BITMAP_TRANSFER_SOCKET_PORT_ADDRESS));
@@ -50,9 +50,9 @@ public class BitmapReceiver extends AsyncTask<Void, Void, Void> {
 
             File cachePath = new File(context.getCacheDir(), "albumArt");
             cachePath.mkdirs();
-            new File(cachePath + "/" + event.getResult()).delete();
+            new File(cachePath + "/" + request.getResult()).delete();
 
-            File newFile = new File(cachePath, "/" + event.getTimeStamp());
+            File newFile = new File(cachePath, "/" + request.getTimeStamp());
 
             RandomAccessFile aFile = new RandomAccessFile(newFile, "rw");
             ByteBuffer buffer = ByteBuffer.allocate(KeyConstants.TRANSFER_BUFFER_SIZE);
@@ -63,7 +63,8 @@ public class BitmapReceiver extends AsyncTask<Void, Void, Void> {
                 buffer.clear();
             }
 
-            NearbyDevicesDetails_DialogFragment.refreshDialogFragment(event.getClientMacAddress());
+            Log.d("received bitmap", String.valueOf(newFile.length()));
+            NearbyDevicesDetails_DialogFragment.refreshDialogFragment(request.getClientMacAddress());
             GroupListenActivity.updateSong(KeyConstants.SOCKET_CURRENT_SONG_NAME_RESULT);
             fileChannel.close();
             clientSocketChannel.close();

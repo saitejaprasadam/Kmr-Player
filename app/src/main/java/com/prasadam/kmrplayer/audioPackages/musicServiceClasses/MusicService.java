@@ -29,6 +29,7 @@ import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivityHelper;
+import com.prasadam.kmrplayer.ActivityHelperClasses.ForegroundCheckTask;
 import com.prasadam.kmrplayer.Adapters.UIAdapters.AchievementUnlocked;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.BlurBuilder;
@@ -41,6 +42,7 @@ import com.prasadam.kmrplayer.UI.Activities.BaseActivity.VerticalSlidingDrawerBa
 import com.prasadam.kmrplayer.Widgets.NowPlayingWidget;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 public class MusicService extends Service implements
         MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener,
@@ -52,6 +54,7 @@ public class MusicService extends Service implements
     public static final String NOTIFY_PAUSE = "com.prasadam.kmrplayer.pause";
     public static final String NOTIFY_PLAY = "com.prasadam.kmrplayer.play";
     public static final String NOTIFY_NEXT = "com.prasadam.kmrplayer.next";
+    public static final int NOTIFICATION_ID = 626272;
     public boolean isFocusSnatched = false;
 
     private static int lastKnownAudioFocusState;
@@ -64,6 +67,7 @@ public class MusicService extends Service implements
     private Handler historyHandler;
     public static MediaPlayer player;
     public static Song currentSong;
+    public static NotificationManager notificationManager;
 
     public void onCreate(){
 
@@ -137,7 +141,7 @@ public class MusicService extends Service implements
                     try{
                         Song song = PlayerConstants.getPlayList().get(PlayerConstants.SONG_NUMBER);
                         String songPath = song.getData();
-                        newNotification();
+                        updateSongInfo();
                         try{
                             currentSong = song;
                             playCurrentSong(songPath);
@@ -173,7 +177,7 @@ public class MusicService extends Service implements
                         PlayerConstants.SONG_PAUSED = true;
                     }
                     try{
-                        newNotification();
+                        updateSongInfo();
                         VerticalSlidingDrawerBaseActivity.changeButton();
                     }
                     catch(Exception ignored){}
@@ -187,7 +191,11 @@ public class MusicService extends Service implements
         PlayerConstants.NOTIFICATION_HANDLER = new Handler(new Callback() {
             @Override
             public boolean handleMessage(Message msg) {
-                newNotification();
+                String message = (String)msg.obj;
+                if(message.equals("onActivityStopped"))
+                    checkAndUpdateNotification();
+                else
+                    updateSongInfo();
                 return true;
             }
         });
@@ -226,7 +234,114 @@ public class MusicService extends Service implements
         catch (Exception ignored){}
 
     }
-    private void UpdateMetadata(){
+    private void playCurrentSong(String songPath) {
+        try {
+            if(currentVersionSupportLockScreenControls && remoteControlClient != null)
+                remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PLAYING);
+
+            player.reset();
+            player.setDataSource(songPath);
+            player.prepare();
+            player.start();
+            SocketExtensionMethods.sendGroupListenSongBroadCast(getContext());
+            SharedPreferenceHelper.setLastPlayingSongPosition(getContext());
+            if(historyHandler != null)
+                historyHandler.removeCallbacks(historyRunnable);
+            historyHandler = new Handler();
+            historyHandler.postDelayed(historyRunnable, 10000);
+        } catch (IOException e) {
+            Toast.makeText(MusicService.this, "Error playing song", Toast.LENGTH_SHORT).show();
+        }
+    }
+    private void updateSongInfo() {
+
+        if(PlayerConstants.getPlaylistSize() > 0){
+            currentSong = PlayerConstants.getPlayList().get(PlayerConstants.SONG_NUMBER);
+            updateMetadata();
+            updateWidget();
+            checkAndUpdateNotification();
+        }
+    }
+
+    private void checkAndUpdateNotification() {
+        try {
+            if(!new ForegroundCheckTask().execute(getContext()).get())
+                updateNotification();
+
+        } catch (InterruptedException | ExecutionException e) {
+            updateNotification();
+        }
+    }
+
+    private void updateNotification() {
+        RemoteViews smallView = new RemoteViews(getPackageName(), R.layout.notification);
+        smallView.setTextViewText(R.id.notification_song_name, currentSong.getTitle());
+        smallView.setTextViewText(R.id.notification_artist_name, currentSong.getArtist());
+
+        RemoteViews expanedView = new RemoteViews(getPackageName(), R.layout.notification_expanded);
+        expanedView.setTextViewText(R.id.notification_song_name, currentSong.getTitle());
+        expanedView.setTextViewText(R.id.notification_album_name, currentSong.getAlbum());
+        expanedView.setTextViewText(R.id.notification_artist_name, currentSong.getArtist());
+
+        if(PlayerConstants.SONG_PAUSED){
+            smallView.setImageViewBitmap(R.id.notification_play_pause_button, ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_play_arrow_black_24dp)).getBitmap());
+            expanedView.setImageViewBitmap(R.id.notification_play_pause_button, ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_play_arrow_black_24dp)).getBitmap());
+        }
+        else{
+            smallView.setImageViewBitmap(R.id.notification_play_pause_button, ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_pause_black_24dp)).getBitmap());
+            expanedView.setImageViewBitmap(R.id.notification_play_pause_button, ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_pause_black_24dp)).getBitmap());
+        }
+
+        if(currentSong.getIsLiked(this))
+            expanedView.setImageViewBitmap(R.id.notification_favorite_button, ((BitmapDrawable) getResources().getDrawable(R.drawable.ic_favorite_red_24dp)).getBitmap());
+
+        else
+            expanedView.setImageViewBitmap(R.id.notification_favorite_button, ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_favorite_border_black_24dp)).getBitmap());
+
+
+        setListeners(smallView);
+        setListeners(expanedView);
+
+        Bitmap albumArt = AudioExtensionMethods.getBitMap(getBaseContext(), currentSong.getAlbumArtLocation());
+        if(albumArt != null){
+            smallView.setImageViewBitmap(R.id.notification_album_art, albumArt);
+            expanedView.setImageViewBitmap(R.id.notification_album_art, albumArt);
+        }
+
+        else{
+            smallView.setImageViewBitmap(R.id.notification_album_art, ((BitmapDrawable) getResources().getDrawable(R.mipmap.unkown_album_art)).getBitmap());
+            expanedView.setImageViewBitmap(R.id.notification_album_art, ((BitmapDrawable) getResources().getDrawable(R.mipmap.unkown_album_art)).getBitmap());
+        }
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                .setContent(smallView)
+                .setSmallIcon(R.mipmap.launcher_icon)
+                .setOngoing(false);
+
+        if(SharedPreferenceHelper.getStickyNotificationStatus(getContext()))
+            builder.setOngoing(true);
+
+        if(currentVersionSupportBigNotification)
+            builder.setCustomBigContentView(expanedView);
+
+        Intent nIntent = new Intent(this, MainActivity.class);
+        nIntent.putExtra("notificationIntent", true);
+        nIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, nIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(pendingIntent);
+
+        Notification notification = builder.build();
+        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify(NOTIFICATION_ID, notification);
+    }
+    private void updateWidget() {
+        Intent intent = new Intent(this, NowPlayingWidget.class);
+        int[] ids = {R.id.widget_now_playing_album_art, R.id.widget_song_name, R.id.widget_artist_name, R.id.widget_play_pause_button, R.id.widget_fav_button};
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        sendBroadcast(intent);
+    }
+    private void updateMetadata(){
 
         if(currentVersionSupportLockScreenControls){
 
@@ -252,99 +367,6 @@ public class MusicService extends Service implements
                 audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
             }
         }
-    }
-    private void playCurrentSong(String songPath) {
-        try {
-            if(currentVersionSupportLockScreenControls && remoteControlClient != null)
-                remoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PLAYING);
-
-            player.reset();
-            player.setDataSource(songPath);
-            player.prepare();
-            player.start();
-            SocketExtensionMethods.sendGroupListenSongBroadCast(getContext());
-            SharedPreferenceHelper.setLastPlayingSongPosition(getContext());
-            if(historyHandler != null)
-                historyHandler.removeCallbacks(historyRunnable);
-            historyHandler = new Handler();
-            historyHandler.postDelayed(historyRunnable, 10000);
-        } catch (IOException e) {
-            Toast.makeText(MusicService.this, "Error playing song", Toast.LENGTH_SHORT).show();
-        }
-    }
-    private void newNotification() {
-
-        if(PlayerConstants.getPlaylistSize() > 0){
-            currentSong = PlayerConstants.getPlayList().get(PlayerConstants.SONG_NUMBER);
-            UpdateMetadata();
-            updateWidget();
-            RemoteViews smallView = new RemoteViews(getPackageName(), R.layout.notification);
-            smallView.setTextViewText(R.id.notification_song_name, currentSong.getTitle());
-            smallView.setTextViewText(R.id.notification_artist_name, currentSong.getArtist());
-
-            RemoteViews expanedView = new RemoteViews(getPackageName(), R.layout.notification_expanded);
-            expanedView.setTextViewText(R.id.notification_song_name, currentSong.getTitle());
-            expanedView.setTextViewText(R.id.notification_album_name, currentSong.getAlbum());
-            expanedView.setTextViewText(R.id.notification_artist_name, currentSong.getArtist());
-
-            if(PlayerConstants.SONG_PAUSED){
-                smallView.setImageViewBitmap(R.id.notification_play_pause_button, ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_play_arrow_black_24dp)).getBitmap());
-                expanedView.setImageViewBitmap(R.id.notification_play_pause_button, ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_play_arrow_black_24dp)).getBitmap());
-            }
-            else{
-                smallView.setImageViewBitmap(R.id.notification_play_pause_button, ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_pause_black_24dp)).getBitmap());
-                expanedView.setImageViewBitmap(R.id.notification_play_pause_button, ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_pause_black_24dp)).getBitmap());
-            }
-
-            if(currentSong.getIsLiked(this))
-                expanedView.setImageViewBitmap(R.id.notification_favorite_button, ((BitmapDrawable) getResources().getDrawable(R.drawable.ic_favorite_red_24dp)).getBitmap());
-
-            else
-                expanedView.setImageViewBitmap(R.id.notification_favorite_button, ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_favorite_border_black_24dp)).getBitmap());
-
-
-            setListeners(smallView);
-            setListeners(expanedView);
-
-            Bitmap albumArt = AudioExtensionMethods.getBitMap(getBaseContext(), currentSong.getAlbumArtLocation());
-            if(albumArt != null){
-                smallView.setImageViewBitmap(R.id.notification_album_art, albumArt);
-                expanedView.setImageViewBitmap(R.id.notification_album_art, albumArt);
-            }
-
-            else{
-                smallView.setImageViewBitmap(R.id.notification_album_art, ((BitmapDrawable) getResources().getDrawable(R.mipmap.unkown_album_art)).getBitmap());
-                expanedView.setImageViewBitmap(R.id.notification_album_art, ((BitmapDrawable) getResources().getDrawable(R.mipmap.unkown_album_art)).getBitmap());
-            }
-
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                    .setContent(smallView)
-                    .setSmallIcon(R.mipmap.launcher_icon)
-                    .setOngoing(false);
-
-            if(SharedPreferenceHelper.getStickyNotificationStatus(getContext()))
-                builder.setOngoing(true);
-
-            if(currentVersionSupportBigNotification)
-                builder.setCustomBigContentView(expanedView);
-
-            Intent nIntent = new Intent(this, MainActivity.class);
-            nIntent.putExtra("notificationIntent", true);
-            nIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, nIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            builder.setContentIntent(pendingIntent);
-
-            Notification notification = builder.build();
-            NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            nm.notify(626272, notification);
-        }
-    }
-    private void updateWidget() {
-        Intent intent = new Intent(this, NowPlayingWidget.class);
-        int[] ids = {R.id.widget_now_playing_album_art, R.id.widget_song_name, R.id.widget_artist_name, R.id.widget_play_pause_button, R.id.widget_fav_button};
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
-        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-        sendBroadcast(intent);
     }
 
     @Override

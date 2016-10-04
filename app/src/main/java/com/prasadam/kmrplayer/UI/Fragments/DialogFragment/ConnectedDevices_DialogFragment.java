@@ -1,5 +1,6 @@
 package com.prasadam.kmrplayer.UI.Fragments.DialogFragment;
 
+import android.annotation.SuppressLint;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -28,6 +29,7 @@ import butterknife.OnClick;
  * Created by Prasadam Saiteja on 9/30/2016.
  */
 
+@SuppressLint("ValidFragment")
 public class ConnectedDevices_DialogFragment extends DialogFragment {
 
     @BindView(R.id.connected_devices_recycler_view) RecyclerView connectedDevicesRecyclerView;

@@ -13,7 +13,7 @@ import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.NetworkAdapter.NearbyDevicesAdapter;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.PlayerConstants;
 import com.prasadam.kmrplayer.DatabaseHelper.db4oHelper;
-import com.prasadam.kmrplayer.ModelClasses.Event;
+import com.prasadam.kmrplayer.ModelClasses.SerializableClasses.IRequest;
 import com.prasadam.kmrplayer.ModelClasses.Song;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
@@ -32,6 +32,7 @@ import com.prasadam.kmrplayer.SocketClasses.QuickShare.QuickShareHelper;
 import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.GroupListenActivity;
 import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.NearbyDevicesActivity;
 import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.QuickShareActivity;
+import com.prasadam.kmrplayer.UI.Activities.NetworkAcitivities.RequestsActivity;
 
 import java.io.File;
 import java.io.InputStream;
@@ -59,28 +60,28 @@ public class ServerResponseThread extends Thread {
         try {
             InputStream is = clientSocket.getInputStream();
             ObjectInputStream inStream = new ObjectInputStream(is);
-            Event event = (Event) inStream.readObject();
-            Log.d("command", event.getClientName() + " " + event.getCommand());
+            IRequest request = (IRequest) inStream.readObject();
+            Log.d("command", request.getClientName() + " " + request.getCommand());
 
-            event.setClientIpAddress(clientIPAddress);
-            event.setServerCurrentSong();
+            request.setClientIpAddress(clientIPAddress);
+            request.setServerCurrentSong();
 
-            switch (event.getCommand()){
+            switch (request.getCommand()){
 
                 case KeyConstants.SOCKET_INITIATE_QUICK_SHARE_TRANSFER_REQUEST:
-                    InitateQuickShareTransferRequest(event);
+                    InitateQuickShareTransferRequest(request);
                     break;
 
                 case KeyConstants.SOCKET_QUICK_SHARE_TRANSFER_RESULT:
-                    QuickShareTransferResult(event);
+                    QuickShareTransferResult(request);
                     break;
 
                 case KeyConstants.SOCKET_INITIATE_GROUP_PLAY_REQUEST:
-                    InitateGroupPlayRequest(event);
+                    InitateGroupPlayRequest(request);
                     break;
 
                 case KeyConstants.SOCKET_GROUP_PLAY_RESULT:
-                    GroupPlayResult(event);
+                    GroupPlayResult(request);
                     break;
 
                 case KeyConstants.SOCKET_REQUEST_DEVICE_TYPE:
@@ -88,7 +89,7 @@ public class ServerResponseThread extends Thread {
                     break;
 
                 case KeyConstants.SOCKET_DEVICE_TYPE_RESULT:
-                    DeviceTypeResult(event);
+                    DeviceTypeResult(request);
                     break;
 
                 case KeyConstants.SOCKET_REQUEST_CURRENT_SONG_NAME:
@@ -96,59 +97,59 @@ public class ServerResponseThread extends Thread {
                     break;
 
                 case KeyConstants.SOCKET_CURRENT_SONG_NAME_RESULT:
-                    CurrentSongNameResult(event);
+                    CurrentSongNameResult(request);
                     break;
 
                 case KeyConstants.SOCKET_REQUEST_CURRENT_SONG:
-                    RequestCurrentSong(event);
+                    RequestCurrentSong(request);
                     break;
 
                 case KeyConstants.SOCKET_CURRENT_SONG_RESULT:
-                    CurrentSongResult(event);
+                    CurrentSongResult(request);
                     break;
 
                 case KeyConstants.SOCKET_FEATURE_NOT_AVAILABLE:
-                    InvalidCommandResult(event);
+                    InvalidCommandResult(request);
                     break;
 
                 case KeyConstants.SOCKET_REQUEST_MAC_ADDRESS:
-                    RequestMacAddress(event);
+                    RequestMacAddress(request);
                     break;
 
                 case KeyConstants.SOCKET_MAC_ADDRESS_RESULT:
-                    MacAddressResult(event);
+                    MacAddressResult(request);
                     break;
 
                 case KeyConstants.SOCKET_REQUEST_ALBUM_ART:
-                    RequestAlbumArt(event);
+                    RequestAlbumArt(request);
                     break;
 
                 case KeyConstants.SOCKET_ALBUM_ART_RESULT:
-                    AlbumArtResult(event);
+                    AlbumArtResult(request);
                     break;
 
                 case KeyConstants.SOCKET_INITIATE_GROUP_LISTEN_REQUEST:
-                    RequestGroupListen(event);
+                    RequestGroupListen(request);
                     break;
 
                 case KeyConstants.SOCKET_GROUP_LISTEN_RESULT:
-                    GroupListenResult(event);
+                    GroupListenResult(request);
                     break;
 
                 case KeyConstants.SOCKET_GROUP_LISTEN_OPEN_FILE_RECEIVER:
-                    SocketExtensionMethods.GroupListenStartFileReceiver(context, event);
+                    SocketExtensionMethods.GroupListenStartFileReceiver(context, request);
                     break;
 
                 case KeyConstants.SOCKET_GROUP_LISTEN_DISCONNECT:
-                    SocketExtensionMethods.GroupListenDisconnect(context, event);
+                    SocketExtensionMethods.GroupListenDisconnect(context, request);
                     break;
 
                 case KeyConstants.SOCKET_GROUP_LISTEN_KICK_OUT_DEVICE:
-                    SocketExtensionMethods.GroupListenEndConnection(context, event);
+                    SocketExtensionMethods.GroupListenEndConnection(context, request);
                     break;
 
                 default:
-                    InvalidCommand(event);
+                    InvalidCommand(request);
                     break;
 
             }
@@ -157,55 +158,55 @@ public class ServerResponseThread extends Thread {
         }
     }
 
-    private void InitateQuickShareTransferRequest(final Event event) {
+    private void InitateQuickShareTransferRequest(final IRequest request) {
 
-        if(event.getSongsToTransferArrayList().size() > 0){
-            if(SharedPreferenceHelper.getClientTransferRequestAlwaysAccept(context, event.getClientMacAddress())){
-                event.setEventState(SocketExtensionMethods.EVENT_STATE.Approved);
-                db4oHelper.pushEventObject(context, event);
-                db4oHelper.pushSongTransferObject(context, event.getSongsToTransferArrayList());
+        if(request.getSongsToTransferArrayList().size() > 0){
+            if(SharedPreferenceHelper.getClientTransferRequestAlwaysAccept(context, request.getClientMacAddress())){
+                request.setEventState(SocketExtensionMethods.EVENT_STATE.Approved);
+                db4oHelper.pushRequestObject(context, request);
+                db4oHelper.pushSongTransferObject(context, request.getSongsToTransferArrayList());
 
                 SocketExtensionMethods.requestStrictModePermit();
-                Event eventMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_QUICK_SHARE_TRANSFER_RESULT, event.getTimeStamp(), KeyConstants.SOCKET_RESULT_OK);
-                Client quickShareResponse = new Client(event.getClientIpAddress(), eventMessage);
+                IRequest iRequestMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_QUICK_SHARE_TRANSFER_RESULT, request.getTimeStamp(), KeyConstants.SOCKET_RESULT_OK);
+                Client quickShareResponse = new Client(request.getClientIpAddress(), iRequestMessage);
                 quickShareResponse.execute();
-                FileReceiver nioServer = new FileReceiver(context, event);
+                FileReceiver nioServer = new FileReceiver(context, request);
                 nioServer.execute();
             }
 
             else
-                db4oHelper.pushEventObject(context, event);
+                RequestsActivity.pushRequestObjectAndNotify(context, request);
         }
     }
-    private void QuickShareTransferResult(final Event event) {
+    private void QuickShareTransferResult(final IRequest request) {
 
-        if(event.getResult().equals(KeyConstants.SOCKET_RESULT_CANCEL)){
+        if(request.getResult().equals(KeyConstants.SOCKET_RESULT_CANCEL)){
             Handler handler = new Handler(Looper.getMainLooper());
             handler.post(new Runnable() {
                 @Override
                 public void run() {
                     NearbyDevicesAdapter.dismissMaterialDialog();
-                    QuickShareHelper.removeQuickShareRequest(event.getTimeStamp());
-                    Toast.makeText(context, event.getClientName() + KeyConstants.SPACE + context.getString(R.string.quick_share_rejected), Toast.LENGTH_SHORT).show();
+                    QuickShareHelper.removeQuickShareRequest(request.getTimeStamp());
+                    Toast.makeText(context, request.getClientName() + KeyConstants.SPACE + context.getString(R.string.quick_share_rejected), Toast.LENGTH_SHORT).show();
                 }
             });
         }
 
-        else if(event.getResult().equals(KeyConstants.SOCKET_RESULT_OK)){
+        else if(request.getResult().equals(KeyConstants.SOCKET_RESULT_OK)){
             Handler handler = new Handler(Looper.getMainLooper());
             handler.post(new Runnable() {
                 @Override
                 public void run() {
                     NearbyDevicesAdapter.dismissMaterialDialog();
-                    InitiateQuickShare initiateQuickShare = new InitiateQuickShare(context, event, QuickShareHelper.getSongsList(event.getTimeStamp()));
+                    InitiateQuickShare initiateQuickShare = new InitiateQuickShare(context, request, QuickShareHelper.getSongsList(request.getTimeStamp()));
                     initiateQuickShare.execute();
-                    Toast.makeText(context, context.getString(R.string.initating_quick_share) + KeyConstants.SPACE + event.getClientName(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, context.getString(R.string.initating_quick_share) + KeyConstants.SPACE + request.getClientName(), Toast.LENGTH_SHORT).show();
                 }
             });
         }
     }
 
-    private void InitateGroupPlayRequest(final Event event) {
+    private void InitateGroupPlayRequest(final IRequest request) {
 
         Handler handler = new Handler(Looper.getMainLooper());
         handler.post(new Runnable() {
@@ -214,14 +215,14 @@ public class ServerResponseThread extends Thread {
 
                 new MaterialDialog.Builder(context)
                         .title(context.getResources().getString(R.string.group_play_request_text))
-                        .content(event.getClientName() + KeyConstants.SPACE + context.getResources().getString(R.string.group_play_request))
+                        .content(request.getClientName() + KeyConstants.SPACE + context.getResources().getString(R.string.group_play_request))
                         .positiveText(R.string.agree)
                         .onPositive(new MaterialDialog.SingleButtonCallback() {
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                     SocketExtensionMethods.requestStrictModePermit();
-                                    Event eventMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_GROUP_PLAY_RESULT, event.getTimeStamp(), KeyConstants.SOCKET_RESULT_OK);
-                                    Client client = new Client(clientIPAddress, eventMessage);
+                                    IRequest iRequestMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_GROUP_PLAY_RESULT, request.getTimeStamp(), KeyConstants.SOCKET_RESULT_OK);
+                                    Client client = new Client(clientIPAddress, iRequestMessage);
                                     client.execute();
                                     GroupPlayHelper.setGroupPlayMaster(clientIPAddress);
                                     NearbyDevicesActivity.updateAdapater();
@@ -232,8 +233,8 @@ public class ServerResponseThread extends Thread {
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                 SocketExtensionMethods.requestStrictModePermit();
-                                Event eventMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_GROUP_PLAY_RESULT, event.getTimeStamp(), KeyConstants.SOCKET_RESULT_CANCEL);
-                                Client client = new Client(clientIPAddress, eventMessage);
+                                IRequest iRequestMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_GROUP_PLAY_RESULT, request.getTimeStamp(), KeyConstants.SOCKET_RESULT_CANCEL);
+                                Client client = new Client(clientIPAddress, iRequestMessage);
                                 client.execute();
                             }
                         })
@@ -242,24 +243,24 @@ public class ServerResponseThread extends Thread {
             }
         });
     }
-    private void GroupPlayResult(final Event event) {
+    private void GroupPlayResult(final IRequest request) {
 
-        if(event.getResult().equals(KeyConstants.SOCKET_RESULT_CANCEL)){
+        if(request.getResult().equals(KeyConstants.SOCKET_RESULT_CANCEL)){
             Handler handler = new Handler(Looper.getMainLooper());
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(context, event.getClientName() + KeyConstants.SPACE + context.getResources().getString(R.string.group_play_rejected), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, request.getClientName() + KeyConstants.SPACE + context.getResources().getString(R.string.group_play_rejected), Toast.LENGTH_SHORT).show();
                 }
             });
 
         }
-        else if(event.getResult().equals(KeyConstants.SOCKET_RESULT_OK)){
+        else if(request.getResult().equals(KeyConstants.SOCKET_RESULT_OK)){
             Handler handler = new Handler(Looper.getMainLooper());
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(context, event.getClientName() + KeyConstants.SPACE + context.getResources().getString(R.string.group_play_accepted), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, request.getClientName() + KeyConstants.SPACE + context.getResources().getString(R.string.group_play_accepted), Toast.LENGTH_SHORT).show();
                     GroupPlayHelper.AddNewClientInGroupPlay(clientIPAddress);
                     NearbyDevicesActivity.updateAdapater();
                 }
@@ -268,14 +269,14 @@ public class ServerResponseThread extends Thread {
     }
 
     private void RequestDeviceType(final Context context) {
-        Event eventMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_DEVICE_TYPE_RESULT, ExtensionMethods.getTimeStamp(), SocketExtensionMethods.getDeviceType(context));
-        Client client = new Client(clientIPAddress, eventMessage);
+        IRequest iRequestMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_DEVICE_TYPE_RESULT, ExtensionMethods.getTimeStamp(), SocketExtensionMethods.getDeviceType(context));
+        Client client = new Client(clientIPAddress, iRequestMessage);
         client.execute();
     }
-    private void DeviceTypeResult(final Event event) {
+    private void DeviceTypeResult(final IRequest request) {
         for (NSD device : NSDClient.devicesList) {
             if(device.getHostAddress().equals(clientIPAddress))
-                device.setDEVICE_TYPE(event.getResult());
+                device.setDEVICE_TYPE(request.getResult());
         }
 
         NearbyDevicesActivity.updateAdapater();
@@ -285,41 +286,41 @@ public class ServerResponseThread extends Thread {
     private void RequestCurrentSongName() {
 
         if(PlayerConstants.getPlaylistSize() != 0 && PlayerConstants.getPlaylistSize() >= PlayerConstants.SONG_NUMBER){
-            Event eventMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_CURRENT_SONG_NAME_RESULT, ExtensionMethods.getTimeStamp());
-            Client client = new Client(clientIPAddress, eventMessage);
+            IRequest iRequestMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_CURRENT_SONG_NAME_RESULT, ExtensionMethods.getTimeStamp());
+            Client client = new Client(clientIPAddress, iRequestMessage);
             client.execute();
         }
     }
-    private void CurrentSongNameResult(final Event event) {
+    private void CurrentSongNameResult(final IRequest request) {
 
         for (NSD device : NSDClient.devicesList) {
             if(device.getHostAddress().equals(clientIPAddress))
-                device.setCurrentSongPlaying(event.getClientCurrentSong());
+                device.setCurrentSongPlaying(request.getClientCurrentSong());
         }
         GroupListenActivity.updateSong(KeyConstants.SOCKET_CURRENT_SONG_NAME_RESULT);
         NearbyDevicesActivity.updateAdapater();
     }
 
-    private void RequestCurrentSong(final Event event) {
+    private void RequestCurrentSong(final IRequest request) {
 
         if(PlayerConstants.getPlaylistSize() != 0 && PlayerConstants.getPlaylistSize() >= PlayerConstants.SONG_NUMBER) {
 
             final String currentSongFilePath = PlayerConstants.getPlayList().get(PlayerConstants.SONG_NUMBER).getData();
-            if(SharedPreferenceHelper.getClientTransferRequestAlwaysAccept(context, event.getClientMacAddress())) {
+            if(SharedPreferenceHelper.getClientTransferRequestAlwaysAccept(context, request.getClientMacAddress())) {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
                         SocketExtensionMethods.requestStrictModePermit();
-                        event.setEventState(SocketExtensionMethods.EVENT_STATE.Approved);
-                        db4oHelper.pushEventObject(context, event);
+                        request.setEventState(SocketExtensionMethods.EVENT_STATE.Approved);
+                        db4oHelper.pushRequestObject(context, request);
                         ArrayList<Song> songArrayList = new ArrayList<>();
                         songArrayList.add(PlayerConstants.getPlayList().get(PlayerConstants.SONG_NUMBER));
-                        Event eventMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_CURRENT_SONG_RESULT, ExtensionMethods.getTimeStamp(), KeyConstants.SOCKET_RESULT_OK, songArrayList);
-                        Client quickShareResponse = new Client(event.getClientIpAddress(), eventMessage);
+                        IRequest iRequestMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_CURRENT_SONG_RESULT, ExtensionMethods.getTimeStamp(), KeyConstants.SOCKET_RESULT_OK, songArrayList);
+                        Client quickShareResponse = new Client(request.getClientIpAddress(), iRequestMessage);
                         quickShareResponse.execute();
                         try {
                             Thread.sleep(500);
-                            FileSender fileSender = new FileSender(context, event);
+                            FileSender fileSender = new FileSender(context, request);
                             fileSender.sendFile(currentSongFilePath);
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -329,68 +330,68 @@ public class ServerResponseThread extends Thread {
             }
 
             else
-                db4oHelper.pushEventObject(context, event);
+                RequestsActivity.pushRequestObjectAndNotify(context, request);
         }
     }
-    private void CurrentSongResult(final Event event){
-        if(event.getResult().equals(KeyConstants.SOCKET_RESULT_CANCEL)){
+    private void CurrentSongResult(final IRequest request){
+        if(request.getResult().equals(KeyConstants.SOCKET_RESULT_CANCEL)){
             Handler handler = new Handler(Looper.getMainLooper());
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(context, event.getClientName() + KeyConstants.SPACE + context.getString(R.string.current_song_request_rejected), Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, request.getClientName() + KeyConstants.SPACE + context.getString(R.string.current_song_request_rejected), Toast.LENGTH_LONG).show();
                 }
             });
         }
 
-        else if(event.getResult().equals(KeyConstants.SOCKET_RESULT_OK)){
+        else if(request.getResult().equals(KeyConstants.SOCKET_RESULT_OK)){
             Handler handler = new Handler(Looper.getMainLooper());
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    FileReceiver fileReceiver = new FileReceiver(context, event);
+                    FileReceiver fileReceiver = new FileReceiver(context, request);
                     fileReceiver.execute();
-                    db4oHelper.pushSongTransferObject(context, event.getSongsToTransferArrayList());
-                    Toast.makeText(context, context.getString(R.string.current_song_request_accepted) + KeyConstants.SPACE + event.getClientName(), Toast.LENGTH_SHORT).show();
+                    db4oHelper.pushSongTransferObject(context, request.getSongsToTransferArrayList());
+                    Toast.makeText(context, context.getString(R.string.current_song_request_accepted) + KeyConstants.SPACE + request.getClientName(), Toast.LENGTH_SHORT).show();
                 }
             });
         }
     }
 
-    private void InvalidCommand(final Event event) {
-        Event eventMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_FEATURE_NOT_AVAILABLE, ExtensionMethods.getTimeStamp(), event.getCommand());
-        Client invalidCommand = new Client(event.getClientIpAddress(), eventMessage);
+    private void InvalidCommand(final IRequest request) {
+        IRequest iRequestMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_FEATURE_NOT_AVAILABLE, ExtensionMethods.getTimeStamp(), request.getCommand());
+        Client invalidCommand = new Client(request.getClientIpAddress(), iRequestMessage);
         invalidCommand.execute();
     }
-    private void InvalidCommandResult(final Event event) {
+    private void InvalidCommandResult(final IRequest request) {
 
     }
 
-    private void RequestMacAddress(final Event event) {
-        Event eventMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_MAC_ADDRESS_RESULT, ExtensionMethods.getTimeStamp(), SocketExtensionMethods.getMACAddress());
-        Client macAddressResponse = new Client(event.getClientIpAddress(), eventMessage);
+    private void RequestMacAddress(final IRequest request) {
+        IRequest iRequestMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_MAC_ADDRESS_RESULT, ExtensionMethods.getTimeStamp(), SocketExtensionMethods.getMACAddress());
+        Client macAddressResponse = new Client(request.getClientIpAddress(), iRequestMessage);
         macAddressResponse.execute();
     }
-    private void MacAddressResult(final Event event){
+    private void MacAddressResult(final IRequest request){
         for (NSD device : NSDClient.devicesList) {
-            if(device.getHostAddress().equals(event.getClientIpAddress()))
-                device.setMacAddress(event.getResult());
+            if(device.getHostAddress().equals(request.getClientIpAddress()))
+                device.setMacAddress(request.getResult());
         }
     }
 
-    private void RequestAlbumArt(final Event event) {
+    private void RequestAlbumArt(final IRequest request) {
 
         for (Song song : SharedVariables.fullSongsList)
-            if(song.getHashID().equals(event.getTimeStamp()))
+            if(song.getHashID().equals(request.getTimeStamp()))
             {
                 File file = new File(song.getAlbumArtLocation());
                 if(file.exists()){
-                    Event eventMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_ALBUM_ART_RESULT, event.getTimeStamp(), KeyConstants.SOCKET_RESULT_OK);
-                    Client quickShareResponse = new Client(event.getClientIpAddress(), eventMessage);
+                    IRequest iRequestMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_ALBUM_ART_RESULT, request.getTimeStamp(), KeyConstants.SOCKET_RESULT_OK);
+                    Client quickShareResponse = new Client(request.getClientIpAddress(), iRequestMessage);
                     quickShareResponse.execute();
                     try {
                         Thread.sleep(500);
-                        BitmapSender bitmapSender = new BitmapSender(event);
+                        BitmapSender bitmapSender = new BitmapSender(request);
                         bitmapSender.sendBitmap(file.getAbsolutePath());
                         bitmapSender.endConnection();
                     } catch (Exception e) {
@@ -399,57 +400,57 @@ public class ServerResponseThread extends Thread {
                 }
 
                 else{
-                    Event eventMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_ALBUM_ART_RESULT, event.getTimeStamp(), KeyConstants.SOCKET_RESULT_CANCEL);
-                    Client quickShareResponse = new Client(event.getClientIpAddress(), eventMessage);
+                    IRequest iRequestMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_ALBUM_ART_RESULT, request.getTimeStamp(), KeyConstants.SOCKET_RESULT_CANCEL);
+                    Client quickShareResponse = new Client(request.getClientIpAddress(), iRequestMessage);
                     quickShareResponse.execute();
                 }
 
                 break;
             }
     }
-    private void AlbumArtResult(final Event event) {
+    private void AlbumArtResult(final IRequest request) {
 
-        if(event.getResult().equals(KeyConstants.SOCKET_RESULT_OK)){
+        if(request.getResult().equals(KeyConstants.SOCKET_RESULT_OK)){
             Handler handler = new Handler(Looper.getMainLooper());
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    BitmapReceiver fileReceiver = new BitmapReceiver(context, event);
+                    BitmapReceiver fileReceiver = new BitmapReceiver(context, request);
                     fileReceiver.execute();
                 }
             });
         }
     }
 
-    private void RequestGroupListen(final Event event) {
+    private void RequestGroupListen(final IRequest request) {
         if(PlayerConstants.parentGroupListener == null)
-            db4oHelper.pushEventObject(context, event);
+            RequestsActivity.pushRequestObjectAndNotify(context, request);
         else{
-            Event eventMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_GROUP_LISTEN_RESULT, ExtensionMethods.getTimeStamp(), KeyConstants.SOCKET_RESULT_CANCEL);
-            Client client = new Client(clientIPAddress, eventMessage);
+            IRequest iRequestMessage = SocketExtensionMethods.GenerateSocketEventMessage(context, KeyConstants.SOCKET_GROUP_LISTEN_RESULT, ExtensionMethods.getTimeStamp(), KeyConstants.SOCKET_RESULT_CANCEL);
+            Client client = new Client(clientIPAddress, iRequestMessage);
             client.execute();
         }
     }
-    private void GroupListenResult(final Event event) {
+    private void GroupListenResult(final IRequest request) {
 
-        if(event.getResult().equals(KeyConstants.SOCKET_RESULT_OK) && PlayerConstants.parentGroupListener == null && PlayerConstants.groupListeners.size() == 0){
-            PlayerConstants.parentGroupListener = event;
+        if(request.getResult().equals(KeyConstants.SOCKET_RESULT_OK) && PlayerConstants.parentGroupListener == null && PlayerConstants.groupListeners.size() == 0){
+            PlayerConstants.parentGroupListener = request;
             Handler handler = new Handler(Looper.getMainLooper());
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(context, event.getClientName() + KeyConstants.SPACE + context.getString(R.string.group_listen_accepted), Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, request.getClientName() + KeyConstants.SPACE + context.getString(R.string.group_listen_accepted), Toast.LENGTH_LONG).show();
                 }
             });
             ActivitySwitcher.startGroupListen(context);
         }
 
-        else if(event.getResult().equals(KeyConstants.SOCKET_RESULT_CANCEL)){
+        else if(request.getResult().equals(KeyConstants.SOCKET_RESULT_CANCEL)){
             Handler handler = new Handler(Looper.getMainLooper());
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(context, event.getClientName() + KeyConstants.SPACE + context.getString(R.string.group_listen_rejected), Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, request.getClientName() + KeyConstants.SPACE + context.getString(R.string.group_listen_rejected), Toast.LENGTH_LONG).show();
                 }
             });
         }
@@ -467,5 +468,4 @@ public class ServerResponseThread extends Thread {
 
 
     }
-
 }

@@ -1,5 +1,6 @@
 package com.prasadam.kmrplayer.UI.Fragments.NetworkFragment;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,6 +24,7 @@ import butterknife.ButterKnife;
  * Created by Prasadam Saiteja on 9/23/2016.
  */
 
+@SuppressLint("ValidFragment")
 public class ClientFileTransferFragment extends Fragment {
 
     @BindView (R.id.generic_fragment_container) FrameLayout fragmentContainer;

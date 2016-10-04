@@ -4,7 +4,7 @@ import android.content.Context;
 import android.widget.Toast;
 
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.PlayerConstants;
-import com.prasadam.kmrplayer.ModelClasses.Event;
+import com.prasadam.kmrplayer.ModelClasses.SerializableClasses.IRequest;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
 
@@ -25,15 +25,15 @@ public class Group_Listen_FileSender {
 
     private SocketChannel socketChannel;
 
-    public Group_Listen_FileSender(Context context, Event event){
+    public Group_Listen_FileSender(Context context, IRequest request){
         try {
             socketChannel = SocketChannel.open();
-            SocketAddress socketAddress = new InetSocketAddress(event.getClientIpAddress(), KeyConstants.GROUP_LISTEN_TRANSFER_SOCKET_PORT_ADDRESS);
+            SocketAddress socketAddress = new InetSocketAddress(request.getClientIpAddress(), KeyConstants.GROUP_LISTEN_TRANSFER_SOCKET_PORT_ADDRESS);
             socketChannel.connect(socketAddress);
         }
         catch (ConnectException e){
-            PlayerConstants.groupListeners.remove(event);
-            Toast.makeText(context, event.getClientName() + KeyConstants.SPACE + context.getResources().getString(R.string.client_disconnected_group_listen), Toast.LENGTH_SHORT).show();
+            PlayerConstants.groupListeners.remove(request);
+            Toast.makeText(context, request.getClientName() + KeyConstants.SPACE + context.getResources().getString(R.string.client_disconnected_group_listen), Toast.LENGTH_SHORT).show();
         }
         catch (Exception e) {e.printStackTrace();}
     }

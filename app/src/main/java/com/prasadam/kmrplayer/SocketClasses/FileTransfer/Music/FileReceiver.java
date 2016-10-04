@@ -8,9 +8,9 @@ import android.os.Looper;
 import com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.NetworkAdapter.ReceivedSongsAdapter;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.DatabaseHelper.db4oHelper;
-import com.prasadam.kmrplayer.ModelClasses.Event;
+import com.prasadam.kmrplayer.ModelClasses.SerializableClasses.IRequest;
+import com.prasadam.kmrplayer.ModelClasses.SerializableClasses.ITransferableSong;
 import com.prasadam.kmrplayer.ModelClasses.Song;
-import com.prasadam.kmrplayer.ModelClasses.TransferableSong;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
 import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
@@ -35,13 +35,13 @@ public class FileReceiver extends AsyncTask<Void, Void, Void>{
 
     private ServerSocketChannel serverSocketChannel;
     private Context context;
-    private Event event;
+    private IRequest request;
 
-    public FileReceiver(Context context, Event event){
+    public FileReceiver(Context context, IRequest request){
 
         try {
             if(serverSocketChannel == null){
-                this.event = event;
+                this.request = request;
                 this.context = context;
                 serverSocketChannel = ServerSocketChannel.open();
                 serverSocketChannel.socket().bind(new InetSocketAddress(KeyConstants.FILE_TRANSFER_SOCKET_PORT_ADDRESS));
@@ -54,7 +54,7 @@ public class FileReceiver extends AsyncTask<Void, Void, Void>{
     @Override
     protected Void doInBackground(Void... voids) {
 
-        for (final TransferableSong transferableSong : event.getSongsToTransferArrayList()) {
+        for (final ITransferableSong transferableSong : request.getSongsToTransferArrayList()) {
             try {
                 SocketChannel clientSocketChannel = serverSocketChannel.accept();
                 final String fileName = ExtensionMethods.extractFileNameFromPath(transferableSong.getSong().getData());
@@ -85,7 +85,7 @@ public class FileReceiver extends AsyncTask<Void, Void, Void>{
                             SharedVariables.fullSongsList.add(song);
                             db4oHelper.updateSongTrasferableObject(context, transferableSong);
                             ReceivedSongsAdapter.updateAdapter();
-                            NearbyDevicesDetails_DialogFragment.refreshDialogFragment(event.getClientMacAddress());
+                            NearbyDevicesDetails_DialogFragment.refreshDialogFragment(request.getClientMacAddress());
                         }
                     }
                 }, 800);
@@ -97,8 +97,8 @@ public class FileReceiver extends AsyncTask<Void, Void, Void>{
             }
         }
 
-        event.setEventState(SocketExtensionMethods.EVENT_STATE.Completed);
-        db4oHelper.updateEventObject(context, event);
+        request.setEventState(SocketExtensionMethods.EVENT_STATE.Completed);
+        db4oHelper.updateRequestObject(context, request);
         RequestsActivity.eventNotifyDataSetChanged();
         try {
             serverSocketChannel.close();
