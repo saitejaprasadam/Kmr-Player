@@ -11,7 +11,7 @@ import com.prasadam.kmrplayer.ActivityHelperClasses.ActivityHelper;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.NetworkAdapter.ReceivedSongsAdapter;
 import com.prasadam.kmrplayer.Adapters.UIAdapters.DividerItemDecoration;
-import com.prasadam.kmrplayer.DatabaseHelper.db4oHelper;
+import com.prasadam.kmrplayer.DatabaseHelperClasses.db4oHelper;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 import com.prasadam.kmrplayer.UI.Activities.BaseActivity.VerticalSlidingDrawerBaseActivity;
@@ -78,7 +78,7 @@ public class ReceivedSongsActivity extends VerticalSlidingDrawerBaseActivity{
 
     private void InitRecyclerView() {
 
-        recyclerViewAdapter = new ReceivedSongsAdapter(this, this);
+        recyclerViewAdapter = new ReceivedSongsAdapter(this, this, recyclerView);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
         mLayoutManager.setReverseLayout(true);
         mLayoutManager.setStackFromEnd(true);

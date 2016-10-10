@@ -104,7 +104,7 @@
     <string name="permissions_description_text">We need permission to read and write songs data from your device.</string>
     <string name="all_set_text">You\'re all set! Happy listening</string>
     <string name="get_started_text">Get started..</string>
-    <string name="alpha_version_title_text">Smart cast is still in alpha version</string>
+    <string name="beta_version_title_text">Smart cast is still in beta stage</string>
     <string name="alpha_version_description_text">There might be still some bugs around there, we are striving hard to fix them.</string>
     <string name="cluster_title_text">Share songs and engage with friends with built in social networking</string>
     <string name="cluster_description_text">Seek nearby friends using nearby feature, and engage your music madness with your squad spontaneously</string>

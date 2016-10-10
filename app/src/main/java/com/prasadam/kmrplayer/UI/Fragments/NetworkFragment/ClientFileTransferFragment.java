@@ -51,7 +51,7 @@ public class ClientFileTransferFragment extends Fragment {
 
     private void InitRecyclerView() {
 
-        ReceivedSongsAdapter receivedSongsAdapter = new ReceivedSongsAdapter(getContext(), getActivity(), serverObject);
+        ReceivedSongsAdapter receivedSongsAdapter = new ReceivedSongsAdapter(getContext(), getActivity(), serverObject, recyclerView);
 
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         mLayoutManager.setReverseLayout(true);

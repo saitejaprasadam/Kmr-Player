@@ -21,7 +21,7 @@ import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.ActivityHelperClasses.DialogHelper;
 import com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.NetworkAdapter.RequestsAdapter;
 import com.prasadam.kmrplayer.Adapters.UIAdapters.DividerItemDecoration;
-import com.prasadam.kmrplayer.DatabaseHelper.db4oHelper;
+import com.prasadam.kmrplayer.DatabaseHelperClasses.db4oHelper;
 import com.prasadam.kmrplayer.ModelClasses.SerializableClasses.IRequest;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;

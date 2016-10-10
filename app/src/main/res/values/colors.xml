@@ -13,7 +13,7 @@
     <color name="View_Background">#FAFAFA</color>
     <color name="layout_Background">#e6dfdfdf</color>
 
-    <color name="launcher_background_color">#4DB6AC</color>
+    <color name="launcher_background_color">#00C853</color>
     <color name="launch_screen_red_palette_color">#EF5350</color>
     <color name="launch_screen_green_palette_color">#81C784</color>
     <color name="launch_screen_yellow_palette_color">#FBC02D</color>

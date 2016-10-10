@@ -20,7 +20,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.BlurBuilder;
 import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.DatabaseHelper.sqliteHelper;
+import com.prasadam.kmrplayer.DatabaseHelperClasses.sqliteHelper;
 import com.prasadam.kmrplayer.UI.Activities.Playlist.CustomPlaylistInnerActivity;
 
 import java.io.File;

@@ -24,7 +24,7 @@
                 android:layout_height="match_parent"
                 android:contentDescription="@string/background_image_view_text"
                 android:scaleType="centerCrop"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@mipmap/unkown_album_art" />
 
             <include
                 layout="@layout/include_action_bar_gradient"

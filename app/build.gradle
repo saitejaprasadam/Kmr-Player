@@ -29,8 +29,8 @@ android {
         applicationId "com.prasadam.kmrplayer"
         minSdkVersion 19
         targetSdkVersion 22
-        versionCode 21
-        versionName "1.0.20"
+        versionCode 25
+        versionName "1.0.24"
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
@@ -78,4 +78,5 @@ dependencies {
     compile 'com.github.paolorotolo:appintro:4.0.0'
     compile 'com.github.jorgecastilloprz:fabprogresscircle:1.01@aar'
     compile 'com.mikepenz:actionitembadge:3.3.0@aar'
+    compile 'de.u-mass:lastfm-java:0.1.2'
 }

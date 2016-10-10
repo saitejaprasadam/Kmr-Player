@@ -23,7 +23,7 @@
                 android:layout_width="match_parent"
                 android:clickable="true"
                 android:layout_height="match_parent"
-                android:src="@mipmap/ic_launcher"
+                android:src="@mipmap/unkown_album_art"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"/>
 

@@ -122,11 +122,18 @@ public class SongPlaybackHistoryActivity extends VerticalSlidingDrawerBaseActivi
     }
 
     public void setSearchListener(){
-        MenuItem searchItem = mOptionsMenu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        MenuItemCompat.setActionView(searchItem, searchView);
-        SongsSearchListener searchListener = new SongsSearchListener(SongPlaybackHistoryActivity.this, songsList, recyclerView, songHistoryActivityrecyclerViewAdapter);
-        searchView.setOnQueryTextListener(searchListener);
+
+        try {
+            if (mOptionsMenu == null)
+                Thread.sleep(1000);
+            MenuItem searchItem = mOptionsMenu.findItem(R.id.action_search);
+            SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+            MenuItemCompat.setActionView(searchItem, searchView);
+            SongsSearchListener searchListener = new SongsSearchListener(SongPlaybackHistoryActivity.this, songsList, recyclerView, songHistoryActivityrecyclerViewAdapter);
+            searchView.setOnQueryTextListener(searchListener);
+        }
+
+        catch (Exception ignored){}
     }
 
     @Override

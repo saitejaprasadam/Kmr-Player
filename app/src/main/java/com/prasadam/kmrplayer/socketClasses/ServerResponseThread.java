@@ -12,7 +12,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.prasadam.kmrplayer.ActivityHelperClasses.ActivitySwitcher;
 import com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.NetworkAdapter.NearbyDevicesAdapter;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.PlayerConstants;
-import com.prasadam.kmrplayer.DatabaseHelper.db4oHelper;
+import com.prasadam.kmrplayer.DatabaseHelperClasses.db4oHelper;
 import com.prasadam.kmrplayer.ModelClasses.SerializableClasses.IRequest;
 import com.prasadam.kmrplayer.ModelClasses.Song;
 import com.prasadam.kmrplayer.R;

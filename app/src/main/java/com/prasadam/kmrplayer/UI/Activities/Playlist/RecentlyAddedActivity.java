@@ -127,11 +127,19 @@ public class RecentlyAddedActivity extends VerticalSlidingDrawerBaseActivity {
     }
 
     private void setSearchListener() {
-        MenuItem searchItem = mOptionsMenu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        MenuItemCompat.setActionView(searchItem, searchView);
-        SongsSearchListener searchListener = new SongsSearchListener(RecentlyAddedActivity.this, songsList, recentlyAddedRecyclerView, RecentlyAddedAcitivityrecyclerViewAdapter);
-        searchView.setOnQueryTextListener(searchListener);
+
+        try{
+            if(mOptionsMenu == null)
+                Thread.sleep(1000);
+
+            MenuItem searchItem = mOptionsMenu.findItem(R.id.action_search);
+            SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+            MenuItemCompat.setActionView(searchItem, searchView);
+            SongsSearchListener searchListener = new SongsSearchListener(RecentlyAddedActivity.this, songsList, recentlyAddedRecyclerView, RecentlyAddedAcitivityrecyclerViewAdapter);
+            searchView.setOnQueryTextListener(searchListener);
+        }
+
+        catch (Exception ignored){}
     }
 
     @Override

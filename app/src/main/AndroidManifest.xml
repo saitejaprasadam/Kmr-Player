@@ -27,6 +27,7 @@
         <activity android:name=".UI.Activities.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop"
+            android:configChanges="keyboardHidden|orientation|screenLayout"
             android:theme="@style/MainActivityNoActionBar.BrandedLaunch" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

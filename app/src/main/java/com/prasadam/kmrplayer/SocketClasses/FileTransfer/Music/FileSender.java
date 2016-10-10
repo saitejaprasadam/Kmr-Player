@@ -2,8 +2,8 @@ package com.prasadam.kmrplayer.SocketClasses.FileTransfer.Music;
 
 import android.content.Context;
 
-import com.prasadam.kmrplayer.DatabaseHelper.db4oHelper;
-import com.prasadam.kmrplayer.FabricHelpers.CustomEventHelpers;
+import com.prasadam.kmrplayer.DatabaseHelperClasses.db4oHelper;
+import com.prasadam.kmrplayer.FabricHelperClasses.CustomEventHelpers;
 import com.prasadam.kmrplayer.ModelClasses.SerializableClasses.IRequest;
 import com.prasadam.kmrplayer.SharedClasses.KeyConstants;
 import com.prasadam.kmrplayer.SocketClasses.SocketExtensionMethods;

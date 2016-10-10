@@ -27,7 +27,7 @@ import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.Controls;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicPlayerExtensionMethods;
 import com.prasadam.kmrplayer.ModelClasses.Song;
-import com.prasadam.kmrplayer.FabricHelpers.CustomEventHelpers;
+import com.prasadam.kmrplayer.FabricHelperClasses.CustomEventHelpers;
 import com.prasadam.kmrplayer.R;
 import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 import com.prasadam.kmrplayer.SharedPreferences.SharedPreferenceHelper;

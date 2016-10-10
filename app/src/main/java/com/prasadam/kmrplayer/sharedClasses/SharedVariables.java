@@ -4,8 +4,10 @@ import android.content.Context;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
+import com.prasadam.kmrplayer.FabricHelperClasses.CustomEventHelpers;
 import com.prasadam.kmrplayer.ModelClasses.SerializableClasses.IRequest;
 import com.prasadam.kmrplayer.ModelClasses.SerializableClasses.ITransferableSong;
+import com.prasadam.kmrplayer.SharedPreferences.SharedPreferenceHelper;
 import com.prasadam.kmrplayer.SocketClasses.NetworkServiceDiscovery.NSD;
 import com.prasadam.kmrplayer.SocketClasses.SocketExtensionMethods;
 import com.prasadam.kmrplayer.SubClasses.CustomArrayList.AlbumArrayList;
@@ -23,8 +25,9 @@ import java.util.ArrayList;
 
 public class SharedVariables {
 
-    public static void Initializers(Context context) {
+    public static void Initializers(Context context){
         Fresco.initialize(context);
+        CustomEventHelpers.addUserSession(SharedPreferenceHelper.getUserName(context));
     }
 
     public static volatile SongsArrayList fullSongsList = new SongsArrayList() {

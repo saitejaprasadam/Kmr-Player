@@ -7,7 +7,7 @@ import android.os.Looper;
 
 import com.prasadam.kmrplayer.Adapters.RecyclerViewAdapters.NetworkAdapter.ReceivedSongsAdapter;
 import com.prasadam.kmrplayer.AudioPackages.AudioExtensionMethods;
-import com.prasadam.kmrplayer.DatabaseHelper.db4oHelper;
+import com.prasadam.kmrplayer.DatabaseHelperClasses.db4oHelper;
 import com.prasadam.kmrplayer.ModelClasses.SerializableClasses.IRequest;
 import com.prasadam.kmrplayer.ModelClasses.SerializableClasses.ITransferableSong;
 import com.prasadam.kmrplayer.ModelClasses.Song;

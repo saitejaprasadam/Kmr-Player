@@ -13,8 +13,10 @@ public abstract class HidingScrollListener extends RecyclerView.OnScrollListener
     @Override
     public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
         super.onScrollStateChanged(recyclerView, newState);
-        if (hidden)
-            onHide();
+        if (hidden){
+            //onHide();
+        }
+
          else
             onShow();
     }

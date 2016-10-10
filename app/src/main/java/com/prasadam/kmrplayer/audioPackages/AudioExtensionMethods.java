@@ -22,7 +22,7 @@ import com.prasadam.kmrplayer.ModelClasses.Album;
 import com.prasadam.kmrplayer.ModelClasses.Artist;
 import com.prasadam.kmrplayer.ModelClasses.Song;
 import com.prasadam.kmrplayer.R;
-import com.prasadam.kmrplayer.DatabaseHelper.sqliteHelper;
+import com.prasadam.kmrplayer.DatabaseHelperClasses.sqliteHelper;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
 

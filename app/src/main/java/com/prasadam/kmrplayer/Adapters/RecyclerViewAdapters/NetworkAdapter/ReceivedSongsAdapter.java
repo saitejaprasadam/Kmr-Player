@@ -53,18 +53,21 @@ public class ReceivedSongsAdapter extends RecyclerView.Adapter<ReceivedSongsAdap
     private static Handler refreshRecyclerViewHandler;
     private final Activity activity;
     private NSD serverObject;
+    private RecyclerView recyclerView;
 
-    public ReceivedSongsAdapter(final Context context, final Activity activity){
+    public ReceivedSongsAdapter(final Context context, final Activity activity, final RecyclerView recyclerView){
         this.activity = activity;
         this.context = context;
         inflater = LayoutInflater.from(context);
+        this.recyclerView = recyclerView;
         initHandler();
     }
-    public ReceivedSongsAdapter(final Context context, final Activity activity,final NSD serverObject) {
+    public ReceivedSongsAdapter(final Context context, final Activity activity,final NSD serverObject, final RecyclerView recyclerView) {
         this.activity = activity;
         this.context = context;
         this.inflater = LayoutInflater.from(context);
         this.serverObject = serverObject;
+        this.recyclerView = recyclerView;
         initHandler();
     }
 
@@ -243,6 +246,10 @@ public class ReceivedSongsAdapter extends RecyclerView.Adapter<ReceivedSongsAdap
             @Override
             public boolean handleMessage(Message message) {
                 notifyDataSetChanged();
+                try{
+                    recyclerView.scrollToPosition(0);
+                }
+                catch (Exception ignored){}
                 return true;
             }
         });

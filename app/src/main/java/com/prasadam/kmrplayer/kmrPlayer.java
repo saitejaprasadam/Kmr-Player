@@ -7,7 +7,7 @@ import android.os.Bundle;
 import com.crashlytics.android.Crashlytics;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.MusicService;
 import com.prasadam.kmrplayer.AudioPackages.MusicServiceClasses.PlayerConstants;
-import com.prasadam.kmrplayer.DatabaseHelper.db4oHelper;
+import com.prasadam.kmrplayer.DatabaseHelperClasses.db4oHelper;
 import com.prasadam.kmrplayer.ModelClasses.Song;
 import com.prasadam.kmrplayer.SharedClasses.ExtensionMethods;
 import com.prasadam.kmrplayer.SharedClasses.SharedVariables;
