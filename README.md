@@ -19,20 +19,20 @@ kmr player provides all the standard features for a music player, prior to them 
 ★ Create new playlists.<br/>
 
 
-Licenses for the album covers used in the screenshots:
+### Licenses for the album covers used in the screenshots:
 
-Credits: https://www.flickr.com/photos/wheatfields/
-Link: https://www.flickr.com/photos/wheatfields/3328507930
-License: https://creativecommons.org/licenses/by/2.0/
+Credits: https://www.flickr.com/photos/wheatfields/ <br/>
+Link: https://www.flickr.com/photos/wheatfields/3328507930 <br/>
+License: https://creativecommons.org/licenses/by/2.0/ <br/>
 
-Credits: https://www.flickr.com/photos/left-hand/
-Link: https://www.flickr.com/photos/left-hand/3984310253
-License: https://creativecommons.org/licenses/by-nd/2.0/
+Credits: https://www.flickr.com/photos/left-hand/ <br/>
+Link: https://www.flickr.com/photos/left-hand/3984310253 <br/>
+License: https://creativecommons.org/licenses/by-nd/2.0/ <br/>
 
-Credits: https://www.flickr.com/photos/jb912/
-Link: https://www.flickr.com/photos/jb912/7734828628
-License: https://creativecommons.org/licenses/by-nd/2.0/
+Credits: https://www.flickr.com/photos/jb912/ <br/>
+Link: https://www.flickr.com/photos/jb912/7734828628 <br/>
+License: https://creativecommons.org/licenses/by-nd/2.0/ <br/>
 
-Credits: https://www.flickr.com/photos/harry525/
-Link: https://www.flickr.com/photos/harry525/6946690534
-License: https://creativecommons.org/licenses/by/2.0/
+Credits: https://www.flickr.com/photos/harry525/ <br/>
+Link: https://www.flickr.com/photos/harry525/6946690534 <br/>
+License: https://creativecommons.org/licenses/by/2.0/ <br/>
