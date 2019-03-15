@@ -1,24 +1,33 @@
-# kmr-player
+# kmr player
 Materialized Android Music Player
 
 kmr player provides all the standard features for a music player, prior to them it also provides an interactive network to interact with your squad (watch what your squad is listening to, request or send songs directly without third party apps, start a asynchronous group play optimal while traveling)
 
 
-kmr player - key Features
+## key Features
 ★ Fully Materialized
-★ Collaborate with your squad
-★ Watch what your squad is listening and engage with them
-★ Asynchronous group play
-★ Ad-free experience
-★ Fluid experience
-★ Beautiful widgets
-★ ID3 Tag editor, edit Track, Albums & Artists
-★ Built-in equalizer
-★ Beautiful widgets
-★ Lock screen controls
-★ Create new playlists
 
-kmr player is still in beta stage, more features will be adding soon
+★ Collaborate with your squad
+
+★ Watch what your squad is listening and engage with them
+
+★ Asynchronous group play
+
+★ Ad-free experience
+
+★ Fluid experience
+
+★ Beautiful widgets
+
+★ ID3 Tag editor, edit Track, Albums & Artists
+
+★ Built-in equalizer
+
+★ Beautiful widgets
+
+★ Lock screen controls
+
+★ Create new playlists
 
 
 Licenses for the album covers used in the screenshots:
