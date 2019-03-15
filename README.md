@@ -6,6 +6,9 @@ kmr player provides all the standard features for a music player, prior to them 
 ### Download from Play Store
 https://play.google.com/store/apps/details?id=com.prasadam.kmrplayer
 
+### Screenshots
+|![alt text](https://lh3.googleusercontent.com/-bAV9fSqlH_XfsEawfA023rfTan5AGvd6OEsO_ExR2lDFAC1cQXvdzZ0WVBontGqR4PN=w720-h310-rw "Screen Shot")|![alt text](https://lh3.googleusercontent.com/M-zDnGRNiPTqfVv-Cz6C0AKvjLZy9pqmZvXIVsxBZ7SnnKrlC9uaNs244Wl3RbYj25k=w720-h310-rw "Screen Shot")|![alt text](https://lh3.googleusercontent.com/mn0SDEDAqSVxirI36Gbx2mBafCcs1Qnr8yI39UONlmZGBHAlQbW0x7M6h4EObxF6tg=w720-h310-rw "Screen Shot")|![alt text](https://lh3.googleusercontent.com/m68r1DKKW5dKXr9G568MILcuOZEkau_-F0h5J7QFZ6WDEm5xH_wh_kPwG_fxEn4xkuU=w720-h310-rw "Screen Shot")
+
 ### key Features
 ★ Fully Materialized.<br/>
 ★ Collaborate with your squad.<br/>
