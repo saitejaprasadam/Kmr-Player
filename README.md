@@ -1,5 +1,5 @@
 # kmr player
-Materialized Android Music Player
+Materialized Android Music Player with LAN Sharing Support with your squad
 
 kmr player provides all the standard features for a music player, prior to them it also provides an interactive network to interact with your squad (watch what your squad is listening to, request or send songs directly without third party apps, start a asynchronous group play optimal while traveling)
 
